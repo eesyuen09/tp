@@ -40,15 +40,15 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 * Role: Developer
 * Responsibilities: Data
 
-### Jean Doe
+### Tey Yee Siang
 
-<img src="images/johndoe.png" width="200px">
+<img src="images/ystey0808.png" width="200px">
 
-[[github](http://github.com/johndoe)]
+[[github](http://github.com/ystey0808)]
 [[portfolio](team/johndoe.md)]
 
 * Role: Developer
-* Responsibilities: Dev Ops + Threading
+* Responsibilities: Coding & documentation
 
 ### James Doe
 
