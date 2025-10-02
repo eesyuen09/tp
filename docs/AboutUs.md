@@ -25,7 +25,7 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 
 <img src="images/johndoe.png" width="200px">
 
-[[github](http://github.com/johndoe)]
+[[github](http://github.com/meowzz28)]
 [[portfolio](team/johndoe.md)]
 
 * Role: Team Lead
@@ -40,15 +40,24 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 * Role: Developer
 * Responsibilities: UI
 
-### Jean Doe
+### Roger Lim Bo Zu
 
-<img src="images/johndoe.png" width="200px">
+<img src="images/meowzz28.png" width="200px">
 
-[[github](http://github.com/johndoe)]
+[[github](http://github.com/meowzz28)] [[portfolio](team/johndoe.md)]
+
+* Role: Developer
+* Responsibilities: Integration
+
+### Tey Yee Siang
+
+<img src="images/ystey0808.png" width="200px">
+
+[[github](http://github.com/ystey0808)]
 [[portfolio](team/johndoe.md)]
 
 * Role: Developer
-* Responsibilities: Dev Ops + Threading
+* Responsibilities: Coding & documentation
 
 ### James Doe
 
