@@ -63,7 +63,7 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 
 ### Denise Goh
 
-<img src="images/denisegoh.png" width="200px">
+<img src="images/deniseegohh.png" width="200px">
 
 [[github](https://github.com/deniseegohh)]
 [[portfolio](team/denisegoh.md)]
