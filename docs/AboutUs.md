@@ -31,6 +31,15 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 * Role: Team Lead
 * Responsibilities: UI
 
+### Ee Syuen
+
+<img src="images/eesyuen09.png" width="200px">
+
+[[github](http://github.com/eesyuen09)] [[portfolio](team/johndoe.md)]
+
+* Role: Developer
+* Responsibilities: UI
+
 ### Roger Lim Bo Zu
 
 <img src="images/meowzz28.png" width="200px">
