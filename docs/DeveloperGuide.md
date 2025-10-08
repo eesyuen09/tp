@@ -298,7 +298,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **Use case: Mark attendance for a student**
 
 **MSS**
-1. User marks attendance of student using student ID and date.
+1. User marks attendance of student.
 2. Tuto records the attendance as present for the specified student and date.
 3. Tuto confirms that the attendance has been recorded.
 
@@ -318,7 +318,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **Use case: Unmark attendance for a student**
 
 **MSS**
-1. User chooses unmark attendance of a student using the student ID and date.
+1. User unmarks attendance of a student.
 2. Tuto records the attendance as absent for the specified student and date.
 3. Tuto confirms that the attendance has been updated.
 
@@ -338,7 +338,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **Use case: View a student's attendance history**
 
 **MSS**
-1. User views the attendance history of a student using the student ID.
+1. User views the attendance history of a student.
 2. Tuto retrieves the attendance record for that student.
 3. Tuto displays the attendance history in chronological order.
 
