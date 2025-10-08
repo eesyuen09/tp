@@ -303,10 +303,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 (For all use cases below, the **System** is the `Tuto` and the **Actor** is the `user`, unless specified otherwise)
 
-**Use case: UC-STU-01 – Add Student**
-
-**Preconditions** 
-1.  User is logged into the system.
+**Use case: Add Student**
 
 **MSS**
 
@@ -328,10 +325,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
       
        Use case ends.
 
-**Use case: UC-STU-02 – View Students**
-
-**Preconditions**
-1.  User is logged into the system.
+**Use case: View Students**
 
 **MSS**
 
@@ -347,11 +341,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
        Use case ends. 
 
-**Use case: UC-STU-03 – Edit Student**
-
-**Preconditions**
-1.  Tutor is logged into the system.
-2.  Student exists in the system.
+**Use case: Edit Student**
 
 **MSS**
 
@@ -373,11 +363,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
        
        Use case ends.
 
-**Use case: UC-STU-04 – Delete Student**
-
-**Preconditions**
-1. Tutor is logged into the system.
-2. Student exists in the system.
+**Use case: Delete Student**
 
 **MSS**
 
@@ -394,11 +380,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
       Use case ends.
 
-**Use case: UC-STU-05 – Search Student**
-
-**Preconditions**
-1. Tutor is logged into the system.
-2. Student exists in the system.
+**Use case: Search Student**
 
 **MSS**
 
