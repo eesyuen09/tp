@@ -295,10 +295,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 ### Use cases
 
-**Use case: UC-ATT-01 Mark attendance for a student**
-
-**Preconditions**
-1. The student exists in the system.
+**Use case: Mark attendance for a student**
 
 **MSS**
 1. User marks attendance of student using student ID and date.
@@ -318,10 +315,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
   Use case ends.
 
-**Use case: UC-ATT-02 Unmark attendance for a student**
-
-**Preconditions**
-1. The student exists in the system.
+**Use case: Unmark attendance for a student**
 
 **MSS**
 1. User chooses unmark attendance of a student using the student ID and date.
@@ -341,10 +335,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
   Use case ends.
 
-**Use case: UC-ATT-03 View a student's attendance history**
-
-**Preconditions**
-1. The student exists in the system.
+**Use case: View a student's attendance history**
 
 **MSS**
 1. User views the attendance history of a student using the student ID.
