@@ -300,7 +300,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 ### Use cases
 
-(For all use cases below, the **System** is the `AddressBook` and the **Actor** is the `user`, unless specified otherwise)
+(For all use cases below, the **System** is the `Tuto` and the **Actor** is the `user`, unless specified otherwise)
 
 **Use case: UC-FEE-01: Mark Student as Paid**
 
@@ -320,15 +320,15 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **Extensions**
 
 * 1a. The provided student ID does not match any existing student.
-    * 1a1. System informs Tutor that the student does not exist.
+    * 1a1. Tuto shows an error message.
     
         Use case ends.
-- **1b.** The provided month is not in valid format (MMYY).
-    - **1b1.** System informs Tutor to use the correct format. 
+- **1b.** The command format is invalid.
+    - **1b1.** Tuto shows an error message with the correct usage format.
   
       Use case ends.
 - **2a.** The student is already marked *Paid* for that month.
-    - **2a1.** System informs Tutor that the student is already marked as *Paid*.
+    - **2a1.** Tuto shows an error message.
 
       Use case ends.
 
@@ -350,15 +350,15 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **Extensions**
 
 * 1a. The provided student ID does not match any existing student.
-    * 1a1. Tuto informs Tutor that the student does not exist.
+    * 1a1. Tuto shows an error message.
 
       Use case ends.
-* 1b. The provided month is not in valid format (MMYY).
-    * 1b1. Tuto informs Tutor to use the correct format.
+* 1b. The command format is invalid.
+    * 1b1. Tuto shows an error message with the correct usage format.
 
       Use case ends.
 * 2a. The student is already marked Unpaid for that month.
-    * 2a1. Tuto informs Tutor that the student is already marked as Unpaid.
+    * 2a1. Tuto shows an error message.
 
       Use case ends.
 
@@ -375,8 +375,8 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **Extensions**
 
-* 1a. The month parameter is missing or invalid.
-    * 1a1. Tuto informs Tutor that the month format is invalid.
+* 1a. The command format is invalid.
+    * 1a1. Tuto shows an error message with the correct usage format.
 
       Use case ends.
 * 2a. No Paid students found for that month.
@@ -397,8 +397,8 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **Extensions**
 
-* 1a. The month parameter is missing or invalid.
-    * 1a1. Tuto informs Tutor that the month format is invalid.
+* 1a. The command format is invalid.
+    * 1a1. Tuto shows an error message with the correct usage format.
 
       Use case ends.
 * 2a. No Unpaid students found for that month.
@@ -423,7 +423,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **Extensions**
 
 * 1a. The student ID is invalid or missing.
-    * 1a1. Tuto informs Tutor that the student does not exist.
+    * 1a1. Tuto shows an error message.
 
       Use case ends.
 * 2a. The student has no payment records yet.
