@@ -356,7 +356,8 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **MSS**
 
 1.  Tutor requests to create a new tag, providing a valid tag name.
-2.  Tuto creates the new tag and shows a success message.
+2.  Tuto creates the new tag 
+3.  Tuto shows a success message.
 
     Use case ends.
 
@@ -385,7 +386,8 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **MSS**
 
 1.  Tutor requests to delete an existing tag, providing its name.
-2.  Tuto deletes the tag and shows a success message.
+2.  Tuto deletes the tag 
+3.  Tuto shows a success message.
 
     Use case ends.
 
