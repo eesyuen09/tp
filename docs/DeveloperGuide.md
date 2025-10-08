@@ -303,7 +303,8 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **MSS**
 
 1.  Tutor requests to assign a class tag to a specific student, providing the student's ID and the tag name.
-2.  Tuto assigns the tag to the student and shows a success message confirming the assignment.
+2.  Tuto assigns the tag to the student.
+3.  Tuto shows a success message confirming the assignment.
 
     Use case ends.
 
@@ -321,7 +322,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
       Use case ends.
 
-* 1c. The command format is invalid (e.g., missing parameters).
+* 1c. The command format is invalid.
 
     * 1c1. Tuto shows an error message with the correct usage format.
 
@@ -367,7 +368,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
       Use case ends.
 
-* 1b. The provided tag name is invalid (e.g., contains special characters, is too long, or is empty).
+* 1b. The provided tag name is invalid.
 
     * 1b1. Tuto shows an error message
 
