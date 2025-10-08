@@ -345,10 +345,12 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
    Use case ends.
 
 **Extensions**
-* 1a. The provided student ID is invalid or does not exist.
-    * 1a1. System informs the user.
+* 1a.  The command format is invalid.
 
-  Use case ends.
+    * 1a1. Tuto shows an error message with the correct usage format.
+
+Use case ends.
+
 
 * 2a. No attendance records exist for the student.
     * 2a1. System informs the user that no records are available.
@@ -367,7 +369,6 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 * **Mainstream OS**: Windows, Linux, Unix, MacOS
 * **Private contact detail**: A contact detail that is not meant to be shared with others
-* **Student ID**: A 4-digit unique numeric identifier (0000–9999) assigned to each student when added to the system.
 * * **Attendance History**: A record that shows a student's attendance history, covering up to the six most recent months before the current month.
 --------------------------------------------------------------------------------------------------------------------
 
