@@ -287,14 +287,12 @@ _{Explain here how the data archiving feature will be implemented}_
 
 Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have) - `*`
 
-| Priority | As a …​                                    | I want to …​                 | So that I can…​                                                        |
-|----------|--------------------------------------------|------------------------------|------------------------------------------------------------------------|
-| `* * *`  | new user                                   | see usage instructions       | refer to instructions when I forget how to use the App                 |
-| `* * *`  | user                                       | add a new person             |                                                                        |
-| `* * *`  | user                                       | delete a person              | remove entries that I no longer need                                   |
-| `* * *`  | user                                       | find a person by name        | locate details of persons without having to go through the entire list |
-| `* *`    | user                                       | hide private contact details | minimize chance of someone else seeing them by accident                |
-| `*`      | user with many persons in the address book | sort persons by name         | locate a person easily                                                 |
+| Priority | As a …​   | I want to …​                                           | So that I can…​              |
+|----------|-----------|--------------------------------------------------------|------------------------------|
+| `* * * ` | tutor     | add a performance note for a student on a given date   | I can record their progress  |
+| `* * * ` | tutor     | view all performance notes for a student               | I can review their progress  |
+| `* * * ` | tutor     | edit a specific performance note for a student         | I can correct or update it   |
+| `* * * ` | tutor     | delete a specific performance note for a student       | I can remove it if needed    |
 
 *{More to be added}*
 
@@ -327,6 +325,103 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 *{More to be added}*
 
+**Use case: Add a performance note**
+
+**MSS**
+
+1. Tutor requests to add a performance note for a student on a given date.
+2. Tuto adds the performance note for the student.
+3. Tuto shows a success message.
+
+   Use case ends.
+
+**Extensions**
+
+* 1a. The provided student ID does not match any existing student.
+  * 1a1. Tuto shows an error message.
+    Use case ends.
+* 1b. The command format is invalid.
+  * 1b1. Tuto shows an error message with the correct usage format.
+    Use case ends.
+* 1c. Performance note exceeds character limit.
+  * 1c1. Tuto shows an error message indicating character limit.
+    Use case ends.
+* 1d. A performance note for the student on the given date already exists.
+  * 1d1. Tuto shows an error message.
+    Use case ends.
+
+**Use case: View performance notes of a student**
+
+**MSS**
+
+1. Tutor requests to view all performance notes of a student.
+2. Tuto displays all performance notes of the student in chronological order, with newest at the top.
+
+   Use case ends.
+
+**Extensions**
+
+* 1a. The provided student ID does not match any existing student.
+    * 1a1. Tuto shows an error message.
+      Use case ends.
+* 1b. The command format is invalid.
+    * 1b1. Tuto shows an error message with the correct usage format.
+      Use case ends.
+* 1c. The student has no performance notes.
+    * 1c1. Tuto shows a message indicating that the student has no performance notes.
+      Use case ends.
+* 1d. Invalid index provided to view a specific performance note.
+    * 1d1. Tuto shows an error message.
+      Use case ends.
+
+**Use case: Edit a performance note**
+
+**MSS**
+
+1. Tutor requests to edit a specific performance note of a student by index.
+2. Tuto updates the performance note with the new content.
+3. Tuto shows a success message.
+
+   Use case ends.
+
+**Extensions**
+
+* 1a. The provided student ID does not match any existing student.
+    * 1a1. Tuto shows an error message.
+      Use case ends.
+* 1b. The command format is invalid.
+    * 1b1. Tuto shows an error message with the correct usage format.
+      Use case ends.
+* 1c. Performance note exceeds character limit.
+    * 1d1. Tuto shows an error message indicating character limit.
+      Use case ends.
+* 1d. Invalid index provided to view a specific performance note.
+    * 1e1. Tuto shows an error message.
+      Use case ends.
+
+**Use case: Delete a performance note**
+
+**MSS**
+
+1. Tutor requests to delete a specific performance note of a student by index.
+2. Tuto deletes the performance note.
+3. Tuto shows a success message.
+
+    Use case ends.
+
+**Extensions**
+
+* 1a. The provided student ID does not match any existing student.
+    * 1a1. Tuto shows an error message.
+      Use case ends.
+* 1b. The command format is invalid.
+    * 1b1. Tuto shows an error message with the correct usage format.
+      Use case ends.
+* 1c. Invalid index provided to view a specific performance note.
+    * 1c1. Tuto shows an error message.
+      Use case ends.
+
+
 ### Non-Functional Requirements
 
 1.  Should work on any _mainstream OS_ as long as it has Java `17` or above installed.
@@ -339,6 +434,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 * **Mainstream OS**: Windows, Linux, Unix, MacOS
 * **Private contact detail**: A contact detail that is not meant to be shared with others
+* **Performance note**: A short textual record of a student's performance on a given date
 
 --------------------------------------------------------------------------------------------------------------------
 
