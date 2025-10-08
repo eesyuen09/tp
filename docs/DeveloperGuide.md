@@ -308,6 +308,15 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | `* * *`   | tutor who teaches multiple classes         | take attendance of each student   | I can track their attendance record                                    |
 | `* * *`   | tutor who teaches multiple classes         | view students' attendance history | I can track if students are consistently attending lessons.            |
 | `* * *`   | tutor who teaches multiple classes         | unmark a student’s attendance     | correct mistakes or changes if attendance was marked wrongly           |
+| `* *`     | new tutor user                                           | view sample data                 | understand how the app looks when populated                      |
+| `* *`     | tutor starting fresh                                     | purge sample/old data            | start fresh with only my real student info                       |                                                                  |
+| `* * *`   | tutor managing students                                  | add students                     | quickly add my students into the address book                    |
+| `* * *`   | tutor managing students                                  | view students                    | see all the students I am teaching and their details at a glance |
+| `* *`     | tutor managing students                                  | delete students                  | remove students who are no longer taking lessons                 |
+| `* * *`   | tutor handling many students across classes and subjects | edit student information         | update my contact list                                           |
+| `* *`     | tutor who prioritise efficiency                          | recover recently deleted contact | fix accidental deletion                                          |
+| `* * *`   | tutor handling many students across classes and subjects | search for a student by name     | quickly locate their information                                 |
+
 
 ### Use cases
 
@@ -741,13 +750,117 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
       Use case ends.
 
+**Use case: Add Student**
+
+**MSS**
+
+1. User adds student.
+2. Tuto adds student to records.
+3. Tuto confirms the student has been added.
+
+   Use case ends.
+
+**Extensions**
+
+* 1a. The command format is invalid
+    * 1a1. Tuto shows an error message with the correct usage format.
+
+      Use case ends.
+
+* 1b. Duplicate student detected.
+    * 1b1. Tuto shows an error message.
+
+      Use case ends.
+
+**Use case: View Students**
+
+**MSS**
+
+1. User retrieves student list.
+2. Tuto displays the list of students.
+
+   Use case ends.
+
+**Extensions**
+
+* 1a. No student exist.
+    * 1a1. Tuto shows a message indicating no students exist.
+
+      Use case ends.
+
+**Use case: Edit Student**
+
+**MSS**
+
+1. User edits student's info.
+2. Tuto updates student record.
+3. Tuto confirms the student's info has been updated.
+
+   Use case ends.
+
+**Extensions**
+
+* 1a. The command format is invalid
+    * 1a1. Tuto shows an error message with the correct usage format.
+
+      Use case ends.
+
+* 1b1. Tuto shows an error message.
+    * 1b1. Tuto shows an error message.
+
+      Use case ends.
+
+**Use case: Delete Student**
+
+**MSS**
+
+1. User deletes student.
+2. Tuto removes student from records.
+3. Tuto confirms the student's has been deleted.
+
+   Use case ends.
+
+**Extensions**
+
+* 1a. The command format is invalid
+    * 1a1. Tuto shows an error message with the correct usage format.
+
+      Use case ends.
+
+**Use case: Search Student**
+
+**MSS**
+
+1. User searches student by name.
+2. Tuto searches records for matching students.
+3. Tuto outputs search results.
+
+   Use case ends.
+
+**Extensions**
+
+* 1a. The command format is invalid
+    * 1a1. Tuto shows an error message with the correct usage format.
+
+      Use case ends.
+
+* 2a. No matching students.
+    * 2a. Tuto shows a message indicating no students found.
+
+      Use case ends.
+
 ### Non-Functional Requirements
 
 1.  Should work on any _mainstream OS_ as long as it has Java `17` or above installed.
-2.  Should be able to hold up to 1000 persons without a noticeable sluggishness in performance for typical usage.
-3.  A user with above average typing speed for regular English text (i.e. not code, not system admin commands) should be able to accomplish most of the tasks faster using commands than using the mouse.
-
-*{More to be added}*
+2.  Should be able to hold up to 1000 students without a noticeable sluggishness in performance for typical usage.
+3.  A user with above average typing speed for regular English text (i.e. not code) should be able to accomplish most of the tasks faster using commands than using the mouse.
+4.  The application should operate entirely offline, without requiring a database server or internet connection.
+5.  The system should operate without requiring additional libraries.
+6.  Data integrity must be maintained, ensuring no loss or duplication of records after operations or application restarts.
+7.  The application should run locally on the user’s device.
+8.  The system should be packaged into a single executable JAR file ≤ 200 MB, requiring no installer.
+9.  User documentation should be clear and concise for beginners.
+10. The application shall follow object-oriented design principles, allowing new commands or modules to be added with minimal changes to existing code.
 
 ### Glossary
 
@@ -757,6 +870,8 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 * **Payment History**: A record that shows a student’s Paid or Unpaid fee status for each month, covering up to the six most recent months before the current month.
 * **Performance note**: A short textual record of a student's performance on a given date
 * **Attendance History**: A record that shows a student's attendance history, covering up to the six most recent months before the current month.
+* **Executable JAR**: A Java Archive file that contains all compiled classes and resources, which can be run directly without installation.
+
 --------------------------------------------------------------------------------------------------------------------
 
 ## **Appendix: Instructions for manual testing**
