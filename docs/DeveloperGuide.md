@@ -287,16 +287,11 @@ _{Explain here how the data archiving feature will be implemented}_
 
 Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have) - `*`
 
-| Priority | As a …​                                    | I want to …​                 | So that I can…​                                                        |
-|----------|--------------------------------------------|------------------------------|------------------------------------------------------------------------|
-| `* * *`  | new user                                   | see usage instructions       | refer to instructions when I forget how to use the App                 |
-| `* * *`  | user                                       | add a new person             |                                                                        |
-| `* * *`  | user                                       | delete a person              | remove entries that I no longer need                                   |
-| `* * *`  | user                                       | find a person by name        | locate details of persons without having to go through the entire list |
-| `* *`    | user                                       | hide private contact details | minimize chance of someone else seeing them by accident                |
-| `*`      | user with many persons in the address book | sort persons by name         | locate a person easily                                                 |
-
-*{More to be added}*
+| Priority | As a …​                                    | I want to …​                      | So that I can…​                                                        |
+|----------|--------------------------------------------|-----------------------------------|------------------------------------------------------------------------|
+| `* * *`  | tutor who teaches multiple classes         | take attendance of each student   | I can track their attendance record                                    |
+| `* * *`  | tutor who teaches multiple classes         | view students' attendance history | I can track if students are consistently attending lessons.            |
+| `* * *`  | tutor who teaches multiple classes         | unmark a student’s attendance     | correct mistakes or changes if attendance was marked wrongly           |
 
 ### Use cases
 
@@ -332,19 +327,19 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **MSS**
 1. User marks attendance of student using student ID and date.
-2. System records the attendance as present for the specified student and date.
-3. System confirms that the attendance has been recorded.
+2. Tuto records the attendance as present for the specified student and date.
+3. Tuto confirms that the attendance has been recorded.
 
    Use case ends.
 
 **Extension**
-* 1a. System detects an error in the entered details (e.g., student does not exist, incomplete or invalid details).
-    * 1a1. System requests for the correct details.
-    * 1a2. User provides the corrected details.
-    * Steps 1a1-1a2 repeat until details are valid. Use case resumes from step 2.
+* 1a. The command format is invalid.
+    * 1a1. Tuto shows an error message with the correct usage format.
+
+  Use case ends.
 
 * 2a. An attendance record for the same student and date already exists with the ***Present*** status.
-    * 2a1. System informs the user that no change is necessary.
+    * 2a1. Tuto informs the user that no change is necessary.
 
   Use case ends.
 
@@ -355,19 +350,19 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **MSS**
 1. User chooses unmark attendance of a student using the student ID and date.
-2. System records the attendance as absent for the specified student and date.
-3. System confirms that the attendance has been updated.
+2. Tuto records the attendance as absent for the specified student and date.
+3. Tuto confirms that the attendance has been updated.
 
    Use case ends.
 
 **Extensions**
-* 1a. System detects an error in the entered details (e.g., student does not exist, incomplete or invalid details).
-    * 1a1. System requests for the correct details.
-    * 1a2. User provides the corrected details.
-    * Steps 1a1–1a2 repeat until details are valid. Use case resumes from step 2.
+* 1a. The command format is invalid. 
+    * 1a1. Tuto shows an error message with the correct usage format. 
+  
+  Use case ends.
 
 * 2a. The attendance record for the same student and date already exists with the ***Absent*** status or no prior record exists.
-    * 2a1. System informs the user that no change is necessary.
+    * 2a1. Tuto informs the user that no change is necessary.
 
   Use case ends.
 
@@ -378,8 +373,8 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **MSS**
 1. User views the attendance history of a student using the student ID.
-2. System retrieves the attendance record for that student.
-3. System displays the attendance history in chronological order.
+2. Tuto retrieves the attendance record for that student.
+3. Tuto displays the attendance history in chronological order.
 
    Use case ends.
 
