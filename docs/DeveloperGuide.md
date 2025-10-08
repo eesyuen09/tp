@@ -274,26 +274,410 @@ _{Explain here how the data archiving feature will be implemented}_
 
 **Target user profile**:
 
+* Freelance Secondary School Tutor in Singapore
 * has a need to manage a significant number of contacts
 * prefer desktop apps over other types
 * can type fast
 * prefers typing to mouse interactions
 * is reasonably comfortable using CLI apps
 
-**Value proposition**: manage contacts faster than a typical mouse/GUI driven app
+**Value proposition**: Helps freelance tutors manage students, parents, schedules, and tuition fees in one place, streamlining lesson planning, tracking progress, and simplifying communication, so they can focus on teaching, not admin.
+
 
 
 ### User stories
 
 Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have) - `*`
 
-| Priority | As a …​                                    | I want to …​                      | So that I can…​                                                        |
-|----------|--------------------------------------------|-----------------------------------|------------------------------------------------------------------------|
-| `* * *`  | tutor who teaches multiple classes         | take attendance of each student   | I can track their attendance record                                    |
-| `* * *`  | tutor who teaches multiple classes         | view students' attendance history | I can track if students are consistently attending lessons.            |
-| `* * *`  | tutor who teaches multiple classes         | unmark a student’s attendance     | correct mistakes or changes if attendance was marked wrongly           |
+| Priority  | As a …​                                    | I want to …​                                             | So that I can…​                                                         |
+|-----------|------------------------------------------- |----------------------------------------------------------|-------------------------------------------------------------------------|
+| `* * * `  | tutor handling lesson fees                 | tag a student as paid for a given month                  | keep track of students who have settled their tuition fees              |
+| `* * *`   | tutor handling lesson fees                 | tag a student as unpaid for a given month                | identify students who still owe lesson fees                             |
+| `* * *`   | tutor handling lesson fees                 | filter students who have paid by month                   | view all students who have completed payment for that month at a glance |
+| `* * *`   | tutor handling lesson fees                 | filter students who have not paid by month               | follow up with students who have outstanding tuition fees               |
+| `* * *`   | tutor handling lesson fees                 | view a student's payment history up to the current month | review their past payment behaviour and identify missed months          |
+| `* * *`   | tutor who teaches multiple classes         | assign a class tag (eg.Sec_3_A_Math) to a student | manage all students of the same subject together |
+| `* * *`   | tutor who teaches multiple classes         | unassign a class tag to a student                 | remove students not in a particular class        |
+| `* * *`   | tutor who teaches multiple classes         | filter students by class tag (eg. Sec_3_A_Math)   | I can focus on a precise teaching group          |
+| `* * *`   | tutor who teaches multiple classes         | list all the class tags                           | I can know what classes I am teaching            |
+| `* * `    | tutor who teaches multiple classes         | delete a class tag                                | keep only the classes I am still teaching        |
+| `* * * `  | tutor     | add a performance note for a student on a given date   | I can record their progress  |
+| `* * * `  | tutor     | view all performance notes for a student               | I can review their progress  |
+| `* * * `  | tutor     | edit a specific performance note for a student         | I can correct or update it   |
+| `* * * `  | tutor     | delete a specific performance note for a student       | I can remove it if needed    |
+| `* * *`   | tutor who teaches multiple classes         | take attendance of each student   | I can track their attendance record                                    |
+| `* * *`   | tutor who teaches multiple classes         | view students' attendance history | I can track if students are consistently attending lessons.            |
+| `* * *`   | tutor who teaches multiple classes         | unmark a student’s attendance     | correct mistakes or changes if attendance was marked wrongly           |
 
 ### Use cases
+
+(For all use cases below, the **System** is the `Tuto` and the **Actor** is the `user`, unless specified otherwise)
+
+**Use case: Tag a student**
+
+**MSS**
+1.  Tutor requests to assign a class tag to a specific student, providing the student's ID and the tag name.
+2.  Tuto assigns the tag to the student.
+3.  Tuto shows a success message confirming the assignment.
+
+    Use case ends.
+
+**Extensions**
+* 1a. The provided student ID does not match any existing student.
+
+    * 1a1. Tuto shows an error message.
+  
+      Use case ends.
+
+* 1b. The given tag name does not exist.
+
+    * 1b1. Tuto shows an error message.
+
+      Use case ends.
+
+* 1c. The command format is invalid.
+
+    * 1c1. Tuto shows an error message with the correct usage format.
+
+      Use case ends.
+
+
+
+**Use case: List all class tags**
+
+**MSS**
+1.  Tutor requests to list all tags.
+2.  Tuto shows a list of all existing tags.
+
+    Use case ends.
+
+**Extensions**
+* 1b.  The command format is invalid.
+
+    * 1a1. Tuto shows an error message with the correct usage format.
+
+      Use case ends.
+
+* 2a. The list of tags is empty.
+
+    * 2a1. Tuto shows a message indicating that no tags have been created.
+
+      Use case ends.
+
+
+**Use case: Create a new tag**
+
+**MSS**
+1.  Tutor requests to create a new tag, providing a valid tag name.
+2.  Tuto creates the new tag 
+3.  Tuto shows a success message.
+
+    Use case ends.
+
+**Extensions**
+* 1a. The provided tag name already exists.
+
+    * 1a1. Tuto shows an error message.
+
+      Use case ends.
+
+* 1b. The provided tag name is invalid.
+
+    * 1b1. Tuto shows an error message
+
+      Use case ends.
+
+* 1c.  The command format is invalid.
+
+    * 1c1. Tuto shows an error message with the correct usage format.
+
+      Use case ends.
+
+
+**Use case: Delete a tag**
+
+**MSS**
+1.  Tutor requests to delete an existing tag, providing its name.
+2.  Tuto deletes the tag 
+3.  Tuto shows a success message.
+
+    Use case ends.
+
+**Extensions**
+* 1a. The specified tag does not exist.
+
+    * 1a1. Tuto shows an error message.
+
+      Use case ends.
+
+* 1b. The specified tag is still assigned to one or more students.
+
+    * 1b1. Tuto shows an error message.
+
+      Use case ends.
+
+* 1c. The command format is invalid.
+
+    * 1c1. Tuto shows an error message with the correct usage format.
+
+      Use case ends.
+
+
+**Use case: Add a performance note**
+
+**MSS**
+1. Tutor requests to add a performance note for a student on a given date.
+2. Tuto adds the performance note for the student.
+3. Tuto shows a success message.
+
+   Use case ends.
+
+**Extensions**
+* 1a. The provided student ID does not match any existing student.
+
+  * 1a1. Tuto shows an error message.
+  
+    Use case ends.
+  
+* 1b. The command format is invalid.
+
+  * 1b1. Tuto shows an error message with the correct usage format.
+  
+    Use case ends.
+  
+* 1c. Performance note exceeds character limit.
+
+  * 1c1. Tuto shows an error message indicating character limit.
+  
+    Use case ends.
+  
+* 1d. A performance note for the student on the given date already exists.
+
+  * 1d1. Tuto shows an error message.
+  
+    Use case ends.
+
+
+
+**Use case: View performance notes of a student**
+
+**MSS**
+1. Tutor requests to view all performance notes of a student.
+2. Tuto displays all performance notes of the student in chronological order, with newest at the top.
+
+   Use case ends.
+
+**Extensions**
+* 1a. The provided student ID does not match any existing student.
+
+    * 1a1. Tuto shows an error message.
+  
+      Use case ends.
+* 1b. The command format is invalid.
+
+    * 1b1. Tuto shows an error message with the correct usage format.
+  
+      Use case ends.
+* 1c. The student has no performance notes.
+
+    * 1c1. Tuto shows a message indicating that the student has no performance notes.
+  
+      Use case ends.
+  
+* 1d. Invalid index provided to view a specific performance note.
+
+    * 1d1. Tuto shows an error message.
+  
+      Use case ends.
+
+
+
+**Use case: Edit a performance note**
+
+**MSS**
+1. Tutor requests to edit a specific performance note of a student by index.
+2. Tuto updates the performance note with the new content.
+3. Tuto shows a success message.
+
+   Use case ends.
+
+**Extensions**
+* 1a. The provided student ID does not match any existing student.
+
+    * 1a1. Tuto shows an error message.
+  
+      Use case ends.
+  
+* 1b. The command format is invalid.
+
+    * 1b1. Tuto shows an error message with the correct usage format.
+  
+      Use case ends.
+  
+* 1c. Performance note exceeds character limit.
+
+    * 1d1. Tuto shows an error message indicating character limit.
+  
+      Use case ends.
+  
+* 1d. Invalid index provided to view a specific performance note.
+
+    * 1e1. Tuto shows an error message.
+  
+      Use case ends.
+
+
+**Use case: Delete a performance note**
+
+**MSS**
+1. Tutor requests to delete a specific performance note of a student by index.
+2. Tuto deletes the performance note.
+3. Tuto shows a success message.
+
+    Use case ends.
+
+**Extensions**
+* 1a. The provided student ID does not match any existing student.
+
+    * 1a1. Tuto shows an error message.
+  
+      Use case ends.
+  
+* 1b. The command format is invalid.
+
+    * 1b1. Tuto shows an error message with the correct usage format.
+  
+      Use case ends.
+  
+* 1c. Invalid index provided to view a specific performance note.
+
+    * 1c1. Tuto shows an error message.
+  
+      Use case ends.
+
+
+**Use case: Mark Student as Paid**
+
+**Guarantees**
+1. A Paid status for the particular month is recorded for the given student only if the inputs are valid and the student is not already marked Paid for that month.
+
+**MSS**
+1. Tutor requests to mark a student as paid for a specific month.
+2. Tuto records the Paid status for that student at that specific month.
+3. Tuto shows an success message.
+
+   Use case ends.
+
+**Extensions**
+* 1a. The provided student ID does not match any existing student.
+    * 1a1. Tuto shows an error message.
+
+      Use case ends.
+- 1b. The command format is invalid.
+    - 1b1. Tuto shows an error message with the correct usage format.
+
+      Use case ends.
+- 2a. The student is already marked *Paid* for that month.
+    - 2a1. Tuto shows an error message.
+
+      Use case ends.
+
+
+**Use case: Mark Student as Unpaid**
+
+**Guarantees**
+1. An Unpaid status for the particular month is recorded for the given student only if the inputs are valid and the student is not already marked Unpaid for that month.
+
+**MSS**
+1. Tutor requests to mark a student as Unpaid for a specific month.
+2. Tuto records the Unpaid status for that student at that specific month.
+3. Tuto shows an success message.
+
+   Use case ends.
+
+**Extensions**
+* 1a. The provided student ID does not match any existing student.
+    * 1a1. Tuto shows an error message.
+
+      Use case ends.
+* 1b. The command format is invalid.
+    * 1b1. Tuto shows an error message with the correct usage format.
+
+      Use case ends.
+* 2a. The student is already marked Unpaid for that month.
+    * 2a1. Tuto shows an error message.
+
+      Use case ends.
+
+
+**Use case: Filter Paid Students by Month**
+
+**Guarantees**
+1. Displays a list of students that are marked as Paid for the given month.
+
+**MSS**
+1. Tutor requests to filter students that are marked as Paid for a specific month.
+2. Tuto displays a list of students that are marked as Paid for that month.
+
+   Use case ends.
+
+**Extensions**
+* 1a. The command format is invalid.
+    * 1a1. Tuto shows an error message with the correct usage format.
+
+      Use case ends.
+  
+* 2a. No Paid students found for that month.
+    * 2a1. Tuto displays a message indicating no records found.
+
+      Use case ends.
+
+
+**Use case: Filter Unpaid Students by Month**
+
+**Guarantees**
+1. Displays a list of students that are marked as Unpaid for the given month.
+
+**MSS**
+1. Tutor requests to filter students that are marked as Unpaid for a specific month.
+2. System displays a list of students that are marked as Unpaid for that month.
+
+   Use case ends.
+
+**Extensions**
+* 1a. The command format is invalid.
+    * 1a1. Tuto shows an error message with the correct usage format.
+
+      Use case ends.
+  
+* 2a. No Unpaid students found for that month.
+    * 2a1. Tuto displays a message indicating no records found.
+
+      Use case ends.
+
+
+**Use case: View Payment History of a Student**
+
+**Guarantees**
+1.	Displays the payment history of the student for up to six months prior to the current month.
+
+**MSS**
+1. Tutor requests to view the payment history of a student.
+2. System retrieves and the student’s month-by-month payment status for the past six months, up to the current month.
+
+   Use case ends.
+
+**Extensions**
+* 1a. The student ID is invalid or missing.
+    * 1a1. Tuto shows an error message.
+
+      Use case ends.
+  
+* 2a. The student has no payment records yet.
+    * 2a1. Tuto displays a message indicating no records found.
+
+      Use case ends.
+
 
 **Use case: Mark attendance for a student**
 
@@ -308,12 +692,13 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 * 1a. The command format is invalid.
     * 1a1. Tuto shows an error message with the correct usage format.
 
-  Use case ends.
+      Use case ends.
 
 * 2a. An attendance record for the same student and date already exists with the ***Present*** status.
     * 2a1. Tuto informs the user that no change is necessary.
 
-  Use case ends.
+      Use case ends.
+
 
 **Use case: Unmark attendance for a student**
 
@@ -325,15 +710,15 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
    Use case ends.
 
 **Extensions**
-* 1a. The command format is invalid. 
-    * 1a1. Tuto shows an error message with the correct usage format. 
-  
-  Use case ends.
+* 1a. The command format is invalid.
+    * 1a1. Tuto shows an error message with the correct usage format.
+
+      Use case ends.
 
 * 2a. The attendance record for the same student and date already exists with the ***Absent*** status or no prior record exists.
     * 2a1. Tuto informs the user that no change is necessary.
 
-  Use case ends.
+      Use case ends.
 
 **Use case: View a student's attendance history**
 
@@ -349,13 +734,12 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
     * 1a1. Tuto shows an error message with the correct usage format.
 
-Use case ends.
-
+      Use case ends.
 
 * 2a. No attendance records exist for the student.
     * 2a1. System informs the user that no records are available.
 
-  Use case ends.
+      Use case ends.
 
 ### Non-Functional Requirements
 
@@ -369,7 +753,10 @@ Use case ends.
 
 * **Mainstream OS**: Windows, Linux, Unix, MacOS
 * **Private contact detail**: A contact detail that is not meant to be shared with others
-* * **Attendance History**: A record that shows a student's attendance history, covering up to the six most recent months before the current month.
+* **Student ID**: A 4-digit unique numeric identifier (0000–9999) assigned to each student when added to the system.
+* **Payment History**: A record that shows a student’s Paid or Unpaid fee status for each month, covering up to the six most recent months before the current month.
+* **Performance note**: A short textual record of a student's performance on a given date
+* **Attendance History**: A record that shows a student's attendance history, covering up to the six most recent months before the current month.
 --------------------------------------------------------------------------------------------------------------------
 
 ## **Appendix: Instructions for manual testing**
