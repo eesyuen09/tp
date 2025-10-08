@@ -684,6 +684,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 * **Private contact detail**: A contact detail that is not meant to be shared with others
 * **Student ID**: A 4-digit unique numeric identifier (0000–9999) assigned to each student when added to the system.
 * **Payment History**: A record that shows a student’s Paid or Unpaid fee status for each month, covering up to the six most recent months before the current month.
+* **Performance note**: A short textual record of a student's performance on a given date
 
 
 
