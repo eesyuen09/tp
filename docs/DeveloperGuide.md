@@ -309,7 +309,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **Extensions**
 
-* 1a. The given student ID is invalid or does not exist.
+* 1a. The provided student ID does not match any existing student.
 
     * 1a1. Tuto shows an error message.
   
