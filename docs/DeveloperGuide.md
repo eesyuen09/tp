@@ -287,43 +287,134 @@ _{Explain here how the data archiving feature will be implemented}_
 
 Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have) - `*`
 
-| Priority | As a …​   | I want to …​                                           | So that I can…​              |
-|----------|-----------|--------------------------------------------------------|------------------------------|
+| Priority | As a …​                                             | I want to …​                                      | So that I can…​                                  |
+|---------|-----------------------------------------------------|---------------------------------------------------|--------------------------------------------------|
+| `* * *` | tutor who teaches multiple classes                  | assign a class tag (eg.Sec_3_A_Math) to a student | manage all students of the same subject together |
+| `* * *` | tutor who teaches multiple classes                  | unassign a class tag to a student                 | remove students not in a particular class        |
+| `* * *` | tutor who teaches multiple classes                  | filter students by class tag (eg. Sec_3_A_Math)   | I can focus on a precise teaching group          |
+| `* * *` | tutor who teaches multiple classes                  | list all the class tags                           | I can know what classes I am teaching            |
+| `* * `  | tutor who teaches multiple classes                  | delete a class tag                                | keep only the classes I am still teaching        |
 | `* * * ` | tutor     | add a performance note for a student on a given date   | I can record their progress  |
 | `* * * ` | tutor     | view all performance notes for a student               | I can review their progress  |
 | `* * * ` | tutor     | edit a specific performance note for a student         | I can correct or update it   |
 | `* * * ` | tutor     | delete a specific performance note for a student       | I can remove it if needed    |
 
-*{More to be added}*
 
 ### Use cases
 
-(For all use cases below, the **System** is the `AddressBook` and the **Actor** is the `user`, unless specified otherwise)
-
-**Use case: Delete a person**
+**Use case: Tag a student**
 
 **MSS**
 
-1.  User requests to list persons
-2.  AddressBook shows a list of persons
-3.  User requests to delete a specific person in the list
-4.  AddressBook deletes the person
+1.  Tutor requests to assign a class tag to a specific student, providing the student's ID and the tag name.
+2.  Tuto assigns the tag to the student.
+3.  Tuto shows a success message confirming the assignment.
 
     Use case ends.
 
 **Extensions**
 
-* 2a. The list is empty.
+* 1a. The provided student ID does not match any existing student.
 
-  Use case ends.
+    * 1a1. Tuto shows an error message.
+  
+      Use case ends.
 
-* 3a. The given index is invalid.
+* 1b. The given tag name does not exist.
 
-    * 3a1. AddressBook shows an error message.
+    * 1b1. Tuto shows an error message.
 
-      Use case resumes at step 2.
+      Use case ends.
 
-*{More to be added}*
+* 1c. The command format is invalid.
+
+    * 1c1. Tuto shows an error message with the correct usage format.
+
+      Use case ends.
+
+**Use case: List all class tags**
+
+**MSS**
+
+1.  Tutor requests to list all tags.
+2.  Tuto shows a list of all existing tags.
+
+    Use case ends.
+
+**Extensions**
+
+* 1b.  The command format is invalid.
+
+    * 1a1. Tuto shows an error message with the correct usage format.
+
+      Use case ends.
+
+* 2a. The list of tags is empty.
+
+    * 2a1. Tuto shows a message indicating that no tags have been created.
+
+      Use case ends.
+
+**Use case: Create a new tag**
+
+**MSS**
+
+1.  Tutor requests to create a new tag, providing a valid tag name.
+2.  Tuto creates the new tag 
+3.  Tuto shows a success message.
+
+    Use case ends.
+
+**Extensions**
+
+* 1a. The provided tag name already exists.
+
+    * 1a1. Tuto shows an error message.
+
+      Use case ends.
+
+* 1b. The provided tag name is invalid.
+
+    * 1b1. Tuto shows an error message
+
+      Use case ends.
+
+* 1c.  The command format is invalid.
+
+    * 1c1. Tuto shows an error message with the correct usage format.
+
+      Use case ends.
+
+**Use case: Delete a tag**
+
+**MSS**
+
+1.  Tutor requests to delete an existing tag, providing its name.
+2.  Tuto deletes the tag 
+3.  Tuto shows a success message.
+
+    Use case ends.
+
+**Extensions**
+
+* 1a. The specified tag does not exist.
+
+    * 1a1. Tuto shows an error message.
+
+      Use case ends.
+
+* 1b. The specified tag is still assigned to one or more students.
+
+    * 1b1. Tuto shows an error message.
+
+      Use case ends.
+
+* 1c. The command format is invalid.
+
+    * 1c1. Tuto shows an error message with the correct usage format.
+
+      Use case ends.
+
 
 **Use case: Add a performance note**
 
@@ -338,16 +429,27 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **Extensions**
 
 * 1a. The provided student ID does not match any existing student.
+
   * 1a1. Tuto shows an error message.
+  
     Use case ends.
+  
 * 1b. The command format is invalid.
+
   * 1b1. Tuto shows an error message with the correct usage format.
+  
     Use case ends.
+  
 * 1c. Performance note exceeds character limit.
+
   * 1c1. Tuto shows an error message indicating character limit.
+  
     Use case ends.
+  
 * 1d. A performance note for the student on the given date already exists.
+
   * 1d1. Tuto shows an error message.
+  
     Use case ends.
 
 **Use case: View performance notes of a student**
@@ -362,16 +464,25 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **Extensions**
 
 * 1a. The provided student ID does not match any existing student.
+
     * 1a1. Tuto shows an error message.
+  
       Use case ends.
 * 1b. The command format is invalid.
+
     * 1b1. Tuto shows an error message with the correct usage format.
+  
       Use case ends.
 * 1c. The student has no performance notes.
+
     * 1c1. Tuto shows a message indicating that the student has no performance notes.
+  
       Use case ends.
+  
 * 1d. Invalid index provided to view a specific performance note.
+
     * 1d1. Tuto shows an error message.
+  
       Use case ends.
 
 **Use case: Edit a performance note**
@@ -387,16 +498,27 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **Extensions**
 
 * 1a. The provided student ID does not match any existing student.
+
     * 1a1. Tuto shows an error message.
+  
       Use case ends.
+  
 * 1b. The command format is invalid.
+
     * 1b1. Tuto shows an error message with the correct usage format.
+  
       Use case ends.
+  
 * 1c. Performance note exceeds character limit.
+
     * 1d1. Tuto shows an error message indicating character limit.
+  
       Use case ends.
+  
 * 1d. Invalid index provided to view a specific performance note.
+
     * 1e1. Tuto shows an error message.
+  
       Use case ends.
 
 **Use case: Delete a performance note**
@@ -412,13 +534,21 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **Extensions**
 
 * 1a. The provided student ID does not match any existing student.
+
     * 1a1. Tuto shows an error message.
+  
       Use case ends.
+  
 * 1b. The command format is invalid.
+
     * 1b1. Tuto shows an error message with the correct usage format.
+  
       Use case ends.
+  
 * 1c. Invalid index provided to view a specific performance note.
+
     * 1c1. Tuto shows an error message.
+  
       Use case ends.
 
 
