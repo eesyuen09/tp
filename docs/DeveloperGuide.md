@@ -315,7 +315,6 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **Use case: Tag a student**
 
 **MSS**
-
 1.  Tutor requests to assign a class tag to a specific student, providing the student's ID and the tag name.
 2.  Tuto assigns the tag to the student.
 3.  Tuto shows a success message confirming the assignment.
@@ -323,7 +322,6 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
     Use case ends.
 
 **Extensions**
-
 * 1a. The provided student ID does not match any existing student.
 
     * 1a1. Tuto shows an error message.
@@ -342,17 +340,16 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
       Use case ends.
 
+
 **Use case: List all class tags**
 
 **MSS**
-
 1.  Tutor requests to list all tags.
 2.  Tuto shows a list of all existing tags.
 
     Use case ends.
 
 **Extensions**
-
 * 1b.  The command format is invalid.
 
     * 1a1. Tuto shows an error message with the correct usage format.
@@ -365,10 +362,10 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
       Use case ends.
 
+
 **Use case: Create a new tag**
 
 **MSS**
-
 1.  Tutor requests to create a new tag, providing a valid tag name.
 2.  Tuto creates the new tag 
 3.  Tuto shows a success message.
@@ -376,7 +373,6 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
     Use case ends.
 
 **Extensions**
-
 * 1a. The provided tag name already exists.
 
     * 1a1. Tuto shows an error message.
@@ -395,10 +391,10 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
       Use case ends.
 
+
 **Use case: Delete a tag**
 
 **MSS**
-
 1.  Tutor requests to delete an existing tag, providing its name.
 2.  Tuto deletes the tag 
 3.  Tuto shows a success message.
@@ -406,7 +402,6 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
     Use case ends.
 
 **Extensions**
-
 * 1a. The specified tag does not exist.
 
     * 1a1. Tuto shows an error message.
@@ -429,7 +424,6 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **Use case: Add a performance note**
 
 **MSS**
-
 1. Tutor requests to add a performance note for a student on a given date.
 2. Tuto adds the performance note for the student.
 3. Tuto shows a success message.
@@ -437,7 +431,6 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
    Use case ends.
 
 **Extensions**
-
 * 1a. The provided student ID does not match any existing student.
 
   * 1a1. Tuto shows an error message.
@@ -462,17 +455,16 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
   
     Use case ends.
 
+
 **Use case: View performance notes of a student**
 
 **MSS**
-
 1. Tutor requests to view all performance notes of a student.
 2. Tuto displays all performance notes of the student in chronological order, with newest at the top.
 
    Use case ends.
 
 **Extensions**
-
 * 1a. The provided student ID does not match any existing student.
 
     * 1a1. Tuto shows an error message.
@@ -495,10 +487,10 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
   
       Use case ends.
 
+
 **Use case: Edit a performance note**
 
 **MSS**
-
 1. Tutor requests to edit a specific performance note of a student by index.
 2. Tuto updates the performance note with the new content.
 3. Tuto shows a success message.
@@ -506,7 +498,6 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
    Use case ends.
 
 **Extensions**
-
 * 1a. The provided student ID does not match any existing student.
 
     * 1a1. Tuto shows an error message.
@@ -531,10 +522,10 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
   
       Use case ends.
 
+
 **Use case: Delete a performance note**
 
 **MSS**
-
 1. Tutor requests to delete a specific performance note of a student by index.
 2. Tuto deletes the performance note.
 3. Tuto shows a success message.
@@ -542,7 +533,6 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
     Use case ends.
 
 **Extensions**
-
 * 1a. The provided student ID does not match any existing student.
 
     * 1a1. Tuto shows an error message.
@@ -574,7 +564,6 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
    Use case ends.
 
 **Extensions**
-
 * 1a. The provided student ID does not match any existing student.
     * 1a1. Tuto shows an error message.
 
@@ -587,6 +576,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
     - 2a1. Tuto shows an error message.
 
       Use case ends.
+
 
 **Use case: Mark Student as Unpaid**
 
@@ -601,7 +591,6 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
    Use case ends.
 
 **Extensions**
-
 * 1a. The provided student ID does not match any existing student.
     * 1a1. Tuto shows an error message.
 
@@ -615,6 +604,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
       Use case ends.
 
+
 **Use case: Filter Paid Students by Month**
 
 **Guarantees**
@@ -627,7 +617,6 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
    Use case ends.
 
 **Extensions**
-
 * 1a. The command format is invalid.
     * 1a1. Tuto shows an error message with the correct usage format.
 
@@ -636,6 +625,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
     * 2a1. Tuto displays a message indicating no records found.
 
       Use case ends.
+
 
 **Use case: Filter Unpaid Students by Month**
 
@@ -649,7 +639,6 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
    Use case ends.
 
 **Extensions**
-
 * 1a. The command format is invalid.
     * 1a1. Tuto shows an error message with the correct usage format.
 
@@ -658,6 +647,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
     * 2a1. Tuto displays a message indicating no records found.
 
       Use case ends.
+
 
 **Use case: View Payment History of a Student**
 
@@ -671,7 +661,6 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
    Use case ends.
 
 **Extensions**
-
 * 1a. The student ID is invalid or missing.
     * 1a1. Tuto shows an error message.
 
