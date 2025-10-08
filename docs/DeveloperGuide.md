@@ -289,10 +289,10 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 | Priority | As a …​   | I want to …​                                           | So that I can…​              |
 |----------|-----------|--------------------------------------------------------|------------------------------|
-| `* *  `  | tutor     | add a performance note for a student on a given date   | I can record their progress  |
-| `* *  `  | tutor     | view all performance notes for a student               | I can review their progress  |
-| `* *  `  | tutor     | edit a specific performance note for a student         | I can correct or update it   |
-| `* *  `  | tutor     | delete a specific performance note for a student       | I can remove it if needed    |
+| `* * * ` | tutor     | add a performance note for a student on a given date   | I can record their progress  |
+| `* * * ` | tutor     | view all performance notes for a student               | I can review their progress  |
+| `* * * ` | tutor     | edit a specific performance note for a student         | I can correct or update it   |
+| `* * * ` | tutor     | delete a specific performance note for a student       | I can remove it if needed    |
 
 *{More to be added}*
 
@@ -337,23 +337,17 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **Extensions**
 
-* 1a. The student does not exist in the address book.
-  * 1a1. AddressBook shows an error message.
+* 1a. The provided student ID does not match any existing student.
+  * 1a1. Tuto shows an error message.
     Use case ends.
-* 1b. Missing required parameters (s/STUDENT_ID, d/DATE, n/PERFORMANCE_NOTE).
-  * 1b1. AddressBook shows an error message.
+* 1b. The command format is invalid.
+  * 1b1. Tuto shows an error message with the correct usage format.
     Use case ends.
-* 1c. The student ID is in an invalid format.
-  * 1c1. AddressBook shows an error message.
+* 1c. Performance note exceeds character limit.
+  * 1c1. Tuto shows an error message indicating character limit.
     Use case ends.
-* 1d. The date is in invalid format.
-  * 1d1. AddressBook shows an error message.
-    Use case ends.
-* 1e. Performance note exceeds character limit.
-  * 1e1. AddressBook shows an error message.
-    Use case ends.
-* 1f. A performance note for the student on the given date already exists.
-  * 1f1. AddressBook shows an error message.
+* 1d. A performance note for the student on the given date already exists.
+  * 1d1. Tuto shows an error message.
     Use case ends.
 
 **Use case: View performance notes of a student**
@@ -367,20 +361,17 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **Extensions**
 
-* 1a. The student does not exist in the address book.
-    * 1a1. AddressBook shows an error message.
+* 1a. The provided student ID does not match any existing student.
+    * 1a1. Tuto shows an error message.
       Use case ends.
-* 1b. Missing required parameter (s/STUDENT_ID).
-    * 1b1. AddressBook shows an error message.
+* 1b. The command format is invalid.
+    * 1b1. Tuto shows an error message with the correct usage format.
       Use case ends.
-* 1c. The student ID is in an invalid format.
-    * 1c1. AddressBook shows an error message.
+* 1c. The student has no performance notes.
+    * 1c1. Tuto shows a message indicating that the student has no performance notes.
       Use case ends.
-* 1d. The student has no performance notes.
-    * 1d1. AddressBook shows a message indicating that the student has no performance notes.
-      Use case ends.
-* 1e. Invalid index provided to view a specific performance note.
-    * 1e1. AddressBook shows an error message.
+* 1d. Invalid index provided to view a specific performance note.
+    * 1d1. Tuto shows an error message.
       Use case ends.
 
 **Use case: Edit a performance note**
@@ -395,20 +386,17 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **Extensions**
 
-* 1a. The student does not exist in the address book.
-    * 1a1. AddressBook shows an error message.
+* 1a. The provided student ID does not match any existing student.
+    * 1a1. Tuto shows an error message.
       Use case ends.
-* 1b. Missing required parameters (s/STUDENT_ID, i/INDEX, n/PERFORMANCE_NOTE).
-    * 1b1. AddressBook shows an error message.
+* 1b. The command format is invalid.
+    * 1b1. Tuto shows an error message with the correct usage format.
       Use case ends.
-* 1c. The student ID is in an invalid format.
-    * 1c1. AddressBook shows an error message.
+* 1c. Performance note exceeds character limit.
+    * 1d1. Tuto shows an error message indicating character limit.
       Use case ends.
-* 1d. Performance note exceeds character limit.
-    * 1d1. AddressBook shows an error message.
-      Use case ends.
-* 1e. Invalid index provided to view a specific performance note.
-    * 1e1. AddressBook shows an error message.
+* 1d. Invalid index provided to view a specific performance note.
+    * 1e1. Tuto shows an error message.
       Use case ends.
 
 **Use case: Delete a performance note**
@@ -423,17 +411,14 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **Extensions**
 
-* 1a. The student does not exist in the address book.
-    * 1a1. AddressBook shows an error message.
+* 1a. The provided student ID does not match any existing student.
+    * 1a1. Tuto shows an error message.
       Use case ends.
-* 1b. Missing required parameters (s/STUDENT_ID, i/INDEX).
-    * 1b1. AddressBook shows an error message.
+* 1b. The command format is invalid.
+    * 1b1. Tuto shows an error message with the correct usage format.
       Use case ends.
-* 1c. The student ID is in an invalid format.
-    * 1c1. AddressBook shows an error message.
-      Use case ends.
-* * 1e. Invalid index provided to view a specific performance note.
-    * 1e1. AddressBook shows an error message.
+* 1c. Invalid index provided to view a specific performance note.
+    * 1c1. Tuto shows an error message.
       Use case ends.
 
 
