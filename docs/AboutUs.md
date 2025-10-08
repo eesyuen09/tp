@@ -11,51 +11,52 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 
 ## Project team
 
-### John Doe
+### Roger Lim Bo Zu
 
-<img src="images/johndoe.png" width="200px">
+<img src="images/meowzz28.png" width="200px">
 
-[[homepage](http://www.comp.nus.edu.sg/~damithch)]
-[[github](https://github.com/johndoe)]
-[[portfolio](team/johndoe.md)]
-
-* Role: Project Advisor
-
-### Jane Doe
-
-<img src="images/johndoe.png" width="200px">
-
-[[github](http://github.com/johndoe)]
+[[github](http://github.com/meowzz28)]
 [[portfolio](team/johndoe.md)]
 
 * Role: Team Lead
-* Responsibilities: UI
+* Responsibilities: Integration
+* 
+### Chong Yi Jie
 
-### Johnny Doe
+<img src="images/yijiechong13.png" width="200px">
 
-<img src="images/johndoe.png" width="200px">
-
-[[github](http://github.com/johndoe)] [[portfolio](team/johndoe.md)]
-
-* Role: Developer
-* Responsibilities: Data
-
-### Jean Doe
-
-<img src="images/johndoe.png" width="200px">
-
-[[github](http://github.com/johndoe)]
+[[github](http://github.com/yijiechong13)]
 [[portfolio](team/johndoe.md)]
 
 * Role: Developer
-* Responsibilities: Dev Ops + Threading
+* Responsibilities: Documentation, deliverables and deadlines
 
-### James Doe
+### Ee Syuen
 
-<img src="images/johndoe.png" width="200px">
+<img src="images/eesyuen09.png" width="200px">
 
-[[github](http://github.com/johndoe)]
+[[github](http://github.com/eesyuen09)] 
 [[portfolio](team/johndoe.md)]
 
 * Role: Developer
-* Responsibilities: UI
+* Responsibilities: Documentation and code quality
+
+### Tey Yee Siang
+
+<img src="images/ystey0808.png" width="200px">
+
+[[github](http://github.com/ystey0808)]
+[[portfolio](team/johndoe.md)]
+
+* Role: Developer
+* Responsibilities: Testing, scheduling and tracking
+
+### Denise Goh
+
+<img src="images/deniseegohh.png" width="200px">
+
+[[github](https://github.com/deniseegohh)]
+[[portfolio](team/denisegoh.md)]
+
+* Role: Developer
+* Responsibilities: Code Quality

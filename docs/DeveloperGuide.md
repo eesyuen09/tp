@@ -296,11 +296,270 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | `* * *`  | tutor handling lesson fees                 | filter students who have paid by month                   | view all students who have completed payment for that month at a glance |
 | `* * *`  | tutor handling lesson fees                 | filter students who have not paid by month               | follow up with students who have outstanding tuition fees               |
 | `* * *`  | tutor handling lesson fees                 | view a student's payment history up to the current month | review their past payment behaviour and identify missed months          |
+| `* * *` | tutor who teaches multiple classes                  | assign a class tag (eg.Sec_3_A_Math) to a student | manage all students of the same subject together |
+| `* * *` | tutor who teaches multiple classes                  | unassign a class tag to a student                 | remove students not in a particular class        |
+| `* * *` | tutor who teaches multiple classes                  | filter students by class tag (eg. Sec_3_A_Math)   | I can focus on a precise teaching group          |
+| `* * *` | tutor who teaches multiple classes                  | list all the class tags                           | I can know what classes I am teaching            |
+| `* * `  | tutor who teaches multiple classes                  | delete a class tag                                | keep only the classes I am still teaching        |
+| `* * * ` | tutor     | add a performance note for a student on a given date   | I can record their progress  |
+| `* * * ` | tutor     | view all performance notes for a student               | I can review their progress  |
+| `* * * ` | tutor     | edit a specific performance note for a student         | I can correct or update it   |
+| `* * * ` | tutor     | delete a specific performance note for a student       | I can remove it if needed    |
 
+*{More to be added}*
 
 ### Use cases
 
 (For all use cases below, the **System** is the `Tuto` and the **Actor** is the `user`, unless specified otherwise)
+
+**Use case: Tag a student**
+
+**MSS**
+
+1.  Tutor requests to assign a class tag to a specific student, providing the student's ID and the tag name.
+2.  Tuto assigns the tag to the student.
+3.  Tuto shows a success message confirming the assignment.
+
+    Use case ends.
+
+**Extensions**
+
+* 1a. The provided student ID does not match any existing student.
+
+    * 1a1. Tuto shows an error message.
+  
+      Use case ends.
+
+* 1b. The given tag name does not exist.
+
+    * 1b1. Tuto shows an error message.
+
+      Use case ends.
+
+* 1c. The command format is invalid.
+
+    * 1c1. Tuto shows an error message with the correct usage format.
+
+      Use case ends.
+
+**Use case: List all class tags**
+
+**MSS**
+
+1.  Tutor requests to list all tags.
+2.  Tuto shows a list of all existing tags.
+
+    Use case ends.
+
+**Extensions**
+
+* 1b.  The command format is invalid.
+
+    * 1a1. Tuto shows an error message with the correct usage format.
+
+      Use case ends.
+
+* 2a. The list of tags is empty.
+
+    * 2a1. Tuto shows a message indicating that no tags have been created.
+
+      Use case ends.
+
+**Use case: Create a new tag**
+
+**MSS**
+
+1.  Tutor requests to create a new tag, providing a valid tag name.
+2.  Tuto creates the new tag 
+3.  Tuto shows a success message.
+
+    Use case ends.
+
+**Extensions**
+
+* 1a. The provided tag name already exists.
+
+    * 1a1. Tuto shows an error message.
+
+      Use case ends.
+
+* 1b. The provided tag name is invalid.
+
+    * 1b1. Tuto shows an error message
+
+      Use case ends.
+
+* 1c.  The command format is invalid.
+
+    * 1c1. Tuto shows an error message with the correct usage format.
+
+      Use case ends.
+
+**Use case: Delete a tag**
+
+**MSS**
+
+1.  Tutor requests to delete an existing tag, providing its name.
+2.  Tuto deletes the tag 
+3.  Tuto shows a success message.
+
+    Use case ends.
+
+**Extensions**
+
+* 1a. The specified tag does not exist.
+
+    * 1a1. Tuto shows an error message.
+
+      Use case ends.
+
+* 1b. The specified tag is still assigned to one or more students.
+
+    * 1b1. Tuto shows an error message.
+
+      Use case ends.
+
+* 1c. The command format is invalid.
+
+    * 1c1. Tuto shows an error message with the correct usage format.
+
+      Use case ends.
+
+
+**Use case: Add a performance note**
+
+**MSS**
+
+1. Tutor requests to add a performance note for a student on a given date.
+2. Tuto adds the performance note for the student.
+3. Tuto shows a success message.
+
+   Use case ends.
+
+**Extensions**
+
+* 1a. The provided student ID does not match any existing student.
+
+  * 1a1. Tuto shows an error message.
+  
+    Use case ends.
+  
+* 1b. The command format is invalid.
+
+  * 1b1. Tuto shows an error message with the correct usage format.
+  
+    Use case ends.
+  
+* 1c. Performance note exceeds character limit.
+
+  * 1c1. Tuto shows an error message indicating character limit.
+  
+    Use case ends.
+  
+* 1d. A performance note for the student on the given date already exists.
+
+  * 1d1. Tuto shows an error message.
+  
+    Use case ends.
+
+**Use case: View performance notes of a student**
+
+**MSS**
+
+1. Tutor requests to view all performance notes of a student.
+2. Tuto displays all performance notes of the student in chronological order, with newest at the top.
+
+   Use case ends.
+
+**Extensions**
+
+* 1a. The provided student ID does not match any existing student.
+
+    * 1a1. Tuto shows an error message.
+  
+      Use case ends.
+* 1b. The command format is invalid.
+
+    * 1b1. Tuto shows an error message with the correct usage format.
+  
+      Use case ends.
+* 1c. The student has no performance notes.
+
+    * 1c1. Tuto shows a message indicating that the student has no performance notes.
+  
+      Use case ends.
+  
+* 1d. Invalid index provided to view a specific performance note.
+
+    * 1d1. Tuto shows an error message.
+  
+      Use case ends.
+
+**Use case: Edit a performance note**
+
+**MSS**
+
+1. Tutor requests to edit a specific performance note of a student by index.
+2. Tuto updates the performance note with the new content.
+3. Tuto shows a success message.
+
+   Use case ends.
+
+**Extensions**
+
+* 1a. The provided student ID does not match any existing student.
+
+    * 1a1. Tuto shows an error message.
+  
+      Use case ends.
+  
+* 1b. The command format is invalid.
+
+    * 1b1. Tuto shows an error message with the correct usage format.
+  
+      Use case ends.
+  
+* 1c. Performance note exceeds character limit.
+
+    * 1d1. Tuto shows an error message indicating character limit.
+  
+      Use case ends.
+  
+* 1d. Invalid index provided to view a specific performance note.
+
+    * 1e1. Tuto shows an error message.
+  
+      Use case ends.
+
+**Use case: Delete a performance note**
+
+**MSS**
+
+1. Tutor requests to delete a specific performance note of a student by index.
+2. Tuto deletes the performance note.
+3. Tuto shows a success message.
+
+    Use case ends.
+
+**Extensions**
+
+* 1a. The provided student ID does not match any existing student.
+
+    * 1a1. Tuto shows an error message.
+  
+      Use case ends.
+  
+* 1b. The command format is invalid.
+
+    * 1b1. Tuto shows an error message with the correct usage format.
+  
+      Use case ends.
+  
+* 1c. Invalid index provided to view a specific performance note.
+
+    * 1c1. Tuto shows an error message.
+  
+      Use case ends.
 
 **Use case: Mark Student as Paid**
 
@@ -312,17 +571,17 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 2. Tuto records the Paid status for that student at that specific month.
 3. Tuto shows an success message.
 
-    Use case ends.
+   Use case ends.
 
 **Extensions**
 
 * 1a. The provided student ID does not match any existing student.
     * 1a1. Tuto shows an error message.
-    
-        Use case ends.
+
+      Use case ends.
 - 1b. The command format is invalid.
     - 1b1. Tuto shows an error message with the correct usage format.
-  
+
       Use case ends.
 - 2a. The student is already marked *Paid* for that month.
     - 2a1. Tuto shows an error message.
@@ -339,7 +598,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 2. Tuto records the Unpaid status for that student at that specific month.
 3. Tuto shows an success message.
 
-    Use case ends.
+   Use case ends.
 
 **Extensions**
 
@@ -364,8 +623,8 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **MSS**
 1. Tutor requests to filter students that are marked as Paid for a specific month.
 2. Tuto displays a list of students that are marked as Paid for that month.
-   
-    Use case ends.
+
+   Use case ends.
 
 **Extensions**
 
@@ -387,7 +646,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 1. Tutor requests to filter students that are marked as Unpaid for a specific month.
 2. System displays a list of students that are marked as Unpaid for that month.
 
-    Use case ends.
+   Use case ends.
 
 **Extensions**
 
@@ -409,7 +668,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 1. Tutor requests to view the payment history of a student.
 2. System retrieves and the student’s month-by-month payment status for the past six months, up to the current month.
 
-    Use case ends.
+   Use case ends.
 
 **Extensions**
 
@@ -425,7 +684,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 ### Non-Functional Requirements
 
 1.  Should work on any _mainstream OS_ as long as it has Java `17` or above installed.
-2.  Should be able to hold up to 9999 persons without a noticeable sluggishness in performance for typical usage.
+2.  Should be able to hold up to 1000 persons without a noticeable sluggishness in performance for typical usage.
 3.  A user with above average typing speed for regular English text (i.e. not code, not system admin commands) should be able to accomplish most of the tasks faster using commands than using the mouse.
 
 *{More to be added}*

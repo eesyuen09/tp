@@ -4,7 +4,7 @@
   "titleSuffix": "Tuto",
   "faviconPath": "images/SeEduLogo.png",
   "style": {
-    "codeTheme": "light"
+    "codeTheme": "dark"
   },
   "ignore": [
     "_markbind/layouts/*",
