@@ -287,49 +287,138 @@ _{Explain here how the data archiving feature will be implemented}_
 
 Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have) - `*`
 
-| Priority | As a …​                                                  | I want to …​                     | So that I can…​                                                  |
-|----------|----------------------------------------------------------|----------------------------------|------------------------------------------------------------------|
-| `* *`    | new tutor user                                           | view sample data                 | understand how the app looks when populated                      |
-| `* *`    | tutor starting fresh                                     | purge sample/old data            | start fresh with only my real student info                       |                                                                  |
-| `* * *`  | tutor managing students                                  | add students                     | quickly add my students into the address book                    |
-| `* * *`  | tutor managing students                                  | view students                    | see all the students I am teaching and their details at a glance |
-| `* * *`  | tutor managing students                                  | delete students                  | remove students who are no longer taking lessons                 |
-| `* * *`  | tutor handling many students across classes and subjects | edit student information         | update my contact list                                           |
-| `* *`    | tutor who prioritise efficiency                          | recover recently deleted contact | fix accidental deletion                                          |
-| `* * *`  | tutor handling many students across classes and subjects | search for a student by name     | quickly locate their information                                 |
+| Priority  | As a …​                                                  | I want to …​                     | So that I can…​                                                  |
+|-----------|----------------------------------------------------------|----------------------------------|------------------------------------------------------------------|
+| `* *`     | new tutor user                                           | view sample data                 | understand how the app looks when populated                      |
+| `* *`     | tutor starting fresh                                     | purge sample/old data            | start fresh with only my real student info                       |                                                                  |
+| `* * *`   | tutor managing students                                  | add students                     | quickly add my students into the address book                    |
+| `* * *`   | tutor managing students                                  | view students                    | see all the students I am teaching and their details at a glance |
+| `* *`     | tutor managing students                                  | delete students                  | remove students who are no longer taking lessons                 |
+| `* * *`   | tutor handling many students across classes and subjects | edit student information         | update my contact list                                           |
+| `* *`     | tutor who prioritise efficiency                          | recover recently deleted contact | fix accidental deletion                                          |
+| `* * *`   | tutor handling many students across classes and subjects | search for a student by name     | quickly locate their information                                 |
 
-
-
-*{More to be added}*
 
 ### Use cases
 
-(For all use cases below, the **System** is the `AddressBook` and the **Actor** is the `user`, unless specified otherwise)
+(For all use cases below, the **System** is the `Tuto` and the **Actor** is the `user`, unless specified otherwise)
 
-**Use case: Delete a person**
+**Use case: UC-STU-01 – Add Student**
+
+**Preconditions** 
+1.  User is logged into the system.
 
 **MSS**
 
-1.  User requests to list persons
-2.  AddressBook shows a list of persons
-3.  User requests to delete a specific person in the list
-4.  AddressBook deletes the person
+1. User add student. 
+2. Tuto adds student to records.
+3. Tuto confirms the student has been added.
 
     Use case ends.
 
 **Extensions**
 
-* 2a. The list is empty.
+* 1a. The command format is invalid
+    * 1a1. Tuto shows an error message with the correct usage format.
 
-  Use case ends.
+        Use case ends.
 
-* 3a. The given index is invalid.
+* 1b. Duplicate student detected.
+    * 1b1. Tuto shows an error message.
+      
+       Use case ends.
 
-    * 3a1. AddressBook shows an error message.
+**Use case: UC-STU-02 – View Students**
 
-      Use case resumes at step 2.
+**Preconditions**
+1.  User is logged into the system.
 
-*{More to be added}*
+**MSS**
+
+1. User retrieves student list.
+2. Tuto displays the list of students.
+
+   Use case ends.
+
+**Extensions**
+
+* 1a. No students exist.
+    * 1a1. Tuto outputs “No students found.”
+
+       Use case ends. 
+
+**Use case: UC-STU-03 – Edit Student**
+
+**Preconditions**
+1.  Tutor is logged into the system.
+2.  Student exists in the system.
+
+**MSS**
+
+1. User edit student's info.
+2. Tuto updates student record.
+3. Tuto confirms the student's has been updated.
+
+   Use case ends.
+
+**Extensions**
+
+* 1a. The command format is invalid
+    * 1a1. Tuto shows an error message with the correct usage format.
+
+      Use case ends.
+
+* 1b1. Tuto shows an error message.
+    * 1b1. Tuto shows an error message.
+       
+       Use case ends.
+
+**Use case: UC-STU-04 – Delete Student**
+
+**Preconditions**
+1. Tutor is logged into the system.
+2. Student exists in the system.
+
+**MSS**
+
+1. User delete student's.
+2. Tuto removes student from records.
+3. Tuto confirms the student's has been deleted.
+
+   Use case ends.
+
+**Extensions**
+
+* 1a. The command format is invalid
+    * 1a1. Tuto shows an error message with the correct usage format.
+
+      Use case ends.
+
+**Use case: UC-STU-05 – Search Student**
+
+**Preconditions**
+1. Tutor is logged into the system.
+2. Student exists in the system.
+
+**MSS**
+
+1. User search student by name.
+2. Tuto searches records for matching students.
+3. Tuto outputs search results.
+
+   Use case ends.
+
+**Extensions**
+
+* 1a. The command format is invalid
+    * 1a1. Tuto shows an error message with the correct usage format.
+
+      Use case ends.
+
+* 2a. No matching students.
+    * 2a. Tuto outputs "No matching students found."
+
+      Use case ends.
 
 ### Non-Functional Requirements
 
