@@ -320,12 +320,12 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
     * 1a1. Tuto shows an error message.
     
         Use case ends.
-- **1b.** The command format is invalid.
-    - **1b1.** Tuto shows an error message with the correct usage format.
+- 1b. The command format is invalid.
+    - 1b1. Tuto shows an error message with the correct usage format.
   
       Use case ends.
-- **2a.** The student is already marked *Paid* for that month.
-    - **2a1.** Tuto shows an error message.
+- 2a. The student is already marked *Paid* for that month.
+    - 2a1. Tuto shows an error message.
 
       Use case ends.
 
