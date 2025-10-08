@@ -317,7 +317,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 * 1b. The given tag name does not exist.
 
-    * 1b1. Tuto shows an error message (e.g., "Tag 'Sec4_Physics' does not exist. Please add it first.").
+    * 1b1. Tuto shows an error message.
 
       Use case ends.
 
@@ -327,6 +327,86 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
       Use case ends.
 
+**Use case: List all class tags**
+
+**MSS**
+
+1.  Tutor requests to list all tags.
+2.  Tuto shows a list of all existing tags.
+
+    Use case ends.
+
+**Extensions**
+
+* 1b.  The command format is invalid.
+
+    * 1a1. Tuto shows an error message with the correct usage format.
+
+      Use case ends.
+
+* 2a. The list of tags is empty.
+
+    * 2a1. Tuto shows a message indicating that no tags have been created.
+
+      Use case ends.
+
+**Use case: Create a new tag**
+
+**MSS**
+
+1.  Tutor requests to create a new tag, providing a valid tag name.
+2.  Tuto creates the new tag and shows a success message.
+
+    Use case ends.
+
+**Extensions**
+
+* 1a. The provided tag name already exists.
+
+    * 1a1. Tuto shows an error message.
+
+      Use case ends.
+
+* 1b. The provided tag name is invalid (e.g., contains special characters, is too long, or is empty).
+
+    * 1b1. Tuto shows an error message
+
+      Use case ends.
+
+* 1c.  The command format is invalid.
+
+    * 1c1. Tuto shows an error message with the correct usage format.
+
+      Use case ends.
+
+**Use case: Delete a tag**
+
+**MSS**
+
+1.  Tutor requests to delete an existing tag, providing its name.
+2.  Tuto deletes the tag and shows a success message.
+
+    Use case ends.
+
+**Extensions**
+
+* 1a. The specified tag does not exist.
+
+    * 1a1. Tuto shows an error message.
+
+      Use case ends.
+
+* 1b. The specified tag is still assigned to one or more students.
+
+    * 1b1. Tuto shows an error message.
+
+      Use case ends.
+
+* 1c. The command format is invalid.
+
+    * 1c1. Tuto shows an error message with the correct usage format.
+
+      Use case ends.
 
 
 ### Non-Functional Requirements
