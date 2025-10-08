@@ -302,10 +302,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 (For all use cases below, the **System** is the `Tuto` and the **Actor** is the `user`, unless specified otherwise)
 
-**Use case: UC-FEE-01: Mark Student as Paid**
-
-**Preconditions**
-1. The student exists in the system.
+**Use case: Mark Student as Paid**
 
 **Guarantees**
 1. A Paid status for the particular month is recorded for the given student only if the inputs are valid and the student is not already marked Paid for that month.
@@ -332,10 +329,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
       Use case ends.
 
-**Use case: UC-FEE-02: Mark Student as Unpaid**
-
-**Preconditions**
-1. The student exists in the system.
+**Use case: Mark Student as Unpaid**
 
 **Guarantees**
 1. An Unpaid status for the particular month is recorded for the given student only if the inputs are valid and the student is not already marked Unpaid for that month.
@@ -362,7 +356,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
       Use case ends.
 
-**Use case: UC-FEE-03: Filter Paid Students by Month**
+**Use case: Filter Paid Students by Month**
 
 **Guarantees**
 1. Displays a list of students that are marked as Paid for the given month.
@@ -384,7 +378,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
       Use case ends.
 
-**Use case: UC-FEE-04: Filter Unpaid Students by Month**
+**Use case: Filter Unpaid Students by Month**
 
 **Guarantees**
 1. Displays a list of students that are marked as Unpaid for the given month.
@@ -406,10 +400,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
       Use case ends.
 
-**Use case: UC-FEE-05: View Payment History of a Student**
-
-**Preconditions**
-1. The student exists in the system.
+**Use case: View Payment History of a Student**
 
 **Guarantees**
 1.	Displays the payment history of the student for up to six months prior to the current month.
