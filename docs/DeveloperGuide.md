@@ -274,63 +274,167 @@ _{Explain here how the data archiving feature will be implemented}_
 
 **Target user profile**:
 
+* Freelance Secondary School Tutor in Singapore
 * has a need to manage a significant number of contacts
 * prefer desktop apps over other types
 * can type fast
 * prefers typing to mouse interactions
 * is reasonably comfortable using CLI apps
 
-**Value proposition**: manage contacts faster than a typical mouse/GUI driven app
+**Value proposition**: Helps freelance tutors manage students, parents, schedules, and tuition fees in one place, streamlining lesson planning, tracking progress, and simplifying communication, so they can focus on teaching, not admin.
+
 
 
 ### User stories
 
 Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have) - `*`
 
-| Priority | As a …​                                    | I want to …​                 | So that I can…​                                                        |
-|----------|--------------------------------------------|------------------------------|------------------------------------------------------------------------|
-| `* * *`  | new user                                   | see usage instructions       | refer to instructions when I forget how to use the App                 |
-| `* * *`  | user                                       | add a new person             |                                                                        |
-| `* * *`  | user                                       | delete a person              | remove entries that I no longer need                                   |
-| `* * *`  | user                                       | find a person by name        | locate details of persons without having to go through the entire list |
-| `* *`    | user                                       | hide private contact details | minimize chance of someone else seeing them by accident                |
-| `*`      | user with many persons in the address book | sort persons by name         | locate a person easily                                                 |
+| Priority | As a …​                                    | I want to …​                                             | So that I can…​                                                         |
+|----------|--------------------------------------------|----------------------------------------------------------|-------------------------------------------------------------------------|
+| `* * * ` | tutor handling lesson fees                 | tag a student as paid for a given month                  | keep track of students who have settles their tuition fees              |
+| `* * *`  | tutor handling lesson fees                 | tag a student as unpaid for a given month                | identify students who still owe lesson fees                             |
+| `* * *`  | tutor handling lesson fees                 | filter students who have paid by month                   | view all students who have completed payment for that month at a glance |
+| `* * *`  | tutor handling lesson fees                 | filter students who have not paid by month               | follow up with students who have outstanding tuition fees               |
+| `* * *`  | tutor handling lesson fees                 | view a student's payment history up to the current month | review their past payment behaviour and identify missed months          |
 
-*{More to be added}*
 
 ### Use cases
 
 (For all use cases below, the **System** is the `AddressBook` and the **Actor** is the `user`, unless specified otherwise)
 
-**Use case: Delete a person**
+**Use case: UC-FEE-01: Mark Student as Paid**
+
+**Preconditions**
+1. The student exists in the system.
+
+**Guarantees**
+1. A Paid status for the particular month is recorded for the given student only if the inputs are valid and the student is not already marked Paid for that month.
 
 **MSS**
-
-1.  User requests to list persons
-2.  AddressBook shows a list of persons
-3.  User requests to delete a specific person in the list
-4.  AddressBook deletes the person
+1. Tutor requests to mark a student as paid for a specific month.
+2. Tuto records the Paid status for that student at that specific month.
+3. Tuto shows an success message.
 
     Use case ends.
 
 **Extensions**
 
-* 2a. The list is empty.
+* 1a. The provided student ID does not match any existing student.
+    * 1a1. System informs Tutor that the student does not exist.
+    
+        Use case ends.
+- **1b.** The provided month is not in valid format (MMYY).
+    - **1b1.** System informs Tutor to use the correct format. 
+  
+      Use case ends.
+- **2a.** The student is already marked *Paid* for that month.
+    - **2a1.** System informs Tutor that the student is already marked as *Paid*.
 
-  Use case ends.
+      Use case ends.
 
-* 3a. The given index is invalid.
+**Use case: UC-FEE-02: Mark Student as Unpaid**
 
-    * 3a1. AddressBook shows an error message.
+**Preconditions**
+1. The student exists in the system.
 
-      Use case resumes at step 2.
+**Guarantees**
+1. An Unpaid status for the particular month is recorded for the given student only if the inputs are valid and the student is not already marked Unpaid for that month.
 
-*{More to be added}*
+**MSS**
+1. Tutor requests to mark a student as Unpaid for a specific month.
+2. Tuto records the Unpaid status for that student at that specific month.
+3. Tuto shows an success message.
+
+    Use case ends.
+
+**Extensions**
+
+* 1a. The provided student ID does not match any existing student.
+    * 1a1. Tuto informs Tutor that the student does not exist.
+
+      Use case ends.
+* 1b. The provided month is not in valid format (MMYY).
+    * 1b1. Tuto informs Tutor to use the correct format.
+
+      Use case ends.
+* 2a. The student is already marked Unpaid for that month.
+    * 2a1. Tuto informs Tutor that the student is already marked as Unpaid.
+
+      Use case ends.
+
+**Use case: UC-FEE-03: Filter Paid Students by Month**
+
+**Guarantees**
+1. Displays a list of students that are marked as Paid for the given month.
+
+**MSS**
+1. Tutor requests to filter students that are marked as Paid for a specific month.
+2. Tuto displays a list of students that are marked as Paid for that month.
+   
+    Use case ends.
+
+**Extensions**
+
+* 1a. The month parameter is missing or invalid.
+    * 1a1. Tuto informs Tutor that the month format is invalid.
+
+      Use case ends.
+* 2a. No Paid students found for that month.
+    * 2a1. Tuto displays a message indicating no records found.
+
+      Use case ends.
+
+**Use case: UC-FEE-04: Filter Unpaid Students by Month**
+
+**Guarantees**
+1. Displays a list of students that are marked as Unpaid for the given month.
+
+**MSS**
+1. Tutor requests to filter students that are marked as Unpaid for a specific month.
+2. System displays a list of students that are marked as Unpaid for that month.
+
+    Use case ends.
+
+**Extensions**
+
+* 1a. The month parameter is missing or invalid.
+    * 1a1. Tuto informs Tutor that the month format is invalid.
+
+      Use case ends.
+* 2a. No Unpaid students found for that month.
+    * 2a1. Tuto displays a message indicating no records found.
+
+      Use case ends.
+
+**Use case: UC-FEE-05: View Payment History of a Student**
+
+**Preconditions**
+1. The student exists in the system.
+
+**Guarantees**
+1.	Displays the payment history of the student for up to six months prior to the current month.
+
+**MSS**
+1. Tutor requests to view the payment history of a student.
+2. System retrieves and the student’s month-by-month payment status for the past six months, up to the current month.
+
+    Use case ends.
+
+**Extensions**
+
+* 1a. The student ID is invalid or missing.
+    * 1a1. Tuto informs Tutor that the student does not exist.
+
+      Use case ends.
+* 2a. The student has no payment records yet.
+    * 2a1. Tuto displays a message indicating no records found.
+
+      Use case ends.
 
 ### Non-Functional Requirements
 
 1.  Should work on any _mainstream OS_ as long as it has Java `17` or above installed.
-2.  Should be able to hold up to 1000 persons without a noticeable sluggishness in performance for typical usage.
+2.  Should be able to hold up to 9999 persons without a noticeable sluggishness in performance for typical usage.
 3.  A user with above average typing speed for regular English text (i.e. not code, not system admin commands) should be able to accomplish most of the tasks faster using commands than using the mouse.
 
 *{More to be added}*
@@ -339,6 +443,10 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 * **Mainstream OS**: Windows, Linux, Unix, MacOS
 * **Private contact detail**: A contact detail that is not meant to be shared with others
+* **Student ID**: A 4-digit unique numeric identifier (0000–9999) assigned to each student when added to the system.
+* **Payment History**: A record that shows a student’s Paid or Unpaid fee status for each month, covering up to the six most recent months before the current month.
+
+
 
 --------------------------------------------------------------------------------------------------------------------
 
