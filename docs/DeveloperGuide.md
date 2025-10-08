@@ -325,12 +325,79 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
       Use case resumes at step 2.
 
-*{More to be added}*
+**Use case: UC-ATT-01 Mark attendance for a student**
+
+**Preconditions**
+1. The student exists in the system.
+
+**MSS**
+1. User marks attendance of student using student ID and date.
+2. System records the attendance as present for the specified student and date.
+3. System confirms that the attendance has been recorded.
+
+   Use case ends.
+
+**Extension**
+* 1a. System detects an error in the entered details (e.g., student does not exist, incomplete or invalid details).
+    * 1a1. System requests for the correct details.
+    * 1a2. User provides the corrected details.
+    * Steps 1a1-1a2 repeat until details are valid. Use case resumes from step 2.
+
+* 2a. An attendance record for the same student and date already exists with the ***Present*** status.
+    * 2a1. System informs the user that no change is necessary.
+
+  Use case ends.
+
+**Use case: UC-ATT-02 Unmark attendance for a student**
+
+**Preconditions**
+1. The student exists in the system.
+
+**MSS**
+1. User chooses unmark attendance of a student using the student ID and date.
+2. System records the attendance as absent for the specified student and date.
+3. System confirms that the attendance has been updated.
+
+   Use case ends.
+
+**Extensions**
+* 1a. System detects an error in the entered details (e.g., student does not exist, incomplete or invalid details).
+    * 1a1. System requests for the correct details.
+    * 1a2. User provides the corrected details.
+    * Steps 1a1–1a2 repeat until details are valid. Use case resumes from step 2.
+
+* 2a. The attendance record for the same student and date already exists with the ***Absent*** status or no prior record exists.
+    * 2a1. System informs the user that no change is necessary.
+
+  Use case ends.
+
+**Use case: UC-ATT-03 View a student's attendance history**
+
+**Preconditions**
+1. The student exists in the system.
+
+**MSS**
+1. User views the attendance history of a student using the student ID.
+2. System retrieves the attendance record for that student.
+3. System displays the attendance history in chronological order.
+
+   Use case ends.
+
+**Extensions**
+* 1a. The provided student ID is invalid or does not exist.
+    * 1a1. System informs the user.
+
+  Use case ends.
+
+* 2a. No attendance records exist for the student.
+    * 2a1. System informs the user that no records are available.
+
+  Use case ends.
 
 ### Non-Functional Requirements
 
 1.  Should work on any _mainstream OS_ as long as it has Java `17` or above installed.
-2.  Should be able to hold up to 1000 persons without a noticeable sluggishness in performance for typical usage.
+2.  Should be able to hold up to 9999 persons without a noticeable sluggishness in performance for typical usage.
 3.  A user with above average typing speed for regular English text (i.e. not code, not system admin commands) should be able to accomplish most of the tasks faster using commands than using the mouse.
 
 *{More to be added}*
@@ -339,7 +406,8 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 * **Mainstream OS**: Windows, Linux, Unix, MacOS
 * **Private contact detail**: A contact detail that is not meant to be shared with others
-
+* **Student ID**: A 4-digit unique numeric identifier (0000–9999) assigned to each student when added to the system.
+* * **Attendance History**: A record that shows a student's attendance history, covering up to the six most recent months before the current month.
 --------------------------------------------------------------------------------------------------------------------
 
 ## **Appendix: Instructions for manual testing**
