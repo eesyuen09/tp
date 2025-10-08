@@ -330,8 +330,8 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **MSS**
 
 1. Tutor requests to add a performance note for a student on a given date.
-2. AddressBook adds the performance note for the student.
-3. AddressBook shows a success message.
+2. Tuto adds the performance note for the student.
+3. Tuto shows a success message.
 
    Use case ends.
 
@@ -355,7 +355,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **MSS**
 
 1. Tutor requests to view all performance notes of a student.
-2. AddressBook displays all performance notes of the student in chronological order, with newest at the top.
+2. Tuto displays all performance notes of the student in chronological order, with newest at the top.
 
    Use case ends.
 
@@ -379,8 +379,8 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **MSS**
 
 1. Tutor requests to edit a specific performance note of a student by index.
-2. AddressBook updates the performance note with the new content.
-3. AddressBook shows a success message.
+2. Tuto updates the performance note with the new content.
+3. Tuto shows a success message.
 
    Use case ends.
 
@@ -404,8 +404,8 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **MSS**
 
 1. Tutor requests to delete a specific performance note of a student by index.
-2. AddressBook deletes the performance note.
-3. AddressBook shows a success message.
+2. Tuto deletes the performance note.
+3. Tuto shows a success message.
 
     Use case ends.
 
