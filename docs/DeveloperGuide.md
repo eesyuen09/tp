@@ -287,14 +287,18 @@ _{Explain here how the data archiving feature will be implemented}_
 
 Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have) - `*`
 
-| Priority | As a …​                                    | I want to …​                 | So that I can…​                                                        |
-|----------|--------------------------------------------|------------------------------|------------------------------------------------------------------------|
-| `* * *`  | new user                                   | see usage instructions       | refer to instructions when I forget how to use the App                 |
-| `* * *`  | user                                       | add a new person             |                                                                        |
-| `* * *`  | user                                       | delete a person              | remove entries that I no longer need                                   |
-| `* * *`  | user                                       | find a person by name        | locate details of persons without having to go through the entire list |
-| `* *`    | user                                       | hide private contact details | minimize chance of someone else seeing them by accident                |
-| `*`      | user with many persons in the address book | sort persons by name         | locate a person easily                                                 |
+| Priority | As a …​                                                  | I want to …​                     | So that I can…​                                                  |
+|----------|----------------------------------------------------------|----------------------------------|------------------------------------------------------------------|
+| `* *`    | new tutor user                                           | view sample data                 | understand how the app looks when populated                      |
+| `* *`    | tutor starting fresh                                     | purge sample/old data            | start fresh with only my real student info                       |                                                                  |
+| `* * *`  | tutor managing students                                  | add students                     | quickly add my students into the address book                    |
+| `* * *`  | tutor managing students                                  | view students                    | see all the students I am teaching and their details at a glance |
+| `* * *`  | tutor managing students                                  | delete students                  | remove students who are no longer taking lessons                 |
+| `* * *`  | tutor handling many students across classes and subjects | edit student information         | update my contact list                                           |
+| `* *`    | tutor who prioritise efficiency                          | recover recently deleted contact | fix accidental deletion                                          |
+| `* * *`  | tutor handling many students across classes and subjects | search for a student by name     | quickly locate their information                                 |
+
+
 
 *{More to be added}*
 
@@ -330,10 +334,15 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 ### Non-Functional Requirements
 
 1.  Should work on any _mainstream OS_ as long as it has Java `17` or above installed.
-2.  Should be able to hold up to 1000 persons without a noticeable sluggishness in performance for typical usage.
+2.  Should be able to hold up to 1000 students without a noticeable sluggishness in performance for typical usage.
 3.  A user with above average typing speed for regular English text (i.e. not code, not system admin commands) should be able to accomplish most of the tasks faster using commands than using the mouse.
-
-*{More to be added}*
+4.  The application should operate entirely offline, without requiring a database server or internet connection.
+5.  The system should operate without requiring additional libraries.
+6.  Data integrity must be maintained, ensuring no loss or duplication of records after operations or application restarts.
+7.  The application should run locally on the user’s device.
+8.  The system should be packaged into a single executable JAR file ≤ 200 MB, requiring no installer.
+9.  User documentation should be clear and concise for beginners.
+10. The application shall follow object-oriented design principles, allowing new commands or modules to be added with minimal changes to existing code.
 
 ### Glossary
 
