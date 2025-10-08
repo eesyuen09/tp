@@ -307,7 +307,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **MSS**
 
-1. User add student. 
+1. User adds student. 
 2. Tuto adds student to records.
 3. Tuto confirms the student has been added.
 
@@ -336,8 +336,8 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **Extensions**
 
-* 1a. No students exist.
-    * 1a1. Tuto outputs “No students found.”
+* 1a. No student exist.
+    * 1a1. Tuto shows a message indicating no students exist.
 
        Use case ends. 
 
@@ -345,9 +345,9 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **MSS**
 
-1. User edit student's info.
+1. User edits student's info.
 2. Tuto updates student record.
-3. Tuto confirms the student's has been updated.
+3. Tuto confirms the student's info has been updated.
 
    Use case ends.
 
@@ -367,7 +367,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **MSS**
 
-1. User delete student's.
+1. User deletes student.
 2. Tuto removes student from records.
 3. Tuto confirms the student's has been deleted.
 
@@ -384,7 +384,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **MSS**
 
-1. User search student by name.
+1. User searches student by name.
 2. Tuto searches records for matching students.
 3. Tuto outputs search results.
 
@@ -398,7 +398,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
       Use case ends.
 
 * 2a. No matching students.
-    * 2a. Tuto outputs "No matching students found."
+    * 2a. Tuto shows a message indicating no students found.
 
       Use case ends.
 
@@ -406,7 +406,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 1.  Should work on any _mainstream OS_ as long as it has Java `17` or above installed.
 2.  Should be able to hold up to 1000 students without a noticeable sluggishness in performance for typical usage.
-3.  A user with above average typing speed for regular English text (i.e. not code, not system admin commands) should be able to accomplish most of the tasks faster using commands than using the mouse.
+3.  A user with above average typing speed for regular English text (i.e. not code) should be able to accomplish most of the tasks faster using commands than using the mouse.
 4.  The application should operate entirely offline, without requiring a database server or internet connection.
 5.  The system should operate without requiring additional libraries.
 6.  Data integrity must be maintained, ensuring no loss or duplication of records after operations or application restarts.
@@ -418,7 +418,8 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 ### Glossary
 
 * **Mainstream OS**: Windows, Linux, Unix, MacOS
-* **Private contact detail**: A contact detail that is not meant to be shared with others
+* **Private contact detail**: A contact detail that is not meant to be shared with others 
+* **Executable JAR**: A Java Archive file that contains all compiled classes and resources, which can be run directly without installation.
 
 --------------------------------------------------------------------------------------------------------------------
 
