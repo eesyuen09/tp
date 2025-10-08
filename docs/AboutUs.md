@@ -11,16 +11,16 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 
 ## Project team
 
-### John Doe
+### Roger Lim Bo Zu
 
-<img src="images/johndoe.png" width="200px">
+<img src="images/meowzz28.png" width="200px">
 
-[[homepage](http://www.comp.nus.edu.sg/~damithch)]
-[[github](https://github.com/johndoe)]
+[[github](http://github.com/meowzz28)]
 [[portfolio](team/johndoe.md)]
 
-* Role: Project Advisor
-
+* Role: Team Lead
+* Responsibilities: Integration
+* 
 ### Chong Yi Jie
 
 <img src="images/yijiechong13.png" width="200px">
@@ -29,7 +29,7 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 [[portfolio](team/johndoe.md)]
 
 * Role: Developer
-* Responsibilities: Documentation
+* Responsibilities: Documentation, deliverables and deadlines
 
 ### Ee Syuen
 
@@ -39,17 +39,7 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 [[portfolio](team/johndoe.md)]
 
 * Role: Developer
-* Responsibilities: UI
-
-### Roger Lim Bo Zu
-
-<img src="images/meowzz28.png" width="200px">
-
-[[github](http://github.com/meowzz28)] 
-[[portfolio](team/johndoe.md)]
-
-* Role: Developer
-* Responsibilities: Integration
+* Responsibilities: Documentation and code quality
 
 ### Tey Yee Siang
 
@@ -59,7 +49,7 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 [[portfolio](team/johndoe.md)]
 
 * Role: Developer
-* Responsibilities: Coding & documentation
+* Responsibilities: Testing, scheduling and tracking
 
 ### Denise Goh
 
@@ -69,4 +59,4 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 [[portfolio](team/denisegoh.md)]
 
 * Role: Developer
-* Responsibilities: Testing
+* Responsibilities: Code Quality
