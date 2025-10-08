@@ -291,7 +291,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 | Priority | As a …​                                    | I want to …​                                             | So that I can…​                                                         |
 |----------|--------------------------------------------|----------------------------------------------------------|-------------------------------------------------------------------------|
-| `* * * ` | tutor handling lesson fees                 | tag a student as paid for a given month                  | keep track of students who have settles their tuition fees              |
+| `* * * ` | tutor handling lesson fees                 | tag a student as paid for a given month                  | keep track of students who have settled their tuition fees              |
 | `* * *`  | tutor handling lesson fees                 | tag a student as unpaid for a given month                | identify students who still owe lesson fees                             |
 | `* * *`  | tutor handling lesson fees                 | filter students who have paid by month                   | view all students who have completed payment for that month at a glance |
 | `* * *`  | tutor handling lesson fees                 | filter students who have not paid by month               | follow up with students who have outstanding tuition fees               |
