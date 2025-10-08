@@ -289,24 +289,25 @@ _{Explain here how the data archiving feature will be implemented}_
 
 Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have) - `*`
 
-| Priority | As a …​                                    | I want to …​                                             | So that I can…​                                                         |
-|----------|--------------------------------------------|----------------------------------------------------------|-------------------------------------------------------------------------|
-| `* * * ` | tutor handling lesson fees                 | tag a student as paid for a given month                  | keep track of students who have settled their tuition fees              |
-| `* * *`  | tutor handling lesson fees                 | tag a student as unpaid for a given month                | identify students who still owe lesson fees                             |
-| `* * *`  | tutor handling lesson fees                 | filter students who have paid by month                   | view all students who have completed payment for that month at a glance |
-| `* * *`  | tutor handling lesson fees                 | filter students who have not paid by month               | follow up with students who have outstanding tuition fees               |
-| `* * *`  | tutor handling lesson fees                 | view a student's payment history up to the current month | review their past payment behaviour and identify missed months          |
-| `* * *` | tutor who teaches multiple classes                  | assign a class tag (eg.Sec_3_A_Math) to a student | manage all students of the same subject together |
-| `* * *` | tutor who teaches multiple classes                  | unassign a class tag to a student                 | remove students not in a particular class        |
-| `* * *` | tutor who teaches multiple classes                  | filter students by class tag (eg. Sec_3_A_Math)   | I can focus on a precise teaching group          |
-| `* * *` | tutor who teaches multiple classes                  | list all the class tags                           | I can know what classes I am teaching            |
-| `* * `  | tutor who teaches multiple classes                  | delete a class tag                                | keep only the classes I am still teaching        |
-| `* * * ` | tutor     | add a performance note for a student on a given date   | I can record their progress  |
-| `* * * ` | tutor     | view all performance notes for a student               | I can review their progress  |
-| `* * * ` | tutor     | edit a specific performance note for a student         | I can correct or update it   |
-| `* * * ` | tutor     | delete a specific performance note for a student       | I can remove it if needed    |
-
-*{More to be added}*
+| Priority  | As a …​                                    | I want to …​                                             | So that I can…​                                                         |
+|-----------|------------------------------------------- |----------------------------------------------------------|-------------------------------------------------------------------------|
+| `* * * `  | tutor handling lesson fees                 | tag a student as paid for a given month                  | keep track of students who have settled their tuition fees              |
+| `* * *`   | tutor handling lesson fees                 | tag a student as unpaid for a given month                | identify students who still owe lesson fees                             |
+| `* * *`   | tutor handling lesson fees                 | filter students who have paid by month                   | view all students who have completed payment for that month at a glance |
+| `* * *`   | tutor handling lesson fees                 | filter students who have not paid by month               | follow up with students who have outstanding tuition fees               |
+| `* * *`   | tutor handling lesson fees                 | view a student's payment history up to the current month | review their past payment behaviour and identify missed months          |
+| `* * *`   | tutor who teaches multiple classes         | assign a class tag (eg.Sec_3_A_Math) to a student | manage all students of the same subject together |
+| `* * *`   | tutor who teaches multiple classes         | unassign a class tag to a student                 | remove students not in a particular class        |
+| `* * *`   | tutor who teaches multiple classes         | filter students by class tag (eg. Sec_3_A_Math)   | I can focus on a precise teaching group          |
+| `* * *`   | tutor who teaches multiple classes         | list all the class tags                           | I can know what classes I am teaching            |
+| `* * `    | tutor who teaches multiple classes         | delete a class tag                                | keep only the classes I am still teaching        |
+| `* * * `  | tutor     | add a performance note for a student on a given date   | I can record their progress  |
+| `* * * `  | tutor     | view all performance notes for a student               | I can review their progress  |
+| `* * * `  | tutor     | edit a specific performance note for a student         | I can correct or update it   |
+| `* * * `  | tutor     | delete a specific performance note for a student       | I can remove it if needed    |
+| `* * *`   | tutor who teaches multiple classes         | take attendance of each student   | I can track their attendance record                                    |
+| `* * *`   | tutor who teaches multiple classes         | view students' attendance history | I can track if students are consistently attending lessons.            |
+| `* * *`   | tutor who teaches multiple classes         | unmark a student’s attendance     | correct mistakes or changes if attendance was marked wrongly           |
 
 ### Use cases
 
@@ -339,6 +340,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
     * 1c1. Tuto shows an error message with the correct usage format.
 
       Use case ends.
+
 
 
 **Use case: List all class tags**
@@ -456,6 +458,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
     Use case ends.
 
 
+
 **Use case: View performance notes of a student**
 
 **MSS**
@@ -486,6 +489,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
     * 1d1. Tuto shows an error message.
   
       Use case ends.
+
 
 
 **Use case: Edit a performance note**
@@ -550,6 +554,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
     * 1c1. Tuto shows an error message.
   
       Use case ends.
+
 
 **Use case: Mark Student as Paid**
 
@@ -621,6 +626,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
     * 1a1. Tuto shows an error message with the correct usage format.
 
       Use case ends.
+  
 * 2a. No Paid students found for that month.
     * 2a1. Tuto displays a message indicating no records found.
 
@@ -643,6 +649,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
     * 1a1. Tuto shows an error message with the correct usage format.
 
       Use case ends.
+  
 * 2a. No Unpaid students found for that month.
     * 2a1. Tuto displays a message indicating no records found.
 
@@ -665,8 +672,72 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
     * 1a1. Tuto shows an error message.
 
       Use case ends.
+  
 * 2a. The student has no payment records yet.
     * 2a1. Tuto displays a message indicating no records found.
+
+      Use case ends.
+
+
+**Use case: Mark attendance for a student**
+
+**MSS**
+1. User marks attendance of student.
+2. Tuto records the attendance as present for the specified student and date.
+3. Tuto confirms that the attendance has been recorded.
+
+   Use case ends.
+
+**Extension**
+* 1a. The command format is invalid.
+    * 1a1. Tuto shows an error message with the correct usage format.
+
+      Use case ends.
+
+* 2a. An attendance record for the same student and date already exists with the ***Present*** status.
+    * 2a1. Tuto informs the user that no change is necessary.
+
+      Use case ends.
+
+
+**Use case: Unmark attendance for a student**
+
+**MSS**
+1. User unmarks attendance of a student.
+2. Tuto records the attendance as absent for the specified student and date.
+3. Tuto confirms that the attendance has been updated.
+
+   Use case ends.
+
+**Extensions**
+* 1a. The command format is invalid.
+    * 1a1. Tuto shows an error message with the correct usage format.
+
+      Use case ends.
+
+* 2a. The attendance record for the same student and date already exists with the ***Absent*** status or no prior record exists.
+    * 2a1. Tuto informs the user that no change is necessary.
+
+      Use case ends.
+
+**Use case: View a student's attendance history**
+
+**MSS**
+1. User views the attendance history of a student.
+2. Tuto retrieves the attendance record for that student.
+3. Tuto displays the attendance history in chronological order.
+
+   Use case ends.
+
+**Extensions**
+* 1a.  The command format is invalid.
+
+    * 1a1. Tuto shows an error message with the correct usage format.
+
+      Use case ends.
+
+* 2a. No attendance records exist for the student.
+    * 2a1. System informs the user that no records are available.
 
       Use case ends.
 
@@ -685,9 +756,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 * **Student ID**: A 4-digit unique numeric identifier (0000–9999) assigned to each student when added to the system.
 * **Payment History**: A record that shows a student’s Paid or Unpaid fee status for each month, covering up to the six most recent months before the current month.
 * **Performance note**: A short textual record of a student's performance on a given date
-
-
-
+* **Attendance History**: A record that shows a student's attendance history, covering up to the six most recent months before the current month.
 --------------------------------------------------------------------------------------------------------------------
 
 ## **Appendix: Instructions for manual testing**
