@@ -296,36 +296,38 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | `* * `  | tutor who teaches multiple classes                  | delete a class tag                                | keep only the classes I am still teaching        |
 
 
-*{More to be added}*
-
 ### Use cases
 
-(For all use cases below, the **System** is the `AddressBook` and the **Actor** is the `user`, unless specified otherwise)
-
-**Use case: Delete a person**
+**Use case: Tag a student**
 
 **MSS**
 
-1.  User requests to list persons
-2.  AddressBook shows a list of persons
-3.  User requests to delete a specific person in the list
-4.  AddressBook deletes the person
+1.  Tutor requests to assign a class tag to a specific student, providing the student's ID and the tag name.
+2.  Tuto assigns the tag to the student and shows a success message confirming the assignment.
 
     Use case ends.
 
 **Extensions**
 
-* 2a. The list is empty.
+* 1a. The given student ID is invalid or does not exist.
 
-  Use case ends.
+    * 1a1. Tuto shows an error message.
+  
+      Use case ends.
 
-* 3a. The given index is invalid.
+* 1b. The given tag name does not exist.
 
-    * 3a1. AddressBook shows an error message.
+    * 1b1. Tuto shows an error message (e.g., "Tag 'Sec4_Physics' does not exist. Please add it first.").
 
-      Use case resumes at step 2.
+      Use case ends.
 
-*{More to be added}*
+* 1c. The command format is invalid (e.g., missing parameters).
+
+    * 1c1. AddressBook shows an error message with the correct usage format.
+
+      Use case ends.
+
+
 
 ### Non-Functional Requirements
 
