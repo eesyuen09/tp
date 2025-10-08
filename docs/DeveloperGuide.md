@@ -323,7 +323,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 * 1c. The command format is invalid (e.g., missing parameters).
 
-    * 1c1. AddressBook shows an error message with the correct usage format.
+    * 1c1. Tuto shows an error message with the correct usage format.
 
       Use case ends.
 
