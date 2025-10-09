@@ -7,8 +7,9 @@ import java.util.Objects;
 import seedu.address.commons.util.ToStringBuilder;
 
 /**
- * Represents a Person in the address book.
- * Guarantees: details are present and not null, field values are validated, immutable.
+ * Represents a Guardian in the address book.
+ * Both fields may be null if no guardian details are provided.
+ * This class is immutable once created.
  */
 public class Guardian {
 
@@ -17,7 +18,7 @@ public class Guardian {
     private final Phone phone;
 
     /**
-     * Every field must be present and not null.
+     * Either field may be null to indicate that the information is not provided.
      */
     public Guardian(Name name, Phone phone) {
         requireAllNonNull(name, phone);
@@ -35,8 +36,10 @@ public class Guardian {
     }
 
     /**
-     * Returns true if both persons have the same name.
-     * This defines a weaker notion of equality between two persons.
+     * Returns true if both guardians have the same name and phone number.
+     *
+     * @param otherGuardian the other guardian to compare with
+     * @return true if both guardians have identical identifying information
      */
     public boolean isSamePerson(Guardian otherGuardian) {
         if (otherGuardian == this) {
@@ -44,7 +47,8 @@ public class Guardian {
         }
 
         return otherGuardian != null
-                && otherGuardian.getName().equals(getName());
+                && otherGuardian.getName().equals(getName())
+                && otherGuardian.getPhone().equals(getPhone());
     }
 
     /**
