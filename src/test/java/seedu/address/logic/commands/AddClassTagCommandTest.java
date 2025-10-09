@@ -11,7 +11,7 @@ import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 
 /**
- * Contains integration tests (interaction with the Model) and unit tests for TagClassCommand.
+ * Contains integration tests (interaction with the Model) and unit tests for AddClassTagCommand.
  */
 public class AddClassTagCommandTest {
 
