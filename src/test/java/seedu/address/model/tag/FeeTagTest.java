@@ -1,12 +1,16 @@
 package seedu.address.model.tag;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+
 import org.junit.jupiter.api.Test;
 
 public class FeeTagTest {
 
     @Test
-    public void constructor_and_isPaid_success() {
+    public void constructorAndIsPaidSuccess() {
         FeeTag paidTag = new FeeTag(true);
         FeeTag unpaidTag = new FeeTag(false);
 
@@ -15,7 +19,7 @@ public class FeeTagTest {
     }
 
     @Test
-    public void equals_and_hashCode() {
+    public void equalsAndHashCode() {
         FeeTag tag1 = new FeeTag(true);
         FeeTag tag2 = new FeeTag(true);
         FeeTag tag3 = new FeeTag(false);
@@ -26,7 +30,7 @@ public class FeeTagTest {
     }
 
     @Test
-    public void toString_returnsExpectedFormat() {
+    public void toStringReturnsExpectedFormat() {
         assertEquals("[Paid]", new FeeTag(true).toString());
         assertEquals("[Unpaid]", new FeeTag(false).toString());
     }
