@@ -21,5 +21,4 @@ public class AddClassTagCommandTest {
     public void execute() {
         assertCommandFailure(new AddClassTagCommand(), model, MESSAGE_NOT_IMPLEMENTED_YET);
     }
-
 }
