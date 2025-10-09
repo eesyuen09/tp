@@ -35,4 +35,20 @@ public class FeeTagTest {
         assertEquals("[Unpaid]", new FeeTag(false).toString());
     }
 
+    @Test
+    public void ofPaidAndOfUnpaidWorkCorrectly() {
+        assertTrue(FeeTag.ofPaid().isPaid());
+        assertFalse(FeeTag.ofUnpaid().isPaid());
+    }
+
+    @Test
+    public void isFeeTag_worksCorrectly() {
+        assertTrue(FeeTag.isFeeTag(new Tag("Paid")));
+        assertTrue(FeeTag.isFeeTag(new Tag("Unpaid")));
+        assertFalse(FeeTag.isFeeTag(new Tag("Friend")));
+    }
+
+
+
+
 }

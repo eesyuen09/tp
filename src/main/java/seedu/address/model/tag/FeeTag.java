@@ -9,15 +9,14 @@ import java.util.Optional;
  */
 public class FeeTag {
 
-    private final boolean isPaid;
     public static final String TAG_PAID = "Paid";
     public static final String TAG_UNPAID = "Unpaid";
+    private final boolean isPaid;
 
     /**
      * Creates a FeeTag with the given payment status.
      */
     public FeeTag(boolean isPaid) {
-
         this.isPaid = isPaid;
     }
 
@@ -60,7 +59,7 @@ public class FeeTag {
     }
 
     /** Converts a generic Tag into a FeeTag if possible. */
-    public static Optional<FeeTag> parseTagToFeeTag(Tag tag) {
+    public static Optional<FeeTag> tagToFeeTag(Tag tag) {
         if (tag.tagName.equalsIgnoreCase(TAG_PAID)) {
             return Optional.of(new FeeTag(true));
         } else if (tag.tagName.equalsIgnoreCase(TAG_UNPAID)) {
@@ -71,7 +70,7 @@ public class FeeTag {
 
     /** Converts this FeeTag back into a generic Tag object. */
     public Tag feeTagToTag() {
-        return new Tag(isPaid ? TAG_PAID : TAG_UNPAID);
+        return new Tag(this.isPaid ? TAG_PAID : TAG_UNPAID);
     }
 
     /** Returns a FeeTag representing Paid. */
