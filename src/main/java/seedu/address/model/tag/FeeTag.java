@@ -1,5 +1,7 @@
 package seedu.address.model.tag;
 
+import java.util.Optional;
+
 /**
  * Represents a FeeTag that indicates if a student has paid.
  * For now, each student will have either a Paid or Unpaid FeeTag.
@@ -8,11 +10,14 @@ package seedu.address.model.tag;
 public class FeeTag {
 
     private final boolean isPaid;
+    public static final String TAG_PAID = "Paid";
+    public static final String TAG_UNPAID = "Unpaid";
 
     /**
      * Creates a FeeTag with the given payment status.
      */
     public FeeTag(boolean isPaid) {
+
         this.isPaid = isPaid;
     }
 
@@ -20,6 +25,7 @@ public class FeeTag {
      * Returns true if the student is marked as paid.
      */
     public boolean isPaid() {
+
         return isPaid;
     }
 
@@ -27,7 +33,9 @@ public class FeeTag {
      * Returns the tag name for display (either "Paid" or "Unpaid").
      */
     public String getDisplayName() {
-        return isPaid ? "Paid" : "Unpaid";
+        return isPaid
+                ? "Paid"
+                : "Unpaid";
     }
 
     @Override
@@ -44,5 +52,37 @@ public class FeeTag {
     public int hashCode() {
         return Boolean.hashCode(isPaid);
     }
+
+    /** Returns true if the tag represents a fee status (Paid/Unpaid). */
+    public static boolean isFeeTag(Tag tag) {
+        String name = tag.tagName;
+        return name.equalsIgnoreCase(TAG_PAID) || name.equalsIgnoreCase(TAG_UNPAID);
+    }
+
+    /** Converts a generic Tag into a FeeTag if possible. */
+    public static Optional<FeeTag> parseTagToFeeTag(Tag tag) {
+        if (tag.tagName.equalsIgnoreCase(TAG_PAID)) {
+            return Optional.of(new FeeTag(true));
+        } else if (tag.tagName.equalsIgnoreCase(TAG_UNPAID)) {
+            return Optional.of(new FeeTag(false));
+        }
+        return Optional.empty();
+    }
+
+    /** Converts this FeeTag back into a generic Tag object. */
+    public Tag feeTagToTag() {
+        return new Tag(isPaid ? TAG_PAID : TAG_UNPAID);
+    }
+
+    /** Returns a FeeTag representing Paid. */
+    public static FeeTag ofPaid() {
+        return new FeeTag(true);
+    }
+
+    /** Returns a FeeTag representing Unpaid. */
+    public static FeeTag ofUnpaid() {
+        return new FeeTag(false);
+    }
+
 
 }
