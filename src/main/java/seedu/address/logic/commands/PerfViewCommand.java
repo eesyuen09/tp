@@ -11,7 +11,7 @@ import seedu.address.model.Model;
 public class PerfViewCommand extends Command {
     public static final String COMMAND_WORD = "perf";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + "-d"
+    public static final String MESSAGE_USAGE = COMMAND_WORD + "-v"
             + ": Deletes a note of the student and date indicated. "
             + "Parameters: "
             + PREFIX_STUDENTID + "STUDENTID ";
