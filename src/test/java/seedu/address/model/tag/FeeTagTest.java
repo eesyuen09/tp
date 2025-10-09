@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Optional;
+
 import org.junit.jupiter.api.Test;
 
 public class FeeTagTest {
@@ -48,6 +50,34 @@ public class FeeTagTest {
         assertFalse(FeeTag.isFeeTag(new Tag("Friend")));
     }
 
+    @Test
+    public void tagToFeeTagParsesCorrectly() {
+        Optional<FeeTag> paidOpt = FeeTag.tagToFeeTag(new Tag("Paid"));
+        Optional<FeeTag> paidLower = FeeTag.tagToFeeTag(new Tag("paid"));
+        Optional<FeeTag> unpaidOpt = FeeTag.tagToFeeTag(new Tag("Unpaid"));
+        Optional<FeeTag> invalid = FeeTag.tagToFeeTag(new Tag("Random"));
+
+        assertTrue(paidOpt.isPresent() && paidOpt.get().isPaid());
+        assertTrue(paidLower.isPresent() && paidLower.get().isPaid());
+        assertTrue(unpaidOpt.isPresent() && !unpaidOpt.get().isPaid());
+        assertTrue(invalid.isEmpty());
+    }
+
+    @Test
+    public void feeTagToTagConvertsBackCorrectly() {
+        FeeTag paid = new FeeTag(true);
+        FeeTag unpaid = new FeeTag(false);
+
+        Tag paidTag = paid.feeTagToTag();
+        Tag unpaidTag = unpaid.feeTagToTag();
+
+        assertEquals("Paid", paidTag.tagName);
+        assertEquals("Unpaid", unpaidTag.tagName);
+
+        // Round-trip check
+        assertTrue(FeeTag.tagToFeeTag(paidTag).orElseThrow().isPaid());
+        assertFalse(FeeTag.tagToFeeTag(unpaidTag).orElseThrow().isPaid());
+    }
 
 
 
