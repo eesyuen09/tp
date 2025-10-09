@@ -47,4 +47,5 @@ public class PerfViewCommand extends Command {
         PerfViewCommand otherPerfViewCommand = (PerfViewCommand) other;
         return studentId.equals(otherPerfViewCommand.studentId);
     }
+
 }

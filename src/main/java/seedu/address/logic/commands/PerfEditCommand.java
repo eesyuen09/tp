@@ -65,4 +65,5 @@ public class PerfEditCommand extends Command {
         return studentId.equals(otherPerfEditCommand.studentId) && index == otherPerfEditCommand.index
                 && note.equals(otherPerfEditCommand.note);
     }
+
 }

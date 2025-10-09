@@ -64,4 +64,5 @@ public class PerfAddCommand extends Command {
         return studentId.equals(otherPerfAddCommand.studentId) && date.equals(otherPerfAddCommand.date)
                 && note.equals(otherPerfAddCommand.note);
     }
+
 }

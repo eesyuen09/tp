@@ -56,4 +56,5 @@ public class PerfDeleteCommand extends Command {
         PerfDeleteCommand otherPerfDeleteCommand = (PerfDeleteCommand) other;
         return studentId.equals(otherPerfDeleteCommand.studentId) && index == otherPerfDeleteCommand.index;
     }
+
 }
