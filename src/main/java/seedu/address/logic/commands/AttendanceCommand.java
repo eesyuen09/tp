@@ -1,7 +1,7 @@
 package seedu.address.logic.commands;
 
-import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DATE;
+
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 
@@ -28,11 +28,14 @@ public class AttendanceCommand extends Command {
     public static final String MESSAGE_UNMARK_SUCCESS = "Unmarked attendance for: %1$s on %2$s";
     public static final String MESSAGE_VIEW_SUCCESS = "Showing attendance history for: %1$s";
 
+    /**
+     * Represents the type of attendance operation to perform.
+     */
     public enum Operation {
         MARK, UNMARK, VIEW
     }
 
-    public static final String MESSAGE_NOT_IMPLEMENTED_YET = "Add class tag command not implemented yet";
+    public static final String MESSAGE_NOT_IMPLEMENTED_YET = "Attendance command not implemented yet";
 
     /**
      * Creates an AttendanceCommand with the specified operation, index, and date.
