@@ -18,7 +18,7 @@ public class AddClassTagCommand extends Command {
     public static final String MESSAGE_NOT_IMPLEMENTED_YET = "Add class tag command not implemented yet";
 
     @Override
-    public CommandResult execute(Model model) throws CommandException{
+    public CommandResult execute(Model model) throws CommandException {
         throw new CommandException(MESSAGE_NOT_IMPLEMENTED_YET);
     }
 }
