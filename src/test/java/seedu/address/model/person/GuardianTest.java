@@ -24,9 +24,9 @@ public class GuardianTest {
         // null -> returns false
         assertFalse(aliceGuardian.isSamePerson(null));
 
-        // same name, different phone -> returns true
+        // same name, different phone -> returns false
         Guardian editedAlice = new Guardian(ALICE_NAME, BOB_PHONE);
-        assertTrue(aliceGuardian.isSamePerson(editedAlice));
+        assertFalse(aliceGuardian.isSamePerson(editedAlice));
 
         // different name -> returns false
         assertFalse(aliceGuardian.isSamePerson(bobGuardian));
