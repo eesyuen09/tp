@@ -30,4 +30,5 @@ public class FeeTagTest {
         assertEquals("[Paid]", new FeeTag(true).toString());
         assertEquals("[Unpaid]", new FeeTag(false).toString());
     }
+
 }
