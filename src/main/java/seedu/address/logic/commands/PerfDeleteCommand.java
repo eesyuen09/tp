@@ -25,6 +25,12 @@ public class PerfDeleteCommand extends Command {
     private final String studentId;
     private final int index;
 
+    /**
+     * Creates an PerfDeleteCommand to delete the specified {@code note} of the student of given {@code studentId}
+     * at the specified {@code index}.
+     * @param studentId ID of the student to delete the performance note from
+     * @param index index of the performance note to be deleted
+     */
     public PerfDeleteCommand(String studentId, int index) {
         requireNonNull(studentId);
 

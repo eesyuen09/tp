@@ -21,6 +21,10 @@ public class PerfViewCommand extends Command {
 
     private final String studentId;
 
+    /**
+     * Creates an PerfViewCommand to view performance notes of the student of given {@code studentId}.
+     * @param studentId ID of the student to view the performance notes
+     */
     public PerfViewCommand(String studentId) {
         this.studentId = studentId;
     }

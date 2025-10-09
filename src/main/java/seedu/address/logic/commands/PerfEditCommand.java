@@ -29,6 +29,13 @@ public class PerfEditCommand extends Command {
     private final int index;
     private final String note;
 
+    /**
+     * Creates an PerfEditCommand to edit the specified {@code note} of the student of given {@code studentId}
+     * at the specified {@code index}.
+     * @param studentId ID of the student to edit the performance note from
+     * @param index index of the performance note to be edited
+     * @param note the new performance note
+     */
     public PerfEditCommand(String studentId, int index, String note) {
         requireNonNull(studentId);
         requireNonNull(note);

@@ -28,6 +28,13 @@ public class PerfAddCommand extends Command {
     private final String date;
     private final String note;
 
+    /**
+     * Creates an PerfAddCommand to add the specified {@code note} to the student of given {@code studentId}
+     * on the specified {@code date}.
+     * @param studentId ID of the student to add the performance note to
+     * @param date date of the performance note
+     * @param note the performance note to be added
+     */
     public PerfAddCommand(String studentId, String date, String note) {
         requireNonNull(studentId);
         requireNonNull(date);
