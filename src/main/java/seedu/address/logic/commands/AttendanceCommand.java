@@ -48,35 +48,3 @@ public class AttendanceCommand extends Command {
         throw new CommandException(MESSAGE_NOT_IMPLEMENTED_YET);
     }
 }
-
- /*
-    @Override
-    public CommandResult execute(Model model) throws CommandException {
-        requireNonNull(model);
-
-        switch (operation) {
-        case MARK:
-            return executeMark(model);
-        case UNMARK:
-            return executeUnmark(model);
-        case VIEW:
-            return executeView(model);
-        default:
-            throw new CommandException("Unknown operation");
-        }
-    }
-
-    private CommandResult executeMark(Model model) throws CommandException {
-        return new CommandResult(MESSAGE_MARK_SUCCESS);
-    }
-
-    private CommandResult executeUnmark(Model model) throws CommandException {
-        return new CommandResult(MESSAGE_UNMARK_SUCCESS);
-    }
-
-    private CommandResult executeView(Model model) throws CommandException {
-        return new CommandResult(MESSAGE_VIEW_SUCCESS);
-    }
-}
-
- */
