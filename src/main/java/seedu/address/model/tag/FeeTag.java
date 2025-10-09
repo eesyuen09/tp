@@ -44,4 +44,5 @@ public class FeeTag {
     public int hashCode() {
         return Boolean.hashCode(isPaid);
     }
+
 }
