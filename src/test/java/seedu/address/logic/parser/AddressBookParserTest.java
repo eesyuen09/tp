@@ -101,7 +101,7 @@ public class AddressBookParserTest {
     }
 
     @Test
-    public void parseCommand_tagclass() throws Exception {
+    public void parseCommand_tagClass() throws Exception {
         assertTrue(parser.parseCommand(AddClassTagCommand.COMMAND_WORD) instanceof AddClassTagCommand);
     }
 }
