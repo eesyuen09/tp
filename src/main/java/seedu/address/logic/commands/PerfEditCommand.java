@@ -1,7 +1,6 @@
 package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_DATE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_INDEX;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NOTE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_STUDENTID;
@@ -9,6 +8,9 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_STUDENTID;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 
+/**
+ * Edits a performance note of a student.
+ */
 public class PerfEditCommand extends Command {
     public static final String COMMAND_WORD = "perf";
 

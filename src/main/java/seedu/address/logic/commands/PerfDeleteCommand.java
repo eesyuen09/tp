@@ -7,6 +7,9 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_STUDENTID;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 
+/**
+ * Deletes a performance note of a student.
+ */
 public class PerfDeleteCommand extends Command {
     public static final String COMMAND_WORD = "perf";
 
@@ -24,7 +27,6 @@ public class PerfDeleteCommand extends Command {
 
     public PerfDeleteCommand(String studentId, int index) {
         requireNonNull(studentId);
-        requireNonNull(index);
 
         this.studentId = studentId;
         this.index = index;

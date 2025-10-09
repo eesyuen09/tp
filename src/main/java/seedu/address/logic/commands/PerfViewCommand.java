@@ -5,6 +5,9 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_STUDENTID;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 
+/**
+ * Views performance notes of a student.
+ */
 public class PerfViewCommand extends Command {
     public static final String COMMAND_WORD = "perf";
 
