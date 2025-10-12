@@ -17,6 +17,7 @@ import seedu.address.model.tag.Tag;
 public class Person {
 
     // Identity fields
+    private final StudentId studentId;
     private final Name name;
     private final Phone phone;
     private final Email email;
@@ -26,7 +27,15 @@ public class Person {
     private final Set<Tag> tags = new HashSet<>();
 
     /**
-     * Every field must be present and not null.
+     * Constructs a {@code Person} with an automatically generated {@link StudentId}.
+     * <p>
+     * All fields must be non-null.
+     *
+     * @param name    The person's name.
+     * @param phone   The person's phone number.
+     * @param email   The person's email address.
+     * @param address The person's address.
+     * @param tags    A set of tags associated with the person.
      */
     public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags) {
         requireAllNonNull(name, phone, email, address, tags);
@@ -35,6 +44,29 @@ public class Person {
         this.email = email;
         this.address = address;
         this.tags.addAll(tags);
+        this.studentId = new StudentId();
+    }
+
+    /**
+     * Constructs a {@code Person} with a specified {@link StudentId}.
+     * <p>
+     * All fields must be non-null.
+     *
+     * @param name       The person's name.
+     * @param phone      The person's phone number.
+     * @param email      The person's email address.
+     * @param address    The person's address.
+     * @param tags       A set of tags associated with the person.
+     * @param studentId  The student's unique ID.
+     */
+    public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags, StudentId studentId) {
+        requireAllNonNull(name, phone, email, address, tags, studentId);
+        this.name = name;
+        this.phone = phone;
+        this.email = email;
+        this.address = address;
+        this.tags.addAll(tags);
+        this.studentId = studentId;
     }
 
     public Name getName() {
@@ -51,6 +83,10 @@ public class Person {
 
     public Address getAddress() {
         return address;
+    }
+
+    public StudentId getStudentId() {
+        return studentId;
     }
 
     /**
@@ -71,7 +107,9 @@ public class Person {
         }
 
         return otherPerson != null
+//                && otherPerson.getStudentId().equals(getStudentId())
                 && otherPerson.getName().equals(getName());
+
     }
 
     /**
@@ -93,6 +131,7 @@ public class Person {
         return name.equals(otherPerson.name)
                 && phone.equals(otherPerson.phone)
                 && email.equals(otherPerson.email)
+//                && studentId.equals(otherPerson.studentId)
                 && address.equals(otherPerson.address)
                 && tags.equals(otherPerson.tags);
     }
@@ -100,13 +139,14 @@ public class Person {
     @Override
     public int hashCode() {
         // use this method for custom fields hashing instead of implementing your own
-        return Objects.hash(name, phone, email, address, tags);
+        return Objects.hash(name, phone, email, address, tags, studentId);
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this)
                 .add("name", name)
+                .add("student id", studentId)
                 .add("phone", phone)
                 .add("email", email)
                 .add("address", address)
