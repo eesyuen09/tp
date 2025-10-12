@@ -39,8 +39,13 @@ public class Date {
             return false;
         }
         try {
-            LocalDate.parse(test, FORMATTER);
-            return true;
+            LocalDate date = LocalDate.parse(test, FORMATTER);
+
+            // Format it back and compare - this catches invalid dates like 31 Feb
+            // because LocalDate auto-corrects them (31 Feb becomes 3 Mar)
+            String reconstructed = date.format(FORMATTER);
+            return test.equals(reconstructed);
+
         } catch (DateTimeParseException e) {
             return false;
         }
