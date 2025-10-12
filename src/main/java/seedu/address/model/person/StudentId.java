@@ -8,18 +8,20 @@ import seedu.address.model.person.exceptions.ExceedMaxStudentsException;
  */
 public class StudentId {
 
-    public static final String MESSAGE_CONSTRAINTS = "Student ID should be a 4-digit number, and it should not be blank";
+    public static final String MESSAGE_CONSTRAINTS =
+            "Student ID should be a 4-digit number, and it should not be blank";
+
+    public static final String VALIDATION_REGEX = "\\d{4}";
+
+    /** Tracks the most recently assigned student ID to ensure uniqueness. */
+    private static int lastId = 0;
+
+    /** The maximum allowed student ID number. */
+    private static final int MAX = 9999;
 
     /** The numerical value of the student ID. */
     public final Integer value;
 
-    /** Tracks the most recently assigned student ID to ensure uniqueness. */
-    private static int LAST_ID = 0;
-
-    /** The maximum allowed student ID number. */
-    private final int MAX = 9999;
-
-    public static final String VALIDATION_REGEX = "\\d{4}";
 
     /**
      * Constructs a new {@code StudentId} with an auto-generated 4-digit number.
@@ -31,10 +33,10 @@ public class StudentId {
      * @throws ExceedMaxStudentsException if the number of students exceeds {@code MAX}.
      */
     public StudentId() {
-        if(LAST_ID > MAX){
+        if (lastId > MAX) {
             throw new ExceedMaxStudentsException();
         }
-        value = LAST_ID++;
+        value = lastId++;
     }
 
     /**
@@ -49,9 +51,13 @@ public class StudentId {
      */
     public StudentId(String studentId) {
         value = Integer.parseInt(studentId);
-        if(value > LAST_ID){
-            LAST_ID = value + 1;
+        if (value > lastId) {
+            lastId = value + 1;
         }
+    }
+
+    public static void rollbackId() {
+        lastId = lastId - 1;
     }
 
     /**

@@ -11,7 +11,7 @@ import seedu.address.model.person.exceptions.ExceedMaxStudentsException;
 public class StudentIdTest {
 
     @Test
-    public void constructor_defaultConstructor_exceedMax_throwsExceedMaxStudentsException() {
+    public void constructor_exceedMax_throwsException() {
         // Simulate reaching the limit
         for (int i = 0; i <= 10000; i++) {
             new StudentId(String.format("%04d", i));
@@ -34,11 +34,11 @@ public class StudentIdTest {
         assertThrows(NullPointerException.class, () -> StudentId.isValidStudentId(null));
 
         // invalid student IDs
-        assertFalse(StudentId.isValidStudentId(""));       // empty
-        assertFalse(StudentId.isValidStudentId(" "));      // spaces only
-        assertFalse(StudentId.isValidStudentId("123"));    // less than 4 digits
-        assertFalse(StudentId.isValidStudentId("12345"));  // more than 4 digits
-        assertFalse(StudentId.isValidStudentId("12a4"));   // non-numeric characters
+        assertFalse(StudentId.isValidStudentId("")); // empty
+        assertFalse(StudentId.isValidStudentId(" ")); // spaces only
+        assertFalse(StudentId.isValidStudentId("123")); // less than 4 digits
+        assertFalse(StudentId.isValidStudentId("12345")); // more than 4 digits
+        assertFalse(StudentId.isValidStudentId("12a4")); // non-numeric characters
 
         // valid student IDs
         assertTrue(StudentId.isValidStudentId("0000"));

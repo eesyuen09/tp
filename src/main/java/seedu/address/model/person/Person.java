@@ -38,13 +38,7 @@ public class Person {
      * @param tags    A set of tags associated with the person.
      */
     public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags) {
-        requireAllNonNull(name, phone, email, address, tags);
-        this.name = name;
-        this.phone = phone;
-        this.email = email;
-        this.address = address;
-        this.tags.addAll(tags);
-        this.studentId = new StudentId();
+        this(name, phone, email, address, tags, new StudentId()); // StudentId to be set later
     }
 
     /**
@@ -107,7 +101,6 @@ public class Person {
         }
 
         return otherPerson != null
-//                && otherPerson.getStudentId().equals(getStudentId())
                 && otherPerson.getName().equals(getName());
 
     }
@@ -131,7 +124,6 @@ public class Person {
         return name.equals(otherPerson.name)
                 && phone.equals(otherPerson.phone)
                 && email.equals(otherPerson.email)
-//                && studentId.equals(otherPerson.studentId)
                 && address.equals(otherPerson.address)
                 && tags.equals(otherPerson.tags);
     }

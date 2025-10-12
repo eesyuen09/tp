@@ -43,6 +43,7 @@ public class UniquePersonList implements Iterable<Person> {
     public void add(Person toAdd) {
         requireNonNull(toAdd);
         if (contains(toAdd)) {
+            StudentId.rollbackId();
             throw new DuplicatePersonException();
         }
         internalList.add(toAdd);
