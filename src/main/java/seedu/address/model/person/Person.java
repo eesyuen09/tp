@@ -25,42 +25,20 @@ public class Person {
     // Data fields
     private final Address address;
     private final Set<Tag> tags = new HashSet<>();
+    private final Set<Attendance> attendanceRecords;
 
     /**
-     * Constructs a {@code Person} with an automatically generated {@link StudentId}.
-     * <p>
-     * All fields must be non-null.
-     *
-     * @param name    The person's name.
-     * @param phone   The person's phone number.
-     * @param email   The person's email address.
-     * @param address The person's address.
-     * @param tags    A set of tags associated with the person.
+     * Every field must be present and not null.
      */
     public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags) {
-        this(name, phone, email, address, tags, new StudentId()); // StudentId to be set later
-    }
-
-    /**
-     * Constructs a {@code Person} with a specified {@link StudentId}.
-     * <p>
-     * All fields must be non-null.
-     *
-     * @param name       The person's name.
-     * @param phone      The person's phone number.
-     * @param email      The person's email address.
-     * @param address    The person's address.
-     * @param tags       A set of tags associated with the person.
-     * @param studentId  The student's unique ID.
-     */
-    public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags, StudentId studentId) {
-        requireAllNonNull(name, phone, email, address, tags, studentId);
+        requireAllNonNull(name, phone, email, address, tags);
         this.name = name;
         this.phone = phone;
         this.email = email;
         this.address = address;
         this.tags.addAll(tags);
         this.studentId = studentId;
+        this.attendanceRecords = new HashSet<>(attendanceRecords);
     }
 
     public Name getName() {
@@ -102,7 +80,39 @@ public class Person {
 
         return otherPerson != null
                 && otherPerson.getName().equals(getName());
+    }
 
+    /**
+     * Returns true if attendance is already marked as present for this date.
+     */
+    public boolean hasAttendanceMarked(Date date) {
+        return attendanceRecords.stream()
+                .anyMatch(attendance -> attendance.getDate().equals(date) && attendance.isPresent());
+    }
+
+    /**
+     * Marks student as present on this date.
+     * If record exists, updates it. Otherwise creates new record.
+     */
+    public void markAttendance(Date date) {
+        // Add new present record
+        attendanceRecords.add(new Attendance(date, true));
+    }
+
+    /**
+     * Marks student as absent on this date.
+     * If record exists, updates it. Otherwise creates new record.
+     */
+    public void unmarkAttendance(Date date) {
+        // Add new absent record
+        attendanceRecords.add(new Attendance(date, false));
+    }
+
+    /**
+     * Returns all attendance records.
+     */
+    public Set<Attendance> getAttendanceRecords() {
+        return Collections.unmodifiableSet(attendanceRecords);
     }
 
     /**

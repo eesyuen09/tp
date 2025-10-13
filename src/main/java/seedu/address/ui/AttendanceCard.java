@@ -32,7 +32,8 @@ public class AttendanceCard extends UiPart<Region>{
         super(FXML);
         this.person = person;
         header.setText("Attendance history for " + person.getName() + " (" + person.getStudentId() + ")");
-       // attendanceRecord.setText // put the list here
+        //Display list here
+        attendanceRecord.setText(person.getAttendanceRecords().toString());
     }
 
 }
