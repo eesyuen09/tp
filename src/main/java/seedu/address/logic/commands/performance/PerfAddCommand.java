@@ -1,28 +1,32 @@
-package seedu.address.logic.commands;
+package seedu.address.logic.commands.performance;
 
 import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DATE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NOTE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_STUDENTID;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import seedu.address.logic.commands.Command;
+import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
+import seedu.address.model.person.Person;
+import seedu.address.model.person.performance.PerformanceList;
+import seedu.address.model.person.performance.PerformanceNote;
 
 /**
  * Adds a performance note to a student.
  */
-public class PerfAddCommand extends Command {
-    public static final String COMMAND_WORD = "perf";
+public class PerfAddCommand extends PerfCommand {
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + "-a"
             + ": Adds a note to the student indicated. "
             + "Parameters: "
             + PREFIX_STUDENTID + "STUDENTID "
-            + PREFIX_DATE + "PHONE "
+            + PREFIX_DATE + "DATE "
             + PREFIX_NOTE + "PERFORMANCE NOTE ";
-
-    public static final String MESSAGE_SUCCESS = "Performance note successfully added.";
-    public static final String MESSAGE_NOT_IMPLEMENTED_YET = "PerfAdd command not implemented yet";
 
     private final String studentId;
     private final String date;
@@ -47,7 +51,26 @@ public class PerfAddCommand extends Command {
 
     @Override
     public CommandResult execute(Model model) throws CommandException {
-        throw new CommandException(MESSAGE_NOT_IMPLEMENTED_YET);
+        requireNonNull(model);
+
+        Person student = findStudentById(model, studentId);
+        if (student == null) {
+            throw new CommandException(PerfNotes.STUDENT_NOT_FOUND);
+        }
+
+        List<PerformanceNote> current = student.getPerformanceList().asUnmodifiableList();
+        PerformanceList copy = new PerformanceList(new ArrayList<>(current));
+
+        PerformanceNote newNote;
+        try {
+            newNote = new PerformanceNote(date, note);
+            copy.add(newNote);
+        } catch (IllegalArgumentException e) {
+            throw new CommandException(e.getMessage());
+        }
+
+        model.setPerson(student, student.withPerformanceList(copy));
+        return new CommandResult(String.format(PerfNotes.ADDED, student.getName(), newNote.printableDate()));
     }
 
     @Override

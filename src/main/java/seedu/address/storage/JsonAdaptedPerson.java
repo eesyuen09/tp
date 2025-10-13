@@ -15,6 +15,8 @@ import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
+import seedu.address.model.person.performance.PerformanceList;
+import seedu.address.model.person.performance.PerformanceNote;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -29,6 +31,7 @@ class JsonAdaptedPerson {
     private final String email;
     private final String address;
     private final List<JsonAdaptedTag> tags = new ArrayList<>();
+    private final List<JsonAdaptedPerformanceNote> performanceNotes = new ArrayList<>();
 
     /**
      * Constructs a {@code JsonAdaptedPerson} with the given person details.
@@ -36,13 +39,16 @@ class JsonAdaptedPerson {
     @JsonCreator
     public JsonAdaptedPerson(@JsonProperty("name") String name, @JsonProperty("phone") String phone,
             @JsonProperty("email") String email, @JsonProperty("address") String address,
-            @JsonProperty("tags") List<JsonAdaptedTag> tags) {
+            @JsonProperty("tags") List<JsonAdaptedTag> tags, @JsonProperty("performanceNotes") List<JsonAdaptedPerformanceNote> performanceNotes) {
         this.name = name;
         this.phone = phone;
         this.email = email;
         this.address = address;
         if (tags != null) {
             this.tags.addAll(tags);
+        }
+        if (performanceNotes != null) {
+            this.performanceNotes.addAll(performanceNotes);
         }
     }
 
@@ -57,6 +63,9 @@ class JsonAdaptedPerson {
         tags.addAll(source.getTags().stream()
                 .map(JsonAdaptedTag::new)
                 .collect(Collectors.toList()));
+        source.getPerformanceList().asUnmodifiableList().forEach(n ->
+                performanceNotes.add(new JsonAdaptedPerformanceNote(n)));
+
     }
 
     /**
@@ -103,7 +112,15 @@ class JsonAdaptedPerson {
         final Address modelAddress = new Address(address);
 
         final Set<Tag> modelTags = new HashSet<>(personTags);
-        return new Person(modelName, modelPhone, modelEmail, modelAddress, modelTags);
+
+        final java.util.List<PerformanceNote> modelPerformanceNotes = new ArrayList<>();
+        for (JsonAdaptedPerformanceNote note : performanceNotes) {
+            modelPerformanceNotes.add(note.toModelType());
+        }
+
+        final PerformanceList modelPerformanceList = new PerformanceList(modelPerformanceNotes);
+
+        return new Person(modelName, modelPhone, modelEmail, modelAddress, modelTags, modelPerformanceList);
     }
 
 }
