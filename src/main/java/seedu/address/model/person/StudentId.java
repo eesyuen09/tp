@@ -14,7 +14,7 @@ public class StudentId {
     public static final String VALIDATION_REGEX = "\\d{4}";
 
     /** Tracks the most recently assigned student ID to ensure uniqueness. */
-    private static int lastId = 0;
+    private static int nextId = 0;
 
     /** The maximum allowed student ID number. */
     private static final int MAX = 9999;
@@ -33,10 +33,10 @@ public class StudentId {
      * @throws ExceedMaxStudentsException if the number of students exceeds {@code MAX}.
      */
     public StudentId() {
-        if (lastId > MAX) {
+        if (nextId > MAX) {
             throw new ExceedMaxStudentsException();
         }
-        value = lastId++;
+        value = nextId++;
     }
 
     /**
@@ -51,13 +51,13 @@ public class StudentId {
      */
     public StudentId(String studentId) {
         value = Integer.parseInt(studentId);
-        if (value > lastId) {
-            lastId = value + 1;
+        if (value >= nextId) {
+            nextId = value + 1;
         }
     }
 
     public static void rollbackId() {
-        lastId = lastId - 1;
+        nextId = nextId - 1;
     }
 
     /**
