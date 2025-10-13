@@ -27,6 +27,7 @@ import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
 import seedu.address.model.person.performance.PerformanceList;
+import seedu.address.model.person.StudentId;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -101,9 +102,10 @@ public class EditCommand extends Command {
         Email updatedEmail = editPersonDescriptor.getEmail().orElse(personToEdit.getEmail());
         Address updatedAddress = editPersonDescriptor.getAddress().orElse(personToEdit.getAddress());
         Set<Tag> updatedTags = editPersonDescriptor.getTags().orElse(personToEdit.getTags());
+        StudentId updatedStudentId = personToEdit.getStudentId();
         PerformanceList updatedPerformanceList = personToEdit.getPerformanceList();
 
-        return new Person(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags, updatedPerformanceList);
+        return new Person(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags, updatedStudentId, updatedPerformanceList);
     }
 
     @Override
@@ -140,6 +142,7 @@ public class EditCommand extends Command {
         private Email email;
         private Address address;
         private Set<Tag> tags;
+        private StudentId studentId;
 
         public EditPersonDescriptor() {}
 
@@ -149,6 +152,7 @@ public class EditCommand extends Command {
          */
         public EditPersonDescriptor(EditPersonDescriptor toCopy) {
             setName(toCopy.name);
+            setStudentId(toCopy.studentId);
             setPhone(toCopy.phone);
             setEmail(toCopy.email);
             setAddress(toCopy.address);
@@ -168,6 +172,14 @@ public class EditCommand extends Command {
 
         public Optional<Name> getName() {
             return Optional.ofNullable(name);
+        }
+
+        public void setStudentId(StudentId studentId) {
+            this.studentId = studentId;
+        }
+
+        public Optional<StudentId> getStudentId() {
+            return Optional.ofNullable(studentId);
         }
 
         public void setPhone(Phone phone) {
@@ -234,6 +246,7 @@ public class EditCommand extends Command {
         public String toString() {
             return new ToStringBuilder(this)
                     .add("name", name)
+                    .add("student id", studentId)
                     .add("phone", phone)
                     .add("email", email)
                     .add("address", address)
