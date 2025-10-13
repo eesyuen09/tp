@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox id= "attendacePane" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+    <padding>
+        <Insets top="5" right="5" bottom="5" left="15" />
+    </padding>
+<Label fx:id="header" styleClass="cell_big_label">
+    <padding>
+        <Insets bottom="10" />
+    </padding>
+</Label>
+
+    <VBox fx:id="attendanceRecords" spacing="5" />
+</VBox>
