@@ -20,6 +20,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.exceptions.DuplicatePersonException;
+import seedu.address.model.tag.ClassTag;
+import seedu.address.model.tag.exceptions.DuplicateClassTagException;
 import seedu.address.testutil.PersonBuilder;
 
 public class AddressBookTest {
@@ -89,11 +91,34 @@ public class AddressBookTest {
         assertEquals(expected, addressBook.toString());
     }
 
+    @Test
+    public void hasClassTag_nullClassTag_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> addressBook.hasClassTag(null));
+    }
+
+    @Test
+    public void hasClassTag_tagNotInAddressBook_returnsFalse() {
+        assertFalse(addressBook.hasClassTag(new ClassTag("Maths")));
+    }
+
+    @Test
+    public void hasClassTag_tagInAddressBook_returnsTrue() {
+        addressBook.addClassTag(new ClassTag("Maths"));
+        assertTrue(addressBook.hasClassTag(new ClassTag("Maths")));
+    }
+
+    @Test
+    public void addClassTag_duplicateTag_throwsDuplicateClassTagException() {
+        addressBook.addClassTag(new ClassTag("Maths"));
+        assertThrows(DuplicateClassTagException.class, () -> addressBook.addClassTag(new ClassTag("Maths")));
+    }
+
     /**
      * A stub ReadOnlyAddressBook whose persons list can violate interface constraints.
      */
     private static class AddressBookStub implements ReadOnlyAddressBook {
         private final ObservableList<Person> persons = FXCollections.observableArrayList();
+        private final ObservableList<seedu.address.model.tag.ClassTag> classTags = FXCollections.observableArrayList();
 
         AddressBookStub(Collection<Person> persons) {
             this.persons.setAll(persons);
@@ -103,6 +128,13 @@ public class AddressBookTest {
         public ObservableList<Person> getPersonList() {
             return persons;
         }
+
+        @Override
+        public ObservableList<seedu.address.model.tag.ClassTag> getClassTagList() {
+            return classTags;
+        }
+
+
     }
 
 }

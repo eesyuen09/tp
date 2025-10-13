@@ -15,5 +15,6 @@ public class CliSyntax {
     public static final Prefix PREFIX_DATE = new Prefix("d/");
     public static final Prefix PREFIX_NOTE = new Prefix("pn/");
     public static final Prefix PREFIX_INDEX = new Prefix("i/");
+    public static final Prefix PREFIX_CLASSTAG = new Prefix("t/");
 
 }
