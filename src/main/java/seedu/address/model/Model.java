@@ -96,4 +96,10 @@ public interface Model {
      * {@code classTag} must not already exist in the address book.
      */
     void addClassTag(ClassTag toAdd);
+
+    /**
+     * Deletes the given class tag.
+     * The class tag must exist.
+     */
+    void deleteClassTag(ClassTag toDelete);
 }

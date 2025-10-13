@@ -8,8 +8,8 @@ import java.util.List;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import seedu.address.model.person.exceptions.ClassTagNotFoundException;
-import seedu.address.model.person.exceptions.DuplicateClassTagException;
+import seedu.address.model.tag.exceptions.ClassTagNotFoundException;
+import seedu.address.model.tag.exceptions.DuplicateClassTagException;
 
 
 /**
@@ -97,6 +97,11 @@ public class UniqueClassTagList implements Iterable<ClassTag> {
     @Override
     public int hashCode() {
         return internalList.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return internalList.toString();
     }
 
     /**

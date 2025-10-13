@@ -1,4 +1,4 @@
-package seedu.address.model.person.exceptions;
+package seedu.address.model.tag.exceptions;
 
 /**
  * Signals that the operation will result in duplicate ClassTags. (Class Tags are considered duplicates if they

@@ -16,6 +16,8 @@ import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
+import seedu.address.model.tag.ClassTag;
+import seedu.address.model.tag.exceptions.DuplicateClassTagException;
 import seedu.address.testutil.AddressBookBuilder;
 
 public class ModelManagerTest {
@@ -91,6 +93,32 @@ public class ModelManagerTest {
     @Test
     public void getFilteredPersonList_modifyList_throwsUnsupportedOperationException() {
         assertThrows(UnsupportedOperationException.class, () -> modelManager.getFilteredPersonList().remove(0));
+    }
+
+    //=========== ClassTag Tests ===================================================================
+
+    @Test
+    public void hasClassTag_nullClassTag_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> modelManager.hasClassTag(null));
+    }
+
+    @Test
+    public void hasClassTag_tagNotInAddressBook_returnsFalse() {
+        assertFalse(modelManager.hasClassTag(new ClassTag("NotInBook")));
+    }
+
+    @Test
+    public void hasClassTag_tagInAddressBook_returnsTrue() {
+        ClassTag tag = new ClassTag("InBook");
+        modelManager.addClassTag(tag);
+        assertTrue(modelManager.hasClassTag(tag));
+    }
+
+    @Test
+    public void addClassTag_duplicateTag_throwsDuplicateClassTagException() {
+        ClassTag tag = new ClassTag("Duplicate");
+        modelManager.addClassTag(tag);
+        assertThrows(DuplicateClassTagException.class, () -> modelManager.addClassTag(tag));
     }
 
     @Test

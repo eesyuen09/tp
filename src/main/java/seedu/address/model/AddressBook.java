@@ -3,6 +3,7 @@ package seedu.address.model;
 import static java.util.Objects.requireNonNull;
 
 import java.util.List;
+import java.util.Objects;
 
 import javafx.collections.ObservableList;
 import seedu.address.commons.util.ToStringBuilder;
@@ -59,6 +60,7 @@ public class AddressBook implements ReadOnlyAddressBook {
         requireNonNull(newData);
 
         setPersons(newData.getPersonList());
+        setClassTags(newData.getClassTagList());
     }
 
     //// classtag-level operations
@@ -77,6 +79,22 @@ public class AddressBook implements ReadOnlyAddressBook {
      */
     public void addClassTag(ClassTag c) {
         classTags.add(c);
+    }
+
+    /**
+     * Removes {@code key} from this {@code AddressBook}.
+     * {@code key} must exist in the address book.
+     */
+    public void deleteClassTag(ClassTag key) {
+        classTags.remove(key);
+    }
+
+    /**
+     * Replaces the contents of the class tag list with {@code classTags}.
+     * {@code classTags} must not contain duplicate tags.
+     */
+    public void setClassTags(List<ClassTag> classTags) {
+        this.classTags.setClassTags(classTags);
     }
 
     //// person-level operations
@@ -147,11 +165,12 @@ public class AddressBook implements ReadOnlyAddressBook {
         }
 
         AddressBook otherAddressBook = (AddressBook) other;
-        return persons.equals(otherAddressBook.persons);
+        return persons.equals(otherAddressBook.persons)
+                && classTags.equals(otherAddressBook.classTags);
     }
 
     @Override
     public int hashCode() {
-        return persons.hashCode();
+        return Objects.hash(persons, classTags);
     }
 }

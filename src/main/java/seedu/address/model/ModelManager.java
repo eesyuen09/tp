@@ -115,12 +115,17 @@ public class ModelManager implements Model {
     @Override
     public boolean hasClassTag(ClassTag classTag) {
         requireNonNull(classTag);
-        return addressBook.hasClassTag(classTag); // Delegate the call to AddressBook
+        return addressBook.hasClassTag(classTag);
     }
 
     @Override
     public void addClassTag(ClassTag classTag) {
-        addressBook.addClassTag(classTag); // Delegate the call to AddressBook
+        addressBook.addClassTag(classTag);
+    }
+
+    @Override
+    public void deleteClassTag(ClassTag classTag) {
+        addressBook.deleteClassTag(classTag);
     }
 
     //=========== Filtered Person List Accessors =============================================================

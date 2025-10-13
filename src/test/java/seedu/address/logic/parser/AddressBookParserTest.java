@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.Messages.MESSAGE_UNKNOWN_COMMAND;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_CLASSTAG;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 
@@ -13,6 +14,7 @@ import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.logic.commands.AddClassTagCommand;
 import seedu.address.logic.commands.AddCommand;
 import seedu.address.logic.commands.AttendanceCommand;
 import seedu.address.logic.commands.ClassTagCommand;
@@ -27,6 +29,7 @@ import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.Person;
+import seedu.address.model.tag.ClassTag;
 import seedu.address.testutil.EditPersonDescriptorBuilder;
 import seedu.address.testutil.PersonBuilder;
 import seedu.address.testutil.PersonUtil;
@@ -91,10 +94,11 @@ public class AddressBookParserTest {
     }
 
     @Test
-    public void parseCommand_tagClass() throws Exception {
-        final String expectedMessage = "Not yet implemented";
-        assertThrows(ParseException.class, expectedMessage, () -> parser.parseCommand(
-                ClassTagCommand.COMMAND_WORD + " -a t/someTag"));
+    public void parseCommand_addClassTag() throws Exception {
+        ClassTag tag = new ClassTag("MyClass");
+        AddClassTagCommand command = (AddClassTagCommand) parser.parseCommand(ClassTagCommand.COMMAND_WORD
+                + " -a " + PREFIX_CLASSTAG + "MyClass");
+        assertEquals(new AddClassTagCommand(tag), command);
     }
 
     @Test

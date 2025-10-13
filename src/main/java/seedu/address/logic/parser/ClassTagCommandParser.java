@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 import seedu.address.logic.commands.AddClassTagCommand;
 import seedu.address.logic.commands.ClassTagCommand;
 import seedu.address.logic.commands.Command;
+import seedu.address.logic.commands.DeleteClassTagCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.tag.ClassTag;
 
@@ -26,9 +27,22 @@ public class ClassTagCommandParser implements Parser<Command> {
         ArgumentMultimap argMultimap =
                 ArgumentTokenizer.tokenize(args, PREFIX_CLASSTAG);
 
+        String preamble = argMultimap.getPreamble().trim();
+
+        if (preamble.isEmpty()) {
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, ClassTagCommand.MESSAGE_USAGE));
+        }
+
+        String commandFlag = preamble.split("\\s+")[0];
+
         // Check for the add flag '-a'
-        if (argMultimap.getPreamble().equalsIgnoreCase(AddClassTagCommand.COMMAND_WORD)) {
+        if (commandFlag.equalsIgnoreCase(AddClassTagCommand.COMMAND_WORD)) {
             return parseAddCommand(argMultimap);
+        }
+
+        // Check for the delete flag '-d'
+        if (commandFlag.equalsIgnoreCase(DeleteClassTagCommand.COMMAND_WORD)) {
+            return parseDeleteCommand(argMultimap);
         }
 
         // Add logic for other flags like '-d', '-r' here in the future
@@ -52,6 +66,25 @@ public class ClassTagCommandParser implements Parser<Command> {
         ClassTag classTag = ParserUtil.parseClassTag(argMultimap.getValue(PREFIX_CLASSTAG).get());
 
         return new AddClassTagCommand(classTag);
+    }
+
+    /**
+     * Parses the arguments for the delete class tag command.
+     * @param argMultimap The argument multimap containing the parsed arguments.
+     * @return A new DeleteClassTagCommand.
+     * @throws ParseException If the arguments are invalid.
+     */
+    private DeleteClassTagCommand parseDeleteCommand(ArgumentMultimap argMultimap) throws ParseException {
+        if (!arePrefixesPresent(argMultimap, PREFIX_CLASSTAG)
+                || argMultimap.getValue(PREFIX_CLASSTAG).isEmpty()) {
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                    DeleteClassTagCommand.MESSAGE_USAGE));
+        }
+
+        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_CLASSTAG);
+        ClassTag classTag = ParserUtil.parseClassTag(argMultimap.getValue(PREFIX_CLASSTAG).get());
+
+        return new DeleteClassTagCommand(classTag);
     }
 
     /**
