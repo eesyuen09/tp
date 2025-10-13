@@ -8,6 +8,8 @@ import javafx.collections.ObservableList;
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.UniquePersonList;
+import seedu.address.model.tag.ClassTag;
+import seedu.address.model.tag.UniqueClassTagList;
 
 /**
  * Wraps all data at the address-book level
@@ -16,6 +18,7 @@ import seedu.address.model.person.UniquePersonList;
 public class AddressBook implements ReadOnlyAddressBook {
 
     private final UniquePersonList persons;
+    private final UniqueClassTagList classTags;
 
     /*
      * The 'unusual' code block below is a non-static initialization block, sometimes used to avoid duplication
@@ -26,6 +29,7 @@ public class AddressBook implements ReadOnlyAddressBook {
      */
     {
         persons = new UniquePersonList();
+        classTags = new UniqueClassTagList();
     }
 
     public AddressBook() {}
@@ -55,6 +59,24 @@ public class AddressBook implements ReadOnlyAddressBook {
         requireNonNull(newData);
 
         setPersons(newData.getPersonList());
+    }
+
+    //// classtag-level operations
+
+    /**
+     * Returns true if a class tag with the same name as {@code classTag} exists in the address book.
+     */
+    public boolean hasClassTag(ClassTag classTag) {
+        requireNonNull(classTag);
+        return classTags.contains(classTag);
+    }
+
+    /**
+     * Adds a class tag to the address book.
+     * The tag must not already exist in the address book.
+     */
+    public void addClassTag(ClassTag c) {
+        classTags.add(c);
     }
 
     //// person-level operations
@@ -106,6 +128,11 @@ public class AddressBook implements ReadOnlyAddressBook {
     @Override
     public ObservableList<Person> getPersonList() {
         return persons.asUnmodifiableObservableList();
+    }
+
+    @Override
+    public ObservableList<ClassTag> getClassTagList() {
+        return classTags.asUnmodifiableObservableList();
     }
 
     @Override
