@@ -67,7 +67,7 @@ public class Person {
     }
 
     public Person withPerformanceList(PerformanceList newList) {
-        return new Person(this.name, this.phone, this.email, this.address, this.tags, newList);
+        return new Person(this.name, this.phone, this.email, this.address, this.tags, this.studentId, newList);
     }
 
     public Name getName() {

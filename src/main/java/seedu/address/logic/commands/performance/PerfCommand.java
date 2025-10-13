@@ -18,8 +18,8 @@ public abstract class PerfCommand extends Command {
      */
     protected Person findStudentById(Model model, String studentId) {
         return model.getAddressBook().getPersonList().stream()
-                .filter(p -> p.getTags().stream().anyMatch(t -> t.tagName.equals(studentId)))
+                .filter(p -> p.getStudentId().toString().equals(studentId))
                 .findFirst()
-                .orElse(null); // placeholder; will be replaced when StudentId is added
+                .orElse(null);
     }
 }
