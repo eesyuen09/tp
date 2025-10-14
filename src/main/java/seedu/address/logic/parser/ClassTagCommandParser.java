@@ -6,12 +6,14 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_CLASSTAG;
 
 import java.util.stream.Stream;
 
-import seedu.address.logic.commands.AddClassTagCommand;
-import seedu.address.logic.commands.ClassTagCommand;
 import seedu.address.logic.commands.Command;
-import seedu.address.logic.commands.DeleteClassTagCommand;
+import seedu.address.logic.commands.classtagcommands.AddClassTagCommand;
+import seedu.address.logic.commands.classtagcommands.ClassTagCommand;
+import seedu.address.logic.commands.classtagcommands.DeleteClassTagCommand;
+import seedu.address.logic.commands.classtagcommands.ListClassTagCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.tag.ClassTag;
+
 
 /**
  * Parses input arguments and creates the correct Command object for tag-related operations.
@@ -35,19 +37,22 @@ public class ClassTagCommandParser implements Parser<Command> {
 
         String commandFlag = preamble.split("\\s+")[0];
 
-        // Check for the add flag '-a'
-        if (commandFlag.equalsIgnoreCase(AddClassTagCommand.COMMAND_WORD)) {
+        switch (commandFlag.toLowerCase()) {
+
+        case AddClassTagCommand.COMMAND_WORD:
             return parseAddCommand(argMultimap);
-        }
 
-        // Check for the delete flag '-d'
-        if (commandFlag.equalsIgnoreCase(DeleteClassTagCommand.COMMAND_WORD)) {
+        case DeleteClassTagCommand.COMMAND_WORD:
             return parseDeleteCommand(argMultimap);
+
+        case ListClassTagCommand.COMMAND_WORD:
+            return parseListCommand(argMultimap, preamble);
+
+        default:
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, ClassTagCommand.MESSAGE_USAGE));
         }
 
-        // Add logic for other flags like '-d', '-r' here in the future
 
-        throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, ClassTagCommand.MESSAGE_USAGE));
     }
 
     /**
@@ -85,6 +90,18 @@ public class ClassTagCommandParser implements Parser<Command> {
         ClassTag classTag = ParserUtil.parseClassTag(argMultimap.getValue(PREFIX_CLASSTAG).get());
 
         return new DeleteClassTagCommand(classTag);
+    }
+
+    /**
+     * Parses arguments for the {@code ListClassTagCommand}.
+     */
+    private ListClassTagCommand parseListCommand(ArgumentMultimap argMultimap, String preamble) throws ParseException {
+        // The list command should not have any arguments after the flag or any prefixes.
+        if (!preamble.equalsIgnoreCase(ListClassTagCommand.COMMAND_WORD)
+                || argMultimap.getValue(PREFIX_CLASSTAG).isPresent()) {
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, ListClassTagCommand.MESSAGE_USAGE));
+        }
+        return new ListClassTagCommand();
     }
 
     /**

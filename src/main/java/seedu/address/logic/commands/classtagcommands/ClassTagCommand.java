@@ -1,4 +1,6 @@
-package seedu.address.logic.commands;
+package seedu.address.logic.commands.classtagcommands;
+
+import seedu.address.logic.commands.Command;
 
 /**
  * Create a class tag in Tuto
