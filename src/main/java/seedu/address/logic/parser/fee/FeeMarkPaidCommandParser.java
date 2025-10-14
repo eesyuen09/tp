@@ -17,8 +17,10 @@ import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.Month;
 import seedu.address.model.person.StudentId;
 
+/**
+ * Parses input arguments and creates a new FeeMarkPaidCommand object
+ */
 public class FeeMarkPaidCommandParser implements Parser<Command> {
-
     /**
      * Parses the given {@code String} of arguments in the context of the FeeMarkPaidCommand
      * and returns a command object for execution.
@@ -43,5 +45,4 @@ public class FeeMarkPaidCommandParser implements Parser<Command> {
     private static boolean arePrefixesPresent(ArgumentMultimap m, Prefix... prefixes) {
         return Stream.of(prefixes).allMatch(p -> m.getValue(p).isPresent());
     }
-
 }

@@ -17,6 +17,9 @@ import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.Month;
 import seedu.address.model.person.StudentId;
 
+/**
+ * Parses input arguments and creates a new FeeMarkUnpaidCommand object
+ */
 public class FeeMarkUnpaidCommandParser implements Parser<Command> {
 
     /**
@@ -44,3 +47,4 @@ public class FeeMarkUnpaidCommandParser implements Parser<Command> {
         return Stream.of(prefixes).allMatch(p -> m.getValue(p).isPresent());
     }
 }
+

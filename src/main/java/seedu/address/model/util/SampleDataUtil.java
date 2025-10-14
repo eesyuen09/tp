@@ -23,7 +23,7 @@ public class SampleDataUtil {
         return new Person[] {
             new Person(new Name("Alex Yeoh"), new Phone("87438807"), new Email("alexyeoh@example.com"),
                 new Address("Blk 30 Geylang Street 29, #06-40"), getTagSet("friends"),
-                    new StudentId(),new Month("0825")),
+                    new StudentId(), new Month("0825")),
             new Person(new Name("Bernice Yu"), new Phone("99272758"), new Email("berniceyu@example.com"),
                 new Address("Blk 30 Lorong 3 Serangoon Gardens, #07-18"),
                 getTagSet("colleagues", "friends"), new StudentId(), new Month("0625")),
@@ -38,7 +38,7 @@ public class SampleDataUtil {
                 getTagSet("classmates"), new StudentId(), new Month("0125")),
             new Person(new Name("Roy Balakrishnan"), new Phone("92624417"), new Email("royb@example.com"),
                 new Address("Blk 45 Aljunied Street 85, #11-31"),
-                getTagSet("colleagues"), new StudentId(),  new Month("0625")),
+                getTagSet("colleagues"), new StudentId(), new Month("0625")),
         };
     }
 

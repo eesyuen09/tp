@@ -38,6 +38,4 @@ public class FeeFilterUnpaidCommand extends FilterCommand {
                 || (other instanceof FeeFilterUnpaidCommand
                 && month.equals(((FeeFilterUnpaidCommand) other).month));
     }
-
-
 }

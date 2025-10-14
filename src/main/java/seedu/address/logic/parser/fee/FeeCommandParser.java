@@ -36,5 +36,4 @@ public class FeeCommandParser implements Parser<Command> {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, FeeCommand.MESSAGE_USAGE));
         }
     }
-
 }

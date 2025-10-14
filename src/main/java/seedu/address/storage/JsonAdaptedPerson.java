@@ -41,7 +41,7 @@ class JsonAdaptedPerson {
     public JsonAdaptedPerson(@JsonProperty("name") String name, @JsonProperty("phone") String phone,
             @JsonProperty("email") String email, @JsonProperty("address") String address,
             @JsonProperty("tags") List<JsonAdaptedTag> tags, @JsonProperty("studentId") String studentId,
-                             @JsonProperty("enrolledMonth")  String enrolledMonth) {
+                             @JsonProperty("enrolledMonth") String enrolledMonth) {
         this.name = name;
         this.phone = phone;
         this.email = email;
@@ -62,7 +62,7 @@ class JsonAdaptedPerson {
         phone = source.getPhone().value;
         email = source.getEmail().value;
         address = source.getAddress().value;
-        enrolledMonth = source.getEnrolledMonth().asMMYY();
+        enrolledMonth = source.getEnrolledMonth().toString();
         tags.addAll(source.getTags().stream()
                 .map(JsonAdaptedTag::new)
                 .collect(Collectors.toList()));
@@ -121,13 +121,13 @@ class JsonAdaptedPerson {
 
         final StudentId modelStudentId = new StudentId(studentId);
 
-        final Month modelEnrolledMonth =
-                (enrolledMonth != null && Month.isValidMonth(enrolledMonth))
-                        ? new Month(enrolledMonth)
-                        : Month.now();
+        final Month modelEnrolledMonth = (enrolledMonth != null && Month.isValidMonth(enrolledMonth))
+            ? new Month(enrolledMonth)
+            : Month.now();
 
         final Set<Tag> modelTags = new HashSet<>(personTags);
-        return new Person(modelName, modelPhone, modelEmail, modelAddress, modelTags, modelStudentId,  modelEnrolledMonth);
+        return new Person(modelName, modelPhone, modelEmail, modelAddress, modelTags,
+            modelStudentId, modelEnrolledMonth);
     }
 
 }

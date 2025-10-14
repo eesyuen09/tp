@@ -19,12 +19,18 @@ public class FeeTracker {
 
     private final Map<StudentId, Map<Month, FeeState>> records = new LinkedHashMap<>();
 
+    /**
+     * Mark the student with the studentId id as paid
+     */
     public void markPaid(StudentId id, Month month) {
         requireNonNull(id);
         requireNonNull(month);
         records.computeIfAbsent(id, k -> new LinkedHashMap<>()).put(month, FeeState.PAID);
     }
 
+    /**
+     * Mark the student with the studentId id as unpaid
+     */
     public void markUnpaid(StudentId id, Month month) {
         requireNonNull(id);
         requireNonNull(month);
@@ -88,5 +94,4 @@ public class FeeTracker {
         }
         return history;
     }
-
 }

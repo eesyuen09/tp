@@ -44,7 +44,8 @@ public final class Month {
      * Only checks for 4 digits and that MM is 01–12. YY (00–99) is accepted and mapped to 2000–2099.
      */
     public static boolean isValidMonth(String test) {
-        if (test == null || !test.matches(VALIDATION_REGEX)) {
+        requireNonNull(test);
+        if (!test.matches(VALIDATION_REGEX)) {
             return false;
         }
         int mm = Integer.parseInt(test.substring(0, 2));
@@ -53,7 +54,8 @@ public final class Month {
     }
 
     /** Returns the canonical storage representation "MMYY". */
-    public String asMMYY() {
+    @Override
+    public String toString() {
         int mm = yearMonth.getMonthValue();
         int yy = yearMonth.getYear() - YEAR_BASE; // back to 00–99
         return String.format("%02d%02d", mm, yy);
@@ -83,9 +85,7 @@ public final class Month {
      *
      * @param offset number of months to add (negative to subtract)
      * @return a new {@code Month} that is {@code const} months from this one
-     *
-     * Eg:
-     * new Month("0925").plusMonths(1)   // -> "1025"
+     *      Eg: new Month("0925").plusMonths(1) // "1025"
      */
     public Month plusMonths(int offset) {
         YearMonth ym = yearMonth.plusMonths(offset);
@@ -94,18 +94,12 @@ public final class Month {
         return new Month(mm + yy);
     }
 
+    /**
+     * Returns a boolean to check if the other month is before this month.
+     */
     public boolean isBefore(Month other) {
         requireNonNull(other);
         return this.yearMonth.isBefore(other.yearMonth);
-    }
-
-    public boolean isAfter(Month other) {
-        requireNonNull(other);
-        return this.yearMonth.isAfter(other.yearMonth);
-    }
-
-    public int compareTo(Month o) {
-        return this.yearMonth.compareTo(o.yearMonth);
     }
 
     /**
@@ -116,12 +110,6 @@ public final class Month {
     }
 
     @Override
-    public String toString() {
-        // Keep toString() stable for logs/storage; use asMMYY()
-        return asMMYY();
-    }
-
-    @Override
     public boolean equals(Object other) {
         if (other == this) {
             return true;
@@ -129,13 +117,13 @@ public final class Month {
         if (!(other instanceof Month)) {
             return false;
         }
-        Month o = (Month) other;
-        return yearMonth.equals(o.yearMonth);
+        Month otherMonth = (Month) other;
+        return yearMonth.equals(otherMonth.yearMonth);
     }
 
     @Override
     public int hashCode() {
         return yearMonth.hashCode();
     }
-
 }
+

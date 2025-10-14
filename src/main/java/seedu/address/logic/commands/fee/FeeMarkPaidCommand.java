@@ -65,6 +65,4 @@ public class FeeMarkPaidCommand extends FeeCommand {
         FeeMarkPaidCommand o = (FeeMarkPaidCommand) other;
         return studentId.equals(o.studentId) && month.equals(o.month);
     }
-
-
 }

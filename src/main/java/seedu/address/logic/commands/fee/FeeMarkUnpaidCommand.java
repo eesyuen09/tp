@@ -64,6 +64,4 @@ public class FeeMarkUnpaidCommand extends FeeCommand {
         FeeMarkUnpaidCommand o = (FeeMarkUnpaidCommand) other;
         return studentId.equals(o.studentId) && month.equals(o.month);
     }
-
-
 }

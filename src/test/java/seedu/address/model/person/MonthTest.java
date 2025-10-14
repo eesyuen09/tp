@@ -24,11 +24,11 @@ public class MonthTest {
         assertThrows(IllegalArgumentException.class, () -> new Month("AB25"));
         assertThrows(IllegalArgumentException.class, () -> new Month("09A5"));
         // wrong length
-        assertThrows(IllegalArgumentException.class, () -> new Month("925"));   // 3 digits
+        assertThrows(IllegalArgumentException.class, () -> new Month("925")); // 3 digits
         assertThrows(IllegalArgumentException.class, () -> new Month("09255")); // 5 digits
         // invalid month range
-        assertThrows(IllegalArgumentException.class, () -> new Month("0025"));  // 00 not allowed
-        assertThrows(IllegalArgumentException.class, () -> new Month("1325"));  // 13 not allowed
+        assertThrows(IllegalArgumentException.class, () -> new Month("0025")); // 00 not allowed
+        assertThrows(IllegalArgumentException.class, () -> new Month("1325")); // 13 not allowed
     }
 
     @Test
@@ -107,5 +107,4 @@ public class MonthTest {
         Month nov = new Month("1122");
         assertEquals("November 2022", nov.toHumanReadable());
     }
-
 }

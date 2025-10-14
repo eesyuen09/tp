@@ -55,7 +55,8 @@ public class Person {
      * @param tags       A set of tags associated with the person.
      * @param studentId  The student's unique ID.
      */
-    public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags, StudentId studentId, Month enrolledMonth) {
+    public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags,
+                  StudentId studentId, Month enrolledMonth) {
         requireAllNonNull(name, phone, email, address, tags, studentId);
         this.name = name;
         this.phone = phone;
