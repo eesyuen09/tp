@@ -12,14 +12,4 @@ public abstract class PerfCommand extends Command {
 
     public static final String COMMAND_WORD = "perf";
 
-    /**
-     * Utility: Find the student by ID in the model.
-     * Subclasses can use this once we introduce StudentId later.
-     */
-    protected Person findStudentById(Model model, String studentId) {
-        return model.getAddressBook().getPersonList().stream()
-                .filter(p -> p.getStudentId().toString().equals(studentId))
-                .findFirst()
-                .orElse(null);
-    }
 }

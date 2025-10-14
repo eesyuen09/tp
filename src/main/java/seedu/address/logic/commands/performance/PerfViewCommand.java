@@ -10,6 +10,7 @@ import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.StudentId;
 import seedu.address.model.person.performance.PerformanceNote;
 
 /**
@@ -22,13 +23,13 @@ public class PerfViewCommand extends PerfCommand {
             + "Parameters: "
             + PREFIX_STUDENTID + "STUDENTID ";
 
-    private final String studentId;
+    private final StudentId studentId;
 
     /**
      * Creates an PerfViewCommand to view performance notes of the student of given {@code studentId}.
      * @param studentId ID of the student to view the performance notes
      */
-    public PerfViewCommand(String studentId) {
+    public PerfViewCommand(StudentId studentId) {
         this.studentId = studentId;
     }
 
@@ -36,10 +37,8 @@ public class PerfViewCommand extends PerfCommand {
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
 
-        Person student = findStudentById(model, studentId);
-        if (student == null) {
-            throw new CommandException(PerfNotes.STUDENT_NOT_FOUND);
-        }
+        Person student = model.getPersonById(studentId)
+                .orElseThrow(() -> new CommandException(PerfNotes.STUDENT_NOT_FOUND));
 
         List<PerformanceNote> notes = student.getPerformanceList().asUnmodifiableList();
 

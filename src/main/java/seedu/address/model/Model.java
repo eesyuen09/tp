@@ -1,11 +1,13 @@
 package seedu.address.model;
 
 import java.nio.file.Path;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.StudentId;
 import seedu.address.model.person.performance.PerformanceNote;
 import seedu.address.model.tag.ClassTag;
 
@@ -114,4 +116,6 @@ public interface Model {
      * The class tag must exist.
      */
     void deleteClassTag(ClassTag toDelete);
+
+    Optional<Person> getPersonById(StudentId studentId);
 }

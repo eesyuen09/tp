@@ -12,7 +12,9 @@ import seedu.address.logic.commands.Command;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
+import seedu.address.model.ModelManager;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.StudentId;
 import seedu.address.model.person.performance.PerformanceList;
 import seedu.address.model.person.performance.PerformanceNote;
 
@@ -28,7 +30,7 @@ public class PerfAddCommand extends PerfCommand {
             + PREFIX_DATE + "DATE "
             + PREFIX_NOTE + "PERFORMANCE NOTE ";
 
-    private final String studentId;
+    private final StudentId studentId;
     private final String date;
     private final String note;
 
@@ -39,7 +41,7 @@ public class PerfAddCommand extends PerfCommand {
      * @param date date of the performance note
      * @param note the performance note to be added
      */
-    public PerfAddCommand(String studentId, String date, String note) {
+    public PerfAddCommand(StudentId studentId, String date, String note) {
         requireNonNull(studentId);
         requireNonNull(date);
         requireNonNull(note);
@@ -53,10 +55,8 @@ public class PerfAddCommand extends PerfCommand {
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
 
-        Person student = findStudentById(model, studentId);
-        if (student == null) {
-            throw new CommandException(PerfNotes.STUDENT_NOT_FOUND);
-        }
+        Person student = model.getPersonById(studentId)
+                .orElseThrow(() -> new CommandException(PerfNotes.STUDENT_NOT_FOUND));
 
         List<PerformanceNote> current = student.getPerformanceList().asUnmodifiableList();
         PerformanceList copy = new PerformanceList(new ArrayList<>(current));

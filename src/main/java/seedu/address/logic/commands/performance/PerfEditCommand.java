@@ -13,6 +13,7 @@ import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.StudentId;
 import seedu.address.model.person.performance.PerformanceList;
 import seedu.address.model.person.performance.PerformanceNote;
 
@@ -28,7 +29,7 @@ public class PerfEditCommand extends PerfCommand {
             + PREFIX_INDEX + "INDEX "
             + PREFIX_NOTE + "PERFORMANCE NOTE ";
 
-    private final String studentId;
+    private final StudentId studentId;
     private final int index;
     private final String note;
 
@@ -39,7 +40,7 @@ public class PerfEditCommand extends PerfCommand {
      * @param index index of the performance note to be edited
      * @param note the new performance note
      */
-    public PerfEditCommand(String studentId, int index, String note) {
+    public PerfEditCommand(StudentId studentId, int index, String note) {
         requireNonNull(studentId);
         requireNonNull(note);
 
@@ -52,10 +53,8 @@ public class PerfEditCommand extends PerfCommand {
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
 
-        Person student = findStudentById(model, studentId);
-        if (student == null) {
-            throw new CommandException(PerfNotes.STUDENT_NOT_FOUND);
-        }
+        Person student = model.getPersonById(studentId)
+                .orElseThrow(() -> new CommandException(PerfNotes.STUDENT_NOT_FOUND));
 
         List<PerformanceNote> current = student.getPerformanceList().asUnmodifiableList();
         PerformanceList copy = new PerformanceList(new ArrayList<>(current));

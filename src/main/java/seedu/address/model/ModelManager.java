@@ -184,6 +184,7 @@ public class ModelManager implements Model {
      * Retrieves a {@link Person} from the filtered list by their {@link StudentId}.
      *
      */
+    @Override
     public Optional<Person> getPersonById(StudentId studentId) {
         requireNonNull(studentId);
         return this.addressBook.getPersonList().stream()
