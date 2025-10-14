@@ -16,9 +16,9 @@ import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
+import seedu.address.model.person.StudentId;
 import seedu.address.model.tag.ClassTag;
 import seedu.address.model.tag.exceptions.DuplicateClassTagException;
-import seedu.address.model.person.StudentId;
 import seedu.address.testutil.AddressBookBuilder;
 
 public class ModelManagerTest {
