@@ -4,6 +4,7 @@ import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.nio.file.Path;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 
@@ -12,6 +13,7 @@ import javafx.collections.transformation.FilteredList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.LogsCenter;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.StudentId;
 import seedu.address.model.tag.ClassTag;
 
 /**
@@ -160,6 +162,17 @@ public class ModelManager implements Model {
         return addressBook.equals(otherModelManager.addressBook)
                 && userPrefs.equals(otherModelManager.userPrefs)
                 && filteredPersons.equals(otherModelManager.filteredPersons);
+    }
+
+
+    /**
+     * Retrieves a {@link Person} from the filtered list by their {@link StudentId}.
+     *
+     */
+    public Optional<Person> getPersonById(StudentId studentId) {
+        requireNonNull(studentId);
+        return this.addressBook.getPersonList().stream()
+                .filter(p -> p.getStudentId().equals(studentId)).findFirst();
     }
 
 }
