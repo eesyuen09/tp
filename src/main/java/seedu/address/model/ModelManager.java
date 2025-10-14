@@ -8,13 +8,11 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.LogsCenter;
 import seedu.address.model.person.Person;
-import seedu.address.model.person.performance.PerformanceNote;
 import seedu.address.model.person.StudentId;
 import seedu.address.model.tag.ClassTag;
 
@@ -27,7 +25,6 @@ public class ModelManager implements Model {
     private final AddressBook addressBook;
     private final UserPrefs userPrefs;
     private final FilteredList<Person> filteredPersons;
-    private final ObservableList<PerformanceNote> displayedPerformanceNotes = FXCollections.observableArrayList();
 
     /**
      * Initializes a ModelManager with the given addressBook and userPrefs.
@@ -148,18 +145,6 @@ public class ModelManager implements Model {
     public void updateFilteredPersonList(Predicate<Person> predicate) {
         requireNonNull(predicate);
         filteredPersons.setPredicate(predicate);
-    }
-
-    //=========== Performance Notes Accessors =============================================================
-
-    @Override
-    public ObservableList<PerformanceNote> getDisplayedPerformanceNotes() {
-        return FXCollections.unmodifiableObservableList(displayedPerformanceNotes);
-    }
-
-    @Override
-    public void setDisplayedPerformanceNotes(java.util.List<PerformanceNote> notes) {
-        displayedPerformanceNotes.setAll(notes == null ? java.util.List.of() : notes);
     }
 
     @Override

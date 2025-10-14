@@ -8,7 +8,6 @@ import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
-import seedu.address.model.person.performance.PerformanceNote;
 import seedu.address.model.tag.ClassTag;
 
 /**
@@ -88,17 +87,6 @@ public interface Model {
      * @throws NullPointerException if {@code predicate} is null.
      */
     void updateFilteredPersonList(Predicate<Person> predicate);
-
-    /**
-     * Returns an unmodifiable view of the performance notes to be displayed.
-     */
-    ObservableList<PerformanceNote> getDisplayedPerformanceNotes();
-
-    /**
-     * Sets the performance notes to be displayed to {@code notes}.
-     * @param notes List of performance notes to be displayed.
-     */
-    void setDisplayedPerformanceNotes(java.util.List<PerformanceNote> notes);
 
     /**
      * Returns true if a class tag with the same name as {@code classTag} exists in the address book.
