@@ -18,4 +18,5 @@ public abstract class FeeCommand extends Command {
                     + "  fee -up s/1234 m/1025\n"
                     + "  fee -v s/0123";
 
+
 }

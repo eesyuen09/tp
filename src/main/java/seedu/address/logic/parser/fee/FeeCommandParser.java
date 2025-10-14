@@ -7,6 +7,9 @@ import seedu.address.logic.commands.fee.FeeCommand;
 import seedu.address.logic.parser.Parser;
 import seedu.address.logic.parser.exceptions.ParseException;
 
+/**
+ * Parses input arguments for the {@code fee} command family.
+ */
 public class FeeCommandParser implements Parser<Command> {
 
     @Override
@@ -27,10 +30,11 @@ public class FeeCommandParser implements Parser<Command> {
             return new FeeMarkPaidCommandParser().parse(remainder);
         case "-up":
             return new FeeMarkUnpaidCommandParser().parse(remainder);
-//        case "-v":
-//            return new FeeViewCommandParser().parse(remainder);
+        // case "-v":
+        //     return new FeeViewCommandParser().parse(remainder);
         default:
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, FeeCommand.MESSAGE_USAGE));
         }
     }
+
 }

@@ -140,6 +140,12 @@ public class ParserUtil {
         return new ClassTag(trimmedClassTag);
     }
 
+    /**
+     * Parses a {@code String StudentId} into a {@code StudentId}.
+     * Leading and trailing whitespaces will be trimmed.
+     *
+     * @throws ParseException if the given {@code StudentId} is invalid.
+     */
     public static StudentId parseStudentId(String studentId) throws ParseException {
         requireNonNull(studentId);
         String trimmedStudentId = studentId.trim();
@@ -149,6 +155,12 @@ public class ParserUtil {
         return new StudentId(trimmedStudentId);
     }
 
+    /**
+     * Parses a {@code String Month} into a {@code Month}.
+     * Leading and trailing whitespaces will be trimmed.
+     *
+     * @throws ParseException if the given {@code Month} is invalid.
+     */
     public static Month parseMonth(String month) throws ParseException {
         requireNonNull(month);
         String trimmedMonth = month.trim();

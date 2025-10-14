@@ -1,7 +1,6 @@
 package seedu.address.logic.commands.fee;
 
 import static java.util.Objects.requireNonNull;
-
 import static seedu.address.logic.Messages.MESSAGE_STUDENT_ID_NOT_FOUND;
 
 import java.util.Optional;
@@ -57,12 +56,15 @@ public class FeeMarkPaidCommand extends FeeCommand {
 
     @Override
     public boolean equals(Object other) {
-        if (other == this) return true;
+        if (other == this) {
+            return true;
+        }
         if (!(other instanceof FeeMarkPaidCommand)) {
             return false;
         }
         FeeMarkPaidCommand o = (FeeMarkPaidCommand) other;
         return studentId.equals(o.studentId) && month.equals(o.month);
     }
+
 
 }

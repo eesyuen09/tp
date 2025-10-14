@@ -19,6 +19,11 @@ import seedu.address.model.person.StudentId;
 
 public class FeeMarkUnpaidCommandParser implements Parser<Command> {
 
+    /**
+     * Parses the given {@code String} of arguments in the context of the FeeMarkUnpaidCommand
+     * and returns a command object for execution.
+     * @throws ParseException if the user input does not conform the expected format
+     */
     @Override
     public Command parse(String args) throws ParseException {
         ArgumentMultimap map = ArgumentTokenizer.tokenize(args, PREFIX_STUDENTID, PREFIX_MONTH);

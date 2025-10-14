@@ -1,10 +1,9 @@
 package seedu.address.logic.commands.fee;
 
 import static java.util.Objects.requireNonNull;
+import static seedu.address.logic.Messages.MESSAGE_STUDENT_ID_NOT_FOUND;
 
 import java.util.Optional;
-
-import static seedu.address.logic.Messages.MESSAGE_STUDENT_ID_NOT_FOUND;
 
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
@@ -27,6 +26,12 @@ public class FeeMarkUnpaidCommand extends FeeCommand {
     private final StudentId studentId;
     private final Month month;
 
+    /**
+     * Creates a new {@code FeeMarkUnpaidCommand} to mark a student as paid.
+     *
+     * @param studentId The unique student ID of the student.
+     * @param month The month to be marked as unpaid.
+     */
     public FeeMarkUnpaidCommand(StudentId studentId, Month month) {
         requireNonNull(studentId);
         requireNonNull(month);
@@ -50,10 +55,15 @@ public class FeeMarkUnpaidCommand extends FeeCommand {
 
     @Override
     public boolean equals(Object other) {
-        if (other == this) return true;
-        if (!(other instanceof FeeMarkUnpaidCommand)) return false;
+        if (other == this) {
+            return true;
+        }
+        if (!(other instanceof FeeMarkUnpaidCommand)) {
+            return false;
+        }
         FeeMarkUnpaidCommand o = (FeeMarkUnpaidCommand) other;
         return studentId.equals(o.studentId) && month.equals(o.month);
     }
+
 
 }

@@ -33,7 +33,7 @@ public class FilterCommandParser implements Parser<Command> {
         final String remainder = tokens.length > 1 ? tokens[1] : "";
 
         switch (flag) {
-        case FeeFilterPaidCommand.COMMAND_FLAG:   // "-p"
+        case FeeFilterPaidCommand.COMMAND_FLAG: // "-p"
             return parsePaid(remainder);
         case FeeFilterUnpaidCommand.COMMAND_FLAG: // "-up"
             return parseUnpaid(remainder);
@@ -71,4 +71,5 @@ public class FilterCommandParser implements Parser<Command> {
     private static boolean arePrefixesPresent(ArgumentMultimap m, Prefix... prefixes) {
         return Stream.of(prefixes).allMatch(p -> m.getValue(p).isPresent());
     }
+
 }

@@ -111,18 +111,18 @@ public interface Model {
      */
     Optional<Person> getPersonById(StudentId studentId);
 
-    /**
+     /**
      * Returns true if a person with the given {@code studentId} exists.
      */
      boolean hasStudentId(StudentId studentId);
 
-    /**
+     /**
      * Marks the given student as PAID for the given month.
      * The student must already exist in the address book.
      */
      void markPaid(StudentId studentId, Month month);
 
-    /**
+     /**
      * Marks the given student as UNPAID for the given month.
      * The student must already exist in the address book.
      */
