@@ -9,6 +9,7 @@ import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
 import seedu.address.model.person.StudentId;
+import seedu.address.model.person.performance.PerformanceList;
 import seedu.address.model.tag.Tag;
 import seedu.address.model.util.SampleDataUtil;
 
@@ -29,6 +30,7 @@ public class PersonBuilder {
     private Address address;
     private Set<Tag> tags;
     private StudentId studentId;
+    private PerformanceList performanceList;
 
     /**
      * Creates a {@code PersonBuilder} with the default details.
@@ -40,6 +42,7 @@ public class PersonBuilder {
         address = new Address(DEFAULT_ADDRESS);
         studentId = new StudentId(DEFAULT_STUDENTID);
         tags = new HashSet<>();
+        performanceList = new PerformanceList();
     }
 
     /**
@@ -52,6 +55,7 @@ public class PersonBuilder {
         address = personToCopy.getAddress();
         studentId = personToCopy.getStudentId();
         tags = new HashSet<>(personToCopy.getTags());
+        performanceList = personToCopy.getPerformanceList();
     }
 
     /**
@@ -102,8 +106,16 @@ public class PersonBuilder {
         return this;
     }
 
+    /**
+     * Sets the {@code PerformanceList} of the {@code Person} that we are building.
+     */
+    public PersonBuilder withPerformanceList(PerformanceList performanceList) {
+        this.performanceList = performanceList;
+        return this;
+    }
+
     public Person build() {
-        return new Person(name, phone, email, address, tags, studentId);
+        return new Person(name, phone, email, address, tags, studentId, performanceList);
     }
 
 }
