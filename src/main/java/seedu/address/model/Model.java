@@ -7,6 +7,7 @@ import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.performance.PerformanceNote;
+import seedu.address.model.tag.ClassTag;
 
 /**
  * The API of the Model component.
@@ -96,4 +97,21 @@ public interface Model {
      * @param notes List of performance notes to be displayed.
      */
     void setDisplayedPerformanceNotes(java.util.List<PerformanceNote> notes);
+
+    /**
+     * Returns true if a class tag with the same name as {@code classTag} exists in the address book.
+     */
+    boolean hasClassTag(ClassTag toAdd);
+
+    /**
+     * Adds the given class tag.
+     * {@code classTag} must not already exist in the address book.
+     */
+    void addClassTag(ClassTag toAdd);
+
+    /**
+     * Deletes the given class tag.
+     * The class tag must exist.
+     */
+    void deleteClassTag(ClassTag toDelete);
 }
