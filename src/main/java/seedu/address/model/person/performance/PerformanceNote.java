@@ -7,6 +7,9 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Objects;
 
+/**
+ * Represents a performance note for a student, consisting of a date and a note.
+ */
 public class PerformanceNote {
     public static final int MAX_NOTE_LEN = 200;
     private static final DateTimeFormatter IN = DateTimeFormatter.ofPattern("ddMMyyyy");

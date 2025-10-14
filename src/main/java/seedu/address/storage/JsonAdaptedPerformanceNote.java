@@ -12,6 +12,12 @@ public class JsonAdaptedPerformanceNote {
     private final String date; // ddMMyyyy
     private final String note;
 
+    /**
+     * Constructs a {@code JsonAdaptedPerformanceNote} with the given performance note details.
+     *
+     * @param date the date of the performance note
+     * @param note the content of the performance note
+     */
     @JsonCreator
     public JsonAdaptedPerformanceNote(@JsonProperty("date") String date,
                                       @JsonProperty("note") String note) {

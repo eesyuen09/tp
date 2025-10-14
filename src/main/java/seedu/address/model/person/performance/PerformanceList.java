@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * A list of performance notes.
+ */
 public class PerformanceList {
     private final List<PerformanceNote> notes = new ArrayList<>();
 
@@ -20,8 +23,18 @@ public class PerformanceList {
      *
      * @param initial Initial list of performance notes.
      */
-    public PerformanceList(List<PerformanceNote> initial) { requireNonNull(initial); for (var n : initial) add(n); }
+    public PerformanceList(List<PerformanceNote> initial) {
+        requireNonNull(initial);
+        for (var n : initial) {
+            add(n);
+        }
+    }
 
+    /**
+     * Adds a performance note to the list.
+     *
+     * @param note The performance note to be added.
+     */
     public void add(PerformanceNote note) {
         requireNonNull(note);
         if (indexOfDate(note.getDate()) != -1) {
