@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
+import seedu.address.model.person.StudentId;
 import seedu.address.testutil.AddressBookBuilder;
 
 public class ModelManagerTest {
@@ -128,5 +129,28 @@ public class ModelManagerTest {
         UserPrefs differentUserPrefs = new UserPrefs();
         differentUserPrefs.setAddressBookFilePath(Paths.get("differentFilePath"));
         assertFalse(modelManager.equals(new ModelManager(addressBook, differentUserPrefs)));
+    }
+
+    @Test
+    public void getPersonById_existingAndNonExistingId_returnsCorrectResult() {
+        modelManager.addPerson(ALICE);
+        modelManager.addPerson(BENSON);
+
+        // existing ID → should return Optional containing the correct person
+        assertTrue(modelManager.getPersonById(ALICE.getStudentId()).isPresent());
+        assertEquals(ALICE, modelManager.getPersonById(ALICE.getStudentId()).get());
+
+        // another existing ID
+        assertTrue(modelManager.getPersonById(BENSON.getStudentId()).isPresent());
+        assertEquals(BENSON, modelManager.getPersonById(BENSON.getStudentId()).get());
+
+        // non-existing ID → should return Optional.empty()
+        StudentId fakeId = new StudentId("4444");
+        assertTrue(modelManager.getPersonById(fakeId).isEmpty());
+    }
+
+    @Test
+    public void getPersonById_nullId_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> modelManager.getPersonById(null));
     }
 }

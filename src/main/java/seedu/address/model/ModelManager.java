@@ -154,7 +154,8 @@ public class ModelManager implements Model {
      */
     public Optional<Person> getPersonById(StudentId studentId) {
         requireNonNull(studentId);
-        return filteredPersons.stream().filter(p -> p.getStudentId().equals(studentId)).findFirst();
+        return this.addressBook.getPersonList().stream()
+                .filter(p -> p.getStudentId().equals(studentId)).findFirst();
     }
 
 }
