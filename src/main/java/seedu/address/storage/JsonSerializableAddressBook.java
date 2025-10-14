@@ -12,6 +12,7 @@ import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.model.AddressBook;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.person.Person;
+import seedu.address.model.tag.ClassTag;
 
 /**
  * An Immutable AddressBook that is serializable to JSON format.
@@ -20,8 +21,10 @@ import seedu.address.model.person.Person;
 class JsonSerializableAddressBook {
 
     public static final String MESSAGE_DUPLICATE_PERSON = "Persons list contains duplicate person(s).";
+    public static final String MESSAGE_DUPLICATE_CLASSTAG = "ClassTags list contains duplicate class tag(s).";
 
     private final List<JsonAdaptedPerson> persons = new ArrayList<>();
+    private final List<JsonAdaptedClassTag> classTags = new ArrayList<>();
 
     /**
      * Constructs a {@code JsonSerializableAddressBook} with the given persons.
@@ -29,6 +32,9 @@ class JsonSerializableAddressBook {
     @JsonCreator
     public JsonSerializableAddressBook(@JsonProperty("persons") List<JsonAdaptedPerson> persons) {
         this.persons.addAll(persons);
+        if (classTags != null) {
+            this.classTags.addAll(classTags);
+        }
     }
 
     /**
@@ -38,6 +44,7 @@ class JsonSerializableAddressBook {
      */
     public JsonSerializableAddressBook(ReadOnlyAddressBook source) {
         persons.addAll(source.getPersonList().stream().map(JsonAdaptedPerson::new).collect(Collectors.toList()));
+        classTags.addAll(source.getClassTagList().stream().map(JsonAdaptedClassTag::new).collect(Collectors.toList()));
     }
 
     /**
@@ -54,6 +61,15 @@ class JsonSerializableAddressBook {
             }
             addressBook.addPerson(person);
         }
+
+        for (JsonAdaptedClassTag jsonAdaptedClassTag : classTags) {
+            ClassTag classTag = jsonAdaptedClassTag.toModelType();
+            if (addressBook.hasClassTag(classTag)) {
+                throw new IllegalValueException(MESSAGE_DUPLICATE_CLASSTAG);
+            }
+            addressBook.addClassTag(classTag);
+        }
+
         return addressBook;
     }
 

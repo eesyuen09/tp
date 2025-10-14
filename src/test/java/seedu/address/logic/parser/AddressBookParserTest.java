@@ -14,10 +14,10 @@ import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 
-import seedu.address.logic.commands.AddClassTagCommand;
+import seedu.address.logic.commands.classtagcommands.AddClassTagCommand;
 import seedu.address.logic.commands.AddCommand;
 import seedu.address.logic.commands.AttendanceCommand;
-import seedu.address.logic.commands.ClassTagCommand;
+import seedu.address.logic.commands.classtagcommands.ClassTagCommand;
 import seedu.address.logic.commands.ClearCommand;
 import seedu.address.logic.commands.DeleteCommand;
 import seedu.address.logic.commands.EditCommand;

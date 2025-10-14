@@ -7,10 +7,10 @@ import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSucces
 
 import org.junit.jupiter.api.Test;
 
-import seedu.address.logic.commands.AddClassTagCommand;
-import seedu.address.logic.commands.ClassTagCommand;
-import seedu.address.logic.commands.DeleteClassTagCommand;
-import seedu.address.logic.commands.ListClassTagCommand;
+import seedu.address.logic.commands.classtagcommands.AddClassTagCommand;
+import seedu.address.logic.commands.classtagcommands.ClassTagCommand;
+import seedu.address.logic.commands.classtagcommands.DeleteClassTagCommand;
+import seedu.address.logic.commands.classtagcommands.ListClassTagCommand;
 import seedu.address.model.tag.ClassTag;
 
 public class ClassTagCommandParserTest {
