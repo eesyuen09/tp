@@ -1,0 +1,95 @@
+package seedu.address.model.person;
+
+import static java.util.Objects.requireNonNull;
+import static seedu.address.commons.util.AppUtil.checkArgument;
+
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
+
+/**
+ * Represents a Month (billing month) in MMYY format, e.g. "0925" = September 2025.
+ * Guarantees: immutable; is valid as declared in {@link #isValidMonth(String)}.
+ */
+public final class Month {
+
+    /**
+     * Accepts exactly 4 digits. Further semantic checks (01–12 for month) are done in {@link #isValidMonth(String)}.
+     */
+    public static final String VALIDATION_REGEX = "\\d{4}";
+
+    public static final String MESSAGE_CONSTRAINTS =
+            "Month must be in MMYY format where MM range from 01 to 12 (e.g., 0925 for September 2025).";
+
+    // Human-readable formatter, e.g., "September 2025"
+    private static final DateTimeFormatter HUMAN = DateTimeFormatter.ofPattern("MMMM yyyy");
+
+    // We interpret YY as 2000–2099 to keep things simple and future-proof for this app.
+    private static final int YEAR_BASE = 2000;
+
+    private final YearMonth yearMonth;
+
+    /**
+     * Constructs a {@code Month} from a MMYY string.
+     */
+    public Month(String mmYY) {
+        requireNonNull(mmYY);
+        checkArgument(isValidMonth(mmYY), MESSAGE_CONSTRAINTS);
+        int mm = Integer.parseInt(mmYY.substring(0, 2));
+        int yy = Integer.parseInt(mmYY.substring(2, 4));
+        this.yearMonth = YearMonth.of(YEAR_BASE + yy, mm);
+    }
+
+    /**
+     * Returns true if a given string is a valid month in MMYY format.
+     * Only checks for 4 digits and that MM is 01–12. YY (00–99) is accepted and mapped to 2000–2099.
+     */
+    public static boolean isValidMonth(String test) {
+        if (test == null || !test.matches(VALIDATION_REGEX)) {
+            return false;
+        }
+        int mm = Integer.parseInt(test.substring(0, 2));
+        // 01–12 are valid months
+        return mm >= 1 && mm <= 12;
+    }
+
+    /** Returns the canonical storage representation "MMYY". */
+    public String asMMYY() {
+        int mm = yearMonth.getMonthValue();
+        int yy = yearMonth.getYear() - YEAR_BASE; // back to 00–99
+        return String.format("%02d%02d", mm, yy);
+    }
+
+    /** Returns a human-friendly representation, e.g., "September 2025". */
+    public String toHumanReadable() {
+        return HUMAN.format(yearMonth);
+    }
+
+    /** Exposes the underlying YearMonth if needed elsewhere. */
+    public YearMonth toYearMonth() {
+        return yearMonth;
+    }
+
+    @Override
+    public String toString() {
+        // Keep toString() stable for logs/storage; use asMMYY()
+        return asMMYY();
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other == this) {
+            return true;
+        }
+        if (!(other instanceof Month)) {
+            return false;
+        }
+        Month o = (Month) other;
+        return yearMonth.equals(o.yearMonth);
+    }
+
+    @Override
+    public int hashCode() {
+        return yearMonth.hashCode();
+    }
+
+}
