@@ -59,21 +59,20 @@ public class PerfEditCommand extends PerfCommand {
         List<PerformanceNote> current = student.getPerformanceList().asUnmodifiableList();
         PerformanceList copy = new PerformanceList(new ArrayList<>(current));
 
-        try {
-            PerformanceNote old = copy.asUnmodifiableList().get(index);
-        } catch (IndexOutOfBoundsException e) {
+        int zeroBasedIndex = index - 1;
+        if (zeroBasedIndex < 0 || zeroBasedIndex >= copy.size()) {
             throw new CommandException("Error: Invalid performance note index.");
         }
 
+        PerformanceNote old = copy.asUnmodifiableList().get(zeroBasedIndex);
+        PerformanceNote edited;
         try {
-            PerformanceNote old = copy.asUnmodifiableList().get(index - 1);
-            PerformanceNote edited = new PerformanceNote(old.getDate(), note);
-            copy.set(index, edited);
-        } catch (IndexOutOfBoundsException e) {
-            throw new CommandException("Error: Invalid performance note index.");
+            edited = new PerformanceNote(old.getDate(), note);
         } catch (IllegalArgumentException e) {
             throw new CommandException(e.getMessage());
         }
+
+        copy.set(index, edited);
 
         model.setPerson(student, student.withPerformanceList(copy));
         return new CommandResult(String.format(PerfNotes.EDITED, index, student.getName()));
