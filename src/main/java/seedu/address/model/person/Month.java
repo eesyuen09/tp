@@ -69,6 +69,52 @@ public final class Month {
         return yearMonth;
     }
 
+    /** Current month in MMYY. */
+    public static Month now() {
+        YearMonth ym = YearMonth.now();
+        String mm = String.format("%02d", ym.getMonthValue());
+        String yy = String.format("%02d", ym.getYear() % 100);
+        return new Month(mm + yy);
+    }
+
+    /**
+     * Returns a new {@code Month} instance offset by the specified number of months.
+     * Year rollover is handled automatically.
+     *
+     * @param offset number of months to add (negative to subtract)
+     * @return a new {@code Month} that is {@code const} months from this one
+     *
+     * Eg:
+     * new Month("0925").plusMonths(1)   // -> "1025"
+     */
+    public Month plusMonths(int offset) {
+        YearMonth ym = yearMonth.plusMonths(offset);
+        String mm = String.format("%02d", ym.getMonthValue());
+        String yy = String.format("%02d", ym.getYear() % 100);
+        return new Month(mm + yy);
+    }
+
+    public boolean isBefore(Month other) {
+        requireNonNull(other);
+        return this.yearMonth.isBefore(other.yearMonth);
+    }
+
+    public boolean isAfter(Month other) {
+        requireNonNull(other);
+        return this.yearMonth.isAfter(other.yearMonth);
+    }
+
+    public int compareTo(Month o) {
+        return this.yearMonth.compareTo(o.yearMonth);
+    }
+
+    /**
+     * Factory methods for constructing {@code Month} objects.
+     */
+    public static Month of(String monthYear) {
+        return new Month(monthYear);
+    }
+
     @Override
     public String toString() {
         // Keep toString() stable for logs/storage; use asMMYY()

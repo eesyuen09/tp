@@ -27,8 +27,8 @@ public class FeeCommandParser implements Parser<Command> {
             return new FeeMarkPaidCommandParser().parse(remainder);
         case "-up":
             return new FeeMarkUnpaidCommandParser().parse(remainder);
-        case "-v":
-            return new FeeViewCommandParser().parse(remainder);
+//        case "-v":
+//            return new FeeViewCommandParser().parse(remainder);
         default:
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, FeeCommand.MESSAGE_USAGE));
         }

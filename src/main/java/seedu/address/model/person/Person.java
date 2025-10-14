@@ -26,6 +26,7 @@ public class Person {
     // Data fields
     private final Address address;
     private final Set<Tag> tags = new HashSet<>();
+    private final Month enrolledMonth;
 
     /**
      * Constructs a {@code Person} with an automatically generated {@link StudentId}.
@@ -39,7 +40,7 @@ public class Person {
      * @param tags    A set of tags associated with the person.
      */
     public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags) {
-        this(name, phone, email, address, tags, new StudentId()); // StudentId to be set later
+        this(name, phone, email, address, tags, new StudentId(), null); // StudentId to be set later
     }
 
     /**
@@ -54,7 +55,7 @@ public class Person {
      * @param tags       A set of tags associated with the person.
      * @param studentId  The student's unique ID.
      */
-    public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags, StudentId studentId) {
+    public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags, StudentId studentId, Month enrolledMonth) {
         requireAllNonNull(name, phone, email, address, tags, studentId);
         this.name = name;
         this.phone = phone;
@@ -62,6 +63,7 @@ public class Person {
         this.address = address;
         this.tags.addAll(tags);
         this.studentId = studentId;
+        this.enrolledMonth = enrolledMonth;
     }
 
     public Name getName() {
@@ -82,6 +84,10 @@ public class Person {
 
     public StudentId getStudentId() {
         return studentId;
+    }
+
+    public Month getEnrolledMonth() {
+        return enrolledMonth;
     }
 
     /**

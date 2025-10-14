@@ -11,8 +11,10 @@ import seedu.address.commons.util.StringUtil;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
+import seedu.address.model.person.Month;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Phone;
+import seedu.address.model.person.StudentId;
 import seedu.address.model.tag.ClassTag;
 import seedu.address.model.tag.Tag;
 
@@ -137,4 +139,23 @@ public class ParserUtil {
         }
         return new ClassTag(trimmedClassTag);
     }
+
+    public static StudentId parseStudentId(String studentId) throws ParseException {
+        requireNonNull(studentId);
+        String trimmedStudentId = studentId.trim();
+        if (!StudentId.isValidStudentId(trimmedStudentId)) {
+            throw new ParseException(StudentId.MESSAGE_CONSTRAINTS);
+        }
+        return new StudentId(trimmedStudentId);
+    }
+
+    public static Month parseMonth(String month) throws ParseException {
+        requireNonNull(month);
+        String trimmedMonth = month.trim();
+        if (!Month.isValidMonth(trimmedMonth)) {
+            throw new ParseException(Month.MESSAGE_CONSTRAINTS);
+        }
+        return new Month(trimmedMonth);
+    }
+
 }

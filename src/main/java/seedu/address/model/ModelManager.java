@@ -12,9 +12,12 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.LogsCenter;
+import seedu.address.model.person.Month;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
 import seedu.address.model.tag.ClassTag;
+import seedu.address.model.fee.FeeState;
+import seedu.address.model.fee.FeeTracker;
 
 /**
  * Represents the in-memory model of the address book data.
@@ -25,6 +28,7 @@ public class ModelManager implements Model {
     private final AddressBook addressBook;
     private final UserPrefs userPrefs;
     private final FilteredList<Person> filteredPersons;
+    private final FeeTracker feeTracker = new FeeTracker();
 
     /**
      * Initializes a ModelManager with the given addressBook and userPrefs.
@@ -130,6 +134,20 @@ public class ModelManager implements Model {
         addressBook.deleteClassTag(classTag);
     }
 
+    @Override
+    public void markPaid(StudentId studentId, Month month) {
+        requireNonNull(studentId);
+        requireNonNull(month);
+        feeTracker.markPaid(studentId, month);
+    }
+
+    @Override
+    public void markUnpaid(StudentId studentId, Month month) {
+        requireNonNull(studentId);
+        requireNonNull(month);
+        feeTracker.markUnpaid(studentId, month);
+    }
+
     //=========== Filtered Person List Accessors =============================================================
 
     /**
@@ -174,5 +192,25 @@ public class ModelManager implements Model {
         return this.addressBook.getPersonList().stream()
                 .filter(p -> p.getStudentId().equals(studentId)).findFirst();
     }
+
+    /**
+     * Returns true if a person with the given {@code studentId} exists.
+     */
+    public boolean hasStudentId(StudentId studentId) {
+        return getPersonById(studentId).isPresent();
+    }
+
+    @Override
+    public Predicate<Person> paidStudents(Month month) {
+        requireNonNull(month);
+        return p -> feeTracker.getDerivedStatusofMonth(p, month).orElse(null) == FeeState.PAID;
+    }
+
+    @Override
+    public Predicate<Person> unpaidStudents(Month month) {
+        requireNonNull(month);
+        return p -> feeTracker.getDerivedStatusofMonth(p, month).orElse(null) == FeeState.UNPAID;
+    }
+
 
 }
