@@ -15,9 +15,9 @@ import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
+import seedu.address.model.person.StudentId;
 import seedu.address.model.person.performance.PerformanceList;
 import seedu.address.model.person.performance.PerformanceNote;
-import seedu.address.model.person.StudentId;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -135,7 +135,8 @@ class JsonAdaptedPerson {
 
         final PerformanceList modelPerformanceList = new PerformanceList(modelPerformanceNotes);
 
-        return new Person(modelName, modelPhone, modelEmail, modelAddress, modelTags, modelStudentId, modelPerformanceList);
+        return new Person(modelName, modelPhone, modelEmail, modelAddress,
+                modelTags, modelStudentId, modelPerformanceList);
     }
 
 }

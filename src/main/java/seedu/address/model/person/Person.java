@@ -40,7 +40,8 @@ public class Person {
      * @param address The person's address.
      * @param tags    A set of tags associated with the person.
      */
-    public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags, PerformanceList performanceList) {
+    public Person(Name name, Phone phone, Email email, Address address,
+                  Set<Tag> tags, PerformanceList performanceList) {
         this(name, phone, email, address, tags, new StudentId(), performanceList); // StudentId to be set later
     }
 
@@ -56,7 +57,8 @@ public class Person {
      * @param tags       A set of tags associated with the person.
      * @param studentId  The student's unique ID.
      */
-    public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags, StudentId studentId, PerformanceList performanceList) {
+    public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags,
+                  StudentId studentId, PerformanceList performanceList) {
         requireAllNonNull(name, phone, email, address, tags, studentId);
         this.name = name;
         this.phone = phone;

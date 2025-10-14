@@ -7,7 +7,6 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_STUDENTID;
 import java.util.ArrayList;
 import java.util.List;
 
-import seedu.address.logic.commands.Command;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;

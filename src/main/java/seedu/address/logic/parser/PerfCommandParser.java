@@ -110,7 +110,9 @@ public class PerfCommandParser implements Parser<Command> {
     private static int parseOneBasedIndex(String s) throws ParseException {
         try {
             int v = Integer.parseInt(s.trim());
-            if (v < 1) throw new NumberFormatException();
+            if (v < 1) {
+                throw new NumberFormatException();
+            }
             return v;
         } catch (NumberFormatException e) {
             throw new ParseException("Error: Invalid performance note index.");
