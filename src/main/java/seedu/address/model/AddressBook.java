@@ -3,11 +3,14 @@ package seedu.address.model;
 import static java.util.Objects.requireNonNull;
 
 import java.util.List;
+import java.util.Objects;
 
 import javafx.collections.ObservableList;
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.UniquePersonList;
+import seedu.address.model.tag.ClassTag;
+import seedu.address.model.tag.UniqueClassTagList;
 
 /**
  * Wraps all data at the address-book level
@@ -16,6 +19,7 @@ import seedu.address.model.person.UniquePersonList;
 public class AddressBook implements ReadOnlyAddressBook {
 
     private final UniquePersonList persons;
+    private final UniqueClassTagList classTags;
 
     /*
      * The 'unusual' code block below is a non-static initialization block, sometimes used to avoid duplication
@@ -26,6 +30,7 @@ public class AddressBook implements ReadOnlyAddressBook {
      */
     {
         persons = new UniquePersonList();
+        classTags = new UniqueClassTagList();
     }
 
     public AddressBook() {}
@@ -55,6 +60,41 @@ public class AddressBook implements ReadOnlyAddressBook {
         requireNonNull(newData);
 
         setPersons(newData.getPersonList());
+        setClassTags(newData.getClassTagList());
+    }
+
+    //// classtag-level operations
+
+    /**
+     * Returns true if a class tag with the same name as {@code classTag} exists in the address book.
+     */
+    public boolean hasClassTag(ClassTag classTag) {
+        requireNonNull(classTag);
+        return classTags.contains(classTag);
+    }
+
+    /**
+     * Adds a class tag to the address book.
+     * The tag must not already exist in the address book.
+     */
+    public void addClassTag(ClassTag c) {
+        classTags.add(c);
+    }
+
+    /**
+     * Removes {@code key} from this {@code AddressBook}.
+     * {@code key} must exist in the address book.
+     */
+    public void deleteClassTag(ClassTag key) {
+        classTags.remove(key);
+    }
+
+    /**
+     * Replaces the contents of the class tag list with {@code classTags}.
+     * {@code classTags} must not contain duplicate tags.
+     */
+    public void setClassTags(List<ClassTag> classTags) {
+        this.classTags.setClassTags(classTags);
     }
 
     //// person-level operations
@@ -109,6 +149,11 @@ public class AddressBook implements ReadOnlyAddressBook {
     }
 
     @Override
+    public ObservableList<ClassTag> getClassTagList() {
+        return classTags.asUnmodifiableObservableList();
+    }
+
+    @Override
     public boolean equals(Object other) {
         if (other == this) {
             return true;
@@ -120,11 +165,12 @@ public class AddressBook implements ReadOnlyAddressBook {
         }
 
         AddressBook otherAddressBook = (AddressBook) other;
-        return persons.equals(otherAddressBook.persons);
+        return persons.equals(otherAddressBook.persons)
+                && classTags.equals(otherAddressBook.classTags);
     }
 
     @Override
     public int hashCode() {
-        return persons.hashCode();
+        return Objects.hash(persons, classTags);
     }
 }

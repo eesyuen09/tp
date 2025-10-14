@@ -16,6 +16,9 @@ import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
+import seedu.address.model.person.StudentId;
+import seedu.address.model.tag.ClassTag;
+import seedu.address.model.tag.exceptions.DuplicateClassTagException;
 import seedu.address.testutil.AddressBookBuilder;
 
 public class ModelManagerTest {
@@ -93,6 +96,32 @@ public class ModelManagerTest {
         assertThrows(UnsupportedOperationException.class, () -> modelManager.getFilteredPersonList().remove(0));
     }
 
+    //=========== ClassTag Tests ===================================================================
+
+    @Test
+    public void hasClassTag_nullClassTag_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> modelManager.hasClassTag(null));
+    }
+
+    @Test
+    public void hasClassTag_tagNotInAddressBook_returnsFalse() {
+        assertFalse(modelManager.hasClassTag(new ClassTag("NotInBook")));
+    }
+
+    @Test
+    public void hasClassTag_tagInAddressBook_returnsTrue() {
+        ClassTag tag = new ClassTag("InBook");
+        modelManager.addClassTag(tag);
+        assertTrue(modelManager.hasClassTag(tag));
+    }
+
+    @Test
+    public void addClassTag_duplicateTag_throwsDuplicateClassTagException() {
+        ClassTag tag = new ClassTag("Duplicate");
+        modelManager.addClassTag(tag);
+        assertThrows(DuplicateClassTagException.class, () -> modelManager.addClassTag(tag));
+    }
+
     @Test
     public void equals() {
         AddressBook addressBook = new AddressBookBuilder().withPerson(ALICE).withPerson(BENSON).build();
@@ -128,5 +157,28 @@ public class ModelManagerTest {
         UserPrefs differentUserPrefs = new UserPrefs();
         differentUserPrefs.setAddressBookFilePath(Paths.get("differentFilePath"));
         assertFalse(modelManager.equals(new ModelManager(addressBook, differentUserPrefs)));
+    }
+
+    @Test
+    public void getPersonById_existingAndNonExistingId_returnsCorrectResult() {
+        modelManager.addPerson(ALICE);
+        modelManager.addPerson(BENSON);
+
+        // existing ID → should return Optional containing the correct person
+        assertTrue(modelManager.getPersonById(ALICE.getStudentId()).isPresent());
+        assertEquals(ALICE, modelManager.getPersonById(ALICE.getStudentId()).get());
+
+        // another existing ID
+        assertTrue(modelManager.getPersonById(BENSON.getStudentId()).isPresent());
+        assertEquals(BENSON, modelManager.getPersonById(BENSON.getStudentId()).get());
+
+        // non-existing ID → should return Optional.empty()
+        StudentId fakeId = new StudentId("4444");
+        assertTrue(modelManager.getPersonById(fakeId).isEmpty());
+    }
+
+    @Test
+    public void getPersonById_nullId_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> modelManager.getPersonById(null));
     }
 }
