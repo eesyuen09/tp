@@ -36,7 +36,8 @@ public class EditCommandParser implements Parser<EditCommand> {
                 ArgumentTokenizer.tokenize(args, PREFIX_STUDENTID, PREFIX_NAME,
                         PREFIX_PHONE, PREFIX_EMAIL, PREFIX_ADDRESS, PREFIX_TAG);
 
-        if (!arePrefixesPresent(argMultimap)
+        if (!argMultimap.getPreamble().trim().isEmpty()
+                || !arePrefixesPresent(argMultimap)
                 || argMultimap.getValue(PREFIX_STUDENTID).isEmpty()) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, EditCommand.MESSAGE_USAGE));
         }
