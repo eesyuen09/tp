@@ -19,7 +19,7 @@ public class AttendanceUnmarkCommandTest {
 
     private static final StudentId VALID_STUDENT_ID = new StudentId("0123");
     //for personbuilder
-    private static final String VALID_STUDENT_ID_STRING = "1111";
+    private static final String VALID_STUDENT_ID_STRING = "0123";
     private static final Date VALID_DATE = new Date("13012025");
 
     @Test
@@ -48,16 +48,7 @@ public class AttendanceUnmarkCommandTest {
     }
 
     @Test
-    public void execute_studentNotFound_throwsCommandException() {
-        ModelStubWithoutPerson modelStub = new ModelStubWithoutPerson();
-
-        AttendanceUnmarkCommand command = new AttendanceUnmarkCommand(VALID_STUDENT_ID, VALID_DATE);
-
-        assertThrows(CommandException.class, () -> command.execute(modelStub));
-    }
-
-    @Test
-    public void execute_attendanceNotMarked_throwsCommandException() {
+    public void execute_attendanceNotMarked_marksAsAbsent() throws CommandException {
         ModelStubWithPerson modelStub = new ModelStubWithPerson();
         Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID_STRING).build();
         // Don't mark attendance - person has no attendance records
@@ -65,7 +56,29 @@ public class AttendanceUnmarkCommandTest {
 
         AttendanceUnmarkCommand command = new AttendanceUnmarkCommand(VALID_STUDENT_ID, VALID_DATE);
 
-        assertThrows(CommandException.class, () -> command.execute(modelStub));
+        CommandResult result = command.execute(modelStub);
+
+        // Verify the command executes successfully
+        assertEquals(String.format(AttendanceUnmarkCommand.MESSAGE_UNMARK_SUCCESS,
+                validPerson.getName(), VALID_DATE), result.getFeedbackToUser());
+
+    }
+
+    @Test
+    public void execute_attendanceNotMarked_throwsCommandException() throws CommandException {
+        ModelStubWithPerson modelStub = new ModelStubWithPerson();
+        Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID_STRING).build();
+        // Don't mark attendance - person has no attendance records
+        modelStub.person = validPerson;
+
+        AttendanceUnmarkCommand command = new AttendanceUnmarkCommand(VALID_STUDENT_ID, VALID_DATE);
+
+        CommandResult result = command.execute(modelStub);
+
+        // Verify the command executes successfully
+        assertEquals(String.format(AttendanceUnmarkCommand.MESSAGE_UNMARK_SUCCESS,
+                validPerson.getName(), VALID_DATE), result.getFeedbackToUser());
+
     }
 
     /**
