@@ -211,16 +211,8 @@ public class ModelManager implements Model {
     public Predicate<Person> unpaidStudents(Month month) {
         requireNonNull(month);
         return p -> feeTracker.getDerivedStatusofMonth(p, month).orElse(null) == FeeState.UNPAID;
-    /**
-     * Retrieves a {@link Person} from the filtered list by their {@link StudentId}.
-     *
-     */
-    @Override
-    public Optional<Person> getPersonById(StudentId studentId) {
-        requireNonNull(studentId);
-        return this.addressBook.getPersonList().stream()
-                .filter(p -> p.getStudentId().equals(studentId)).findFirst();
     }
+
 
     @Override
     public Optional<FeeState> getCurrentFeeState(Person person) {

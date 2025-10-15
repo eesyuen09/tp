@@ -12,7 +12,6 @@ import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
 import seedu.address.model.person.StudentId;
 import seedu.address.model.person.performance.PerformanceList;
-import seedu.address.model.tag.Tag;
 import seedu.address.model.tag.ClassTag;
 import seedu.address.model.util.SampleDataUtil;
 
@@ -132,8 +131,12 @@ public class PersonBuilder {
         return this;
     }
 
+    /**
+     * Sets the {@code AttendanceRecords} of the {@code Person} that we are building.
+     */
     public Person build() {
-        return new Person(name, phone, email, address, tags, studentId, enrolledMonth, attendanceRecords, performanceList);
+        return new Person(name, phone, email, address, tags, studentId, enrolledMonth, attendanceRecords,
+                performanceList);
     }
 
 }

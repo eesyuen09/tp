@@ -8,10 +8,8 @@ import java.util.Objects;
 import java.util.Set;
 
 import seedu.address.commons.util.ToStringBuilder;
-import seedu.address.model.tag.ClassTag;
 import seedu.address.model.person.performance.PerformanceList;
-import seedu.address.model.tag.Tag;
-import seedu.address.model.tag.UniqueClassTagList;
+import seedu.address.model.tag.ClassTag;
 
 /**
  * Represents a Person in the address book.
@@ -45,7 +43,7 @@ public class Person {
      * @param enrolledMonth The person's enrolled month
      */
     public Person(Name name, Phone phone, Email email, Address address, Set<ClassTag> tags,
-                  Month enrolledMonth, Set<Attendance> attendanceRecords, , PerformanceList performanceList) {
+                  Month enrolledMonth, Set<Attendance> attendanceRecords, PerformanceList performanceList) {
         this(name, phone, email, address, tags, new StudentId(), enrolledMonth,
                 attendanceRecords, performanceList); // StudentId to be set later
     }
@@ -63,7 +61,8 @@ public class Person {
      * @param enrolledMonth The person's enrolled month.
      */
     public Person(Name name, Phone phone, Email email, Address address, Set<ClassTag> tags,
-                  StudentId studentId, Month enrolledMonth, Set<Attendance> attendanceRecords, PerformanceList performanceList) {
+                  StudentId studentId, Month enrolledMonth, Set<Attendance> attendanceRecords,
+                  PerformanceList performanceList) {
         requireAllNonNull(name, phone, email, address, studentId, enrolledMonth);
         this.name = name;
         this.phone = phone;
@@ -78,8 +77,14 @@ public class Person {
         this.performanceList = (performanceList == null) ? new PerformanceList() : performanceList;
     }
 
+    /**
+     * Returns a new Person object with the updated PerformanceList.
+     * @param newList The new PerformanceList to be associated with the person.
+     * @return A new Person object with the updated PerformanceList.
+     */
     public Person withPerformanceList(PerformanceList newList) {
-        return new Person(this.name, this.phone, this.email, this.address, this.tags, this.studentId, newList);
+        return new Person(this.name, this.phone, this.email, this.address, this.tags, this.studentId,
+                this.enrolledMonth, this.attendanceRecords, newList);
     }
 
     public Name getName() {

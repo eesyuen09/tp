@@ -7,8 +7,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Objects;
 
-import seedu.address.model.person.Address;
-
 /**
  * Represents a performance note for a student, consisting of a date and a note.
  */

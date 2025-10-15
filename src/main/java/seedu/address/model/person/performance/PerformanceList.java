@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import seedu.address.model.person.Address;
-
 /**
  * A list of performance notes.
  */
