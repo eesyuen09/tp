@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import seedu.address.model.person.Address;
+
 /**
  * A list of performance notes.
  */
@@ -100,5 +102,25 @@ public class PerformanceList {
      */
     public int size() {
         return notes.size();
+    }
+
+    @Override
+    public int hashCode() {
+        return notes.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other == this) {
+            return true;
+        }
+
+        // instanceof handles nulls
+        if (!(other instanceof PerformanceList)) {
+            return false;
+        }
+
+        PerformanceList otherPerformamnceList = (PerformanceList) other;
+        return notes.equals(otherPerformamnceList.notes);
     }
 }

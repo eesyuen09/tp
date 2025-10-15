@@ -7,6 +7,8 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Objects;
 
+import seedu.address.model.person.Address;
+
 /**
  * Represents a performance note for a student, consisting of a date and a note.
  */
@@ -111,8 +113,19 @@ public class PerformanceNote {
     }
 
     @Override
-    public boolean equals(Object o) {
-        return o instanceof PerformanceNote p && date.equals(p.date) && note.equals(p.note);
+    public boolean equals(Object other) {
+        if (other == this) {
+            return true;
+        }
+
+        // instanceof handles nulls
+        if (!(other instanceof PerformanceNote)) {
+            return false;
+        }
+
+        PerformanceNote otherPerformamnceNote = (PerformanceNote) other;
+        return note.equals(otherPerformamnceNote.note) && date.equals(otherPerformamnceNote.date);
+
     }
 
     @Override
