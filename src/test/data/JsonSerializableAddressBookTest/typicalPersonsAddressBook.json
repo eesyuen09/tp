@@ -5,49 +5,49 @@
     "phone" : "94351253",
     "email" : "alice@example.com",
     "address" : "123, Jurong West Ave 6, #08-111",
-    "studentId": "1240",
+    "studentId": "0000",
     "tags" : [ "friends" ]
   }, {
     "name" : "Benson Meier",
     "phone" : "98765432",
     "email" : "johnd@example.com",
     "address" : "311, Clementi Ave 2, #02-25",
-    "studentId": "1241",
+    "studentId": "0001",
     "tags" : [ "owesMoney", "friends" ]
   }, {
     "name" : "Carl Kurz",
     "phone" : "95352563",
     "email" : "heinz@example.com",
     "address" : "wall street",
-    "studentId": "1242",
+    "studentId": "0002",
     "tags" : [ ]
   }, {
     "name" : "Daniel Meier",
     "phone" : "87652533",
     "email" : "cornelia@example.com",
     "address" : "10th street",
-    "studentId": "1243",
+    "studentId": "0003",
     "tags" : [ "friends" ]
   }, {
     "name" : "Elle Meyer",
     "phone" : "9482224",
     "email" : "werner@example.com",
     "address" : "michegan ave",
-    "studentId": "1244",
+    "studentId": "0004",
     "tags" : [ ]
   }, {
     "name" : "Fiona Kunz",
     "phone" : "9482427",
     "email" : "lydia@example.com",
     "address" : "little tokyo",
-    "studentId": "1245",
+    "studentId": "0005",
     "tags" : [ ]
   }, {
     "name" : "George Best",
     "phone" : "9482442",
     "email" : "anna@example.com",
     "address" : "4th street",
-    "studentId": "1246",
+    "studentId": "0006",
     "tags" : [ ]
   } ]
 }

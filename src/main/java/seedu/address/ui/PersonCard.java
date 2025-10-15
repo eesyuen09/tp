@@ -1,12 +1,15 @@
 package seedu.address.ui;
 
 import java.util.Comparator;
+import java.util.Optional;
+import java.util.function.Function;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
+import seedu.address.model.fee.FeeState;
 import seedu.address.model.person.Person;
 
 /**
@@ -25,6 +28,7 @@ public class PersonCard extends UiPart<Region> {
      */
 
     public final Person person;
+    private final Function<Person, Optional<FeeState>> currentFeeStateGetter;
 
     @FXML
     private HBox cardPane;
@@ -42,13 +46,18 @@ public class PersonCard extends UiPart<Region> {
     private Label studentId;
     @FXML
     private FlowPane tags;
+    @FXML
+    private Label feeStatus;
+    @FXML
+    private Label feeStatusBox;
 
     /**
      * Creates a {@code PersonCode} with the given {@code Person} and index to display.
      */
-    public PersonCard(Person person, int displayedIndex) {
+    public PersonCard(Person person, int displayedIndex, Function<Person, Optional<FeeState>> currentFeeStateGetter) {
         super(FXML);
         this.person = person;
+        this.currentFeeStateGetter = currentFeeStateGetter;
         id.setText(displayedIndex + ". ");
         studentId.setText("ID: " + person.getStudentId().toString());
         name.setText(person.getName().fullName);
@@ -56,7 +65,19 @@ public class PersonCard extends UiPart<Region> {
         address.setText(person.getAddress().value);
         email.setText(person.getEmail().value);
         person.getTags().stream()
-                .sorted(Comparator.comparing(tag -> tag.tagName))
-                .forEach(tag -> tags.getChildren().add(new Label(tag.tagName)));
+            .sorted(Comparator.comparing(tag -> tag.tagName))
+            .forEach(tag -> tags.getChildren().add(new Label(tag.tagName)));
+        Optional<FeeState> feeState = currentFeeStateGetter.apply(person);
+
+        if (feeState.get() == FeeState.PAID) {
+            feeStatusBox.setText("PAID");
+            feeStatusBox.setStyle("-fx-background-color: green; -fx-text-fill: white;");
+        } else if (feeState.get() == FeeState.UNPAID) {
+            feeStatusBox.setText("UNPAID");
+            feeStatusBox.setStyle("-fx-background-color: red; -fx-text-fill: white;");
+        } else {
+            feeStatusBox.setText("Not enrolled");
+            feeStatusBox.setStyle("-fx-background-color: grey; -fx-text-fill: white;");
+        }
     }
 }

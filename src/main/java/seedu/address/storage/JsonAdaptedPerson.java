@@ -11,11 +11,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.model.person.Address;
+import seedu.address.model.person.Attendance;
 import seedu.address.model.person.Email;
+import seedu.address.model.person.Month;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
 import seedu.address.model.person.StudentId;
+import seedu.address.model.tag.ClassTag;
+
+
 import seedu.address.model.person.performance.PerformanceList;
 import seedu.address.model.person.performance.PerformanceNote;
 import seedu.address.model.tag.Tag;
@@ -32,7 +37,9 @@ class JsonAdaptedPerson {
     private final String email;
     private final String address;
     private final String studentId;
-    private final List<JsonAdaptedTag> tags = new ArrayList<>();
+    private final List<JsonAdaptedClassTag> tags = new ArrayList<>();
+    private final String enrolledMonth;
+    private final List<JsonAdaptedAttendance> attendanceRecords = new ArrayList<>();
     private final List<JsonAdaptedPerformanceNote> performanceNotes = new ArrayList<>();
 
     /**
@@ -41,18 +48,24 @@ class JsonAdaptedPerson {
     @JsonCreator
     public JsonAdaptedPerson(@JsonProperty("name") String name, @JsonProperty("phone") String phone,
             @JsonProperty("email") String email, @JsonProperty("address") String address,
-            @JsonProperty("tags") List<JsonAdaptedTag> tags, @JsonProperty("studentId") String studentId,
-            @JsonProperty("performanceNotes") List<JsonAdaptedPerformanceNote> performanceNotes) {
+            @JsonProperty("tags") List<JsonAdaptedClassTag> tags, @JsonProperty("studentId") String studentId,
+                             @JsonProperty("enrolledMonth") String enrolledMonth,
+                             @JsonProperty("attendanceRecords") List<JsonAdaptedAttendance> attendanceRecords,
+                             @JsonProperty("performanceNotes") List<JsonAdaptedPerformanceNote> performanceNotes) {
         this.name = name;
         this.phone = phone;
         this.email = email;
         this.address = address;
         this.studentId = studentId;
+        this.enrolledMonth = enrolledMonth;
         if (tags != null) {
             this.tags.addAll(tags);
         }
         if (performanceNotes != null) {
             this.performanceNotes.addAll(performanceNotes);
+        }
+        if (attendanceRecords != null) {
+            this.attendanceRecords.addAll(attendanceRecords);
         }
     }
 
@@ -65,11 +78,16 @@ class JsonAdaptedPerson {
         phone = source.getPhone().value;
         email = source.getEmail().value;
         address = source.getAddress().value;
+        enrolledMonth = source.getEnrolledMonth().toString();
         tags.addAll(source.getTags().stream()
-                .map(JsonAdaptedTag::new)
+                .map(JsonAdaptedClassTag::new)
                 .collect(Collectors.toList()));
         source.getPerformanceList().asUnmodifiableList().forEach(n ->
                 performanceNotes.add(new JsonAdaptedPerformanceNote(n)));
+
+        attendanceRecords.addAll(source.getAttendanceRecords().stream()
+                .map(JsonAdaptedAttendance::new)
+                .collect(Collectors.toList()));
 
     }
 
@@ -79,9 +97,14 @@ class JsonAdaptedPerson {
      * @throws IllegalValueException if there were any data constraints violated in the adapted person.
      */
     public Person toModelType() throws IllegalValueException {
-        final List<Tag> personTags = new ArrayList<>();
-        for (JsonAdaptedTag tag : tags) {
+        final List<ClassTag> personTags = new ArrayList<>();
+        for (JsonAdaptedClassTag tag : tags) {
             personTags.add(tag.toModelType());
+        }
+
+        final List<Attendance> personAttendance = new ArrayList<>();
+        for (JsonAdaptedAttendance attendance : attendanceRecords) {
+            personAttendance.add(attendance.toModelType());
         }
 
         if (name == null) {
@@ -125,8 +148,13 @@ class JsonAdaptedPerson {
         }
 
         final StudentId modelStudentId = new StudentId(studentId);
+        final Set<Attendance> modelAttendanceRecords = new HashSet<>(personAttendance);
 
-        final Set<Tag> modelTags = new HashSet<>(personTags);
+        final Month modelEnrolledMonth = (enrolledMonth != null && Month.isValidMonth(enrolledMonth))
+            ? new Month(enrolledMonth)
+            : Month.now();
+
+        final Set<ClassTag> modelTags = new HashSet<>(personTags);
 
         final java.util.List<PerformanceNote> modelPerformanceNotes = new ArrayList<>();
         for (JsonAdaptedPerformanceNote note : performanceNotes) {
@@ -135,8 +163,8 @@ class JsonAdaptedPerson {
 
         final PerformanceList modelPerformanceList = new PerformanceList(modelPerformanceNotes);
 
-        return new Person(modelName, modelPhone, modelEmail, modelAddress,
-                modelTags, modelStudentId, modelPerformanceList);
+        return new Person(modelName, modelPhone, modelEmail, modelAddress, modelTags, modelStudentId,
+                modelEnrolledMonth, modelAttendanceRecords, modelPerformanceList);
     }
 
 }

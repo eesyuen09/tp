@@ -5,8 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.Messages.MESSAGE_UNKNOWN_COMMAND;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_CLASSTAG;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_STUDENTID;
 import static seedu.address.testutil.Assert.assertThrows;
-import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 
 import java.util.Arrays;
 import java.util.List;
@@ -15,19 +15,31 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.commands.AddCommand;
-import seedu.address.logic.commands.AttendanceCommand;
 import seedu.address.logic.commands.ClearCommand;
 import seedu.address.logic.commands.DeleteCommand;
 import seedu.address.logic.commands.EditCommand;
 import seedu.address.logic.commands.ExitCommand;
+import seedu.address.logic.commands.FilterCommand;
 import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.ListCommand;
+import seedu.address.logic.commands.attendance.AttendanceCommand;
+import seedu.address.logic.commands.attendance.AttendanceMarkCommand;
+import seedu.address.logic.commands.attendance.AttendanceUnmarkCommand;
+import seedu.address.logic.commands.attendance.AttendanceViewCommand;
 import seedu.address.logic.commands.classtagcommands.AddClassTagCommand;
 import seedu.address.logic.commands.classtagcommands.ClassTagCommand;
+import seedu.address.logic.commands.fee.FeeCommand;
+import seedu.address.logic.commands.fee.FeeFilterPaidCommand;
+import seedu.address.logic.commands.fee.FeeFilterUnpaidCommand;
+import seedu.address.logic.commands.fee.FeeMarkPaidCommand;
+import seedu.address.logic.commands.fee.FeeMarkUnpaidCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.model.person.Date;
+import seedu.address.model.person.Month;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.StudentId;
 import seedu.address.model.tag.ClassTag;
 import seedu.address.testutil.EditPersonDescriptorBuilder;
 import seedu.address.testutil.PersonBuilder;
@@ -53,18 +65,31 @@ public class AddressBookParserTest {
 
     @Test
     public void parseCommand_delete() throws Exception {
+        StudentId studentId = new StudentId("2042");
         DeleteCommand command = (DeleteCommand) parser.parseCommand(
-                DeleteCommand.COMMAND_WORD + " " + INDEX_FIRST_PERSON.getOneBased());
-        assertEquals(new DeleteCommand(INDEX_FIRST_PERSON), command);
+                DeleteCommand.COMMAND_WORD + " s/" + studentId.toString());
+        assertEquals(new DeleteCommand(studentId), command);
     }
 
     @Test
     public void parseCommand_edit() throws Exception {
+        // Create a sample person and descriptor
         Person person = new PersonBuilder().build();
         EditCommand.EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder(person).build();
-        EditCommand command = (EditCommand) parser.parseCommand(EditCommand.COMMAND_WORD + " "
-                + INDEX_FIRST_PERSON.getOneBased() + " " + PersonUtil.getEditPersonDescriptorDetails(descriptor));
-        assertEquals(new EditCommand(INDEX_FIRST_PERSON, descriptor), command);
+
+        // Get the student's ID for the command
+        StudentId studentId = person.getStudentId();
+
+        // Build the command string using the studentId and descriptor details
+        String commandString = EditCommand.COMMAND_WORD + " "
+                + PREFIX_STUDENTID + studentId + " "
+                + PersonUtil.getEditPersonDescriptorDetails(descriptor);
+
+        // Parse the command
+        EditCommand command = (EditCommand) parser.parseCommand(commandString);
+
+        // Assert that the parsed command matches the expected EditCommand
+        assertEquals(new EditCommand(studentId, descriptor), command);
     }
 
     @Test
@@ -102,6 +127,70 @@ public class AddressBookParserTest {
     }
 
     @Test
+    public void parseCommand_feeMarkPaid_success() throws Exception {
+        StudentId id = new StudentId("0001");
+        Month m = new Month("0925");
+        FeeMarkPaidCommand cmd = (FeeMarkPaidCommand) parser.parseCommand("fee -p s/0001 m/0925");
+        assertTrue(parser.parseCommand(FeeCommand.COMMAND_WORD + " -p s/0001 m/0925") instanceof FeeCommand);
+        assertTrue(parser.parseCommand(FeeCommand.COMMAND_WORD + " -p s/0001 m/0925") instanceof FeeMarkPaidCommand);
+        assertEquals(new FeeMarkPaidCommand(id, m), cmd);
+    }
+
+    @Test
+    public void parseCommand_feeMarkUnpaid_success() throws Exception {
+        StudentId id = new StudentId("0002");
+        Month m = new Month("1025");
+        FeeMarkUnpaidCommand cmd = (FeeMarkUnpaidCommand) parser.parseCommand("fee -up s/0002 m/1025");
+        assertTrue(parser.parseCommand(FeeCommand.COMMAND_WORD + " -up s/0002 m/1025") instanceof FeeCommand);
+        assertTrue(parser.parseCommand(FeeCommand.COMMAND_WORD + " -up s/0002 m/1025") instanceof FeeMarkUnpaidCommand);
+        assertEquals(new FeeMarkUnpaidCommand(id, m), cmd);
+    }
+
+    @Test
+    public void parseCommand_invalidFeeCommands_throwsParseException() {
+        assertThrows(ParseException.class, () -> parser.parseCommand("fee -p"));
+        assertThrows(ParseException.class, () -> parser.parseCommand("fee -x s/0001 m/0925"));
+    }
+
+    @Test
+    public void parseCommand_filterPaid_success() throws Exception {
+        Month m = new Month("0925");
+        assertEquals(new FeeFilterPaidCommand(m),
+            parser.parseCommand("filter -p m/0925"));
+
+        // tolerate extra whitespace
+        assertEquals(new FeeFilterPaidCommand(m),
+            parser.parseCommand("   filter    -p     m/0925   "));
+    }
+
+    @Test
+    public void parseCommand_filterUnpaid_success() throws Exception {
+        Month m = new Month("1025");
+        assertEquals(new FeeFilterUnpaidCommand(m),
+            parser.parseCommand("filter -up m/1025"));
+    }
+
+    @Test
+    public void parseCommand_filterUnknownFlag_failure() {
+        assertThrows(ParseException.class,
+            String.format(MESSAGE_INVALID_COMMAND_FORMAT, FilterCommand.MESSAGE_USAGE), () -> parser.parseCommand(
+                "filter -xx m/0925"));
+    }
+
+    @Test
+    public void parseCommand_filterMissingMonth_failure() {
+        assertThrows(ParseException.class,
+            String.format(MESSAGE_INVALID_COMMAND_FORMAT, FilterCommand.MESSAGE_USAGE), () -> parser.parseCommand(
+                "filter -p"));
+    }
+
+    @Test
+    public void parseCommand_filterDuplicateMonthPrefix_failure() {
+        assertThrows(ParseException.class, () -> parser.parseCommand(
+            "filter -p m/0925 m/1025"));
+    }
+
+    @Test
     public void parseCommand_unrecognisedInput_throwsParseException() {
         assertThrows(ParseException.class, String.format(MESSAGE_INVALID_COMMAND_FORMAT, HelpCommand.MESSAGE_USAGE), ()
             -> parser.parseCommand(""));
@@ -113,7 +202,28 @@ public class AddressBookParserTest {
     }
 
     @Test
-    public void parseCommand_attendance() throws Exception {
-        assertTrue(parser.parseCommand(AttendanceCommand.COMMAND_WORD) instanceof AttendanceCommand);
+    public void parseCommand_attendanceMark() throws Exception {
+        String studentId = "0123";
+        String date = "13012025";
+        AttendanceMarkCommand command = (AttendanceMarkCommand) parser.parseCommand(
+                AttendanceCommand.COMMAND_WORD + " -m s/" + studentId + " d/" + date);
+        assertEquals(new AttendanceMarkCommand(new StudentId(studentId), new Date(date)), command);
+    }
+
+    @Test
+    public void parseCommand_attendanceUnmark() throws Exception {
+        String studentId = "0123";
+        String date = "13012025";
+        AttendanceUnmarkCommand command = (AttendanceUnmarkCommand) parser.parseCommand(
+                AttendanceCommand.COMMAND_WORD + " -u s/" + studentId + " d/" + date);
+        assertEquals(new AttendanceUnmarkCommand(new StudentId(studentId), new Date(date)), command);
+    }
+
+    @Test
+    public void parseCommand_attendanceView() throws Exception {
+        String studentId = "0123";
+        AttendanceViewCommand command = (AttendanceViewCommand) parser.parseCommand(
+                AttendanceCommand.COMMAND_WORD + " -v s/" + studentId);
+        assertEquals(new AttendanceViewCommand(new StudentId(studentId)), command);
     }
 }

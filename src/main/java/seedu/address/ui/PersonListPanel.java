@@ -1,5 +1,7 @@
 package seedu.address.ui;
 
+import java.util.Optional;
+import java.util.function.Function;
 import java.util.logging.Logger;
 
 import javafx.collections.ObservableList;
@@ -8,6 +10,7 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.Region;
 import seedu.address.commons.core.LogsCenter;
+import seedu.address.model.fee.FeeState;
 import seedu.address.model.person.Person;
 
 /**
@@ -20,13 +23,17 @@ public class PersonListPanel extends UiPart<Region> {
     @FXML
     private ListView<Person> personListView;
 
+    private final Function<Person, Optional<FeeState>> currentFeeStateGetter;
+
     /**
      * Creates a {@code PersonListPanel} with the given {@code ObservableList}.
      */
-    public PersonListPanel(ObservableList<Person> personList) {
+    public PersonListPanel(ObservableList<Person> personList, Function<Person,
+        Optional<FeeState>> currentFeeStateGetter) {
         super(FXML);
         personListView.setItems(personList);
         personListView.setCellFactory(listView -> new PersonListViewCell());
+        this.currentFeeStateGetter = currentFeeStateGetter;
     }
 
     /**
@@ -41,7 +48,7 @@ public class PersonListPanel extends UiPart<Region> {
                 setGraphic(null);
                 setText(null);
             } else {
-                setGraphic(new PersonCard(person, getIndex() + 1).getRoot());
+                setGraphic(new PersonCard(person, getIndex() + 1, currentFeeStateGetter).getRoot());
             }
         }
     }
