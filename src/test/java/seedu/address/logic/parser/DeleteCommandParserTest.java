@@ -1,32 +1,64 @@
 package seedu.address.logic.parser;
 
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_STUDENTID;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
-import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 
 import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.commands.DeleteCommand;
+import seedu.address.model.Model;
+import seedu.address.model.ModelManager;
+import seedu.address.model.UserPrefs;
+import seedu.address.model.person.Person;
+import seedu.address.model.person.StudentId;
+import seedu.address.testutil.TypicalPersons;
 
 /**
- * As we are only doing white-box testing, our test cases do not cover path variations
- * outside of the DeleteCommand code. For example, inputs "1" and "1 abc" take the
- * same path through the DeleteCommand, and therefore we test only one of them.
- * The path variation for those two cases occur inside the ParserUtil, and
- * therefore should be covered by the ParserUtilTest.
+ * Unit tests for {@link DeleteCommandParser}.
+ *
+ * Tests cover:
+ * - valid student id with prefix (success)
+ * - missing prefix (should return MESSAGE_INVALID_COMMAND_FORMAT + usage)
+ * - invalid student id string with prefix (should return MESSAGE_INVALID_COMMAND_FORMAT + usage
+ *   because the parser wraps ParseExceptions)
  */
 public class DeleteCommandParserTest {
 
     private DeleteCommandParser parser = new DeleteCommandParser();
 
+    // helper model to obtain a real StudentId from typical data
+    private Model model = new ModelManager(TypicalPersons.getTypicalAddressBook(), new UserPrefs());
+
     @Test
     public void parse_validArgs_returnsDeleteCommand() {
-        assertParseSuccess(parser, "1", new DeleteCommand(INDEX_FIRST_PERSON));
+        Person person = model.getFilteredPersonList().get(0);
+        StudentId validId = person.getStudentId();
+
+        // form input using the prefix and the student id text
+        String userInput = " " + PREFIX_STUDENTID + validId.toString();
+        assertParseSuccess(parser, userInput, new DeleteCommand(validId));
     }
 
     @Test
-    public void parse_invalidArgs_throwsParseException() {
-        assertParseFailure(parser, "a", String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE));
+    public void parse_missingPrefix_throwsParseException() {
+        // provide student id without the required prefix -> triggers the "not present" branch
+        Person person = model.getFilteredPersonList().get(0);
+        String studentIdText = person.getStudentId().toString();
+
+        String userInput = studentIdText; // missing prefix
+        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE);
+        assertParseFailure(parser, userInput, expectedMessage);
+    }
+
+    @Test
+    public void parse_invalidStudentId_throwsParseException() {
+        // provide the prefix but an invalid student id string -> ParserUtil.parseStudentId throws,
+        // which the parser wraps; we assert the wrapped usage message
+        String invalidId = "not-a-valid-id";
+        String userInput = " " + PREFIX_STUDENTID + invalidId;
+        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE);
+        assertParseFailure(parser, userInput, expectedMessage);
     }
 }

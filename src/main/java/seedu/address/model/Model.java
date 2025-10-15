@@ -1,11 +1,13 @@
 package seedu.address.model;
 
 import java.nio.file.Path;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.StudentId;
 import seedu.address.model.tag.ClassTag;
 
 /**
@@ -102,4 +104,17 @@ public interface Model {
      * The class tag must exist.
      */
     void deleteClassTag(ClassTag toDelete);
+
+    /**
+     * Returns an {@code Optional} containing the {@code Person} whose {@code StudentId}
+     * matches the specified {@code studentId}, if such a person exists.
+     */
+    Optional<Person> getPersonById(StudentId studentId);
+
+
+    /**
+     * Returns {@code true} if the address book contains a {@code Person} with the specified {@code StudentId}.
+     */
+    boolean hasPersonWithId(StudentId studentId);
+
 }
