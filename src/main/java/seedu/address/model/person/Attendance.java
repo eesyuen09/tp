@@ -23,7 +23,7 @@ public class Attendance {
         return date;
     }
 
-    public boolean isPresent() {
+    public boolean isStudentPresent() {
         return isPresent;
     }
 

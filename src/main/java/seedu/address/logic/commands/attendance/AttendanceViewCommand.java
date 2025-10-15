@@ -54,7 +54,7 @@ public class AttendanceViewCommand extends AttendanceCommand {
                 .forEach(attendance -> {
                     sb.append(attendance.getDate())
                             .append(": ")
-                            .append(attendance.isPresent() ? "Present" : "Absent")
+                            .append(attendance.isStudentPresent() ? "Present" : "Absent")
                             .append("\n");
                 });
         return sb.toString().trim();

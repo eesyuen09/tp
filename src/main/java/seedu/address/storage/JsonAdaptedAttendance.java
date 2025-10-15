@@ -30,7 +30,7 @@ class JsonAdaptedAttendance {
      */
     public JsonAdaptedAttendance(Attendance source) {
         date = source.getDate().toString();
-        isPresent = source.isPresent();
+        isPresent = source.isStudentPresent();
     }
 
     /**

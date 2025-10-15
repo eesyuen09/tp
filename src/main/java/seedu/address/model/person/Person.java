@@ -110,7 +110,7 @@ public class Person {
     public void unmarkAttendance(Date date) {
         // Find and remove the present record for this date
         boolean removed = attendanceRecords.removeIf(attendance ->
-                attendance.getDate().equals(date) && attendance.isPresent());
+                attendance.getDate().equals(date) && attendance.isStudentPresent());
 
         if (removed) {
             // Add new absent record
