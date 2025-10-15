@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import seedu.address.model.person.Address;
+import seedu.address.model.person.Attendance;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Month;
 import seedu.address.model.person.Name;
@@ -32,6 +33,7 @@ public class PersonBuilder {
     private Set<Tag> tags;
     private StudentId studentId;
     private Month enrolledMonth;
+    private Set<Attendance> attendanceRecords;
 
     /**
      * Creates a {@code PersonBuilder} with the default details.
@@ -44,6 +46,7 @@ public class PersonBuilder {
         studentId = new StudentId(DEFAULT_STUDENTID);
         tags = new HashSet<>();
         enrolledMonth = new Month(DEFAULT_ENROLLEDMONTH);
+        attendanceRecords = new HashSet<>();
     }
 
     /**
@@ -57,6 +60,7 @@ public class PersonBuilder {
         studentId = personToCopy.getStudentId();
         tags = new HashSet<>(personToCopy.getTags());
         enrolledMonth = personToCopy.getEnrolledMonth();
+        attendanceRecords = new HashSet<>(personToCopy.getAttendanceRecords());
     }
 
     /**
@@ -114,7 +118,9 @@ public class PersonBuilder {
         this.enrolledMonth = new Month(monthYear);
         return this;
     }
+
     public Person build() {
-        return new Person(name, phone, email, address, tags, studentId, enrolledMonth);
+        return new Person(name, phone, email, address, tags, studentId, enrolledMonth, attendanceRecords);
     }
+
 }
