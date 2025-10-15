@@ -10,6 +10,7 @@ import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import seedu.address.logic.commands.CommandTestUtil;
 import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
@@ -60,6 +61,17 @@ public class FeeMarkUnpaidCommandTest {
             missing
         );
         assertCommandFailure(command, model, expectedMessage);
+    }
+
+    public void execute_monthBeforeEnrollment_throwsCommandException() {
+        // Assuming ALICE’s enrolled month in TypicalPersons is "0825"
+        StudentId id = ALICE.getStudentId();
+        String name = ALICE.getName().fullName;
+        Month enrollment = ALICE.getEnrolledMonth();
+        Month beforeEnrollment = new Month("0725");
+        FeeMarkUnpaidCommand command = new FeeMarkUnpaidCommand(id, beforeEnrollment);
+        String expectedMessage = String.format(FeeCommand.MESSAGE_INVALID_MONTH, name, enrollment.toHumanReadable());
+        CommandTestUtil.assertCommandFailure(command, model, expectedMessage);
     }
 
     @Test

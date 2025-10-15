@@ -62,6 +62,18 @@ public class FeeMarkPaidCommandTest {
     }
 
     @Test
+    public void execute_monthBeforeEnrollment_throwsCommandException() {
+        // Assuming ALICE’s enrolled month in TypicalPersons is "0825"
+        StudentId id = ALICE.getStudentId();
+        String name = ALICE.getName().fullName;
+        Month enrollment = ALICE.getEnrolledMonth();
+        Month beforeEnrollment = new Month("0725");
+        FeeMarkPaidCommand command = new FeeMarkPaidCommand(id, beforeEnrollment);
+        String expectedMessage = String.format(FeeCommand.MESSAGE_INVALID_MONTH, name, enrollment.toHumanReadable());
+        CommandTestUtil.assertCommandFailure(command, model, expectedMessage);
+    }
+
+    @Test
     public void equals() {
         StudentId aliceId = ALICE.getStudentId();
         Month aug = new Month("0825");

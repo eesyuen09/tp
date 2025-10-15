@@ -7,6 +7,7 @@ import seedu.address.logic.commands.Command;
  */
 public abstract class FeeCommand extends Command {
     public static final String COMMAND_WORD = "fee";
+    public static final String MESSAGE_INVALID_MONTH = "Cannot mark payment: %1$s is not enrolled for %2$s.";
 
     public static final String MESSAGE_USAGE =
             COMMAND_WORD + ": Manages student fee status.\n"

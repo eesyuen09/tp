@@ -51,9 +51,14 @@ public class FeeMarkPaidCommand extends FeeCommand {
         if (personOpt.isEmpty()) {
             throw new CommandException(String.format(MESSAGE_STUDENT_ID_NOT_FOUND, studentId));
         }
+        Person person = personOpt.get();
+        String name = personOpt.get().getName().fullName;
+        Month enrolledMonth = person.getEnrolledMonth();
+        if (month.isBefore(person.getEnrolledMonth())) {
+            throw new CommandException(String.format(MESSAGE_INVALID_MONTH, name, enrolledMonth.toHumanReadable()));
+        }
 
         model.markPaid(studentId, month);
-        String name = personOpt.get().getName().fullName;
         return new CommandResult(String.format(MESSAGE_SUCCESS, name, month.toHumanReadable()));
     }
 
