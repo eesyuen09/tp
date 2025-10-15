@@ -91,11 +91,6 @@ public class ModelStub implements Model {
     }
 
     @Override
-    public Optional<Person> getPersonById(StudentId studentId) {
-        throw new AssertionError("This method should not be called.");
-    }
-
-    @Override
     public boolean hasClassTag(ClassTag classTag) {
         throw new AssertionError("This method should not be called.");
     }

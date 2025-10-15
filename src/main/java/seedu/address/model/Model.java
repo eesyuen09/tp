@@ -95,6 +95,7 @@ public interface Model {
      *
      */
     Optional<Person> getPersonById(StudentId studentId);
+
     /**
      * Returns true if a class tag with the same name as {@code classTag} exists in the address book.
      */
@@ -111,13 +112,6 @@ public interface Model {
      * The class tag must exist.
      */
     void deleteClassTag(ClassTag toDelete);
-
-    /**
-     * Returns an {@code Optional} containing the {@code Person} whose {@code StudentId}
-     * matches the specified {@code studentId}, if such a person exists.
-     */
-    Optional<Person> getPersonById(StudentId studentId);
-
 
     /**
      * Returns {@code true} if the address book contains a {@code Person} with the specified {@code StudentId}.

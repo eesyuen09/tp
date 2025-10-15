@@ -41,8 +41,10 @@ public class Person {
      * @param tags    A set of tags associated with the person.
      * @param enrolledMonth The person's enrolled month
      */
-    public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags, Month enrolledMonth, Set<Attendance> attendanceRecords) {
-        this(name, phone, email, address, tags, new StudentId(), enrolledMonth, attendanceRecords); // StudentId to be set later
+    public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags,
+                  Month enrolledMonth, Set<Attendance> attendanceRecords) {
+        this(name, phone, email, address, tags, new StudentId(), enrolledMonth,
+                attendanceRecords); // StudentId to be set later
     }
 
     /**

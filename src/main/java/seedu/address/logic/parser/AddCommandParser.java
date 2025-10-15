@@ -48,7 +48,7 @@ public class AddCommandParser implements Parser<AddCommand> {
         Set<Tag> tagList = ParserUtil.parseTags(argMultimap.getAllValues(PREFIX_TAG));
         Month enrolledMonth = Month.now();
 
-        Person person = new Person(name, phone, email, address, tagList, null, enrolledMonth, new HashSet<>());
+        Person person = new Person(name, phone, email, address, tagList, enrolledMonth, new HashSet<>());
 
         return new AddCommand(person);
     }

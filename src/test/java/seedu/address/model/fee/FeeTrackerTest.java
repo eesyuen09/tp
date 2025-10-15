@@ -12,6 +12,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 
 import seedu.address.model.person.Address;
+import seedu.address.model.person.Attendance;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Month;
 import seedu.address.model.person.Name;
@@ -30,7 +31,9 @@ public class FeeTrackerTest {
             new Address("Somewhere " + nameSuffix),
             Collections.<Tag>emptySet(),
             new StudentId(id),
-            enrolledMmYY == null ? Month.now() : new Month(enrolledMmYY));
+            enrolledMmYY == null ? Month.now() : new Month(enrolledMmYY),
+            Collections.<Attendance>emptySet());
+
     }
 
     @Test
