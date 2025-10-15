@@ -7,9 +7,10 @@ import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSucces
 
 import org.junit.jupiter.api.Test;
 
-import seedu.address.logic.commands.AddClassTagCommand;
-import seedu.address.logic.commands.ClassTagCommand;
-import seedu.address.logic.commands.DeleteClassTagCommand;
+import seedu.address.logic.commands.classtagcommands.AddClassTagCommand;
+import seedu.address.logic.commands.classtagcommands.ClassTagCommand;
+import seedu.address.logic.commands.classtagcommands.DeleteClassTagCommand;
+import seedu.address.logic.commands.classtagcommands.ListClassTagCommand;
 import seedu.address.model.tag.ClassTag;
 
 public class ClassTagCommandParserTest {
@@ -56,5 +57,25 @@ public class ClassTagCommandParserTest {
     public void parse_invalidTagName_failure() {
         // Invalid tag name for add
         assertParseFailure(parser, " -a " + PREFIX_CLASSTAG + "Invalid-Tag", ClassTag.MESSAGE_CONSTRAINTS);
+    }
+
+    @Test
+    public void parse_list_success() {
+        // standard command
+        assertParseSuccess(parser, " -l", new ListClassTagCommand());
+
+        // with extra whitespace
+        assertParseSuccess(parser, "   -l   ", new ListClassTagCommand());
+    }
+
+    @Test
+    public void parse_listWithArguments_failure() {
+        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, ListClassTagCommand.MESSAGE_USAGE);
+
+        // with extra text after flag
+        assertParseFailure(parser, " -l extra", expectedMessage);
+
+        // with prefix
+        assertParseFailure(parser, " -l " + PREFIX_CLASSTAG + "someTag", expectedMessage);
     }
 }
