@@ -1,6 +1,7 @@
 package seedu.address.logic.commands.attendance;
 
 import static java.util.Objects.requireNonNull;
+
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
@@ -8,6 +9,10 @@ import seedu.address.model.person.Date;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
 
+/**
+ * Marks a student as present on a specific date.
+ * If an attendance record already exists for that date, it will be updated to present.
+ */
 public class AttendanceMarkCommand extends AttendanceCommand {
 
     public static final String MESSAGE_MARK_SUCCESS = "Marked attendance for: %1$s on %2$s";
@@ -20,6 +25,7 @@ public class AttendanceMarkCommand extends AttendanceCommand {
      */
     public AttendanceMarkCommand(StudentId studentId, Date date) {
         super(studentId);
+        requireNonNull(date);
         this.date = date;
     }
 
@@ -27,7 +33,7 @@ public class AttendanceMarkCommand extends AttendanceCommand {
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
 
-        Person personToEdit = model.findPersonByStudentId(studentId)
+        Person personToEdit = model.getPersonById(studentId)
                 .orElseThrow(() -> new CommandException("Student ID not found: " + studentId));
 
         if (personToEdit.hasAttendanceMarked(date)) {
@@ -35,7 +41,6 @@ public class AttendanceMarkCommand extends AttendanceCommand {
         }
 
         personToEdit.markAttendance(date);
-        model.setPerson(personToEdit, personToEdit);
         return new CommandResult(String.format(MESSAGE_MARK_SUCCESS, personToEdit.getName(), date));
     }
 
@@ -53,4 +58,10 @@ public class AttendanceMarkCommand extends AttendanceCommand {
         return studentId.equals(otherCommand.studentId)
                 && date.equals(otherCommand.date);
     }
+
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(studentId, date);
+    }
+
 }

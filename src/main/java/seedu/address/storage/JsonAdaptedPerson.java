@@ -53,7 +53,7 @@ class JsonAdaptedPerson {
         if (attendanceRecords != null) {
             this.attendanceRecords.addAll(attendanceRecords);
         }
-        }
+    }
 
     /**
      * Converts a given {@code Person} into this class for Jackson use.

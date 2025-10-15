@@ -1,11 +1,13 @@
 package seedu.address.model;
 
 import java.nio.file.Path;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.StudentId;
 import seedu.address.model.tag.ClassTag;
 
 /**
@@ -86,6 +88,11 @@ public interface Model {
      */
     void updateFilteredPersonList(Predicate<Person> predicate);
 
+    /**
+     * Retrieves a {@link Person} from the filtered list by their {@link StudentId}.
+     *
+     */
+    Optional<Person> getPersonById(StudentId studentId);
     /**
      * Returns true if a class tag with the same name as {@code classTag} exists in the address book.
      */

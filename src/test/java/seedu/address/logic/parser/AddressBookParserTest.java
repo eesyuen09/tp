@@ -16,7 +16,6 @@ import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.commands.AddClassTagCommand;
 import seedu.address.logic.commands.AddCommand;
-import seedu.address.logic.commands.AttendanceCommand;
 import seedu.address.logic.commands.ClassTagCommand;
 import seedu.address.logic.commands.ClearCommand;
 import seedu.address.logic.commands.DeleteCommand;
@@ -26,9 +25,15 @@ import seedu.address.logic.commands.ExitCommand;
 import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.ListCommand;
+import seedu.address.logic.commands.attendance.AttendanceCommand;
+import seedu.address.logic.commands.attendance.AttendanceMarkCommand;
+import seedu.address.logic.commands.attendance.AttendanceUnmarkCommand;
+import seedu.address.logic.commands.attendance.AttendanceViewCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.model.person.Date;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.StudentId;
 import seedu.address.model.tag.ClassTag;
 import seedu.address.testutil.EditPersonDescriptorBuilder;
 import seedu.address.testutil.PersonBuilder;
@@ -113,7 +118,28 @@ public class AddressBookParserTest {
     }
 
     @Test
-    public void parseCommand_attendance() throws Exception {
-        assertTrue(parser.parseCommand(AttendanceCommand.COMMAND_WORD) instanceof AttendanceCommand);
+    public void parseCommand_attendanceMark() throws Exception {
+        String studentId = "0123";
+        String date = "13012025";
+        AttendanceMarkCommand command = (AttendanceMarkCommand) parser.parseCommand(
+                AttendanceCommand.COMMAND_WORD + " -m s/" + studentId + " d/" + date);
+        assertEquals(new AttendanceMarkCommand(new StudentId(studentId), new Date(date)), command);
+    }
+
+    @Test
+    public void parseCommand_attendanceUnmark() throws Exception {
+        String studentId = "0123";
+        String date = "13012025";
+        AttendanceUnmarkCommand command = (AttendanceUnmarkCommand) parser.parseCommand(
+                AttendanceCommand.COMMAND_WORD + " -u s/" + studentId + " d/" + date);
+        assertEquals(new AttendanceUnmarkCommand(new StudentId(studentId), new Date(date)), command);
+    }
+
+    @Test
+    public void parseCommand_attendanceView() throws Exception {
+        String studentId = "0123";
+        AttendanceViewCommand command = (AttendanceViewCommand) parser.parseCommand(
+                AttendanceCommand.COMMAND_WORD + " -v s/" + studentId);
+        assertEquals(new AttendanceViewCommand(new StudentId(studentId)), command);
     }
 }

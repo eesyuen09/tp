@@ -27,6 +27,10 @@ public class Attendance {
         return isPresent;
     }
 
+    public boolean notPresent() {
+        return !this.isPresent;
+    }
+
     @Override
     public boolean equals(Object other) {
         if (other == this) {

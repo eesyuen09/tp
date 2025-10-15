@@ -31,7 +31,8 @@ public class Person {
     /**
      * Every field must be present and not null.
      */
-    public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags) {
+    public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags,
+                  StudentId studentId, Set<Attendance> attendanceRecords) {
         requireAllNonNull(name, phone, email, address, tags);
         this.name = name;
         this.phone = phone;
@@ -88,25 +89,33 @@ public class Person {
      */
     public boolean hasAttendanceMarked(Date date) {
         return attendanceRecords.stream()
-                .anyMatch(attendance -> attendance.getDate().equals(date) && attendance.isPresent());
+                .anyMatch(attendance -> attendance.getDate().equals(date));
     }
 
     /**
      * Marks student as present on this date.
-     * If record exists, updates it. Otherwise creates new record.
+     * If record exists, updates it. Otherwise,
+     * creates new record.
      */
     public void markAttendance(Date date) {
+        attendanceRecords.removeIf(attendance -> attendance.getDate().equals(date));
         // Add new present record
         attendanceRecords.add(new Attendance(date, true));
     }
 
     /**
      * Marks student as absent on this date.
-     * If record exists, updates it. Otherwise creates new record.
+     * If record exists, updates it. Otherwise, creates new record.
      */
     public void unmarkAttendance(Date date) {
-        // Add new absent record
-        attendanceRecords.add(new Attendance(date, false));
+        // Find and remove the present record for this date
+        boolean removed = attendanceRecords.removeIf(attendance ->
+                attendance.getDate().equals(date) && attendance.isPresent());
+
+        if (removed) {
+            // Add new absent record
+            attendanceRecords.add(new Attendance(date, false));
+        }
     }
 
     /**
