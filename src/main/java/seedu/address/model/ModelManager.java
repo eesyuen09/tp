@@ -130,6 +130,25 @@ public class ModelManager implements Model {
         addressBook.deleteClassTag(classTag);
     }
 
+    /**
+     * Retrieves a {@link Person} from the filtered list by their {@link StudentId}.
+     *
+     */
+    public Optional<Person> getPersonById(StudentId studentId) {
+        requireNonNull(studentId);
+        return this.addressBook.getPersonList().stream()
+                .filter(p -> p.getStudentId().equals(studentId)).findFirst();
+    }
+
+    /**
+     * Checks if the address book contains a {@link Person} with the specified {@link StudentId}.
+    */
+    public boolean hasPersonWithId(StudentId studentId) {
+        requireNonNull(studentId);
+        return this.addressBook.getPersonList().stream()
+                .anyMatch(p -> p.getStudentId().equals(studentId));
+    }
+
     //=========== Filtered Person List Accessors =============================================================
 
     /**
@@ -164,15 +183,5 @@ public class ModelManager implements Model {
                 && filteredPersons.equals(otherModelManager.filteredPersons);
     }
 
-
-    /**
-     * Retrieves a {@link Person} from the filtered list by their {@link StudentId}.
-     *
-     */
-    public Optional<Person> getPersonById(StudentId studentId) {
-        requireNonNull(studentId);
-        return this.addressBook.getPersonList().stream()
-                .filter(p -> p.getStudentId().equals(studentId)).findFirst();
-    }
 
 }
