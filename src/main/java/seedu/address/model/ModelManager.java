@@ -12,6 +12,9 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.LogsCenter;
+import seedu.address.model.fee.FeeState;
+import seedu.address.model.fee.FeeTracker;
+import seedu.address.model.person.Month;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
 import seedu.address.model.tag.ClassTag;
@@ -25,6 +28,7 @@ public class ModelManager implements Model {
     private final AddressBook addressBook;
     private final UserPrefs userPrefs;
     private final FilteredList<Person> filteredPersons;
+    private final FeeTracker feeTracker = new FeeTracker();
 
     /**
      * Initializes a ModelManager with the given addressBook and userPrefs.
@@ -149,6 +153,20 @@ public class ModelManager implements Model {
                 .anyMatch(p -> p.getStudentId().equals(studentId));
     }
 
+    @Override
+    public void markPaid(StudentId studentId, Month month) {
+        requireNonNull(studentId);
+        requireNonNull(month);
+        feeTracker.markPaid(studentId, month);
+    }
+
+    @Override
+    public void markUnpaid(StudentId studentId, Month month) {
+        requireNonNull(studentId);
+        requireNonNull(month);
+        feeTracker.markUnpaid(studentId, month);
+    }
+
     //=========== Filtered Person List Accessors =============================================================
 
     /**
@@ -183,5 +201,22 @@ public class ModelManager implements Model {
                 && filteredPersons.equals(otherModelManager.filteredPersons);
     }
 
+    @Override
+    public Predicate<Person> paidStudents(Month month) {
+        requireNonNull(month);
+        return p -> feeTracker.getDerivedStatusofMonth(p, month).orElse(null) == FeeState.PAID;
+    }
 
+    @Override
+    public Predicate<Person> unpaidStudents(Month month) {
+        requireNonNull(month);
+        return p -> feeTracker.getDerivedStatusofMonth(p, month).orElse(null) == FeeState.UNPAID;
+    }
+
+    @Override
+    public Optional<FeeState> getCurrentFeeState(Person person) {
+        requireNonNull(person);
+        Month current = Month.now();
+        return feeTracker.getDerivedStatusofMonth(person, current);
+    }
 }

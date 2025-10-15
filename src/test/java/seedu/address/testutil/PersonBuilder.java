@@ -5,6 +5,7 @@ import java.util.Set;
 
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
+import seedu.address.model.person.Month;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
@@ -22,6 +23,7 @@ public class PersonBuilder {
     public static final String DEFAULT_EMAIL = "amy@gmail.com";
     public static final String DEFAULT_ADDRESS = "123, Jurong West Ave 6, #08-111";
     public static final String DEFAULT_STUDENTID = "1234";
+    public static final String DEFAULT_ENROLLEDMONTH = "0625";
 
     private Name name;
     private Phone phone;
@@ -29,6 +31,7 @@ public class PersonBuilder {
     private Address address;
     private Set<Tag> tags;
     private StudentId studentId;
+    private Month enrolledMonth;
 
     /**
      * Creates a {@code PersonBuilder} with the default details.
@@ -40,6 +43,7 @@ public class PersonBuilder {
         address = new Address(DEFAULT_ADDRESS);
         studentId = new StudentId(DEFAULT_STUDENTID);
         tags = new HashSet<>();
+        enrolledMonth = new Month(DEFAULT_ENROLLEDMONTH);
     }
 
     /**
@@ -52,6 +56,7 @@ public class PersonBuilder {
         address = personToCopy.getAddress();
         studentId = personToCopy.getStudentId();
         tags = new HashSet<>(personToCopy.getTags());
+        enrolledMonth = personToCopy.getEnrolledMonth();
     }
 
     /**
@@ -102,8 +107,14 @@ public class PersonBuilder {
         return this;
     }
 
-    public Person build() {
-        return new Person(name, phone, email, address, tags, studentId);
+    /**
+     * Sets the {@code EnrolledMonth} of the {@code Person} that we are building.
+     */
+    public PersonBuilder withEnrolledMonth(String monthYear) {
+        this.enrolledMonth = new Month(monthYear);
+        return this;
     }
-
+    public Person build() {
+        return new Person(name, phone, email, address, tags, studentId, enrolledMonth);
+    }
 }
