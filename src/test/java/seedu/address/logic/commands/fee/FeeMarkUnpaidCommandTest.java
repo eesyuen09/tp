@@ -51,7 +51,7 @@ public class FeeMarkUnpaidCommandTest {
 
     @Test
     public void execute_studentNotFound_throwsCommandException() {
-        StudentId missing = new StudentId("9999");
+        StudentId missing = new StudentId("3250");
         Month month = new Month("0925");
 
         FeeMarkUnpaidCommand command = new FeeMarkUnpaidCommand(missing, month);

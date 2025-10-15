@@ -53,7 +53,7 @@ public class FeeMarkPaidCommandTest {
 
     @Test
     public void execute_studentNotFound_throwsCommandException() {
-        StudentId nonExistent = new StudentId("9999");
+        StudentId nonExistent = new StudentId("1550");
         Month month = new Month("0925");
         FeeMarkPaidCommand command = new FeeMarkPaidCommand(nonExistent, month);
 
@@ -79,3 +79,4 @@ public class FeeMarkPaidCommandTest {
         assertFalse(c1.equals(42));
     }
 }
+

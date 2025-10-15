@@ -39,3 +39,4 @@ public class FeeFilterPaidCommand extends FilterCommand {
                 && month.equals(((FeeFilterPaidCommand) other).month));
     }
 }
+
