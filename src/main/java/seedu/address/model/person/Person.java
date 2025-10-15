@@ -38,15 +38,15 @@ public class Person {
      * @param email   The person's email address.
      * @param address The person's address.
      * @param tags    A set of tags associated with the person.
+     * @param enrolledMonth The person's enrolled month
      */
-    public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags) {
-        this(name, phone, email, address, tags, new StudentId(), null); // StudentId to be set later
+    public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags, Month enrolledMonth) {
+        this(name, phone, email, address, tags, new StudentId(), enrolledMonth); // StudentId to be set later
     }
 
     /**
      * Constructs a {@code Person} with a specified {@link StudentId}.
      * <p>
-     * All fields must be non-null.
      *
      * @param name       The person's name.
      * @param phone      The person's phone number.
@@ -54,17 +54,20 @@ public class Person {
      * @param address    The person's address.
      * @param tags       A set of tags associated with the person.
      * @param studentId  The student's unique ID.
+     * @param enrolledMonth The person's enrolled month.
      */
     public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags,
                   StudentId studentId, Month enrolledMonth) {
-        requireAllNonNull(name, phone, email, address, tags, studentId);
+        requireAllNonNull(name, phone, email, address, studentId, enrolledMonth);
         this.name = name;
         this.phone = phone;
         this.email = email;
         this.address = address;
-        this.tags.addAll(tags);
         this.studentId = studentId;
         this.enrolledMonth = enrolledMonth;
+        if (tags != null) {
+            this.tags.addAll(tags);
+        }
     }
 
     public Name getName() {
@@ -150,7 +153,7 @@ public class Person {
                 .add("phone", phone)
                 .add("email", email)
                 .add("address", address)
-                .add("tags", tags)
+                .add("tags", tags.isEmpty() ? "" : tags)
                 .toString();
     }
 

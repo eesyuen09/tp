@@ -15,7 +15,7 @@ public class FeeFilterPaidCommand extends FilterCommand {
     public static final String COMMAND_FLAG = "-p";
 
     public static final String MESSAGE_USAGE =
-            COMMAND_WORD + COMMAND_FLAG + "m/MMYY\n"
+            COMMAND_WORD + " " + COMMAND_FLAG + " m/MMYY\n"
                     + "Example: filter -p m/0925"
                     + "Filters the list to show only students who have PAID for the specified month.";
 

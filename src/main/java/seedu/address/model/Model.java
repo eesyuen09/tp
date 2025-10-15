@@ -6,6 +6,7 @@ import java.util.function.Predicate;
 
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
+import seedu.address.model.fee.FeeState;
 import seedu.address.model.person.Month;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
@@ -131,5 +132,7 @@ public interface Model {
     Predicate<Person> paidStudents(Month month);
 
     Predicate<Person> unpaidStudents(Month month);
+
+    Optional<FeeState> getCurrentFeeState(Person person);
 
 }

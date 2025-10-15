@@ -22,50 +22,30 @@ public class FilterCommandParser implements Parser<Command> {
 
     @Override
     public Command parse(String args) throws ParseException {
-        final String trimmed = args.trim();
-        if (trimmed.isEmpty()) {
+        ArgumentMultimap argMultimap =
+            ArgumentTokenizer.tokenize(args, PREFIX_MONTH);
+
+        String preamble = argMultimap.getPreamble().trim();
+
+        if (preamble.isEmpty()) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, FilterCommand.MESSAGE_USAGE));
         }
+        if (!arePrefixesPresent(argMultimap, PREFIX_MONTH)) {
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, FilterCommand.MESSAGE_USAGE));
+        }
+        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_MONTH);
 
-        // First token is the sub-flag; remainder carries prefixed args (e.g., m/0925)
-        final String[] tokens = trimmed.split("\\s+", 2);
-        final String flag = tokens[0];
-        final String remainder = tokens.length > 1 ? tokens[1] : "";
+        String commandFlag = preamble.split("\\s+")[0];
+        Month month = ParserUtil.parseMonth(argMultimap.getValue(PREFIX_MONTH).get());
 
-        switch (flag) {
+        switch (commandFlag.toLowerCase()) {
         case FeeFilterPaidCommand.COMMAND_FLAG: // "-p"
-            return parsePaid(remainder);
+            return new FeeFilterPaidCommand(month);
         case FeeFilterUnpaidCommand.COMMAND_FLAG: // "-up"
-            return parseUnpaid(remainder);
+            return new FeeFilterUnpaidCommand(month);
         default:
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, FilterCommand.MESSAGE_USAGE));
         }
-    }
-
-    private Command parsePaid(String remainder) throws ParseException {
-        ArgumentMultimap map = ArgumentTokenizer.tokenize(remainder, PREFIX_MONTH);
-
-        if (!map.getPreamble().isEmpty() || !arePrefixesPresent(map, PREFIX_MONTH)) {
-            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                    FeeFilterPaidCommand.MESSAGE_USAGE));
-        }
-        map.verifyNoDuplicatePrefixesFor(PREFIX_MONTH);
-
-        Month month = ParserUtil.parseMonth(map.getValue(PREFIX_MONTH).get());
-        return new FeeFilterPaidCommand(month);
-    }
-
-    private Command parseUnpaid(String remainder) throws ParseException {
-        ArgumentMultimap map = ArgumentTokenizer.tokenize(remainder, PREFIX_MONTH);
-
-        if (!map.getPreamble().isEmpty() || !arePrefixesPresent(map, PREFIX_MONTH)) {
-            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                    FeeFilterUnpaidCommand.MESSAGE_USAGE));
-        }
-        map.verifyNoDuplicatePrefixesFor(PREFIX_MONTH);
-
-        Month month = ParserUtil.parseMonth(map.getValue(PREFIX_MONTH).get());
-        return new FeeFilterUnpaidCommand(month);
     }
 
     private static boolean arePrefixesPresent(ArgumentMultimap m, Prefix... prefixes) {

@@ -212,5 +212,10 @@ public class ModelManager implements Model {
         return p -> feeTracker.getDerivedStatusofMonth(p, month).orElse(null) == FeeState.UNPAID;
     }
 
-
+    @Override
+    public Optional<FeeState> getCurrentFeeState(Person person) {
+        requireNonNull(person);
+        Month current = Month.now();
+        return feeTracker.getDerivedStatusofMonth(person, current);
+    }
 }

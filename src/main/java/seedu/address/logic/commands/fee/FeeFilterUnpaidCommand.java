@@ -15,7 +15,7 @@ public class FeeFilterUnpaidCommand extends FilterCommand {
     public static final String COMMAND_FLAG = "-up";
 
     public static final String MESSAGE_USAGE =
-            COMMAND_WORD + COMMAND_FLAG + "m/MMYY\n"
+            COMMAND_WORD + " " + COMMAND_FLAG + " m/MMYY\n"
                     + "Example: filter -up m/0925"
                     + "Filters the list to show only students who is UNPAID for the specified month.";
 

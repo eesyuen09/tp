@@ -19,7 +19,7 @@ public class FeeMarkUnpaidCommand extends FeeCommand {
 
     public static final String COMMAND_FLAG = "-up";
     public static final String MESSAGE_USAGE =
-            COMMAND_WORD + COMMAND_FLAG + "s/STUDENT_ID m/MMYY\n"
+            COMMAND_WORD + " " + COMMAND_FLAG + " s/STUDENT_ID m/MMYY\n"
                     + "Example: fee -up s/0123 m/0925";
     public static final String MESSAGE_SUCCESS = "%1$s has been successfully marked as Unpaid for %2$s.";
 

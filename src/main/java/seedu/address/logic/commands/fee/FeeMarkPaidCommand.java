@@ -2,6 +2,8 @@ package seedu.address.logic.commands.fee;
 
 import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.Messages.MESSAGE_STUDENT_ID_NOT_FOUND;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_MONTH;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_STUDENTID;
 
 import java.util.Optional;
 
@@ -20,8 +22,9 @@ public class FeeMarkPaidCommand extends FeeCommand {
 
     public static final String COMMAND_FLAG = "-p";
     public static final String MESSAGE_USAGE =
-            COMMAND_WORD + COMMAND_FLAG + "s/STUDENT_ID m/MMYY\n"
-                    + "Example: fee -p s/0123 m/0925";
+        String.format("%s %s %sSTUDENT_ID %sMMYY\nExample: %s %s %ss/0123 %sm/0925",
+            COMMAND_WORD, COMMAND_FLAG, PREFIX_STUDENTID, PREFIX_MONTH,
+            COMMAND_WORD, COMMAND_FLAG, PREFIX_STUDENTID, PREFIX_MONTH);
 
     public static final String MESSAGE_SUCCESS = "%1$s has been successfully marked as Paid for %2$s.";
 
