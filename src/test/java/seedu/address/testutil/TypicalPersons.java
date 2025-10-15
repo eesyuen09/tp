@@ -33,16 +33,16 @@ public class TypicalPersons {
             .withEmail("johnd@example.com").withPhone("98765432").withStudentId("1241")
             .withTags(VALID_CLASS_TAG_MATHS, VALID_CLASS_TAG_PHYSICS).withEnrolledMonth("0625").build();
     public static final Person CARL = new PersonBuilder().withName("Carl Kurz").withPhone("95352563")
-            .withEmail("heinz@example.com").withStudentId("1242").withAddress("wall street").build();
+            .withEmail("heinz@example.com").withStudentId("0002").withAddress("wall street").build();
     public static final Person DANIEL = new PersonBuilder().withName("Daniel Meier").withPhone("87652533")
-            .withEmail("cornelia@example.com").withStudentId("1243")
+            .withEmail("cornelia@example.com").withStudentId("0003")
             .withAddress("10th street").withTags("friends").build();
     public static final Person ELLE = new PersonBuilder().withName("Elle Meyer").withPhone("9482224")
-            .withEmail("werner@example.com").withStudentId("1244").withAddress("michegan ave").build();
+            .withEmail("werner@example.com").withStudentId("0004").withAddress("michegan ave").build();
     public static final Person FIONA = new PersonBuilder().withName("Fiona Kunz").withPhone("9482427")
-            .withEmail("lydia@example.com").withStudentId("1245").withAddress("little tokyo").build();
+            .withEmail("lydia@example.com").withStudentId("0005").withAddress("little tokyo").build();
     public static final Person GEORGE = new PersonBuilder().withName("George Best").withPhone("9482442")
-            .withEmail("anna@example.com").withStudentId("1246").withAddress("4th street").build();
+            .withEmail("anna@example.com").withStudentId("0006").withAddress("4th street").build();
 
     // Manually added
     public static final Person HOON = new PersonBuilder().withName("Hoon Meier").withPhone("8482424")

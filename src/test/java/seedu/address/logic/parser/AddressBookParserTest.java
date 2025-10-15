@@ -5,8 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.Messages.MESSAGE_UNKNOWN_COMMAND;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_CLASSTAG;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_STUDENTID;
 import static seedu.address.testutil.Assert.assertThrows;
-import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 
 import java.util.Arrays;
 import java.util.List;
@@ -73,11 +73,23 @@ public class AddressBookParserTest {
 
     @Test
     public void parseCommand_edit() throws Exception {
+        // Create a sample person and descriptor
         Person person = new PersonBuilder().build();
         EditCommand.EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder(person).build();
-        EditCommand command = (EditCommand) parser.parseCommand(EditCommand.COMMAND_WORD + " "
-                + INDEX_FIRST_PERSON.getOneBased() + " " + PersonUtil.getEditPersonDescriptorDetails(descriptor));
-        assertEquals(new EditCommand(INDEX_FIRST_PERSON, descriptor), command);
+
+        // Get the student's ID for the command
+        StudentId studentId = person.getStudentId();
+
+        // Build the command string using the studentId and descriptor details
+        String commandString = EditCommand.COMMAND_WORD + " "
+                + PREFIX_STUDENTID + studentId + " "
+                + PersonUtil.getEditPersonDescriptorDetails(descriptor);
+
+        // Parse the command
+        EditCommand command = (EditCommand) parser.parseCommand(commandString);
+
+        // Assert that the parsed command matches the expected EditCommand
+        assertEquals(new EditCommand(studentId, descriptor), command);
     }
 
     @Test
