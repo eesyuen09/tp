@@ -11,7 +11,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.model.person.Address;
+import seedu.address.model.person.Attendance;
 import seedu.address.model.person.Email;
+import seedu.address.model.person.Month;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
@@ -33,6 +35,8 @@ class JsonAdaptedPerson {
     private final String address;
     private final String studentId;
     private final List<JsonAdaptedClassTag> tags = new ArrayList<>();
+    private final String enrolledMonth;
+    private final List<JsonAdaptedAttendance> attendanceRecords = new ArrayList<>();
 
     /**
      * Constructs a {@code JsonAdaptedPerson} with the given person details.
@@ -40,14 +44,20 @@ class JsonAdaptedPerson {
     @JsonCreator
     public JsonAdaptedPerson(@JsonProperty("name") String name, @JsonProperty("phone") String phone,
             @JsonProperty("email") String email, @JsonProperty("address") String address,
-            @JsonProperty("tags") List<JsonAdaptedClassTag> tags, @JsonProperty("studentId") String studentId) {
+            @JsonProperty("tags") List<JsonAdaptedClassTag> tags, @JsonProperty("studentId") String studentId,
+                             @JsonProperty("enrolledMonth") String enrolledMonth,
+                             @JsonProperty("attendanceRecords") List<JsonAdaptedAttendance> attendanceRecords) {
         this.name = name;
         this.phone = phone;
         this.email = email;
         this.address = address;
         this.studentId = studentId;
+        this.enrolledMonth = enrolledMonth;
         if (tags != null) {
             this.tags.addAll(tags);
+        }
+        if (attendanceRecords != null) {
+            this.attendanceRecords.addAll(attendanceRecords);
         }
     }
 
@@ -60,9 +70,14 @@ class JsonAdaptedPerson {
         phone = source.getPhone().value;
         email = source.getEmail().value;
         address = source.getAddress().value;
+        enrolledMonth = source.getEnrolledMonth().toString();
         tags.addAll(source.getTags().stream()
                 .map(JsonAdaptedClassTag::new)
                 .collect(Collectors.toList()));
+        attendanceRecords.addAll(source.getAttendanceRecords().stream()
+                .map(JsonAdaptedAttendance::new)
+                .collect(Collectors.toList()));
+
     }
 
     /**
@@ -74,6 +89,11 @@ class JsonAdaptedPerson {
         final List<ClassTag> personTags = new ArrayList<>();
         for (JsonAdaptedClassTag tag : tags) {
             personTags.add(tag.toModelType());
+        }
+
+        final List<Attendance> personAttendance = new ArrayList<>();
+        for (JsonAdaptedAttendance attendance : attendanceRecords) {
+            personAttendance.add(attendance.toModelType());
         }
 
         if (name == null) {
@@ -117,9 +137,15 @@ class JsonAdaptedPerson {
         }
 
         final StudentId modelStudentId = new StudentId(studentId);
+        final Set<Attendance> modelAttendanceRecords = new HashSet<>(personAttendance);
+
+        final Month modelEnrolledMonth = (enrolledMonth != null && Month.isValidMonth(enrolledMonth))
+            ? new Month(enrolledMonth)
+            : Month.now();
 
         final Set<ClassTag> modelTags = new HashSet<>(personTags);
-        return new Person(modelName, modelPhone, modelEmail, modelAddress, modelTags, modelStudentId);
+        return new Person(modelName, modelPhone, modelEmail, modelAddress, modelTags, modelStudentId,
+                modelEnrolledMonth, modelAttendanceRecords);
     }
 
 }

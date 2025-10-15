@@ -25,6 +25,8 @@ public class Person {
     // Data fields
     private final Address address;
     private final Set<ClassTag> tags = new HashSet<>();
+    private final Set<Attendance> attendanceRecords;
+    private final Month enrolledMonth;
 
     /**
      * Constructs a {@code Person} with an automatically generated {@link StudentId}.
@@ -36,15 +38,17 @@ public class Person {
      * @param email   The person's email address.
      * @param address The person's address.
      * @param tags    A set of tags associated with the person.
+     * @param enrolledMonth The person's enrolled month
      */
-    public Person(Name name, Phone phone, Email email, Address address, Set<ClassTag> tags) {
-        this(name, phone, email, address, tags, new StudentId()); // StudentId to be set later
+    public Person(Name name, Phone phone, Email email, Address address, Set<ClassTag> tags,
+                  Month enrolledMonth, Set<Attendance> attendanceRecords) {
+        this(name, phone, email, address, tags, new StudentId(), enrolledMonth,
+                attendanceRecords); // StudentId to be set later
     }
 
     /**
      * Constructs a {@code Person} with a specified {@link StudentId}.
      * <p>
-     * All fields must be non-null.
      *
      * @param name       The person's name.
      * @param phone      The person's phone number.
@@ -52,15 +56,21 @@ public class Person {
      * @param address    The person's address.
      * @param tags       A set of tags associated with the person.
      * @param studentId  The student's unique ID.
+     * @param enrolledMonth The person's enrolled month.
      */
-    public Person(Name name, Phone phone, Email email, Address address, Set<ClassTag> tags, StudentId studentId) {
-        requireAllNonNull(name, phone, email, address, tags, studentId);
+    public Person(Name name, Phone phone, Email email, Address address, Set<ClassTag> tags,
+                  StudentId studentId, Month enrolledMonth, Set<Attendance> attendanceRecords) {
+        requireAllNonNull(name, phone, email, address, studentId, enrolledMonth);
         this.name = name;
         this.phone = phone;
         this.email = email;
         this.address = address;
-        this.tags.addAll(tags);
         this.studentId = studentId;
+        this.enrolledMonth = enrolledMonth;
+        if (tags != null) {
+            this.tags.addAll(tags);
+        }
+        this.attendanceRecords = new HashSet<>(attendanceRecords);
     }
 
     public Name getName() {
@@ -83,6 +93,10 @@ public class Person {
         return studentId;
     }
 
+    public Month getEnrolledMonth() {
+        return enrolledMonth;
+    }
+
     /**
      * Returns an immutable class tag set, which throws {@code UnsupportedOperationException}
      * if modification is attempted.
@@ -102,7 +116,47 @@ public class Person {
 
         return otherPerson != null
                 && otherPerson.getName().equals(getName());
+    }
 
+    /**
+     * Returns true if attendance is already marked as present for this date.
+     */
+    public boolean hasAttendanceMarked(Date date) {
+        return attendanceRecords.stream()
+                .anyMatch(attendance -> attendance.getDate().equals(date));
+    }
+
+    /**
+     * Marks student as present on this date.
+     * If record exists, updates it. Otherwise,
+     * creates new record.
+     */
+    public void markAttendance(Date date) {
+        attendanceRecords.removeIf(attendance -> attendance.getDate().equals(date));
+        // Add new present record
+        attendanceRecords.add(new Attendance(date, true));
+    }
+
+    /**
+     * Marks student as absent on this date.
+     * If record exists, updates it. Otherwise, creates new record.
+     */
+    public void unmarkAttendance(Date date) {
+        // Find and remove the present record for this date
+        boolean removed = attendanceRecords.removeIf(attendance ->
+                attendance.getDate().equals(date) && attendance.isStudentPresent());
+
+        if (removed) {
+            // Add new absent record
+            attendanceRecords.add(new Attendance(date, false));
+        }
+    }
+
+    /**
+     * Returns all attendance records.
+     */
+    public Set<Attendance> getAttendanceRecords() {
+        return Collections.unmodifiableSet(attendanceRecords);
     }
 
     /**
@@ -142,7 +196,7 @@ public class Person {
                 .add("phone", phone)
                 .add("email", email)
                 .add("address", address)
-                .add("tags", tags)
+                .add("tags", tags.isEmpty() ? "" : tags)
                 .toString();
     }
 
