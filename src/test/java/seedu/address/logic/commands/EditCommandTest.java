@@ -10,7 +10,6 @@ import static seedu.address.logic.commands.CommandTestUtil.VALID_NAME_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_PHONE_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
-import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 import static seedu.address.testutil.TypicalPersons.ALICE;
 import static seedu.address.testutil.TypicalPersons.BENSON;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
@@ -100,7 +99,34 @@ public class EditCommandTest {
         EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder().withName(VALID_NAME_BOB).build();
         EditCommand editCommand = new EditCommand(invalidId, descriptor);
 
-        assertCommandFailure(editCommand, model, Messages.MESSAGE_INVALID_STUDENT_ID);
+        assertCommandFailure(editCommand, model, Messages.MESSAGE_STUDENT_ID_NOT_FOUND);
+    }
+
+
+    @Test
+    public void execute_filteredList_success() {
+        Person personInFilteredList = model.getFilteredPersonList().get(0);
+        Person editedPerson = new PersonBuilder(personInFilteredList).withName(VALID_NAME_BOB).build();
+        EditCommand editCommand = new EditCommand(personInFilteredList.getStudentId(),
+                new EditPersonDescriptorBuilder().withName(VALID_NAME_BOB).build());
+
+        String expectedMessage = String.format(EditCommand.MESSAGE_EDIT_PERSON_SUCCESS, Messages.format(editedPerson));
+
+        Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
+        expectedModel.setPerson(model.getFilteredPersonList().get(0), editedPerson);
+
+        assertCommandSuccess(editCommand, model, expectedMessage, expectedModel);
+    }
+
+    @Test
+    public void execute_duplicatePersonFilteredList_failure() {
+        // edit person in filtered list into a duplicate in address book
+        Person personToEdit = model.getAddressBook().getPersonList().get(0);
+        Person personInList = model.getAddressBook().getPersonList().get(1);
+        EditCommand editCommand = new EditCommand(personToEdit.getStudentId(),
+                new EditPersonDescriptorBuilder(personInList).build());
+
+        assertCommandFailure(editCommand, model, EditCommand.MESSAGE_DUPLICATE_PERSON);
     }
 
     @Test
@@ -114,9 +140,9 @@ public class EditCommandTest {
 
     @Test
     public void execute_editPersonWithNonExistentTag_throwsCommandException() {
-        EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder()
+        EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder(BENSON)
                 .withTags("NonExistentTag").build();
-        EditCommand editCommand = new EditCommand(INDEX_FIRST_PERSON, descriptor);
+        EditCommand editCommand = new EditCommand(BENSON.getStudentId(), descriptor);
 
         assertCommandFailure(editCommand, model,
                 String.format(EditCommand.MESSAGE_TAG_NOT_FOUND, "NonExistentTag"));
