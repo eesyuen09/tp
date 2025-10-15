@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.commands.AddCommand;
-import seedu.address.logic.commands.ClassTagCommand;
 import seedu.address.logic.commands.ClearCommand;
 import seedu.address.logic.commands.DeleteCommand;
 import seedu.address.logic.commands.EditCommand;
@@ -27,6 +26,8 @@ import seedu.address.logic.commands.attendance.AttendanceCommand;
 import seedu.address.logic.commands.attendance.AttendanceMarkCommand;
 import seedu.address.logic.commands.attendance.AttendanceUnmarkCommand;
 import seedu.address.logic.commands.attendance.AttendanceViewCommand;
+import seedu.address.logic.commands.classtagcommands.AddClassTagCommand;
+import seedu.address.logic.commands.classtagcommands.ClassTagCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.Date;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
