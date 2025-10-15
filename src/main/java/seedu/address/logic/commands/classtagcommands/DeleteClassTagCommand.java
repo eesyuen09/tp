@@ -48,7 +48,7 @@ public class DeleteClassTagCommand extends ClassTagCommand {
         // Check if any person in the address book has this tag
         List<Person> personList = model.getAddressBook().getPersonList();
         boolean isTagInUse = personList.stream()
-                .anyMatch(person -> person.getClassTags().contains(toDelete));
+                .anyMatch(person -> person.getTags().contains(toDelete));
 
         if (isTagInUse) {
             throw new CommandException(String.format(MESSAGE_TAG_IN_USE, toDelete.tagName));

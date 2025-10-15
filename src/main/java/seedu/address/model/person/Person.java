@@ -8,8 +8,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import seedu.address.commons.util.ToStringBuilder;
-import seedu.address.model.tag.Tag;
-import seedu.address.model.tag.UniqueClassTagList;
+import seedu.address.model.tag.ClassTag;
 
 /**
  * Represents a Person in the address book.
@@ -25,7 +24,7 @@ public class Person {
 
     // Data fields
     private final Address address;
-    private final Set<Tag> tags = new HashSet<>();
+    private final Set<ClassTag> tags = new HashSet<>();
     private final Set<Attendance> attendanceRecords;
     private final Month enrolledMonth;
 
@@ -41,7 +40,7 @@ public class Person {
      * @param tags    A set of tags associated with the person.
      * @param enrolledMonth The person's enrolled month
      */
-    public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags,
+    public Person(Name name, Phone phone, Email email, Address address, Set<ClassTag> tags,
                   Month enrolledMonth, Set<Attendance> attendanceRecords) {
         this(name, phone, email, address, tags, new StudentId(), enrolledMonth,
                 attendanceRecords); // StudentId to be set later
@@ -59,7 +58,7 @@ public class Person {
      * @param studentId  The student's unique ID.
      * @param enrolledMonth The person's enrolled month.
      */
-    public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags,
+    public Person(Name name, Phone phone, Email email, Address address, Set<ClassTag> tags,
                   StudentId studentId, Month enrolledMonth, Set<Attendance> attendanceRecords) {
         requireAllNonNull(name, phone, email, address, studentId, enrolledMonth);
         this.name = name;
@@ -99,10 +98,10 @@ public class Person {
     }
 
     /**
-     * Returns an immutable tag set, which throws {@code UnsupportedOperationException}
+     * Returns an immutable class tag set, which throws {@code UnsupportedOperationException}
      * if modification is attempted.
      */
-    public Set<Tag> getTags() {
+    public Set<ClassTag> getTags() {
         return Collections.unmodifiableSet(tags);
     }
 
@@ -201,8 +200,4 @@ public class Person {
                 .toString();
     }
 
-
-    public UniqueClassTagList getClassTags() {
-        return new UniqueClassTagList();
-    }
 }

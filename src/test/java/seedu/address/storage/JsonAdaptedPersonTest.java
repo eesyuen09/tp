@@ -31,10 +31,11 @@ public class JsonAdaptedPersonTest {
     private static final String VALID_EMAIL = BENSON.getEmail().toString();
     private static final String VALID_ADDRESS = BENSON.getAddress().toString();
     private static final String VALID_STUDENTID = BENSON.getStudentId().toString();
-    private static final String VALID_ENROLLED_MONTH = BENSON.getEnrolledMonth().toString();
-    private static final List<JsonAdaptedTag> VALID_TAGS = BENSON.getTags().stream()
-            .map(JsonAdaptedTag::new)
+    private static final List<JsonAdaptedClassTag> VALID_TAGS = BENSON.getTags().stream()
+            .map(JsonAdaptedClassTag::new)
             .collect(Collectors.toList());
+    private static final String VALID_ENROLLED_MONTH = BENSON.getEnrolledMonth().toString();
+
 
     @Test
     public void toModelType_validPersonDetails_returnsPerson() throws Exception {
@@ -120,8 +121,8 @@ public class JsonAdaptedPersonTest {
 
     @Test
     public void toModelType_invalidTags_throwsIllegalValueException() {
-        List<JsonAdaptedTag> invalidTags = new ArrayList<>(VALID_TAGS);
-        invalidTags.add(new JsonAdaptedTag(INVALID_TAG));
+        List<JsonAdaptedClassTag> invalidTags = new ArrayList<>(VALID_TAGS);
+        invalidTags.add(new JsonAdaptedClassTag(INVALID_TAG));
         JsonAdaptedPerson person =
                 new JsonAdaptedPerson(VALID_NAME, VALID_PHONE,
                         VALID_EMAIL, VALID_ADDRESS, invalidTags,

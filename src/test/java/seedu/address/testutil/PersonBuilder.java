@@ -11,7 +11,7 @@ import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
 import seedu.address.model.person.StudentId;
-import seedu.address.model.tag.Tag;
+import seedu.address.model.tag.ClassTag;
 import seedu.address.model.util.SampleDataUtil;
 
 /**
@@ -30,7 +30,7 @@ public class PersonBuilder {
     private Phone phone;
     private Email email;
     private Address address;
-    private Set<Tag> tags;
+    private Set<ClassTag> tags;
     private StudentId studentId;
     private Month enrolledMonth;
     private Set<Attendance> attendanceRecords;

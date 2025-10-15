@@ -11,7 +11,7 @@ import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
 import seedu.address.model.person.StudentId;
-import seedu.address.model.tag.Tag;
+import seedu.address.model.tag.ClassTag;
 
 /**
  * A utility class to help with building EditPersonDescriptor objects.
@@ -78,7 +78,7 @@ public class EditPersonDescriptorBuilder {
      * that we are building.
      */
     public EditPersonDescriptorBuilder withTags(String... tags) {
-        Set<Tag> tagSet = Stream.of(tags).map(Tag::new).collect(Collectors.toSet());
+        Set<ClassTag> tagSet = Stream.of(tags).map(ClassTag::new).collect(Collectors.toSet());
         descriptor.setTags(tagSet);
         return this;
     }

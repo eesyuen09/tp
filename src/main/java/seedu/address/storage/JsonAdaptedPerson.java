@@ -18,7 +18,9 @@ import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
 import seedu.address.model.person.StudentId;
-import seedu.address.model.tag.Tag;
+import seedu.address.model.tag.ClassTag;
+
+
 
 /**
  * Jackson-friendly version of {@link Person}.
@@ -32,8 +34,8 @@ class JsonAdaptedPerson {
     private final String email;
     private final String address;
     private final String studentId;
+    private final List<JsonAdaptedClassTag> tags = new ArrayList<>();
     private final String enrolledMonth;
-    private final List<JsonAdaptedTag> tags = new ArrayList<>();
     private final List<JsonAdaptedAttendance> attendanceRecords = new ArrayList<>();
 
     /**
@@ -42,7 +44,7 @@ class JsonAdaptedPerson {
     @JsonCreator
     public JsonAdaptedPerson(@JsonProperty("name") String name, @JsonProperty("phone") String phone,
             @JsonProperty("email") String email, @JsonProperty("address") String address,
-            @JsonProperty("tags") List<JsonAdaptedTag> tags, @JsonProperty("studentId") String studentId,
+            @JsonProperty("tags") List<JsonAdaptedClassTag> tags, @JsonProperty("studentId") String studentId,
                              @JsonProperty("enrolledMonth") String enrolledMonth,
                              @JsonProperty("attendanceRecords") List<JsonAdaptedAttendance> attendanceRecords) {
         this.name = name;
@@ -70,7 +72,7 @@ class JsonAdaptedPerson {
         address = source.getAddress().value;
         enrolledMonth = source.getEnrolledMonth().toString();
         tags.addAll(source.getTags().stream()
-                .map(JsonAdaptedTag::new)
+                .map(JsonAdaptedClassTag::new)
                 .collect(Collectors.toList()));
         attendanceRecords.addAll(source.getAttendanceRecords().stream()
                 .map(JsonAdaptedAttendance::new)
@@ -84,8 +86,8 @@ class JsonAdaptedPerson {
      * @throws IllegalValueException if there were any data constraints violated in the adapted person.
      */
     public Person toModelType() throws IllegalValueException {
-        final List<Tag> personTags = new ArrayList<>();
-        for (JsonAdaptedTag tag : tags) {
+        final List<ClassTag> personTags = new ArrayList<>();
+        for (JsonAdaptedClassTag tag : tags) {
             personTags.add(tag.toModelType());
         }
 
@@ -141,9 +143,9 @@ class JsonAdaptedPerson {
             ? new Month(enrolledMonth)
             : Month.now();
 
-        final Set<Tag> modelTags = new HashSet<>(personTags);
-        return new Person(modelName, modelPhone, modelEmail, modelAddress, modelTags,
-            modelStudentId, modelEnrolledMonth, modelAttendanceRecords);
+        final Set<ClassTag> modelTags = new HashSet<>(personTags);
+        return new Person(modelName, modelPhone, modelEmail, modelAddress, modelTags, modelStudentId,
+                modelEnrolledMonth, modelAttendanceRecords);
     }
 
 }
