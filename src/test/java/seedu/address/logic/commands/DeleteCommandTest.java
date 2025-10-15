@@ -44,7 +44,7 @@ public class DeleteCommandTest {
         StudentId invalidId = new StudentId("8800"); // assume this ID does not exist
         DeleteCommand deleteCommand = new DeleteCommand(invalidId);
 
-        assertCommandFailure(deleteCommand, model, Messages.MESASGE_INVALID_STUDENT_ID);
+        assertCommandFailure(deleteCommand, model, Messages.MESSAGE_INVALID_STUDENT_ID);
     }
 
     @Test

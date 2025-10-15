@@ -58,7 +58,7 @@ public class DeleteCommandParserTest {
         // which the parser wraps; we assert the wrapped usage message
         String invalidId = "not-a-valid-id";
         String userInput = " " + PREFIX_STUDENTID + invalidId;
-        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE);
+        String expectedMessage = String.format(StudentId.MESSAGE_CONSTRAINTS);
         assertParseFailure(parser, userInput, expectedMessage);
     }
 }

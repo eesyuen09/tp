@@ -25,19 +25,19 @@ public class DeleteCommandParser implements Parser<DeleteCommand> {
         requireNonNull(args);
         ArgumentMultimap argMultimap =
                 ArgumentTokenizer.tokenize(args, PREFIX_STUDENTID);
-
-        try {
-            if (!argMultimap.getValue(PREFIX_STUDENTID).isPresent()) {
-                throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE));
-            }
-
-            String studentIdArg = argMultimap.getValue(PREFIX_STUDENTID).get();
-            StudentId studentId = ParserUtil.parseStudentId(studentIdArg);
-            return new DeleteCommand(studentId);
-        } catch (ParseException pe) {
-            throw new ParseException(
-                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE), pe);
+        if (!argMultimap.getPreamble().trim().isEmpty()
+                || !arePrefixesPresent(argMultimap, PREFIX_STUDENTID)
+                || argMultimap.getValue(PREFIX_STUDENTID).isEmpty()) {
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE));
         }
+        String studentIdArg = argMultimap.getValue(PREFIX_STUDENTID).get();
+        StudentId studentId = ParserUtil.parseStudentId(studentIdArg);
+        return new DeleteCommand(studentId);
     }
 
+    public static boolean arePrefixesPresent(ArgumentMultimap argumentMultimap, Prefix prefix) {
+        return argumentMultimap.getValue(prefix).isPresent();
+    }
 }
+
+
