@@ -2,17 +2,26 @@ package seedu.address.storage;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static seedu.address.testutil.Assert.assertThrows;
+import static seedu.address.testutil.TypicalPersons.ALICE;
+import static seedu.address.testutil.TypicalPersons.BENSON;
+import static seedu.address.testutil.TypicalPersons.CARL;
+import static seedu.address.testutil.TypicalPersons.DANIEL;
+import static seedu.address.testutil.TypicalPersons.ELLE;
+import static seedu.address.testutil.TypicalPersons.FIONA;
+import static seedu.address.testutil.TypicalPersons.GEORGE;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.commons.util.JsonUtil;
 import seedu.address.model.AddressBook;
-import seedu.address.testutil.TypicalClassTags;
-import seedu.address.testutil.TypicalPersons;
+import seedu.address.model.person.Person;
+import seedu.address.model.tag.ClassTag;
+import seedu.address.testutil.PersonBuilder;
 
 public class JsonSerializableAddressBookTest {
 
@@ -27,28 +36,38 @@ public class JsonSerializableAddressBookTest {
 
     @Test
     public void toModelType_typicalAddressBookWithClassTagsFile_success() throws Exception {
-        // This test reads the file containing both persons and class tags.
         JsonSerializableAddressBook dataFromFile = JsonUtil.readJsonFile(TYPICAL_ADDRESS_BOOK_WITH_CLASSTAGS_FILE,
                 JsonSerializableAddressBook.class).get();
         AddressBook addressBookFromFile = dataFromFile.toModelType();
 
-        // The expected AddressBook must match the JSON data exactly.
-        AddressBook expectedAddressBook = TypicalPersons.getTypicalAddressBook();
-        expectedAddressBook.setClassTags(TypicalClassTags.getTypicalClassTags());
+        AddressBook expectedAddressBook = new AddressBook();
+        Person alice = new PersonBuilder(ALICE).withStudentId("0001").withTags("Sec3_Maths").build();
+        Person benson = new PersonBuilder(BENSON).withStudentId("0002")
+                .withTags("JC1_Physics", "Sec3_Maths").build();
+        expectedAddressBook.addPerson(alice);
+        expectedAddressBook.addPerson(benson);
+        expectedAddressBook.addClassTag(new ClassTag("Sec3_Maths"));
+        expectedAddressBook.addClassTag(new ClassTag("JC1_Physics"));
 
         assertEquals(expectedAddressBook, addressBookFromFile);
     }
 
     @Test
     public void toModelType_typicalPersonsFile_backwardCompatibilitySuccess() throws Exception {
-        // This test reads the older JSON file that does NOT contain a classTags field.
         JsonSerializableAddressBook dataFromFile = JsonUtil.readJsonFile(TYPICAL_PERSONS_FILE,
                 JsonSerializableAddressBook.class).get();
         AddressBook addressBookFromFile = dataFromFile.toModelType();
 
-        // The expected AddressBook should contain the persons but have an EMPTY class tag list.
-        AddressBook expectedAddressBook = TypicalPersons.getTypicalAddressBook();
-        expectedAddressBook.setClassTags(java.util.Collections.emptyList());
+        // **FIX:** Construct the expected AddressBook with the exact data from the JSON file.
+        AddressBook expectedAddressBook = new AddressBook();
+        expectedAddressBook.addPerson(new PersonBuilder(ALICE).withTags("friends").build());
+        expectedAddressBook.addPerson(new PersonBuilder(BENSON).withTags("owesMoney", "friends").build());
+        expectedAddressBook.addPerson(CARL);
+        expectedAddressBook.addPerson(new PersonBuilder(DANIEL).withTags("friends").build());
+        expectedAddressBook.addPerson(ELLE);
+        expectedAddressBook.addPerson(FIONA);
+        expectedAddressBook.addPerson(GEORGE);
+        expectedAddressBook.setClassTags(Collections.emptyList());
 
         assertEquals(expectedAddressBook, addressBookFromFile);
     }
