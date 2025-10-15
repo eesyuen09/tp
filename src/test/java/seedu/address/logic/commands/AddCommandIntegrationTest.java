@@ -45,4 +45,12 @@ public class AddCommandIntegrationTest {
                 AddCommand.MESSAGE_DUPLICATE_PERSON);
     }
 
+    @Test
+    public void execute_addPersonWithNonExistentTag_throwsCommandException() {
+        Person personWithBadTag = new PersonBuilder().withName("Bad Tag Person").withTags("NonExistentTag").build();
+        AddCommand addCommand = new AddCommand(personWithBadTag);
+
+        assertCommandFailure(addCommand, model,
+                String.format(AddCommand.MESSAGE_TAG_NOT_FOUND, "NonExistentTag"));
+    }
 }
