@@ -12,6 +12,7 @@ import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Date;
 import seedu.address.model.person.Email;
+import seedu.address.model.person.Month;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Phone;
 import seedu.address.model.person.StudentId;
@@ -141,10 +142,10 @@ public class ParserUtil {
     }
 
     /**
-     * Parses a {@code String studentId} into a {@code StudentId}.
-     * Leading and trailing whitespaces will be trimmed.
+     * Parses a {@code String} representing a student ID into a {@code StudentId} object.
+     * Leading and trailing whitespaces are trimmed before validation.
      *
-     * @throws ParseException if the given {@code studentId} is invalid.
+     * @throws ParseException if the given {@code studentId} is invalid
      */
     public static StudentId parseStudentId(String studentId) throws ParseException {
         requireNonNull(studentId);
@@ -153,6 +154,20 @@ public class ParserUtil {
             throw new ParseException(StudentId.MESSAGE_CONSTRAINTS);
         }
         return new StudentId(trimmedStudentId);
+    }
+    /**
+     * Parses a {@code String Month} into a {@code Month}.
+     * Leading and trailing whitespaces will be trimmed.
+     *
+     * @throws ParseException if the given {@code Month} is invalid.
+     */
+    public static Month parseMonth(String month) throws ParseException {
+        requireNonNull(month);
+        String trimmedMonth = month.trim();
+        if (!Month.isValidMonth(trimmedMonth)) {
+            throw new ParseException(Month.MESSAGE_CONSTRAINTS);
+        }
+        return new Month(trimmedMonth);
     }
 
     /**
@@ -169,4 +184,5 @@ public class ParserUtil {
         }
         return new Date(trimmedDate);
     }
+
 }

@@ -27,19 +27,48 @@ public class Person {
     private final Address address;
     private final Set<Tag> tags = new HashSet<>();
     private final Set<Attendance> attendanceRecords;
+    private final Month enrolledMonth;
 
     /**
-     * Every field must be present and not null.
+     * Constructs a {@code Person} with an automatically generated {@link StudentId}.
+     * <p>
+     * All fields must be non-null.
+     *
+     * @param name    The person's name.
+     * @param phone   The person's phone number.
+     * @param email   The person's email address.
+     * @param address The person's address.
+     * @param tags    A set of tags associated with the person.
+     * @param enrolledMonth The person's enrolled month
+     */
+    public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags, Month enrolledMonth, Set<Attendance> attendanceRecords) {
+        this(name, phone, email, address, tags, new StudentId(), enrolledMonth, attendanceRecords); // StudentId to be set later
+    }
+
+    /**
+     * Constructs a {@code Person} with a specified {@link StudentId}.
+     * <p>
+     *
+     * @param name       The person's name.
+     * @param phone      The person's phone number.
+     * @param email      The person's email address.
+     * @param address    The person's address.
+     * @param tags       A set of tags associated with the person.
+     * @param studentId  The student's unique ID.
+     * @param enrolledMonth The person's enrolled month.
      */
     public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags,
-                  StudentId studentId, Set<Attendance> attendanceRecords) {
-        requireAllNonNull(name, phone, email, address, tags);
+                  StudentId studentId, Month enrolledMonth, Set<Attendance> attendanceRecords) {
+        requireAllNonNull(name, phone, email, address, studentId, enrolledMonth);
         this.name = name;
         this.phone = phone;
         this.email = email;
         this.address = address;
-        this.tags.addAll(tags);
         this.studentId = studentId;
+        this.enrolledMonth = enrolledMonth;
+        if (tags != null) {
+            this.tags.addAll(tags);
+        }
         this.attendanceRecords = new HashSet<>(attendanceRecords);
     }
 
@@ -61,6 +90,10 @@ public class Person {
 
     public StudentId getStudentId() {
         return studentId;
+    }
+
+    public Month getEnrolledMonth() {
+        return enrolledMonth;
     }
 
     /**
@@ -162,7 +195,7 @@ public class Person {
                 .add("phone", phone)
                 .add("email", email)
                 .add("address", address)
-                .add("tags", tags)
+                .add("tags", tags.isEmpty() ? "" : tags)
                 .toString();
     }
 

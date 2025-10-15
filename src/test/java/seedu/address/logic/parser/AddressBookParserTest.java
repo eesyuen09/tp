@@ -19,6 +19,7 @@ import seedu.address.logic.commands.ClearCommand;
 import seedu.address.logic.commands.DeleteCommand;
 import seedu.address.logic.commands.EditCommand;
 import seedu.address.logic.commands.ExitCommand;
+import seedu.address.logic.commands.FilterCommand;
 import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.ListCommand;
@@ -28,7 +29,13 @@ import seedu.address.logic.commands.attendance.AttendanceUnmarkCommand;
 import seedu.address.logic.commands.attendance.AttendanceViewCommand;
 import seedu.address.logic.commands.classtagcommands.AddClassTagCommand;
 import seedu.address.logic.commands.classtagcommands.ClassTagCommand;
+import seedu.address.logic.commands.fee.FeeCommand;
+import seedu.address.logic.commands.fee.FeeFilterPaidCommand;
+import seedu.address.logic.commands.fee.FeeFilterUnpaidCommand;
+import seedu.address.logic.commands.fee.FeeMarkPaidCommand;
+import seedu.address.logic.commands.fee.FeeMarkUnpaidCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.model.person.Month;
 import seedu.address.model.person.Date;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.Person;
@@ -58,9 +65,10 @@ public class AddressBookParserTest {
 
     @Test
     public void parseCommand_delete() throws Exception {
+        StudentId studentId = new StudentId("2042");
         DeleteCommand command = (DeleteCommand) parser.parseCommand(
-                DeleteCommand.COMMAND_WORD + " " + INDEX_FIRST_PERSON.getOneBased());
-        assertEquals(new DeleteCommand(INDEX_FIRST_PERSON), command);
+                DeleteCommand.COMMAND_WORD + " s/" + studentId.toString());
+        assertEquals(new DeleteCommand(studentId), command);
     }
 
     @Test
@@ -104,6 +112,70 @@ public class AddressBookParserTest {
         AddClassTagCommand command = (AddClassTagCommand) parser.parseCommand(ClassTagCommand.COMMAND_WORD
                 + " -a " + PREFIX_CLASSTAG + "MyClass");
         assertEquals(new AddClassTagCommand(tag), command);
+    }
+
+    @Test
+    public void parseCommand_feeMarkPaid_success() throws Exception {
+        StudentId id = new StudentId("0001");
+        Month m = new Month("0925");
+        FeeMarkPaidCommand cmd = (FeeMarkPaidCommand) parser.parseCommand("fee -p s/0001 m/0925");
+        assertTrue(parser.parseCommand(FeeCommand.COMMAND_WORD + " -p s/0001 m/0925") instanceof FeeCommand);
+        assertTrue(parser.parseCommand(FeeCommand.COMMAND_WORD + " -p s/0001 m/0925") instanceof FeeMarkPaidCommand);
+        assertEquals(new FeeMarkPaidCommand(id, m), cmd);
+    }
+
+    @Test
+    public void parseCommand_feeMarkUnpaid_success() throws Exception {
+        StudentId id = new StudentId("0002");
+        Month m = new Month("1025");
+        FeeMarkUnpaidCommand cmd = (FeeMarkUnpaidCommand) parser.parseCommand("fee -up s/0002 m/1025");
+        assertTrue(parser.parseCommand(FeeCommand.COMMAND_WORD + " -up s/0002 m/1025") instanceof FeeCommand);
+        assertTrue(parser.parseCommand(FeeCommand.COMMAND_WORD + " -up s/0002 m/1025") instanceof FeeMarkUnpaidCommand);
+        assertEquals(new FeeMarkUnpaidCommand(id, m), cmd);
+    }
+
+    @Test
+    public void parseCommand_invalidFeeCommands_throwsParseException() {
+        assertThrows(ParseException.class, () -> parser.parseCommand("fee -p"));
+        assertThrows(ParseException.class, () -> parser.parseCommand("fee -x s/0001 m/0925"));
+    }
+
+    @Test
+    public void parseCommand_filterPaid_success() throws Exception {
+        Month m = new Month("0925");
+        assertEquals(new FeeFilterPaidCommand(m),
+            parser.parseCommand("filter -p m/0925"));
+
+        // tolerate extra whitespace
+        assertEquals(new FeeFilterPaidCommand(m),
+            parser.parseCommand("   filter    -p     m/0925   "));
+    }
+
+    @Test
+    public void parseCommand_filterUnpaid_success() throws Exception {
+        Month m = new Month("1025");
+        assertEquals(new FeeFilterUnpaidCommand(m),
+            parser.parseCommand("filter -up m/1025"));
+    }
+
+    @Test
+    public void parseCommand_filterUnknownFlag_failure() {
+        assertThrows(ParseException.class,
+            String.format(MESSAGE_INVALID_COMMAND_FORMAT, FilterCommand.MESSAGE_USAGE), () -> parser.parseCommand(
+                "filter -xx m/0925"));
+    }
+
+    @Test
+    public void parseCommand_filterMissingMonth_failure() {
+        assertThrows(ParseException.class,
+            String.format(MESSAGE_INVALID_COMMAND_FORMAT, FilterCommand.MESSAGE_USAGE), () -> parser.parseCommand(
+                "filter -p"));
+    }
+
+    @Test
+    public void parseCommand_filterDuplicateMonthPrefix_failure() {
+        assertThrows(ParseException.class, () -> parser.parseCommand(
+            "filter -p m/0925 m/1025"));
     }
 
     @Test

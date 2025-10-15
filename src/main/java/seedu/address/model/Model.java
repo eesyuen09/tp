@@ -6,6 +6,8 @@ import java.util.function.Predicate;
 
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
+import seedu.address.model.fee.FeeState;
+import seedu.address.model.person.Month;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
 import seedu.address.model.tag.ClassTag;
@@ -109,4 +111,34 @@ public interface Model {
      * The class tag must exist.
      */
     void deleteClassTag(ClassTag toDelete);
+
+    /**
+     * Returns an {@code Optional} containing the {@code Person} whose {@code StudentId}
+     * matches the specified {@code studentId}, if such a person exists.
+     */
+    Optional<Person> getPersonById(StudentId studentId);
+
+
+    /**
+     * Returns {@code true} if the address book contains a {@code Person} with the specified {@code StudentId}.
+     */
+    boolean hasPersonWithId(StudentId studentId);
+    /**
+     * Marks the given student as PAID for the given month.
+     * The student must already exist in the address book.
+     */
+    void markPaid(StudentId studentId, Month month);
+
+    /**
+     * Marks the given student as UNPAID for the given month.
+     * The student must already exist in the address book.
+     */
+    void markUnpaid(StudentId studentId, Month month);
+
+    Predicate<Person> paidStudents(Month month);
+
+    Predicate<Person> unpaidStudents(Month month);
+
+    Optional<FeeState> getCurrentFeeState(Person person);
+
 }

@@ -13,6 +13,7 @@ import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Attendance;
 import seedu.address.model.person.Email;
+import seedu.address.model.person.Month;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
@@ -31,6 +32,7 @@ class JsonAdaptedPerson {
     private final String email;
     private final String address;
     private final String studentId;
+    private final String enrolledMonth;
     private final List<JsonAdaptedTag> tags = new ArrayList<>();
     private final List<JsonAdaptedAttendance> attendanceRecords = new ArrayList<>();
 
@@ -41,12 +43,14 @@ class JsonAdaptedPerson {
     public JsonAdaptedPerson(@JsonProperty("name") String name, @JsonProperty("phone") String phone,
             @JsonProperty("email") String email, @JsonProperty("address") String address,
             @JsonProperty("tags") List<JsonAdaptedTag> tags, @JsonProperty("studentId") String studentId,
-            @JsonProperty("attendanceRecords") List<JsonAdaptedAttendance> attendanceRecords) {
+                             @JsonProperty("enrolledMonth") String enrolledMonth,
+                             @JsonProperty("attendanceRecords") List<JsonAdaptedAttendance> attendanceRecords) {
         this.name = name;
         this.phone = phone;
         this.email = email;
         this.address = address;
         this.studentId = studentId;
+        this.enrolledMonth = enrolledMonth;
         if (tags != null) {
             this.tags.addAll(tags);
         }
@@ -64,6 +68,7 @@ class JsonAdaptedPerson {
         phone = source.getPhone().value;
         email = source.getEmail().value;
         address = source.getAddress().value;
+        enrolledMonth = source.getEnrolledMonth().toString();
         tags.addAll(source.getTags().stream()
                 .map(JsonAdaptedTag::new)
                 .collect(Collectors.toList()));
@@ -132,9 +137,13 @@ class JsonAdaptedPerson {
         final StudentId modelStudentId = new StudentId(studentId);
         final Set<Attendance> modelAttendanceRecords = new HashSet<>(personAttendance);
 
+        final Month modelEnrolledMonth = (enrolledMonth != null && Month.isValidMonth(enrolledMonth))
+            ? new Month(enrolledMonth)
+            : Month.now();
+
         final Set<Tag> modelTags = new HashSet<>(personTags);
         return new Person(modelName, modelPhone, modelEmail, modelAddress, modelTags,
-                modelStudentId, modelAttendanceRecords);
+            modelStudentId, modelEnrolledMonth, modelAttendanceRecords);
     }
 
 }

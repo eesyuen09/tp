@@ -24,6 +24,7 @@ import seedu.address.model.Model;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Attendance;
 import seedu.address.model.person.Email;
+import seedu.address.model.person.Month;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
@@ -103,9 +104,10 @@ public class EditCommand extends Command {
         Address updatedAddress = editPersonDescriptor.getAddress().orElse(personToEdit.getAddress());
         Set<Tag> updatedTags = editPersonDescriptor.getTags().orElse(personToEdit.getTags());
         StudentId updatedStudentId = personToEdit.getStudentId();
+        Month enrolledMonth = personToEdit.getEnrolledMonth();
         Set<Attendance> attendanceRecords = personToEdit.getAttendanceRecords();
         return new Person(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags,
-                updatedStudentId, attendanceRecords);
+                updatedStudentId, enrolledMonth, attendanceRecords);
     }
 
     @Override

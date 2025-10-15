@@ -11,11 +11,15 @@ import static seedu.address.testutil.TypicalPersons.BENSON;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.function.Predicate;
 
 import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.GuiSettings;
+import seedu.address.model.fee.FeeState;
+import seedu.address.model.person.Month;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
+import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
 import seedu.address.model.tag.ClassTag;
 import seedu.address.model.tag.exceptions.DuplicateClassTagException;
@@ -180,5 +184,56 @@ public class ModelManagerTest {
     @Test
     public void getPersonById_nullId_throwsNullPointerException() {
         assertThrows(NullPointerException.class, () -> modelManager.getPersonById(null));
+    }
+
+    @Test
+    public void paidAndUnpaidPredicates_currentMonth_basicBehaviour() {
+        modelManager.addPerson(ALICE);
+        modelManager.addPerson(BENSON);
+
+        Month current = Month.now();
+
+        modelManager.markPaid(ALICE.getStudentId(), current);
+
+        Predicate<Person> paid = modelManager.paidStudents(current);
+        Predicate<Person> unpaid = modelManager.unpaidStudents(current);
+
+        assertTrue(paid.test(ALICE));
+        assertFalse(unpaid.test(ALICE));
+
+        assertFalse(paid.test(BENSON));
+        assertTrue(unpaid.test(BENSON));
+    }
+
+    @Test
+    public void getCurrentFeeState_defaultsAndOverrides() {
+        modelManager.addPerson(ALICE);
+        Month current = Month.now();
+
+        assertEquals(java.util.Optional.of(FeeState.UNPAID), modelManager.getCurrentFeeState(ALICE));
+
+        modelManager.markPaid(ALICE.getStudentId(), current);
+        assertEquals(java.util.Optional.of(FeeState.PAID), modelManager.getCurrentFeeState(ALICE));
+    }
+
+
+
+    @Test
+    public void hasPersonWithId_existingAndNonExistingId_returnsCorrectResult() {
+        modelManager.addPerson(ALICE);
+        modelManager.addPerson(BENSON);
+
+        // existing ID → should return true
+        assertTrue(modelManager.hasPersonWithId(ALICE.getStudentId()));
+        assertTrue(modelManager.hasPersonWithId(BENSON.getStudentId()));
+
+        // non-existing ID → should return false
+        StudentId fakeId = new StudentId("4444");
+        assertFalse(modelManager.hasPersonWithId(fakeId));
+    }
+
+    @Test
+    public void hasPersonWithId_nullId_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> modelManager.hasPersonWithId(null));
     }
 }
