@@ -35,11 +35,6 @@ public class AttendanceUnmarkCommand extends AttendanceCommand {
         Person personToEdit = model.getPersonById(studentId)
                 .orElseThrow(() -> new CommandException("Student ID not found: " + studentId));
 
-        //If student does not have existing attendance marked as present, throws exception
-        if (!personToEdit.hasAttendanceMarked(date)) {
-            throw new CommandException("Student was not marked present on " + date);
-        }
-
         personToEdit.unmarkAttendance(date);
         return new CommandResult(String.format(MESSAGE_UNMARK_SUCCESS, personToEdit.getName(), date));
     }
