@@ -8,7 +8,7 @@ import seedu.address.model.Model;
 import seedu.address.model.person.Month;
 
 /**
- * Shows only students marked as {@code PAID} for the specified month.
+ * Shows only students marked as {@code UNPAID} for the specified month.
  */
 public class FeeFilterUnpaidCommand extends FilterCommand {
 
