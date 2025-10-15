@@ -29,6 +29,7 @@ public class PerfViewCommand extends PerfCommand {
      * @param studentId ID of the student to view the performance notes
      */
     public PerfViewCommand(StudentId studentId) {
+        requireNonNull(studentId);
         this.studentId = studentId;
     }
 
