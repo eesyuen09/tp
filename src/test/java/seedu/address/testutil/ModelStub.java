@@ -117,10 +117,7 @@ public class ModelStub implements Model {
     public Predicate<Person> unpaidStudents(Month month) {
         throw new AssertionError("This method should not be called.");
     }
-    @Override
-    public boolean hasStudentId(StudentId studentId) {
-        throw new AssertionError("This method should not be called.");
-    }
+
     @Override
     public void markPaid(StudentId studentId, Month month) {
         throw new AssertionError("This method should not be called.");
@@ -132,6 +129,11 @@ public class ModelStub implements Model {
 
     @Override
     public Optional<FeeState> getCurrentFeeState(Person person) {
+        throw new AssertionError("This method should not be called.");
+    }
+
+    @Override
+    public boolean hasPersonWithId(StudentId studentId) {
         throw new AssertionError("This method should not be called.");
     }
 }

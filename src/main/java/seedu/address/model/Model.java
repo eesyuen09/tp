@@ -108,15 +108,16 @@ public interface Model {
     void deleteClassTag(ClassTag toDelete);
 
     /**
-     * Returns the person with the given {@code studentId}, if present.
+     * Returns an {@code Optional} containing the {@code Person} whose {@code StudentId}
+     * matches the specified {@code studentId}, if such a person exists.
      */
     Optional<Person> getPersonById(StudentId studentId);
 
-    /**
-     * Returns true if a person with the given {@code studentId} exists.
-     */
-    boolean hasStudentId(StudentId studentId);
 
+    /**
+     * Returns {@code true} if the address book contains a {@code Person} with the specified {@code StudentId}.
+     */
+    boolean hasPersonWithId(StudentId studentId);
     /**
      * Marks the given student as PAID for the given month.
      * The student must already exist in the address book.

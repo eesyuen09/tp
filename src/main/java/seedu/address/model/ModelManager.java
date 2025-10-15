@@ -134,6 +134,25 @@ public class ModelManager implements Model {
         addressBook.deleteClassTag(classTag);
     }
 
+    /**
+     * Retrieves a {@link Person} from the filtered list by their {@link StudentId}.
+     *
+     */
+    public Optional<Person> getPersonById(StudentId studentId) {
+        requireNonNull(studentId);
+        return this.addressBook.getPersonList().stream()
+                .filter(p -> p.getStudentId().equals(studentId)).findFirst();
+    }
+
+    /**
+     * Checks if the address book contains a {@link Person} with the specified {@link StudentId}.
+    */
+    public boolean hasPersonWithId(StudentId studentId) {
+        requireNonNull(studentId);
+        return this.addressBook.getPersonList().stream()
+                .anyMatch(p -> p.getStudentId().equals(studentId));
+    }
+
     @Override
     public void markPaid(StudentId studentId, Month month) {
         requireNonNull(studentId);
@@ -180,24 +199,6 @@ public class ModelManager implements Model {
         return addressBook.equals(otherModelManager.addressBook)
                 && userPrefs.equals(otherModelManager.userPrefs)
                 && filteredPersons.equals(otherModelManager.filteredPersons);
-    }
-
-
-    /**
-     * Retrieves a {@link Person} from the filtered list by their {@link StudentId}.
-     *
-     */
-    public Optional<Person> getPersonById(StudentId studentId) {
-        requireNonNull(studentId);
-        return this.addressBook.getPersonList().stream()
-                .filter(p -> p.getStudentId().equals(studentId)).findFirst();
-    }
-
-    /**
-     * Returns true if a person with the given {@code studentId} exists.
-     */
-    public boolean hasStudentId(StudentId studentId) {
-        return getPersonById(studentId).isPresent();
     }
 
     @Override

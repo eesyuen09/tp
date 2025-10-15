@@ -217,4 +217,23 @@ public class ModelManagerTest {
     }
 
 
+
+    @Test
+    public void hasPersonWithId_existingAndNonExistingId_returnsCorrectResult() {
+        modelManager.addPerson(ALICE);
+        modelManager.addPerson(BENSON);
+
+        // existing ID → should return true
+        assertTrue(modelManager.hasPersonWithId(ALICE.getStudentId()));
+        assertTrue(modelManager.hasPersonWithId(BENSON.getStudentId()));
+
+        // non-existing ID → should return false
+        StudentId fakeId = new StudentId("4444");
+        assertFalse(modelManager.hasPersonWithId(fakeId));
+    }
+
+    @Test
+    public void hasPersonWithId_nullId_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> modelManager.hasPersonWithId(null));
+    }
 }

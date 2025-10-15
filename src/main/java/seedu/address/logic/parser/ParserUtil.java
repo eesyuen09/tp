@@ -141,10 +141,10 @@ public class ParserUtil {
     }
 
     /**
-     * Parses a {@code String StudentId} into a {@code StudentId}.
-     * Leading and trailing whitespaces will be trimmed.
+     * Parses a {@code String} representing a student ID into a {@code StudentId} object.
+     * Leading and trailing whitespaces are trimmed before validation.
      *
-     * @throws ParseException if the given {@code StudentId} is invalid.
+     * @throws ParseException if the given {@code studentId} is invalid
      */
     public static StudentId parseStudentId(String studentId) throws ParseException {
         requireNonNull(studentId);
@@ -154,7 +154,6 @@ public class ParserUtil {
         }
         return new StudentId(trimmedStudentId);
     }
-
     /**
      * Parses a {@code String Month} into a {@code Month}.
      * Leading and trailing whitespaces will be trimmed.
