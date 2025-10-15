@@ -124,6 +124,18 @@ public class ParserUtil {
     }
 
     /**
+     * Parses a {@code Collection<String> classTags} into a {@code Set<ClassTag>}.
+     */
+    public static Set<ClassTag> parseClassTags(Collection<String> classTags) throws ParseException {
+        requireNonNull(classTags);
+        final Set<ClassTag> classTagSet = new HashSet<>();
+        for (String tagName : classTags) {
+            classTagSet.add(parseClassTag(tagName));
+        }
+        return classTagSet;
+    }
+
+    /**
      * Parses a {@code String classTag} into a {@code ClassTag}.
      * Leading and trailing whitespaces will be trimmed.
      *

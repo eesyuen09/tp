@@ -8,7 +8,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import seedu.address.commons.util.ToStringBuilder;
-import seedu.address.model.tag.Tag;
+import seedu.address.model.tag.ClassTag;
 import seedu.address.model.tag.UniqueClassTagList;
 
 /**
@@ -25,7 +25,7 @@ public class Person {
 
     // Data fields
     private final Address address;
-    private final Set<Tag> tags = new HashSet<>();
+    private final Set<ClassTag> tags = new HashSet<>();
 
     /**
      * Constructs a {@code Person} with an automatically generated {@link StudentId}.
@@ -38,7 +38,7 @@ public class Person {
      * @param address The person's address.
      * @param tags    A set of tags associated with the person.
      */
-    public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags) {
+    public Person(Name name, Phone phone, Email email, Address address, Set<ClassTag> tags) {
         this(name, phone, email, address, tags, new StudentId()); // StudentId to be set later
     }
 
@@ -54,7 +54,7 @@ public class Person {
      * @param tags       A set of tags associated with the person.
      * @param studentId  The student's unique ID.
      */
-    public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags, StudentId studentId) {
+    public Person(Name name, Phone phone, Email email, Address address, Set<ClassTag> tags, StudentId studentId) {
         requireAllNonNull(name, phone, email, address, tags, studentId);
         this.name = name;
         this.phone = phone;
@@ -85,10 +85,10 @@ public class Person {
     }
 
     /**
-     * Returns an immutable tag set, which throws {@code UnsupportedOperationException}
+     * Returns an immutable class tag set, which throws {@code UnsupportedOperationException}
      * if modification is attempted.
      */
-    public Set<Tag> getTags() {
+    public Set<ClassTag> getTags() {
         return Collections.unmodifiableSet(tags);
     }
 
@@ -147,8 +147,4 @@ public class Person {
                 .toString();
     }
 
-
-    public UniqueClassTagList getClassTags() {
-        return new UniqueClassTagList();
-    }
 }
