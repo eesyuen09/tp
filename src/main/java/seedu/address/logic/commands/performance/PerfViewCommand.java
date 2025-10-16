@@ -5,6 +5,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_STUDENTID;
 
 import java.util.List;
 
+import seedu.address.logic.Messages;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
@@ -38,7 +39,7 @@ public class PerfViewCommand extends PerfCommand {
         requireNonNull(model);
 
         Person student = model.getPersonById(studentId)
-                .orElseThrow(() -> new CommandException(PerfNotes.STUDENT_NOT_FOUND));
+                .orElseThrow(() -> new CommandException(Messages.MESSAGE_STUDENT_ID_NOT_FOUND));
 
         List<PerformanceNote> notes = student.getPerformanceList().asUnmodifiableList();
 
@@ -50,7 +51,7 @@ public class PerfViewCommand extends PerfCommand {
         sb.append(student.getName()).append(" Performance Notes:\n");
         for (int i = 0; i < notes.size(); i++) {
             PerformanceNote n = notes.get(i);
-            sb.append(String.format("%d. %s: %s\n", i + 1, n.getDate().toString(), n.getNote()));
+            sb.append(String.format("%d. %s: %s\n", i + 1, n.getDate().getFormattedDate(), n.getNote()));
         }
         return new CommandResult(sb.toString().trim());
     }

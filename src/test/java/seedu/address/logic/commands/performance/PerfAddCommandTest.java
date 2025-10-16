@@ -10,6 +10,7 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.logic.Messages;
 import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
@@ -60,7 +61,7 @@ public class PerfAddCommandTest {
         Person personWithNote = validPerson.withPerformanceList(performanceList);
         expectedModel.addPerson(personWithNote);
 
-        String expectedMessage = String.format(PerfNotes.ADDED,
+        String expectedMessage = String.format(PerfCommand.ADDED,
                 validPerson.getName(), note.getDate().getFormattedDate());
 
         assertCommandSuccess(new PerfAddCommand(VALID_STUDENT_ID, VALID_DATE, VALID_NOTE),
@@ -72,7 +73,7 @@ public class PerfAddCommandTest {
         Model model = new ModelManager(new AddressBook(), new UserPrefs());
         PerfAddCommand perfAddCommand = new PerfAddCommand(VALID_STUDENT_ID, VALID_DATE, VALID_NOTE);
 
-        assertCommandFailure(perfAddCommand, model, PerfNotes.STUDENT_NOT_FOUND);
+        assertCommandFailure(perfAddCommand, model, Messages.MESSAGE_STUDENT_ID_NOT_FOUND);
     }
 
     @Test

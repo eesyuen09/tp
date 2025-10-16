@@ -18,4 +18,19 @@ public abstract class PerfCommand extends Command {
             + "  " + COMMAND_WORD + " -e: Edits a performance note. Usage: perf -e s/STUDENT_ID i/INDEX pn/NOTE\n"
             + "  " + COMMAND_WORD + " -d: Deletes a performance note. Usage: perf -d s/STUDENT_ID i/INDEX";
 
+    /**
+     * Success message for adding a performance note.
+     */
+    public static final String ADDED = "Performance note successfully added for %s on %s.";
+
+    /**
+     * Success message for deleting a performance note.
+     */
+    public static final String DELETED = "Performance note %d successfully deleted for %s.";
+
+    /**
+     * Success message for editing a performance note.
+     */
+    public static final String EDITED = "Performance note %d successfully edited for %s.";
+
 }

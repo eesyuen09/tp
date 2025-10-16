@@ -10,6 +10,7 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.logic.Messages;
 import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
@@ -44,7 +45,7 @@ public class PerfDeleteCommandTest {
         Model model = new ModelManager(new AddressBook(), new UserPrefs());
         PerfDeleteCommand perfDeleteCommand = new PerfDeleteCommand(VALID_STUDENT_ID, VALID_INDEX);
 
-        assertCommandFailure(perfDeleteCommand, model, PerfNotes.STUDENT_NOT_FOUND);
+        assertCommandFailure(perfDeleteCommand, model, Messages.MESSAGE_STUDENT_ID_NOT_FOUND);
     }
 
     @Test
@@ -63,7 +64,7 @@ public class PerfDeleteCommandTest {
         Person personWithoutNote = validPerson.withPerformanceList(new PerformanceList());
         expectedModel.addPerson(personWithoutNote);
 
-        String expectedMessage = String.format(PerfNotes.DELETED, VALID_INDEX, validPerson.getName());
+        String expectedMessage = String.format(PerfCommand.DELETED, VALID_INDEX, validPerson.getName());
 
         assertCommandSuccess(new PerfDeleteCommand(VALID_STUDENT_ID, VALID_INDEX),
                 model, expectedMessage, expectedModel);
@@ -94,7 +95,7 @@ public class PerfDeleteCommandTest {
         Model expectedModel = new ModelManager(new AddressBook(), new UserPrefs());
         expectedModel.addPerson(personAfterDelete);
 
-        String expectedMessage = String.format(PerfNotes.DELETED, 2, validPerson.getName());
+        String expectedMessage = String.format(PerfCommand.DELETED, 2, validPerson.getName());
 
         assertCommandSuccess(new PerfDeleteCommand(VALID_STUDENT_ID, 2),
                 model, expectedMessage, expectedModel);

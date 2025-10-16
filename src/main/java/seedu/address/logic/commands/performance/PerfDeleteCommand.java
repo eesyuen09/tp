@@ -7,6 +7,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_STUDENTID;
 import java.util.ArrayList;
 import java.util.List;
 
+import seedu.address.logic.Messages;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
@@ -47,7 +48,7 @@ public class PerfDeleteCommand extends PerfCommand {
         requireNonNull(model);
 
         Person student = model.getPersonById(studentId)
-                .orElseThrow(() -> new CommandException(PerfNotes.STUDENT_NOT_FOUND));
+                .orElseThrow(() -> new CommandException(Messages.MESSAGE_STUDENT_ID_NOT_FOUND));
 
         List<PerformanceNote> current = student.getPerformanceList().asUnmodifiableList();
         PerformanceList copy = new PerformanceList(new ArrayList<>(current));
@@ -59,7 +60,7 @@ public class PerfDeleteCommand extends PerfCommand {
         }
 
         model.setPerson(student, student.withPerformanceList(copy));
-        return new CommandResult(String.format(PerfNotes.DELETED, index, student.getName()));
+        return new CommandResult(String.format(PerfCommand.DELETED, index, student.getName()));
     }
 
     @Override

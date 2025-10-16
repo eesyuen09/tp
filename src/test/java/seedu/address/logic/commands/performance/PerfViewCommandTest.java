@@ -10,6 +10,7 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.logic.Messages;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
@@ -42,7 +43,7 @@ public class PerfViewCommandTest {
         Model model = new ModelManager(new AddressBook(), new UserPrefs());
         PerfViewCommand perfViewCommand = new PerfViewCommand(VALID_STUDENT_ID);
 
-        assertCommandFailure(perfViewCommand, model, PerfNotes.STUDENT_NOT_FOUND);
+        assertCommandFailure(perfViewCommand, model, Messages.MESSAGE_STUDENT_ID_NOT_FOUND);
     }
 
     @Test
@@ -69,7 +70,7 @@ public class PerfViewCommandTest {
         model.addPerson(personWithNote);
 
         String expectedMessage = personWithNote.getName() + " Performance Notes:\n"
-                + "1. " + note.getDate().toString() + ": " + VALID_NOTE_1;
+                + "1. " + note.getDate().getFormattedDate() + ": " + VALID_NOTE_1;
 
         assertCommandSuccess(new PerfViewCommand(VALID_STUDENT_ID), model, expectedMessage, model);
     }
@@ -89,8 +90,8 @@ public class PerfViewCommandTest {
         model.addPerson(personWithNotes);
 
         String expectedMessage = personWithNotes.getName() + " Performance Notes:\n"
-                + "1. " + note1.getDate().toString() + ": " + VALID_NOTE_1 + "\n"
-                + "2. " + note2.getDate().toString() + ": " + VALID_NOTE_2;
+                + "1. " + note1.getDate().getFormattedDate() + ": " + VALID_NOTE_1 + "\n"
+                + "2. " + note2.getDate().getFormattedDate() + ": " + VALID_NOTE_2;
 
         assertCommandSuccess(new PerfViewCommand(VALID_STUDENT_ID), model, expectedMessage, model);
     }
@@ -109,7 +110,7 @@ public class PerfViewCommandTest {
         CommandResult result = new PerfViewCommand(VALID_STUDENT_ID).execute(modelStub);
 
         String expectedMessage = personWithNote.getName() + " Performance Notes:\n"
-                + "1. " + note.getDate().toString() + ": " + VALID_NOTE_1;
+                + "1. " + note.getDate().getFormattedDate() + ": " + VALID_NOTE_1;
 
         assertTrue(result.getFeedbackToUser().equals(expectedMessage));
     }

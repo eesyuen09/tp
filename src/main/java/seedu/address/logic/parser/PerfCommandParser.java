@@ -72,16 +72,8 @@ public class PerfCommandParser implements Parser<Command> {
         String dateString = argMultimap.getValue(PREFIX_DATE).get();
         String note = argMultimap.getValue(PREFIX_NOTE).get();
 
-        StudentId studentId;
-
-        try {
-            studentId = new StudentId(studentIdString);
-        } catch (IllegalArgumentException e) {
-            throw new ParseException("Invalid student id. " + e.getMessage());
-        }
-
-        Date date = new Date(dateString);
-
+        StudentId studentId = ParserUtil.parseStudentId(studentIdString);
+        Date date = ParserUtil.parseDate(dateString);
         validateNoteLen(note);
 
         return new PerfAddCommand(studentId, date, note);
@@ -103,12 +95,7 @@ public class PerfCommandParser implements Parser<Command> {
 
         String studentIdString = argMultimap.getValue(PREFIX_STUDENTID).get();
 
-        StudentId studentId;
-        try {
-            studentId = new StudentId(studentIdString);
-        } catch (IllegalArgumentException e) {
-            throw new ParseException("Invalid student id. " + e.getMessage());
-        }
+        StudentId studentId = ParserUtil.parseStudentId(studentIdString);
 
         return new PerfViewCommand(studentId);
     }
@@ -132,13 +119,7 @@ public class PerfCommandParser implements Parser<Command> {
         String indexString = argMultimap.getValue(PREFIX_INDEX).get();
         String note = argMultimap.getValue(PREFIX_NOTE).get();
 
-        StudentId studentId;
-        try {
-            studentId = new StudentId(studentIdString);
-        } catch (IllegalArgumentException e) {
-            throw new ParseException("Invalid student id. " + e.getMessage());
-        }
-
+        StudentId studentId = ParserUtil.parseStudentId(studentIdString);
         int index = parseOneBasedIndex(indexString);
         validateNoteLen(note);
 
@@ -152,7 +133,7 @@ public class PerfCommandParser implements Parser<Command> {
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(" " + args,
                 PREFIX_STUDENTID, PREFIX_INDEX);
 
-        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_STUDENTID, PREFIX_DATE);
+        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_STUDENTID, PREFIX_INDEX);
 
         if (!arePrefixesPresent(argMultimap, PREFIX_STUDENTID, PREFIX_INDEX)
                 || !argMultimap.getPreamble().trim().isEmpty()) {
@@ -163,12 +144,7 @@ public class PerfCommandParser implements Parser<Command> {
         String studentIdString = argMultimap.getValue(PREFIX_STUDENTID).get();
         String indexString = argMultimap.getValue(PREFIX_INDEX).get();
 
-        StudentId studentId;
-        try {
-            studentId = new StudentId(studentIdString);
-        } catch (IllegalArgumentException e) {
-            throw new ParseException("Invalid student id. " + e.getMessage());
-        }
+        StudentId studentId = ParserUtil.parseStudentId(studentIdString);
 
         int index = parseOneBasedIndex(indexString);
 

@@ -11,6 +11,7 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.logic.Messages;
 import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
@@ -53,7 +54,7 @@ public class PerfEditCommandTest {
         Model model = new ModelManager(new AddressBook(), new UserPrefs());
         PerfEditCommand perfEditCommand = new PerfEditCommand(VALID_STUDENT_ID, VALID_INDEX, EDITED_NOTE);
 
-        assertCommandFailure(perfEditCommand, model, PerfNotes.STUDENT_NOT_FOUND);
+        assertCommandFailure(perfEditCommand, model, Messages.MESSAGE_STUDENT_ID_NOT_FOUND);
     }
 
     @Test
@@ -76,7 +77,7 @@ public class PerfEditCommandTest {
         Model expectedModel = new ModelManager(new AddressBook(), new UserPrefs());
         expectedModel.addPerson(personWithEditedNote);
 
-        String expectedMessage = String.format(PerfNotes.EDITED, VALID_INDEX, validPerson.getName());
+        String expectedMessage = String.format(PerfCommand.EDITED, VALID_INDEX, validPerson.getName());
 
         assertCommandSuccess(new PerfEditCommand(VALID_STUDENT_ID, VALID_INDEX, EDITED_NOTE),
                 model, expectedMessage, expectedModel);
@@ -109,7 +110,7 @@ public class PerfEditCommandTest {
         Model expectedModel = new ModelManager(new AddressBook(), new UserPrefs());
         expectedModel.addPerson(personAfterEdit);
 
-        String expectedMessage = String.format(PerfNotes.EDITED, 2, validPerson.getName());
+        String expectedMessage = String.format(PerfCommand.EDITED, 2, validPerson.getName());
 
         assertCommandSuccess(new PerfEditCommand(VALID_STUDENT_ID, 2, EDITED_NOTE),
                 model, expectedMessage, expectedModel);
@@ -142,7 +143,7 @@ public class PerfEditCommandTest {
         Model expectedModel = new ModelManager(new AddressBook(), new UserPrefs());
         expectedModel.addPerson(personAfterEdit);
 
-        String expectedMessage = String.format(PerfNotes.EDITED, 3, validPerson.getName());
+        String expectedMessage = String.format(PerfCommand.EDITED, 3, validPerson.getName());
 
         assertCommandSuccess(new PerfEditCommand(VALID_STUDENT_ID, 3, EDITED_NOTE),
                 model, expectedMessage, expectedModel);
