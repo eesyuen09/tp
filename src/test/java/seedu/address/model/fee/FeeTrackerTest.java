@@ -19,6 +19,7 @@ import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
 import seedu.address.model.person.StudentId;
+import seedu.address.model.person.performance.PerformanceList;
 import seedu.address.model.tag.ClassTag;
 
 public class FeeTrackerTest {
@@ -32,7 +33,9 @@ public class FeeTrackerTest {
             Collections.<ClassTag>emptySet(),
             new StudentId(id),
             enrolledMmYY == null ? Month.now() : new Month(enrolledMmYY),
-            Collections.<Attendance>emptySet());
+            Collections.<Attendance>emptySet(),
+            new PerformanceList());
+
 
     }
 

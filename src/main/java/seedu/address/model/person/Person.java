@@ -8,6 +8,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import seedu.address.commons.util.ToStringBuilder;
+import seedu.address.model.person.performance.PerformanceList;
 import seedu.address.model.tag.ClassTag;
 
 /**
@@ -27,6 +28,7 @@ public class Person {
     private final Set<ClassTag> tags = new HashSet<>();
     private final Set<Attendance> attendanceRecords;
     private final Month enrolledMonth;
+    private final PerformanceList performanceList;
 
     /**
      * Constructs a {@code Person} with an automatically generated {@link StudentId}.
@@ -41,9 +43,9 @@ public class Person {
      * @param enrolledMonth The person's enrolled month
      */
     public Person(Name name, Phone phone, Email email, Address address, Set<ClassTag> tags,
-                  Month enrolledMonth, Set<Attendance> attendanceRecords) {
+                  Month enrolledMonth, Set<Attendance> attendanceRecords, PerformanceList performanceList) {
         this(name, phone, email, address, tags, new StudentId(), enrolledMonth,
-                attendanceRecords); // StudentId to be set later
+                attendanceRecords, performanceList); // StudentId to be set later
     }
 
     /**
@@ -59,7 +61,8 @@ public class Person {
      * @param enrolledMonth The person's enrolled month.
      */
     public Person(Name name, Phone phone, Email email, Address address, Set<ClassTag> tags,
-                  StudentId studentId, Month enrolledMonth, Set<Attendance> attendanceRecords) {
+                  StudentId studentId, Month enrolledMonth, Set<Attendance> attendanceRecords,
+                  PerformanceList performanceList) {
         requireAllNonNull(name, phone, email, address, studentId, enrolledMonth);
         this.name = name;
         this.phone = phone;
@@ -71,6 +74,17 @@ public class Person {
             this.tags.addAll(tags);
         }
         this.attendanceRecords = new HashSet<>(attendanceRecords);
+        this.performanceList = (performanceList == null) ? new PerformanceList() : performanceList;
+    }
+
+    /**
+     * Returns a new Person object with the updated PerformanceList.
+     * @param newList The new PerformanceList to be associated with the person.
+     * @return A new Person object with the updated PerformanceList.
+     */
+    public Person withPerformanceList(PerformanceList newList) {
+        return new Person(this.name, this.phone, this.email, this.address, this.tags, this.studentId,
+                this.enrolledMonth, this.attendanceRecords, newList);
     }
 
     public Name getName() {
@@ -103,6 +117,14 @@ public class Person {
      */
     public Set<ClassTag> getTags() {
         return Collections.unmodifiableSet(tags);
+    }
+
+    /**
+     * Returns the list of performance notes of the person.
+     * @return the PerformanceList of the person.
+     */
+    public PerformanceList getPerformanceList() {
+        return performanceList;
     }
 
     /**
@@ -178,13 +200,14 @@ public class Person {
                 && phone.equals(otherPerson.phone)
                 && email.equals(otherPerson.email)
                 && address.equals(otherPerson.address)
-                && tags.equals(otherPerson.tags);
+                && tags.equals(otherPerson.tags)
+                && performanceList.equals(otherPerson.performanceList);
     }
 
     @Override
     public int hashCode() {
         // use this method for custom fields hashing instead of implementing your own
-        return Objects.hash(name, phone, email, address, tags, studentId);
+        return Objects.hash(name, phone, email, address, tags, studentId, performanceList);
     }
 
     @Override
@@ -196,6 +219,7 @@ public class Person {
                 .add("email", email)
                 .add("address", address)
                 .add("tags", tags.isEmpty() ? "" : tags)
+                .add("performanceList", performanceList)
                 .toString();
     }
 

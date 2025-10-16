@@ -11,6 +11,7 @@ import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
 import seedu.address.model.person.StudentId;
+import seedu.address.model.person.performance.PerformanceList;
 import seedu.address.model.tag.ClassTag;
 import seedu.address.model.util.SampleDataUtil;
 
@@ -34,6 +35,7 @@ public class PersonBuilder {
     private StudentId studentId;
     private Month enrolledMonth;
     private Set<Attendance> attendanceRecords;
+    private PerformanceList performanceList;
 
     /**
      * Creates a {@code PersonBuilder} with the default details.
@@ -47,6 +49,7 @@ public class PersonBuilder {
         tags = new HashSet<>();
         enrolledMonth = new Month(DEFAULT_ENROLLEDMONTH);
         attendanceRecords = new HashSet<>();
+        performanceList = new PerformanceList();
     }
 
     /**
@@ -61,6 +64,7 @@ public class PersonBuilder {
         tags = new HashSet<>(personToCopy.getTags());
         enrolledMonth = personToCopy.getEnrolledMonth();
         attendanceRecords = new HashSet<>(personToCopy.getAttendanceRecords());
+        performanceList = personToCopy.getPerformanceList();
     }
 
     /**
@@ -119,8 +123,20 @@ public class PersonBuilder {
         return this;
     }
 
+    /**
+     * Sets the {@code PerformanceList} of the {@code Person} that we are building.
+     */
+    public PersonBuilder withPerformanceList(PerformanceList performanceList) {
+        this.performanceList = performanceList;
+        return this;
+    }
+
+    /**
+     * Sets the {@code AttendanceRecords} of the {@code Person} that we are building.
+     */
     public Person build() {
-        return new Person(name, phone, email, address, tags, studentId, enrolledMonth, attendanceRecords);
+        return new Person(name, phone, email, address, tags, studentId, enrolledMonth, attendanceRecords,
+                performanceList);
     }
 
 }

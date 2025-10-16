@@ -59,6 +59,18 @@ public class Date {
         return localDate.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
     }
 
+    /**
+     * Returns true if the given date string represents a future date.
+     */
+    public static boolean isFutureDate(String dateString) {
+        try {
+            LocalDate date = LocalDate.parse(dateString, FORMATTER);
+            return date.isAfter(LocalDate.now());
+        } catch (DateTimeParseException e) {
+            return false;
+        }
+    }
+
     @Override
     public String toString() {
         return value;

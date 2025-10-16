@@ -18,9 +18,9 @@ import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
 import seedu.address.model.person.StudentId;
+import seedu.address.model.person.performance.PerformanceList;
+import seedu.address.model.person.performance.PerformanceNote;
 import seedu.address.model.tag.ClassTag;
-
-
 
 /**
  * Jackson-friendly version of {@link Person}.
@@ -37,6 +37,7 @@ class JsonAdaptedPerson {
     private final List<JsonAdaptedClassTag> tags = new ArrayList<>();
     private final String enrolledMonth;
     private final List<JsonAdaptedAttendance> attendanceRecords = new ArrayList<>();
+    private final List<JsonAdaptedPerformanceNote> performanceNotes = new ArrayList<>();
 
     /**
      * Constructs a {@code JsonAdaptedPerson} with the given person details.
@@ -46,7 +47,8 @@ class JsonAdaptedPerson {
             @JsonProperty("email") String email, @JsonProperty("address") String address,
             @JsonProperty("tags") List<JsonAdaptedClassTag> tags, @JsonProperty("studentId") String studentId,
                              @JsonProperty("enrolledMonth") String enrolledMonth,
-                             @JsonProperty("attendanceRecords") List<JsonAdaptedAttendance> attendanceRecords) {
+                             @JsonProperty("attendanceRecords") List<JsonAdaptedAttendance> attendanceRecords,
+                             @JsonProperty("performanceNotes") List<JsonAdaptedPerformanceNote> performanceNotes) {
         this.name = name;
         this.phone = phone;
         this.email = email;
@@ -55,6 +57,9 @@ class JsonAdaptedPerson {
         this.enrolledMonth = enrolledMonth;
         if (tags != null) {
             this.tags.addAll(tags);
+        }
+        if (performanceNotes != null) {
+            this.performanceNotes.addAll(performanceNotes);
         }
         if (attendanceRecords != null) {
             this.attendanceRecords.addAll(attendanceRecords);
@@ -74,6 +79,9 @@ class JsonAdaptedPerson {
         tags.addAll(source.getTags().stream()
                 .map(JsonAdaptedClassTag::new)
                 .collect(Collectors.toList()));
+        source.getPerformanceList().asUnmodifiableList().forEach(n ->
+                performanceNotes.add(new JsonAdaptedPerformanceNote(n)));
+
         attendanceRecords.addAll(source.getAttendanceRecords().stream()
                 .map(JsonAdaptedAttendance::new)
                 .collect(Collectors.toList()));
@@ -144,8 +152,16 @@ class JsonAdaptedPerson {
             : Month.now();
 
         final Set<ClassTag> modelTags = new HashSet<>(personTags);
+
+        final java.util.List<PerformanceNote> modelPerformanceNotes = new ArrayList<>();
+        for (JsonAdaptedPerformanceNote note : performanceNotes) {
+            modelPerformanceNotes.add(note.toModelType());
+        }
+
+        final PerformanceList modelPerformanceList = new PerformanceList(modelPerformanceNotes);
+
         return new Person(modelName, modelPhone, modelEmail, modelAddress, modelTags, modelStudentId,
-                modelEnrolledMonth, modelAttendanceRecords);
+                modelEnrolledMonth, modelAttendanceRecords, modelPerformanceList);
     }
 
 }

@@ -1,31 +1,35 @@
-package seedu.address.logic.commands;
+package seedu.address.logic.commands.performance;
 
 import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_INDEX;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NOTE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_STUDENTID;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import seedu.address.logic.Messages;
+import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
+import seedu.address.model.person.Person;
+import seedu.address.model.person.StudentId;
+import seedu.address.model.person.performance.PerformanceList;
+import seedu.address.model.person.performance.PerformanceNote;
 
 /**
  * Edits a performance note of a student.
  */
-public class PerfEditCommand extends Command {
-    public static final String COMMAND_WORD = "perf";
+public class PerfEditCommand extends PerfCommand {
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + "-e"
-            + ": Adds a note to the student indicated. "
+            + ": Edits a note of a student on indicated date. "
             + "Parameters: "
             + PREFIX_STUDENTID + "STUDENTID "
             + PREFIX_INDEX + "INDEX "
             + PREFIX_NOTE + "PERFORMANCE NOTE ";
 
-
-    public static final String MESSAGE_SUCCESS = "Performance note successfully added.";
-    public static final String MESSAGE_NOT_IMPLEMENTED_YET = "PerfEdit command not implemented yet";
-
-    private final String studentId;
+    private final StudentId studentId;
     private final int index;
     private final String note;
 
@@ -36,7 +40,7 @@ public class PerfEditCommand extends Command {
      * @param index index of the performance note to be edited
      * @param note the new performance note
      */
-    public PerfEditCommand(String studentId, int index, String note) {
+    public PerfEditCommand(StudentId studentId, int index, String note) {
         requireNonNull(studentId);
         requireNonNull(note);
 
@@ -47,8 +51,31 @@ public class PerfEditCommand extends Command {
 
     @Override
     public CommandResult execute(Model model) throws CommandException {
+        requireNonNull(model);
 
-        throw new CommandException(MESSAGE_NOT_IMPLEMENTED_YET);
+        Person student = model.getPersonById(studentId)
+                .orElseThrow(() -> new CommandException(Messages.MESSAGE_STUDENT_ID_NOT_FOUND));
+
+        List<PerformanceNote> current = student.getPerformanceList().asUnmodifiableList();
+        PerformanceList copy = new PerformanceList(new ArrayList<>(current));
+
+        int zeroBasedIndex = index - 1;
+        if (zeroBasedIndex < 0 || zeroBasedIndex >= copy.size()) {
+            throw new CommandException("Error: Invalid performance note index.");
+        }
+
+        PerformanceNote old = copy.asUnmodifiableList().get(zeroBasedIndex);
+        PerformanceNote edited;
+        try {
+            edited = new PerformanceNote(old.getDate(), note);
+        } catch (IllegalArgumentException e) {
+            throw new CommandException(e.getMessage());
+        }
+
+        copy.set(index, edited);
+
+        model.setPerson(student, student.withPerformanceList(copy));
+        return new CommandResult(String.format(PerfCommand.EDITED, index, student.getName()));
     }
 
     @Override

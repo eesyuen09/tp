@@ -19,6 +19,7 @@ import seedu.address.model.person.Month;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
+import seedu.address.model.person.performance.PerformanceList;
 import seedu.address.model.tag.ClassTag;
 
 /**
@@ -48,8 +49,10 @@ public class AddCommandParser implements Parser<AddCommand> {
         Address address = ParserUtil.parseAddress(argMultimap.getValue(PREFIX_ADDRESS).get());
         Set<ClassTag> classTagList = ParserUtil.parseClassTags(argMultimap.getAllValues(PREFIX_CLASSTAG));
         Month enrolledMonth = Month.now();
+        PerformanceList performanceList = new PerformanceList();
 
-        Person person = new Person(name, phone, email, address, classTagList, enrolledMonth, new HashSet<>());
+        Person person = new Person(name, phone, email, address, classTagList, enrolledMonth, new HashSet<>(),
+                performanceList);
 
 
         return new AddCommand(person);

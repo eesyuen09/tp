@@ -14,6 +14,7 @@ import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
 import seedu.address.model.person.StudentId;
+import seedu.address.model.person.performance.PerformanceList;
 import seedu.address.model.tag.ClassTag;
 
 /**
@@ -28,23 +29,23 @@ public class SampleDataUtil {
         return new Person[] {
             new Person(new Name("Alex Yeoh"), new Phone("87438807"), new Email("alexyeoh@example.com"),
                     new Address("Blk 30 Geylang Street 29, #06-40"),
-                    Set.of(TAG_MATH_SEC3), new StudentId(), new Month("0825"), new HashSet<>()),
+                    Set.of(TAG_MATH_SEC3), new StudentId(), new Month("0825"), new HashSet<>(), new PerformanceList()),
             new Person(new Name("Bernice Yu"), new Phone("99272758"), new Email("berniceyu@example.com"),
                     new Address("Blk 30 Lorong 3 Serangoon Gardens, #07-18"),
                     Set.of(TAG_MATH_SEC3, TAG_ENGLISH_J1), new StudentId(), new Month("0625"),
-                    new HashSet<>()), // Assign multiple
+                    new HashSet<>(), new PerformanceList()), // Assign multiple
             new Person(new Name("Charlotte Oliveiro"), new Phone("93210283"), new Email("charlotte@example.com"),
                     new Address("Blk 11 Ang Mo Kio Street 74, #11-04"),
-                    Set.of(TAG_ENGLISH_J1), new StudentId(), new Month("0325"), new HashSet<>()),
+                    Set.of(TAG_ENGLISH_J1), new StudentId(), new Month("0325"), new HashSet<>(), new PerformanceList()),
             new Person(new Name("David Li"), new Phone("91031282"), new Email("lidavid@example.com"),
                     new Address("Blk 436 Serangoon Gardens Street 26, #16-43"),
-                    Set.of(), new StudentId(), new Month("0325"), new HashSet<>()), // No tags
+                    Set.of(), new StudentId(), new Month("0325"), new HashSet<>(), new PerformanceList()), // No tags
             new Person(new Name("Irfan Ibrahim"), new Phone("92492021"), new Email("irfan@example.com"),
                     new Address("Blk 47 Tampines Street 20, #17-35"),
-                    Set.of(TAG_MATH_SEC3), new StudentId(), new Month("0125"), new HashSet<>()),
+                    Set.of(TAG_MATH_SEC3), new StudentId(), new Month("0125"), new HashSet<>(), new PerformanceList()),
             new Person(new Name("Roy Balakrishnan"), new Phone("92624417"), new Email("royb@example.com"),
                     new Address("Blk 45 Aljunied Street 85, #11-31"),
-                    Set.of(), new StudentId(), new Month("0625"), new HashSet<>())
+                    Set.of(), new StudentId(), new Month("0625"), new HashSet<>(), new PerformanceList())
         };
     }
 
