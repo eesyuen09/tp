@@ -7,6 +7,7 @@ import java.util.Objects;
 
 import javafx.collections.ObservableList;
 import seedu.address.commons.util.ToStringBuilder;
+import seedu.address.model.fee.FeeTracker;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.UniquePersonList;
 import seedu.address.model.tag.ClassTag;
@@ -20,6 +21,7 @@ public class AddressBook implements ReadOnlyAddressBook {
 
     private final UniquePersonList persons;
     private final UniqueClassTagList classTags;
+    private final FeeTracker feeTracker;
 
     /*
      * The 'unusual' code block below is a non-static initialization block, sometimes used to avoid duplication
@@ -31,6 +33,7 @@ public class AddressBook implements ReadOnlyAddressBook {
     {
         persons = new UniquePersonList();
         classTags = new UniqueClassTagList();
+        feeTracker = new FeeTracker();
     }
 
     public AddressBook() {}
@@ -61,6 +64,7 @@ public class AddressBook implements ReadOnlyAddressBook {
 
         setPersons(newData.getPersonList());
         setClassTags(newData.getClassTagList());
+        this.feeTracker.copyFrom(newData.getFeeTracker());
     }
 
     //// classtag-level operations
@@ -151,6 +155,11 @@ public class AddressBook implements ReadOnlyAddressBook {
     @Override
     public ObservableList<ClassTag> getClassTagList() {
         return classTags.asUnmodifiableObservableList();
+    }
+
+    @Override
+    public FeeTracker getFeeTracker() {
+        return feeTracker;
     }
 
     @Override
