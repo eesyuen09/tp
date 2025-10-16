@@ -16,6 +16,7 @@ import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.UserPrefs;
+import seedu.address.model.person.Date;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
 import seedu.address.model.person.performance.PerformanceList;
@@ -26,11 +27,11 @@ import seedu.address.testutil.PersonBuilder;
 public class PerfEditCommandTest {
 
     private static final StudentId VALID_STUDENT_ID = new StudentId("0123");
-    private static final String VALID_DATE_1 = "15032024";
+    private static final Date VALID_DATE_1 = new Date("15032024");
     private static final String VALID_NOTE_1 = "Good performance in class";
-    private static final String VALID_DATE_2 = "20032024";
+    private static final Date VALID_DATE_2 = new Date("20032024");
     private static final String VALID_NOTE_2 = "Excellent homework submission";
-    private static final String VALID_DATE_3 = "25032024";
+    private static final Date VALID_DATE_3 = new Date("25032024");
     private static final String VALID_NOTE_3 = "Participated actively in discussion";
     private static final String EDITED_NOTE = "Updated performance note";
     private static final int VALID_INDEX = 1;

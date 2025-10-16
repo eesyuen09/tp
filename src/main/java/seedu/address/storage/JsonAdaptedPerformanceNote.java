@@ -3,6 +3,7 @@ package seedu.address.storage;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import seedu.address.model.person.Date;
 import seedu.address.model.person.performance.PerformanceNote;
 
 /**
@@ -31,7 +32,7 @@ public class JsonAdaptedPerformanceNote {
      * @param src the PerformanceNote to be converted
      */
     public JsonAdaptedPerformanceNote(PerformanceNote src) {
-        this.date = src.getDate().format(java.time.format.DateTimeFormatter.ofPattern("ddMMyyyy"));
+        this.date = src.getDate().toString();
         this.note = src.getNote();
     }
 
@@ -41,6 +42,6 @@ public class JsonAdaptedPerformanceNote {
      * @return the PerformanceNote object
      */
     public PerformanceNote toModelType() {
-        return new PerformanceNote(date, note);
+        return new PerformanceNote(new Date(date), note);
     }
 }

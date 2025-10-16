@@ -11,6 +11,7 @@ import java.util.List;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
+import seedu.address.model.person.Date;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
 import seedu.address.model.person.performance.PerformanceList;
@@ -29,7 +30,7 @@ public class PerfAddCommand extends PerfCommand {
             + PREFIX_NOTE + "PERFORMANCE NOTE ";
 
     private final StudentId studentId;
-    private final String date;
+    private final Date date;
     private final String note;
 
     /**
@@ -39,7 +40,7 @@ public class PerfAddCommand extends PerfCommand {
      * @param date date of the performance note
      * @param note the performance note to be added
      */
-    public PerfAddCommand(StudentId studentId, String date, String note) {
+    public PerfAddCommand(StudentId studentId, Date date, String note) {
         requireNonNull(studentId);
         requireNonNull(date);
         requireNonNull(note);
@@ -68,7 +69,8 @@ public class PerfAddCommand extends PerfCommand {
         }
 
         model.setPerson(student, student.withPerformanceList(copy));
-        return new CommandResult(String.format(PerfNotes.ADDED, student.getName(), newNote.printableDate()));
+        return new CommandResult(String.format(PerfNotes.ADDED, student.getName(),
+                newNote.getDate().getFormattedDate()));
     }
 
     @Override

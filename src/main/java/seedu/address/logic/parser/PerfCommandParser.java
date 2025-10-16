@@ -14,6 +14,7 @@ import seedu.address.logic.commands.performance.PerfDeleteCommand;
 import seedu.address.logic.commands.performance.PerfEditCommand;
 import seedu.address.logic.commands.performance.PerfViewCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.model.person.Date;
 import seedu.address.model.person.StudentId;
 
 /**
@@ -59,6 +60,8 @@ public class PerfCommandParser implements Parser<Command> {
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(" " + args,
                 PREFIX_STUDENTID, PREFIX_DATE, PREFIX_NOTE);
 
+        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_STUDENTID, PREFIX_DATE, PREFIX_NOTE);
+
         if (!arePrefixesPresent(argMultimap, PREFIX_STUDENTID, PREFIX_DATE, PREFIX_NOTE)
                 || !argMultimap.getPreamble().trim().isEmpty()) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT,
@@ -66,17 +69,19 @@ public class PerfCommandParser implements Parser<Command> {
         }
 
         String studentIdString = argMultimap.getValue(PREFIX_STUDENTID).get();
-        String date = argMultimap.getValue(PREFIX_DATE).get();
+        String dateString = argMultimap.getValue(PREFIX_DATE).get();
         String note = argMultimap.getValue(PREFIX_NOTE).get();
 
         StudentId studentId;
+
         try {
             studentId = new StudentId(studentIdString);
         } catch (IllegalArgumentException e) {
             throw new ParseException("Invalid student id. " + e.getMessage());
         }
 
-        validateDateFormat(date);
+        Date date = new Date(dateString);
+
         validateNoteLen(note);
 
         return new PerfAddCommand(studentId, date, note);
@@ -87,6 +92,8 @@ public class PerfCommandParser implements Parser<Command> {
      */
     private PerfViewCommand parseViewCommand(String args) throws ParseException {
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(" " + args, PREFIX_STUDENTID);
+
+        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_STUDENTID);
 
         if (!arePrefixesPresent(argMultimap, PREFIX_STUDENTID)
                 || !argMultimap.getPreamble().trim().isEmpty()) {
@@ -112,6 +119,8 @@ public class PerfCommandParser implements Parser<Command> {
     private PerfEditCommand parseEditCommand(String args) throws ParseException {
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(" " + args,
                 PREFIX_STUDENTID, PREFIX_INDEX, PREFIX_NOTE);
+
+        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_STUDENTID, PREFIX_INDEX, PREFIX_NOTE);
 
         if (!arePrefixesPresent(argMultimap, PREFIX_STUDENTID, PREFIX_INDEX, PREFIX_NOTE)
                 || !argMultimap.getPreamble().trim().isEmpty()) {
@@ -142,6 +151,8 @@ public class PerfCommandParser implements Parser<Command> {
     private PerfDeleteCommand parseDeleteCommand(String args) throws ParseException {
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(" " + args,
                 PREFIX_STUDENTID, PREFIX_INDEX);
+
+        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_STUDENTID, PREFIX_DATE);
 
         if (!arePrefixesPresent(argMultimap, PREFIX_STUDENTID, PREFIX_INDEX)
                 || !argMultimap.getPreamble().trim().isEmpty()) {

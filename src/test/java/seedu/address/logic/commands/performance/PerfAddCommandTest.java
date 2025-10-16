@@ -10,12 +10,12 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
-import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.UserPrefs;
+import seedu.address.model.person.Date;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
 import seedu.address.model.person.performance.PerformanceList;
@@ -26,9 +26,8 @@ import seedu.address.testutil.PersonBuilder;
 public class PerfAddCommandTest {
 
     private static final StudentId VALID_STUDENT_ID = new StudentId("0123");
-    private static final String VALID_DATE = "15032024";
+    private static final Date VALID_DATE = new Date("15032024");
     private static final String VALID_NOTE = "Good performance in class";
-    private static final String INVALID_DATE = "20282026";
 
     @Test
     public void constructor_nullStudentId_throwsNullPointerException() {
@@ -62,7 +61,7 @@ public class PerfAddCommandTest {
         expectedModel.addPerson(personWithNote);
 
         String expectedMessage = String.format(PerfNotes.ADDED,
-                validPerson.getName(), note.printableDate());
+                validPerson.getName(), note.getDate().getFormattedDate());
 
         assertCommandSuccess(new PerfAddCommand(VALID_STUDENT_ID, VALID_DATE, VALID_NOTE),
                 model, expectedMessage, expectedModel);
@@ -77,23 +76,13 @@ public class PerfAddCommandTest {
     }
 
     @Test
-    public void execute_invalidDate_throwsCommandException() {
-        Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID.toString()).build();
-        ModelStubAcceptingPerformanceNoteAdded modelStub =
-                new ModelStubAcceptingPerformanceNoteAdded(validPerson);
-        PerfAddCommand perfAddCommand = new PerfAddCommand(VALID_STUDENT_ID, INVALID_DATE, VALID_NOTE);
-
-        assertThrows(CommandException.class, () -> perfAddCommand.execute(modelStub));
-    }
-
-    @Test
     public void equals() {
         StudentId studentIdA = new StudentId("0123");
         StudentId studentIdB = new StudentId("0234");
 
         PerfAddCommand addNoteACommand = new PerfAddCommand(studentIdA, VALID_DATE, VALID_NOTE);
         PerfAddCommand addNoteBCommand = new PerfAddCommand(studentIdB, VALID_DATE, VALID_NOTE);
-        PerfAddCommand addNoteDifferentDate = new PerfAddCommand(studentIdA, "16032024", VALID_NOTE);
+        PerfAddCommand addNoteDifferentDate = new PerfAddCommand(studentIdA, new Date("16032024"), VALID_NOTE);
         PerfAddCommand addNoteDifferentNote = new PerfAddCommand(studentIdA, VALID_DATE, "Different note");
 
         // same object -> returns true

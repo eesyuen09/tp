@@ -12,6 +12,7 @@ import seedu.address.logic.commands.performance.PerfDeleteCommand;
 import seedu.address.logic.commands.performance.PerfEditCommand;
 import seedu.address.logic.commands.performance.PerfViewCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.model.person.Date;
 import seedu.address.model.person.StudentId;
 
 public class PerfCommandParserTest {
@@ -61,7 +62,7 @@ public class PerfCommandParserTest {
         String date = "15032024";
         String note = "Good performance";
         PerfCommand command = (PerfAddCommand) parser.parse("-a s/" + studentId + " d/" + date + " pn/" + note);
-        PerfAddCommand expectedCommand = new PerfAddCommand(new StudentId(studentId), date, note);
+        PerfAddCommand expectedCommand = new PerfAddCommand(new StudentId(studentId), new Date(date), note);
         assertEquals(expectedCommand, command);
     }
 
@@ -89,16 +90,6 @@ public class PerfCommandParserTest {
     }
 
     @Test
-    public void parse_addCommandInvalidDateFormat_throwsParseException() {
-        assertThrows(ParseException.class, () -> parser.parse("-a s/0123 d/15-03-2024 pn/note"));
-    }
-
-    @Test
-    public void parse_addCommandInvalidDateTooShort_throwsParseException() {
-        assertThrows(ParseException.class, () -> parser.parse("-a s/0123 d/150324 pn/note"));
-    }
-
-    @Test
     public void parse_addCommandNoteExceedsMaxLength_throwsParseException() {
         String longNote = "a".repeat(201);
         assertThrows(ParseException.class, () -> parser.parse("-a s/0123 d/15032024 pn/" + longNote));
@@ -108,7 +99,7 @@ public class PerfCommandParserTest {
     public void parse_addCommandNoteAtMaxLength_success() throws Exception {
         String maxNote = "a".repeat(200);
         PerfCommand command = (PerfAddCommand) parser.parse("-a s/0123 d/15032024 pn/" + maxNote);
-        PerfAddCommand expectedCommand = new PerfAddCommand(new StudentId("0123"), "15032024", maxNote);
+        PerfAddCommand expectedCommand = new PerfAddCommand(new StudentId("0123"), new Date("15032024"), maxNote);
         assertEquals(expectedCommand, command);
     }
 
@@ -120,7 +111,7 @@ public class PerfCommandParserTest {
 
     @Test
     public void parse_addCommandDuplicatePrefixes_throwsParseException() {
-        assertThrows(ParseException.class, () -> parser.parse("-a s/0123 s/A0987654Y d/15032024 pn/note"));
+        assertThrows(ParseException.class, () -> parser.parse("-a s/0123 s/0234 d/15032024 pn/note"));
     }
 
     // ==================== PerfViewCommand Tests ====================

@@ -2,10 +2,11 @@ package seedu.address.model.person.performance;
 
 import static java.util.Objects.requireNonNull;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import seedu.address.model.person.Date;
 
 /**
  * A list of performance notes.
@@ -75,7 +76,7 @@ public class PerformanceList {
         return notes.remove(i);
     }
 
-    private int indexOfDate(LocalDate date) {
+    private int indexOfDate(Date date) {
         for (int i = 0; i < notes.size(); i++) {
             if (notes.get(i).getDate().equals(date)) {
                 return i;
