@@ -10,8 +10,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import seedu.address.commons.exceptions.IllegalValueException;
+import seedu.address.model.attendance.Attendance;
+import seedu.address.model.attendance.AttendanceList;
 import seedu.address.model.person.Address;
-import seedu.address.model.person.Attendance;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Month;
 import seedu.address.model.person.Name;
@@ -82,7 +83,7 @@ class JsonAdaptedPerson {
         source.getPerformanceList().asUnmodifiableList().forEach(n ->
                 performanceNotes.add(new JsonAdaptedPerformanceNote(n)));
 
-        attendanceRecords.addAll(source.getAttendanceRecords().stream()
+        attendanceRecords.addAll(source.getAttendanceList().asUnmodifiableList().stream()
                 .map(JsonAdaptedAttendance::new)
                 .collect(Collectors.toList()));
 
@@ -145,7 +146,7 @@ class JsonAdaptedPerson {
         }
 
         final StudentId modelStudentId = new StudentId(studentId);
-        final Set<Attendance> modelAttendanceRecords = new HashSet<>(personAttendance);
+        final AttendanceList modelAttendanceList = new AttendanceList(personAttendance);
 
         final Month modelEnrolledMonth = (enrolledMonth != null && Month.isValidMonth(enrolledMonth))
             ? new Month(enrolledMonth)
@@ -161,7 +162,7 @@ class JsonAdaptedPerson {
         final PerformanceList modelPerformanceList = new PerformanceList(modelPerformanceNotes);
 
         return new Person(modelName, modelPhone, modelEmail, modelAddress, modelTags, modelStudentId,
-                modelEnrolledMonth, modelAttendanceRecords, modelPerformanceList);
+                modelEnrolledMonth, modelAttendanceList, modelPerformanceList);
     }
 
 }

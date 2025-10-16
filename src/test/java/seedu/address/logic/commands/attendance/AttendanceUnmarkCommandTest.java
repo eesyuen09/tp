@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
+import seedu.address.model.attendance.AttendanceList;
 import seedu.address.model.person.Date;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
@@ -37,7 +38,9 @@ public class AttendanceUnmarkCommandTest {
         ModelStubWithPerson modelStub = new ModelStubWithPerson();
         Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID_STRING).build();
         // Mark attendance first so we can unmark it
-        validPerson.markAttendance(VALID_DATE);
+        AttendanceList attendanceList = new AttendanceList();
+        attendanceList.markAttendance(VALID_DATE);
+        validPerson = validPerson.withAttendanceList(attendanceList);
         modelStub.person = validPerson;
 
         CommandResult commandResult = new AttendanceUnmarkCommand(VALID_STUDENT_ID, VALID_DATE).execute(modelStub);
@@ -90,6 +93,11 @@ public class AttendanceUnmarkCommandTest {
         @Override
         public Optional<Person> getPersonById(StudentId studentId) {
             return Optional.of(person);
+        }
+
+        @Override
+        public void setPerson(Person target, Person editedPerson) {
+            this.person = editedPerson;
         }
     }
 

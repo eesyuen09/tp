@@ -64,6 +64,11 @@ public class AttendanceMarkCommandTest {
         public Optional<Person> getPersonById(StudentId studentId) {
             return Optional.of(person);
         }
+
+        @Override
+        public void setPerson(Person target, Person editedPerson) {
+            this.person = editedPerson;
+        }
     }
 
 

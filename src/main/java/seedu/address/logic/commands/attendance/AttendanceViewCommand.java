@@ -33,7 +33,7 @@ public class AttendanceViewCommand extends AttendanceCommand {
 
         String attendanceHistory = formatAttendanceRecords(person);
 
-        if (person.getAttendanceRecords().isEmpty()) {
+        if (person.getAttendanceList().size() == 0) {
             return new CommandResult(String.format(MESSAGE_NO_RECORDS, person.getName()));
         }
 
@@ -44,12 +44,12 @@ public class AttendanceViewCommand extends AttendanceCommand {
      * Formats the attendance records for display.
      */
     private String formatAttendanceRecords(Person person) {
-        if (person.getAttendanceRecords().isEmpty()) {
+        if (person.getAttendanceList().size() == 0) {
             return "No records";
         }
 
         StringBuilder sb = new StringBuilder();
-        person.getAttendanceRecords().stream()
+        person.getAttendanceList().asUnmodifiableList().stream()
                 .sorted((a1, a2) -> a1.getDate().toString().compareTo(a2.getDate().toString()))
                 .forEach(attendance -> {
                     sb.append(attendance.getDate())
