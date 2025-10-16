@@ -1,7 +1,9 @@
 package seedu.address.storage;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -11,7 +13,10 @@ import com.fasterxml.jackson.annotation.JsonRootName;
 import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.model.AddressBook;
 import seedu.address.model.ReadOnlyAddressBook;
+import seedu.address.model.fee.FeeTracker;
+import seedu.address.model.person.Month;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.StudentId;
 import seedu.address.model.tag.ClassTag;
 
 /**
@@ -22,19 +27,27 @@ class JsonSerializableAddressBook {
 
     public static final String MESSAGE_DUPLICATE_PERSON = "Persons list contains duplicate person(s).";
     public static final String MESSAGE_DUPLICATE_CLASSTAG = "ClassTags list contains duplicate class tag(s).";
+    public static final String MESSAGE_DUPLICATE_FEERECORD =
+        "Fee records contain duplicate entries for the same studentId and month.";
+
 
     private final List<JsonAdaptedPerson> persons = new ArrayList<>();
     private final List<JsonAdaptedClassTag> classTags = new ArrayList<>();
+    private final List<JsonAdaptedFeeRecord> feeRecords = new ArrayList<>();
 
     /**
      * Constructs a {@code JsonSerializableAddressBook} with the given persons.
      */
     @JsonCreator
     public JsonSerializableAddressBook(@JsonProperty("persons") List<JsonAdaptedPerson> persons,
-                                       @JsonProperty("classTags") List<JsonAdaptedClassTag> classTags) {
+                                       @JsonProperty("classTags") List<JsonAdaptedClassTag> classTags,
+                                       @JsonProperty("feeRecords") List<JsonAdaptedFeeRecord> feeRecords) {
         this.persons.addAll(persons);
         if (classTags != null) {
             this.classTags.addAll(classTags);
+        }
+        if (feeRecords != null) {
+            this.feeRecords.addAll(feeRecords);
         }
     }
 
@@ -46,6 +59,28 @@ class JsonSerializableAddressBook {
     public JsonSerializableAddressBook(ReadOnlyAddressBook source) {
         persons.addAll(source.getPersonList().stream().map(JsonAdaptedPerson::new).collect(Collectors.toList()));
         classTags.addAll(source.getClassTagList().stream().map(JsonAdaptedClassTag::new).collect(Collectors.toList()));
+        FeeTracker feeTracker = source.getFeeTracker();
+
+        for (Person person : source.getPersonList()) {
+            Month enrolledMonth = person.getEnrolledMonth();
+            if (enrolledMonth == null) {
+                continue;
+            }
+
+            Month latestMonth = Month.now();
+            Month currentMonth = enrolledMonth;
+
+            while (currentMonth.isBefore(latestMonth) || currentMonth.equals(latestMonth)) {
+                final Month monthSnapshot = currentMonth;
+                final StudentId studentIdSnapshot = person.getStudentId();
+
+                feeTracker.getExplicitStatusOfMonth(studentIdSnapshot, monthSnapshot)
+                    .ifPresent(feeState -> feeRecords.add(
+                        new JsonAdaptedFeeRecord(studentIdSnapshot, monthSnapshot, feeState)));
+
+                currentMonth = currentMonth.plusMonths(1);
+            }
+        }
     }
 
     /**
@@ -69,6 +104,15 @@ class JsonSerializableAddressBook {
                 throw new IllegalValueException(MESSAGE_DUPLICATE_CLASSTAG);
             }
             addressBook.addClassTag(classTag);
+        }
+
+        Set<String> uniqueRecordKeys = new HashSet<>();
+        for (JsonAdaptedFeeRecord record : feeRecords) {
+            String key = record.getStudentId() + "#" + record.getMonthString();
+            if (!uniqueRecordKeys.add(key)) {
+                throw new IllegalValueException(MESSAGE_DUPLICATE_FEERECORD + " Offender: " + key);
+            }
+            record.applyToFeeTracker(addressBook);
         }
 
         return addressBook;

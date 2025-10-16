@@ -19,7 +19,10 @@ import org.junit.jupiter.api.Test;
 import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.commons.util.JsonUtil;
 import seedu.address.model.AddressBook;
+import seedu.address.model.fee.FeeState;
+import seedu.address.model.person.Month;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.StudentId;
 import seedu.address.model.tag.ClassTag;
 import seedu.address.testutil.PersonBuilder;
 
@@ -32,6 +35,11 @@ public class JsonSerializableAddressBookTest {
     private static final Path TYPICAL_ADDRESS_BOOK_WITH_CLASSTAGS_FILE =
             TEST_DATA_FOLDER.resolve("typicalAddressBookWithClassTags.json");
     private static final Path INVALID_PERSON_FILE = TEST_DATA_FOLDER.resolve("invalidPersonAddressBook.json");
+    private static final Path TYPICAL_WITH_TAGS_AND_FEES_FILE =
+        TEST_DATA_FOLDER.resolve("typicalAddressBookWithFees.json");
+
+    private static final Path INVALID_FEERECORD_FILE =
+        TEST_DATA_FOLDER.resolve("invalidFeeRecordAddressBook.json");
 
 
     @Test
@@ -94,4 +102,32 @@ public class JsonSerializableAddressBookTest {
         assertThrows(IllegalValueException.class, JsonSerializableAddressBook.MESSAGE_DUPLICATE_CLASSTAG,
                 dataFromFile::toModelType);
     }
+
+    @Test
+    public void toModelType_typicalWithTagsAndFees_success() throws Exception {
+        JsonSerializableAddressBook dataFromFile = JsonUtil.readJsonFile(
+            TYPICAL_WITH_TAGS_AND_FEES_FILE, JsonSerializableAddressBook.class).get();
+        AddressBook addressBookFromFile = dataFromFile.toModelType();
+
+        StudentId id0000 = new StudentId("0000");
+        StudentId id0001 = new StudentId("0001");
+        Month oct25 = new Month("1025");
+
+        assertEquals(FeeState.PAID, addressBookFromFile.getFeeTracker()
+            .getExplicitStatusOfMonth(id0000, oct25)
+            .orElseThrow(() -> new AssertionError("Expected fee record for 0000/1025")));
+
+        assertEquals(FeeState.UNPAID, addressBookFromFile.getFeeTracker()
+            .getExplicitStatusOfMonth(id0001, oct25)
+            .orElseThrow(() -> new AssertionError("Expected fee record for 0001/1025")));
+    }
+
+    @Test
+    public void toModelType_invalidFeeRecord_throwsIllegalValueException() throws Exception {
+        JsonSerializableAddressBook dataFromFile = JsonUtil.readJsonFile(
+            INVALID_FEERECORD_FILE, JsonSerializableAddressBook.class).get();
+        assertThrows(IllegalValueException.class, dataFromFile::toModelType);
+    }
 }
+
+

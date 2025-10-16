@@ -1,6 +1,7 @@
 package seedu.address.model;
 
 import javafx.collections.ObservableList;
+import seedu.address.model.fee.FeeTracker;
 import seedu.address.model.person.Person;
 import seedu.address.model.tag.ClassTag;
 
@@ -20,5 +21,7 @@ public interface ReadOnlyAddressBook {
      * This list will not contain any duplicate tags.
      */
     ObservableList<ClassTag> getClassTagList(); // Add this method
+
+    FeeTracker getFeeTracker();
 
 }

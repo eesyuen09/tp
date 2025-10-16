@@ -94,4 +94,16 @@ public class FeeTracker {
         }
         return history;
     }
+
+    /**
+     * Copy the data from other fee tracker to the current fee tracker.
+     */
+    public void copyFrom(FeeTracker other) {
+        requireNonNull(other);
+        this.records.clear();
+
+        for (Map.Entry<StudentId, Map<Month, FeeState>> e : other.records.entrySet()) {
+            this.records.put(e.getKey(), new LinkedHashMap<>(e.getValue()));
+        }
+    }
 }

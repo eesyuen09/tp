@@ -1,0 +1,32 @@
+{
+  "persons": [
+    {
+      "name": "Alex Yeoh",
+      "phone": "87438807",
+      "email": "alexyeoh@example.com",
+      "address": "Blk 30 Geylang Street 29, #06-40",
+      "tags": ["Class_3"],
+      "studentId": "0000",
+      "enrolledMonth": "0825",
+      "attendanceRecords": []
+    }
+  ],
+  "classTags": ["Class_3"],
+  "feeRecords": [
+    {
+      "studentId": "0000",
+      "monthString": "20ZZ",
+      "feeState": "PAID"
+    },
+    {
+      "studentId": "9999",
+      "monthString": "1025",
+      "feeState": "PAID"
+    },
+    {
+      "studentId": "0000",
+      "monthString": "1025",
+      "feeState": "PARTIAL"
+    }
+  ]
+}
