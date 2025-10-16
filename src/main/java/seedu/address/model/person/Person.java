@@ -139,18 +139,17 @@ public class Person {
 
     /**
      * Marks student as absent on this date.
-     * If record exists, updates it. Otherwise, creates new record.
+     * If a present record exists, removes it and adds an absent record.
+     * If no record exists, creates a new absent record.
      */
     public void unmarkAttendance(Date date) {
-        // Find and remove the present record for this date
-        boolean removed = attendanceRecords.removeIf(attendance ->
-                attendance.getDate().equals(date) && attendance.isStudentPresent());
+        // Remove any existing record for this date (whether present or absent)
+        attendanceRecords.removeIf(attendance -> attendance.getDate().equals(date));
 
-        if (removed) {
-            // Add new absent record
-            attendanceRecords.add(new Attendance(date, false));
-        }
+        // Add new absent record
+        attendanceRecords.add(new Attendance(date, false));
     }
+
 
     /**
      * Returns all attendance records.
