@@ -1,6 +1,7 @@
 package seedu.address.storage;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.ALICE;
 import static seedu.address.testutil.TypicalPersons.BENSON;
@@ -19,7 +20,10 @@ import org.junit.jupiter.api.Test;
 import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.commons.util.JsonUtil;
 import seedu.address.model.AddressBook;
+import seedu.address.model.fee.FeeState;
+import seedu.address.model.person.Month;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.StudentId;
 import seedu.address.model.tag.ClassTag;
 import seedu.address.testutil.PersonBuilder;
 
@@ -32,6 +36,11 @@ public class JsonSerializableAddressBookTest {
     private static final Path TYPICAL_ADDRESS_BOOK_WITH_CLASSTAGS_FILE =
             TEST_DATA_FOLDER.resolve("typicalAddressBookWithClassTags.json");
     private static final Path INVALID_PERSON_FILE = TEST_DATA_FOLDER.resolve("invalidPersonAddressBook.json");
+    private static final Path TYPICAL_WITH_TAGS_AND_FEES_FILE =
+        TEST_DATA_FOLDER.resolve("typicalAddressBookWithFees.json");
+
+    private static final Path INVALID_FEERECORD_FILE =
+        TEST_DATA_FOLDER.resolve("invalidFeeRecordAddressBook.json");
 
 
     @Test
@@ -94,4 +103,42 @@ public class JsonSerializableAddressBookTest {
         assertThrows(IllegalValueException.class, JsonSerializableAddressBook.MESSAGE_DUPLICATE_CLASSTAG,
                 dataFromFile::toModelType);
     }
+
+    @Test
+    public void toModelType_typicalWithTagsAndFees_success() throws Exception {
+        // JSON should contain:
+        // - persons with StudentIds "0000", "0001", etc.
+        // - classTags array
+        // - feeRecords like:
+        //   { "studentId": "0000", "monthString": "1025", "feeState": "PAID" }
+        //   { "studentId": "0001", "monthString": "1025", "feeState": "UNPAID" }  (or PAID if you prefer)
+        JsonSerializableAddressBook dataFromFile = JsonUtil.readJsonFile(
+            TYPICAL_WITH_TAGS_AND_FEES_FILE, JsonSerializableAddressBook.class).get();
+        AddressBook addressBookFromFile = dataFromFile.toModelType();
+
+        // Equality still ignores feeTracker, so we check the tracker explicitly
+        StudentId id0000 = new StudentId("0000");
+        StudentId id0001 = new StudentId("0001");
+        Month oct25 = new Month("1025");
+
+        // Assert explicit states were applied during deserialization
+        assertEquals(FeeState.PAID, addressBookFromFile.getFeeTracker()
+            .getExplicitStatusOfMonth(id0000, oct25)
+            .orElseThrow(() -> new AssertionError("Expected fee record for 0000/1025")));
+        // Adjust this to match your JSON fixture exactly (PAID vs UNPAID)
+        assertEquals(FeeState.UNPAID, addressBookFromFile.getFeeTracker()
+            .getExplicitStatusOfMonth(id0001, oct25)
+            .orElseThrow(() -> new AssertionError("Expected fee record for 0001/1025")));
+    }
+
+    @Test
+    public void toModelType_invalidFeeRecord_throwsIllegalValueException() throws Exception {
+        // JSON should include at least one fee record with invalid studentId/month/state,
+        // or a fee record referencing a non-existent studentId.
+        JsonSerializableAddressBook dataFromFile = JsonUtil.readJsonFile(
+            INVALID_FEERECORD_FILE, JsonSerializableAddressBook.class).get();
+        assertThrows(IllegalValueException.class, dataFromFile::toModelType);
+    }
 }
+
+

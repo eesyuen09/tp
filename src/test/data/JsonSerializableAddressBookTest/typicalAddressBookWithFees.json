@@ -1,0 +1,52 @@
+{
+  "persons": [
+    {
+      "name": "Alex Yeoh",
+      "phone": "87438807",
+      "email": "alexyeoh@example.com",
+      "address": "Blk 30 Geylang Street 29, #06-40",
+      "tags": ["Class_3"],
+      "studentId": "0000",
+      "enrolledMonth": "0825",
+      "attendanceRecords": []
+    },
+    {
+      "name": "Bernice Yu",
+      "phone": "99272758",
+      "email": "berniceyu@example.com",
+      "address": "Blk 30 Lorong 3 Serangoon Gardens, #07-18",
+      "tags": ["Class_3"],
+      "studentId": "0001",
+      "enrolledMonth": "0625",
+      "attendanceRecords": []
+    },
+    {
+      "name": "Charlotte Oliveiro",
+      "phone": "93210283",
+      "email": "charlotte@example.com",
+      "address": "Blk 11 Ang Mo Kio Street 74, #11-04",
+      "tags": [],
+      "studentId": "0002",
+      "enrolledMonth": "0325",
+      "attendanceRecords": []
+    }
+  ],
+  "classTags": ["Class_3"],
+  "feeRecords": [
+    {
+      "studentId": "0000",
+      "monthString": "1025",
+      "feeState": "PAID"
+    },
+    {
+      "studentId": "0001",
+      "monthString": "1025",
+      "feeState": "UNPAID"
+    },
+    {
+      "studentId": "0002",
+      "monthString": "1025",
+      "feeState": "PAID"
+    }
+  ]
+}
