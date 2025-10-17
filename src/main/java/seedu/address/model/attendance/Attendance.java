@@ -1,7 +1,9 @@
-package seedu.address.model.person;
+package seedu.address.model.attendance;
 
 
 import static java.util.Objects.requireNonNull;
+
+import seedu.address.model.person.Date;
 
 /**
  * Represents an attendance record for a specific date.

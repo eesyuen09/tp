@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
+import seedu.address.model.attendance.AttendanceList;
 import seedu.address.model.person.Date;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
@@ -34,9 +35,11 @@ public class AttendanceViewCommandTest {
         ModelStubWithPerson modelStub = new ModelStubWithPerson();
         Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID_STRING).build();
         // Mark some attendance records
-        validPerson.markAttendance(VALID_DATE_1);
-        validPerson.markAttendance(VALID_DATE_2);
-        validPerson.unmarkAttendance(VALID_DATE_2); // Mark one as absent
+        AttendanceList attendanceList = new AttendanceList();
+        attendanceList.markAttendance(VALID_DATE_1);
+        attendanceList.markAttendance(VALID_DATE_2);
+        attendanceList.unmarkAttendance(VALID_DATE_2); // Mark one as absent
+        validPerson = validPerson.withAttendanceList(attendanceList);
         modelStub.person = validPerson;
 
         CommandResult commandResult = new AttendanceViewCommand(VALID_STUDENT_ID).execute(modelStub);

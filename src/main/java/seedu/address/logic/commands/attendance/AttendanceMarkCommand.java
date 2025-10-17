@@ -36,12 +36,21 @@ public class AttendanceMarkCommand extends AttendanceCommand {
         Person personToEdit = model.getPersonById(studentId)
                 .orElseThrow(() -> new CommandException("Student ID not found: " + studentId));
 
-        if (personToEdit.hasAttendanceMarked(date)) {
+        if (personToEdit.getAttendanceList().hasAttendanceMarked(date)) {
             throw new CommandException(String.format(MESSAGE_ALREADY_MARKED, personToEdit.getName(), date));
         }
 
-        personToEdit.markAttendance(date);
-        return new CommandResult(String.format(MESSAGE_MARK_SUCCESS, personToEdit.getName(), date));
+        // Create new attendance list with the marked attendance
+        seedu.address.model.attendance.AttendanceList updatedAttendanceList =
+                new seedu.address.model.attendance.AttendanceList(
+                        personToEdit.getAttendanceList().asUnmodifiableList());
+        updatedAttendanceList.markAttendance(date);
+
+        // Create updated person with new attendance list
+        Person updatedPerson = personToEdit.withAttendanceList(updatedAttendanceList);
+        model.setPerson(personToEdit, updatedPerson);
+
+        return new CommandResult(String.format(MESSAGE_MARK_SUCCESS, updatedPerson.getName(), date));
     }
 
     @Override

@@ -20,8 +20,8 @@ import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
+import seedu.address.model.attendance.AttendanceList;
 import seedu.address.model.person.Address;
-import seedu.address.model.person.Attendance;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Month;
 import seedu.address.model.person.Name;
@@ -115,10 +115,10 @@ public class EditCommand extends Command {
         Set<ClassTag> updatedTags = editPersonDescriptor.getTags().orElse(personToEdit.getTags());
         StudentId updatedStudentId = personToEdit.getStudentId();
         Month enrolledMonth = personToEdit.getEnrolledMonth();
-        Set<Attendance> attendanceRecords = personToEdit.getAttendanceRecords();
+        AttendanceList attendanceList = personToEdit.getAttendanceList();
         PerformanceList updatedPerformanceList = personToEdit.getPerformanceList();
         return new Person(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags,
-                updatedStudentId, enrolledMonth, attendanceRecords, updatedPerformanceList);
+                updatedStudentId, enrolledMonth, attendanceList, updatedPerformanceList);
     }
 
     @Override

@@ -3,8 +3,8 @@ package seedu.address.testutil;
 import java.util.HashSet;
 import java.util.Set;
 
+import seedu.address.model.attendance.AttendanceList;
 import seedu.address.model.person.Address;
-import seedu.address.model.person.Attendance;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Month;
 import seedu.address.model.person.Name;
@@ -34,7 +34,7 @@ public class PersonBuilder {
     private Set<ClassTag> tags;
     private StudentId studentId;
     private Month enrolledMonth;
-    private Set<Attendance> attendanceRecords;
+    private AttendanceList attendanceList;
     private PerformanceList performanceList;
 
     /**
@@ -48,7 +48,7 @@ public class PersonBuilder {
         studentId = new StudentId(DEFAULT_STUDENTID);
         tags = new HashSet<>();
         enrolledMonth = new Month(DEFAULT_ENROLLEDMONTH);
-        attendanceRecords = new HashSet<>();
+        attendanceList = new AttendanceList();
         performanceList = new PerformanceList();
     }
 
@@ -63,7 +63,7 @@ public class PersonBuilder {
         studentId = personToCopy.getStudentId();
         tags = new HashSet<>(personToCopy.getTags());
         enrolledMonth = personToCopy.getEnrolledMonth();
-        attendanceRecords = new HashSet<>(personToCopy.getAttendanceRecords());
+        attendanceList = personToCopy.getAttendanceList();
         performanceList = personToCopy.getPerformanceList();
     }
 
@@ -132,10 +132,18 @@ public class PersonBuilder {
     }
 
     /**
-     * Sets the {@code AttendanceRecords} of the {@code Person} that we are building.
+     * Sets the {@code AttendanceList} of the {@code Person} that we are building.
+     */
+    public PersonBuilder withAttendanceList(AttendanceList attendanceList) {
+        this.attendanceList = attendanceList;
+        return this;
+    }
+
+    /**
+     * Builds and returns the Person object with the configured fields.
      */
     public Person build() {
-        return new Person(name, phone, email, address, tags, studentId, enrolledMonth, attendanceRecords,
+        return new Person(name, phone, email, address, tags, studentId, enrolledMonth, attendanceList,
                 performanceList);
     }
 
