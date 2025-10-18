@@ -1,6 +1,8 @@
 package seedu.address.logic.commands.attendance;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.testutil.Assert.assertThrows;
 
 import java.util.Optional;
@@ -18,9 +20,11 @@ import seedu.address.testutil.PersonBuilder;
 public class AttendanceMarkCommandTest {
 
     private static final StudentId VALID_STUDENT_ID = new StudentId("0123");
+    private static final StudentId ANOTHER_STUDENT_ID = new StudentId("1111");
     //for personbuilder
     private static final String VALID_STUDENT_ID_STRING = "0123";
     private static final Date VALID_DATE = new Date("13012025");
+    private static final Date ANOTHER_DATE = new Date("14012025");
 
     @Test
     public void constructor_nullStudentId_throwsNullPointerException() {
@@ -52,6 +56,32 @@ public class AttendanceMarkCommandTest {
         AttendanceMarkCommand command = new AttendanceMarkCommand(VALID_STUDENT_ID, VALID_DATE);
 
         assertThrows(CommandException.class, () -> command.execute(modelStub));
+    }
+
+    @Test
+    public void equals() {
+        AttendanceMarkCommand markCommand1 = new AttendanceMarkCommand(VALID_STUDENT_ID, VALID_DATE);
+        AttendanceMarkCommand markCommand2 = new AttendanceMarkCommand(ANOTHER_STUDENT_ID, VALID_DATE);
+        AttendanceMarkCommand markCommand3 = new AttendanceMarkCommand(VALID_STUDENT_ID, ANOTHER_DATE);
+
+        // same object -> returns true
+        assertTrue(markCommand1.equals(markCommand1));
+
+        // same values -> returns true
+        AttendanceMarkCommand markCommand1Copy = new AttendanceMarkCommand(VALID_STUDENT_ID, VALID_DATE);
+        assertTrue(markCommand1.equals(markCommand1Copy));
+
+        // different types -> returns false
+        assertFalse(markCommand1.equals(1));
+
+        // null -> returns false
+        assertFalse(markCommand1.equals(null));
+
+        // different student ID -> returns false
+        assertFalse(markCommand1.equals(markCommand2));
+
+        // different date -> returns false
+        assertFalse(markCommand1.equals(markCommand3));
     }
 
     /**
