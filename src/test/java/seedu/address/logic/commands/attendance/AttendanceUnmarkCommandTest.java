@@ -1,6 +1,8 @@
 package seedu.address.logic.commands.attendance;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.testutil.Assert.assertThrows;
 
 import java.util.Optional;
@@ -19,9 +21,11 @@ import seedu.address.testutil.PersonBuilder;
 public class AttendanceUnmarkCommandTest {
 
     private static final StudentId VALID_STUDENT_ID = new StudentId("0123");
+    private static final StudentId ANOTHER_STUDENT_ID = new StudentId("9999");
     //for personbuilder
     private static final String VALID_STUDENT_ID_STRING = "0123";
     private static final Date VALID_DATE = new Date("13012025");
+    private static final Date ANOTHER_DATE = new Date("14012025");
 
     @Test
     public void constructor_nullStudentId_throwsNullPointerException() {
@@ -64,24 +68,45 @@ public class AttendanceUnmarkCommandTest {
         // Verify the command executes successfully
         assertEquals(String.format(AttendanceUnmarkCommand.MESSAGE_UNMARK_SUCCESS,
                 validPerson.getName(), VALID_DATE), result.getFeedbackToUser());
-
     }
 
     @Test
-    public void execute_attendanceNotMarked_throwsCommandException() throws CommandException {
-        ModelStubWithPerson modelStub = new ModelStubWithPerson();
-        Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID_STRING).build();
-        // Don't mark attendance - person has no attendance records
-        modelStub.person = validPerson;
-
+    public void execute_nullModel_throwsNullPointerException() {
         AttendanceUnmarkCommand command = new AttendanceUnmarkCommand(VALID_STUDENT_ID, VALID_DATE);
+        assertThrows(NullPointerException.class, () -> command.execute(null));
+    }
 
-        CommandResult result = command.execute(modelStub);
+    @Test
+    public void execute_studentNotFound_throwsCommandException() {
+        ModelStubWithoutPerson modelStub = new ModelStubWithoutPerson();
+        AttendanceUnmarkCommand command = new AttendanceUnmarkCommand(VALID_STUDENT_ID, VALID_DATE);
+        assertThrows(CommandException.class, () -> command.execute(modelStub));
+    }
 
-        // Verify the command executes successfully
-        assertEquals(String.format(AttendanceUnmarkCommand.MESSAGE_UNMARK_SUCCESS,
-                validPerson.getName(), VALID_DATE), result.getFeedbackToUser());
+    @Test
+    public void equals() {
+        AttendanceUnmarkCommand unmarkCommand1 = new AttendanceUnmarkCommand(VALID_STUDENT_ID, VALID_DATE);
+        AttendanceUnmarkCommand unmarkCommand2 = new AttendanceUnmarkCommand(ANOTHER_STUDENT_ID, VALID_DATE);
+        AttendanceUnmarkCommand unmarkCommand3 = new AttendanceUnmarkCommand(VALID_STUDENT_ID, ANOTHER_DATE);
 
+        // same object -> returns true
+        assertTrue(unmarkCommand1.equals(unmarkCommand1));
+
+        // same values -> returns true
+        AttendanceUnmarkCommand unmarkCommand1Copy = new AttendanceUnmarkCommand(VALID_STUDENT_ID, VALID_DATE);
+        assertTrue(unmarkCommand1.equals(unmarkCommand1Copy));
+
+        // different types -> returns false
+        assertFalse(unmarkCommand1.equals(1));
+
+        // null -> returns false
+        assertFalse(unmarkCommand1.equals(null));
+
+        // different student ID -> returns false
+        assertFalse(unmarkCommand1.equals(unmarkCommand2));
+
+        // different date -> returns false
+        assertFalse(unmarkCommand1.equals(unmarkCommand3));
     }
 
     /**

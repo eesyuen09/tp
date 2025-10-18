@@ -1,6 +1,7 @@
 package seedu.address.logic.commands.attendance;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.testutil.Assert.assertThrows;
 
@@ -20,6 +21,7 @@ import seedu.address.testutil.PersonBuilder;
 public class AttendanceViewCommandTest {
 
     private static final StudentId VALID_STUDENT_ID = new StudentId("0123");
+    private static final StudentId ANOTHER_STUDENT_ID = new StudentId("9999");
     //for personbuilder
     private static final String VALID_STUDENT_ID_STRING = "1111";
     private static final Date VALID_DATE_1 = new Date("13012025");
@@ -70,6 +72,34 @@ public class AttendanceViewCommandTest {
         AttendanceViewCommand command = new AttendanceViewCommand(VALID_STUDENT_ID);
 
         assertThrows(CommandException.class, () -> command.execute(modelStub));
+    }
+
+    @Test
+    public void execute_nullModel_throwsNullPointerException() {
+        AttendanceViewCommand command = new AttendanceViewCommand(VALID_STUDENT_ID);
+        assertThrows(NullPointerException.class, () -> command.execute(null));
+    }
+
+    @Test
+    public void equals() {
+        AttendanceViewCommand viewCommand1 = new AttendanceViewCommand(VALID_STUDENT_ID);
+        AttendanceViewCommand viewCommand2 = new AttendanceViewCommand(ANOTHER_STUDENT_ID);
+
+        // same object -> returns true
+        assertTrue(viewCommand1.equals(viewCommand1));
+
+        // same values -> returns true
+        AttendanceViewCommand viewCommand1Copy = new AttendanceViewCommand(VALID_STUDENT_ID);
+        assertTrue(viewCommand1.equals(viewCommand1Copy));
+
+        // different types -> returns false
+        assertFalse(viewCommand1.equals(1));
+
+        // null -> returns false
+        assertFalse(viewCommand1.equals(null));
+
+        // different student ID -> returns false
+        assertFalse(viewCommand1.equals(viewCommand2));
     }
 
     /**
