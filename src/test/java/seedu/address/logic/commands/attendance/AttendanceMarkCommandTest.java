@@ -23,7 +23,7 @@ public class AttendanceMarkCommandTest {
     private static final StudentId VALID_STUDENT_ID = new StudentId("0123");
     private static final StudentId ANOTHER_STUDENT_ID = new StudentId("9999");
     //for personbuilder
-    private static final String VALID_STUDENT_ID_STRING = "1111";
+    private static final String VALID_STUDENT_ID_STRING = "0123";
     private static final Date VALID_DATE = new Date("13012025");
     private static final Date ANOTHER_DATE = new Date("14012025");
 
@@ -105,7 +105,7 @@ public class AttendanceMarkCommandTest {
         // different date -> returns false
         assertFalse(markCommand1.equals(markCommand3));
     }
-    
+
     /**
      * A Model stub that contains a person.
      */
@@ -122,7 +122,6 @@ public class AttendanceMarkCommandTest {
             this.person = editedPerson;
         }
     }
-
 
     /**
      * A Model stub that does not contain any person.
