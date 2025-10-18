@@ -19,7 +19,7 @@ public class AttendanceMarkCommandTest {
 
     private static final StudentId VALID_STUDENT_ID = new StudentId("0123");
     //for personbuilder
-    private static final String VALID_STUDENT_ID_STRING = "1111";
+    private static final String VALID_STUDENT_ID_STRING = "0123";
     private static final Date VALID_DATE = new Date("13012025");
 
     @Test
@@ -41,7 +41,7 @@ public class AttendanceMarkCommandTest {
         CommandResult commandResult = new AttendanceMarkCommand(VALID_STUDENT_ID, VALID_DATE).execute(modelStub);
 
         assertEquals(String.format(AttendanceMarkCommand.MESSAGE_MARK_SUCCESS,
-                        validPerson.getName(), VALID_DATE),
+                        validPerson.getName(), VALID_DATE.getFormattedDate()),
                 commandResult.getFeedbackToUser());
     }
 

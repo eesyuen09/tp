@@ -5,6 +5,7 @@ import static java.util.Objects.requireNonNull;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
+import seedu.address.model.attendance.AttendanceList;
 import seedu.address.model.person.Date;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
@@ -37,20 +38,20 @@ public class AttendanceMarkCommand extends AttendanceCommand {
                 .orElseThrow(() -> new CommandException("Student ID not found: " + studentId));
 
         if (personToEdit.getAttendanceList().hasAttendanceMarked(date)) {
-            throw new CommandException(String.format(MESSAGE_ALREADY_MARKED, personToEdit.getName(), date));
+            throw new CommandException(String.format(MESSAGE_ALREADY_MARKED,
+                    personToEdit.getName(), date.getFormattedDate()));
         }
 
         // Create new attendance list with the marked attendance
-        seedu.address.model.attendance.AttendanceList updatedAttendanceList =
-                new seedu.address.model.attendance.AttendanceList(
-                        personToEdit.getAttendanceList().asUnmodifiableList());
+        AttendanceList updatedAttendanceList =
+                new AttendanceList(personToEdit.getAttendanceList().asUnmodifiableList());
         updatedAttendanceList.markAttendance(date);
 
         // Create updated person with new attendance list
         Person updatedPerson = personToEdit.withAttendanceList(updatedAttendanceList);
         model.setPerson(personToEdit, updatedPerson);
 
-        return new CommandResult(String.format(MESSAGE_MARK_SUCCESS, updatedPerson.getName(), date));
+        return new CommandResult(String.format(MESSAGE_MARK_SUCCESS, updatedPerson.getName(), date.getFormattedDate()));
     }
 
     @Override

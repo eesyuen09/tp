@@ -5,9 +5,11 @@ import static java.util.Objects.requireNonNull;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
+import seedu.address.model.attendance.AttendanceList;
 import seedu.address.model.person.Date;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
+
 
 /**
  * Marks a student as absent on a specific date.
@@ -36,8 +38,8 @@ public class AttendanceUnmarkCommand extends AttendanceCommand {
                 .orElseThrow(() -> new CommandException("Student ID not found: " + studentId));
 
         // Create new attendance list with the unmarked attendance
-        seedu.address.model.attendance.AttendanceList updatedAttendanceList =
-                new seedu.address.model.attendance.AttendanceList(
+        AttendanceList updatedAttendanceList =
+                new AttendanceList(
                         personToEdit.getAttendanceList().asUnmodifiableList());
         updatedAttendanceList.unmarkAttendance(date);
 
@@ -45,7 +47,8 @@ public class AttendanceUnmarkCommand extends AttendanceCommand {
         Person updatedPerson = personToEdit.withAttendanceList(updatedAttendanceList);
         model.setPerson(personToEdit, updatedPerson);
 
-        return new CommandResult(String.format(MESSAGE_UNMARK_SUCCESS, updatedPerson.getName(), date));
+        return new CommandResult(String.format(MESSAGE_UNMARK_SUCCESS,
+                updatedPerson.getName(), date.getFormattedDate()));
     }
 
     @Override

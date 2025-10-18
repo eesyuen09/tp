@@ -46,7 +46,7 @@ public class AttendanceUnmarkCommandTest {
         CommandResult commandResult = new AttendanceUnmarkCommand(VALID_STUDENT_ID, VALID_DATE).execute(modelStub);
 
         assertEquals(String.format(AttendanceUnmarkCommand.MESSAGE_UNMARK_SUCCESS,
-                        validPerson.getName(), VALID_DATE),
+                        validPerson.getName(), VALID_DATE.getFormattedDate()),
                 commandResult.getFeedbackToUser());
     }
 
@@ -63,7 +63,7 @@ public class AttendanceUnmarkCommandTest {
 
         // Verify the command executes successfully
         assertEquals(String.format(AttendanceUnmarkCommand.MESSAGE_UNMARK_SUCCESS,
-                validPerson.getName(), VALID_DATE), result.getFeedbackToUser());
+                validPerson.getName(), VALID_DATE.getFormattedDate()), result.getFeedbackToUser());
 
     }
 
@@ -80,7 +80,7 @@ public class AttendanceUnmarkCommandTest {
 
         // Verify the command executes successfully
         assertEquals(String.format(AttendanceUnmarkCommand.MESSAGE_UNMARK_SUCCESS,
-                validPerson.getName(), VALID_DATE), result.getFeedbackToUser());
+                validPerson.getName(), VALID_DATE.getFormattedDate()), result.getFeedbackToUser());
 
     }
 
