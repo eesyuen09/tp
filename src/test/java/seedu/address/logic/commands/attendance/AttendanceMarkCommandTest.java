@@ -21,7 +21,7 @@ import seedu.address.testutil.PersonBuilder;
 public class AttendanceMarkCommandTest {
 
     private static final StudentId VALID_STUDENT_ID = new StudentId("0123");
-    private static final StudentId ANOTHER_STUDENT_ID = new StudentId("9999");
+    private static final StudentId ANOTHER_STUDENT_ID = new StudentId("0899");
     //for personbuilder
     private static final String VALID_STUDENT_ID_STRING = "0123";
     private static final Date VALID_DATE = new Date("13012025");

@@ -7,13 +7,11 @@ import static seedu.address.logic.Messages.MESSAGE_UNKNOWN_COMMAND;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_CLASSTAG;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_STUDENTID;
 import static seedu.address.testutil.Assert.assertThrows;
-import static seedu.address.testutil.StudentIdTestUtil.resetStudentIdCounter;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.commands.AddCommand;
@@ -51,11 +49,6 @@ import seedu.address.testutil.PersonUtil;
 public class AddressBookParserTest {
 
     private final AddressBookParser parser = new AddressBookParser();
-
-    @BeforeEach
-    public void setUp() {
-        resetStudentIdCounter();
-    }
 
     @Test
     public void parseCommand_add() throws Exception {
