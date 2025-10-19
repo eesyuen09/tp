@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
+import seedu.address.model.attendance.AttendanceList;
 import seedu.address.model.person.Date;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
@@ -20,7 +21,7 @@ import seedu.address.testutil.PersonBuilder;
 public class AttendanceMarkCommandTest {
 
     private static final StudentId VALID_STUDENT_ID = new StudentId("0123");
-    private static final StudentId ANOTHER_STUDENT_ID = new StudentId("1111");
+    private static final StudentId ANOTHER_STUDENT_ID = new StudentId("0899");
     //for personbuilder
     private static final String VALID_STUDENT_ID_STRING = "0123";
     private static final Date VALID_DATE = new Date("13012025");
@@ -56,6 +57,27 @@ public class AttendanceMarkCommandTest {
         AttendanceMarkCommand command = new AttendanceMarkCommand(VALID_STUDENT_ID, VALID_DATE);
 
         assertThrows(CommandException.class, () -> command.execute(modelStub));
+    }
+
+    @Test
+    public void execute_alreadyMarked_throwsCommandException() throws Exception {
+        ModelStubWithPerson modelStub = new ModelStubWithPerson();
+        Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID_STRING).build();
+        // Mark attendance first
+        AttendanceList attendanceList = new AttendanceList();
+        attendanceList.markAttendance(VALID_DATE);
+        validPerson = validPerson.withAttendanceList(attendanceList);
+        modelStub.person = validPerson;
+
+        AttendanceMarkCommand command = new AttendanceMarkCommand(VALID_STUDENT_ID, VALID_DATE);
+
+        assertThrows(CommandException.class, () -> command.execute(modelStub));
+    }
+
+    @Test
+    public void execute_nullModel_throwsNullPointerException() {
+        AttendanceMarkCommand command = new AttendanceMarkCommand(VALID_STUDENT_ID, VALID_DATE);
+        assertThrows(NullPointerException.class, () -> command.execute(null));
     }
 
     @Test
