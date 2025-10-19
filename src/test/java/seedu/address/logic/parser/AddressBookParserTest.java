@@ -202,6 +202,14 @@ public class AddressBookParserTest {
     }
 
     @Test
+    public void parseCommand_attendance() throws Exception {
+        // Test that attendance commands are parsed correctly
+        assertTrue(parser.parseCommand("att -v s/0123") instanceof AttendanceViewCommand);
+        assertTrue(parser.parseCommand("att -m s/0123 d/13012025") instanceof AttendanceMarkCommand);
+        assertTrue(parser.parseCommand("att -u s/0123 d/13012025") instanceof AttendanceUnmarkCommand);
+    }
+
+    @Test
     public void parseCommand_attendanceMark() throws Exception {
         String studentId = "0123";
         String date = "13012025";

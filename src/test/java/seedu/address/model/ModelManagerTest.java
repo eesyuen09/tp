@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.model.fee.FeeState;
+import seedu.address.model.person.Date;
 import seedu.address.model.person.Month;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.Person;
@@ -217,7 +218,6 @@ public class ModelManagerTest {
     }
 
 
-
     @Test
     public void hasPersonWithId_existingAndNonExistingId_returnsCorrectResult() {
         modelManager.addPerson(ALICE);
@@ -235,5 +235,83 @@ public class ModelManagerTest {
     @Test
     public void hasPersonWithId_nullId_throwsNullPointerException() {
         assertThrows(NullPointerException.class, () -> modelManager.hasPersonWithId(null));
+    }
+
+    //=========== Attendance Tests ===================================================================
+
+    @Test
+    public void markAttendance_validStudentAndDate_success() {
+        modelManager.addPerson(ALICE);
+        Date date = new seedu.address.model.person.Date("15012025");
+
+        modelManager.markAttendance(ALICE.getStudentId(), date);
+
+        // Verify attendance was marked
+        Person updatedPerson = modelManager.getPersonById(ALICE.getStudentId()).get();
+        assertTrue(updatedPerson.getAttendanceList().hasAttendanceMarked(date));
+    }
+
+    @Test
+    public void markAttendance_nullStudentId_throwsNullPointerException() {
+        Date date = new seedu.address.model.person.Date("15012025");
+        assertThrows(NullPointerException.class, () -> modelManager.markAttendance(null, date));
+    }
+
+    @Test
+    public void markAttendance_nullDate_throwsNullPointerException() {
+        modelManager.addPerson(ALICE);
+        assertThrows(NullPointerException.class, () ->
+                modelManager.markAttendance(ALICE.getStudentId(), null));
+    }
+
+    @Test
+    public void unmarkAttendance_validStudentAndDate_success() {
+        modelManager.addPerson(ALICE);
+        Date date = new seedu.address.model.person.Date("15012025");
+
+        // Mark first
+        modelManager.markAttendance(ALICE.getStudentId(), date);
+
+        // Then unmark
+        modelManager.unmarkAttendance(ALICE.getStudentId(), date);
+
+        // Verify attendance was unmarked (marked as absent)
+        Person updatedPerson = modelManager.getPersonById(ALICE.getStudentId()).get();
+        assertFalse(updatedPerson.getAttendanceList().hasAttendanceMarked(date));
+    }
+
+    @Test
+    public void unmarkAttendance_nullStudentId_throwsNullPointerException() {
+        Date date = new seedu.address.model.person.Date("15012025");
+        assertThrows(NullPointerException.class, () -> modelManager.unmarkAttendance(null, date));
+    }
+
+    @Test
+    public void unmarkAttendance_nullDate_throwsNullPointerException() {
+        modelManager.addPerson(ALICE);
+        assertThrows(NullPointerException.class, () ->
+                modelManager.unmarkAttendance(ALICE.getStudentId(), null));
+    }
+
+    @Test
+    public void markAndUnmarkAttendance_multipleDates_success() {
+        modelManager.addPerson(ALICE);
+        Date date1 = new seedu.address.model.person.Date("15012025");
+        Date date2 = new seedu.address.model.person.Date("16012025");
+
+        // Mark two dates
+        modelManager.markAttendance(ALICE.getStudentId(), date1);
+        modelManager.markAttendance(ALICE.getStudentId(), date2);
+
+        Person updatedPerson = modelManager.getPersonById(ALICE.getStudentId()).get();
+        assertTrue(updatedPerson.getAttendanceList().hasAttendanceMarked(date1));
+        assertTrue(updatedPerson.getAttendanceList().hasAttendanceMarked(date2));
+
+        // Unmark one date
+        modelManager.unmarkAttendance(ALICE.getStudentId(), date1);
+
+        updatedPerson = modelManager.getPersonById(ALICE.getStudentId()).get();
+        assertFalse(updatedPerson.getAttendanceList().hasAttendanceMarked(date1));
+        assertTrue(updatedPerson.getAttendanceList().hasAttendanceMarked(date2));
     }
 }

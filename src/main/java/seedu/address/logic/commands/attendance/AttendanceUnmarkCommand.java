@@ -2,6 +2,7 @@ package seedu.address.logic.commands.attendance;
 
 import static java.util.Objects.requireNonNull;
 
+import seedu.address.logic.Messages;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
@@ -17,6 +18,8 @@ import seedu.address.model.person.StudentId;
 public class AttendanceUnmarkCommand extends AttendanceCommand {
 
     public static final String MESSAGE_UNMARK_SUCCESS = "Unmarked attendance for: %1$s on %2$s";
+    public static final String MESSAGE_ALREADY_UNMARKED = "Attendance for %1$s on %2$s is already unmarked.";
+
     private final Date date;
 
     /**
@@ -33,19 +36,15 @@ public class AttendanceUnmarkCommand extends AttendanceCommand {
         requireNonNull(model);
 
         Person personToEdit = model.getPersonById(studentId)
-                .orElseThrow(() -> new CommandException("Student ID not found: " + studentId));
+                .orElseThrow(() -> new CommandException(Messages.MESSAGE_STUDENT_ID_NOT_FOUND));
 
-        // Create new attendance list with the unmarked attendance
-        seedu.address.model.attendance.AttendanceList updatedAttendanceList =
-                new seedu.address.model.attendance.AttendanceList(
-                        personToEdit.getAttendanceList().asUnmodifiableList());
-        updatedAttendanceList.unmarkAttendance(date);
+        if (personToEdit.getAttendanceList().hasAttendanceUnmarked(date)) {
+            throw new CommandException(String.format(MESSAGE_ALREADY_UNMARKED, personToEdit.getName(), date));
+        }
 
-        // Create updated person with new attendance list
-        Person updatedPerson = personToEdit.withAttendanceList(updatedAttendanceList);
-        model.setPerson(personToEdit, updatedPerson);
+        model.unmarkAttendance(studentId, date);
 
-        return new CommandResult(String.format(MESSAGE_UNMARK_SUCCESS, updatedPerson.getName(), date));
+        return new CommandResult(String.format(MESSAGE_UNMARK_SUCCESS, personToEdit.getName(), date));
     }
 
     @Override

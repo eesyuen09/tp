@@ -37,6 +37,7 @@ public class AttendanceMarkCommandTest {
         assertThrows(NullPointerException.class, () -> new AttendanceMarkCommand(VALID_STUDENT_ID, null));
     }
 
+    //check mark attendance
     @Test
     public void execute_validStudentAndDate_markSuccessful() throws Exception {
         ModelStubWithPerson modelStub = new ModelStubWithPerson();
@@ -48,7 +49,32 @@ public class AttendanceMarkCommandTest {
         assertEquals(String.format(AttendanceMarkCommand.MESSAGE_MARK_SUCCESS,
                         validPerson.getName(), VALID_DATE),
                 commandResult.getFeedbackToUser());
+        assertTrue(modelStub.markAttendanceCalled);
+
     }
+
+    //attendance at that date already mark as absent, now change to present
+    @Test
+    public void execute_markedAsAbsent_markSuccessful() throws Exception {
+        ModelStubWithPerson modelStub = new ModelStubWithPerson();
+        Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID_STRING).build();
+
+        // Mark attendance as absent first
+        AttendanceList attendanceList = new AttendanceList();
+        attendanceList.unmarkAttendance(VALID_DATE);
+        validPerson = validPerson.withAttendanceList(attendanceList);
+        modelStub.person = validPerson;
+
+        AttendanceMarkCommand command = new AttendanceMarkCommand(VALID_STUDENT_ID, VALID_DATE);
+        CommandResult commandResult = command.execute(modelStub);
+
+        // Should succeed - can change from absent to present
+        assertEquals(String.format(AttendanceMarkCommand.MESSAGE_MARK_SUCCESS,
+                        validPerson.getName(), VALID_DATE),
+                commandResult.getFeedbackToUser());
+        assertTrue(modelStub.markAttendanceCalled);
+    }
+
 
     @Test
     public void execute_studentNotFound_throwsCommandException() {
@@ -59,6 +85,7 @@ public class AttendanceMarkCommandTest {
         assertThrows(CommandException.class, () -> command.execute(modelStub));
     }
 
+    //attendance record at that date already present, throw exception
     @Test
     public void execute_alreadyMarked_throwsCommandException() throws Exception {
         ModelStubWithPerson modelStub = new ModelStubWithPerson();
@@ -73,6 +100,7 @@ public class AttendanceMarkCommandTest {
 
         assertThrows(CommandException.class, () -> command.execute(modelStub));
     }
+
 
     @Test
     public void execute_nullModel_throwsNullPointerException() {
@@ -111,6 +139,7 @@ public class AttendanceMarkCommandTest {
      */
     private class ModelStubWithPerson extends ModelStub {
         private Person person;
+        private boolean markAttendanceCalled = false;
 
         @Override
         public Optional<Person> getPersonById(StudentId studentId) {
@@ -118,8 +147,11 @@ public class AttendanceMarkCommandTest {
         }
 
         @Override
-        public void setPerson(Person target, Person editedPerson) {
-            this.person = editedPerson;
+        public void markAttendance(StudentId studentId, Date date) {
+            markAttendanceCalled = true;
+            AttendanceList updatedAttendance = new AttendanceList(person.getAttendanceList().asUnmodifiableList());
+            updatedAttendance.markAttendance(date);
+            person = person.withAttendanceList(updatedAttendance);
         }
     }
 

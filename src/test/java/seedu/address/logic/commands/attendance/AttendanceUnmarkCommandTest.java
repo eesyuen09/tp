@@ -37,6 +37,7 @@ public class AttendanceUnmarkCommandTest {
         assertThrows(NullPointerException.class, () -> new AttendanceUnmarkCommand(VALID_STUDENT_ID, null));
     }
 
+    //attendance at that date already mark as present, now change to absent
     @Test
     public void execute_validStudentAndDate_unmarkSuccessful() throws Exception {
         ModelStubWithPerson modelStub = new ModelStubWithPerson();
@@ -52,8 +53,10 @@ public class AttendanceUnmarkCommandTest {
         assertEquals(String.format(AttendanceUnmarkCommand.MESSAGE_UNMARK_SUCCESS,
                         validPerson.getName(), VALID_DATE),
                 commandResult.getFeedbackToUser());
+        assertTrue(modelStub.unmarkAttendanceCalled);
     }
 
+    //no attendance record at that date, mark as absent
     @Test
     public void execute_attendanceNotMarked_marksAsAbsent() throws CommandException {
         ModelStubWithPerson modelStub = new ModelStubWithPerson();
@@ -68,6 +71,25 @@ public class AttendanceUnmarkCommandTest {
         // Verify the command executes successfully
         assertEquals(String.format(AttendanceUnmarkCommand.MESSAGE_UNMARK_SUCCESS,
                 validPerson.getName(), VALID_DATE), result.getFeedbackToUser());
+        assertTrue(modelStub.unmarkAttendanceCalled);
+    }
+
+    //attendance record at that date already absent, throw exception
+    @Test
+    public void execute_alreadyMarkedAbsent_throwsCommandException() throws Exception {
+        ModelStubWithPerson modelStub = new ModelStubWithPerson();
+        Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID_STRING).build();
+
+        // Mark attendance as absent first
+        AttendanceList attendanceList = new AttendanceList();
+        attendanceList.unmarkAttendance(VALID_DATE);
+        validPerson = validPerson.withAttendanceList(attendanceList);
+        modelStub.person = validPerson;
+
+        AttendanceUnmarkCommand command = new AttendanceUnmarkCommand(VALID_STUDENT_ID, VALID_DATE);
+
+        // Should throw exception because attendance is already marked as absent
+        assertThrows(CommandException.class, () -> command.execute(modelStub));
     }
 
     @Test
@@ -114,6 +136,7 @@ public class AttendanceUnmarkCommandTest {
      */
     private class ModelStubWithPerson extends ModelStub {
         private Person person;
+        private boolean unmarkAttendanceCalled = false;
 
         @Override
         public Optional<Person> getPersonById(StudentId studentId) {
@@ -121,8 +144,11 @@ public class AttendanceUnmarkCommandTest {
         }
 
         @Override
-        public void setPerson(Person target, Person editedPerson) {
-            this.person = editedPerson;
+        public void unmarkAttendance(StudentId studentId, Date date) {
+            unmarkAttendanceCalled = true;
+            AttendanceList updatedAttendance = new AttendanceList(person.getAttendanceList().asUnmodifiableList());
+            updatedAttendance.unmarkAttendance(date);
+            person = person.withAttendanceList(updatedAttendance);
         }
     }
 
