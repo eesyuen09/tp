@@ -40,7 +40,7 @@ public class AttendanceMarkCommand extends AttendanceCommand {
         if (personToEdit.getAttendanceList().hasAttendanceMarked(date)) {
             throw new CommandException(String.format(MESSAGE_ALREADY_MARKED, personToEdit.getName(), date));
         }
-        model.markAttendance(studentId,date);
+        model.markAttendance(studentId, date);
 
         return new CommandResult(String.format(MESSAGE_MARK_SUCCESS, personToEdit.getName(), date));
     }

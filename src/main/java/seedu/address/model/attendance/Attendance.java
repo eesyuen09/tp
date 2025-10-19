@@ -4,6 +4,7 @@ package seedu.address.model.attendance;
 import static java.util.Objects.requireNonNull;
 
 import java.util.Objects;
+
 import seedu.address.model.person.Date;
 
 /**
