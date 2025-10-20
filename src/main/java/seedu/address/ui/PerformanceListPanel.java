@@ -20,6 +20,11 @@ public class PerformanceListPanel extends UiPart<Region> {
     @FXML
     private ListView<PerformanceNote> performanceListView;
 
+    /**
+     * Creates a {@code PerformanceListPanel} with the given list of performance notes.
+     *
+     * @param notes The list of performance notes to display.
+     */
     public PerformanceListPanel(ObservableList<PerformanceNote> notes) {
         super(FXML);
         performanceListView.setItems(notes);
