@@ -1,6 +1,7 @@
 package seedu.address.model;
 
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
@@ -11,6 +12,7 @@ import seedu.address.model.person.Date;
 import seedu.address.model.person.Month;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
+import seedu.address.model.person.performance.PerformanceNote;
 import seedu.address.model.tag.ClassTag;
 
 /**
@@ -153,5 +155,14 @@ public interface Model {
      * @param date The date to unmark attendance on.
      */
     void unmarkAttendance(StudentId studentId, Date date);
+
+    /** Returns an unmodifiable view of the performance notes currently displayed in the UI. */
+    ObservableList<PerformanceNote> getDisplayedPerformanceNotes();
+
+    /** Replaces the currently displayed performance notes with {@code notes}. */
+    void setDisplayedPerformanceNotes(List<PerformanceNote> notes);
+
+    /** Clears all performance notes currently displayed in the UI. */
+    void clearDisplayedPerformanceNotes();
 
 }

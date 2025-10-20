@@ -4,10 +4,12 @@ import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import seedu.address.commons.core.GuiSettings;
@@ -19,6 +21,7 @@ import seedu.address.model.person.Date;
 import seedu.address.model.person.Month;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
+import seedu.address.model.person.performance.PerformanceNote;
 import seedu.address.model.tag.ClassTag;
 
 /**
@@ -31,6 +34,7 @@ public class ModelManager implements Model {
     private final UserPrefs userPrefs;
     private final FilteredList<Person> filteredPersons;
     private final FeeTracker feeTracker;
+    private final ObservableList<PerformanceNote> displayedPerformanceNotes;
 
     /**
      * Initializes a ModelManager with the given addressBook and userPrefs.
@@ -44,6 +48,7 @@ public class ModelManager implements Model {
         this.userPrefs = new UserPrefs(userPrefs);
         filteredPersons = new FilteredList<>(this.addressBook.getPersonList());
         this.feeTracker = this.addressBook.getFeeTracker();
+        this.displayedPerformanceNotes = FXCollections.observableArrayList();
     }
 
     public ModelManager() {
@@ -233,7 +238,8 @@ public class ModelManager implements Model {
         ModelManager otherModelManager = (ModelManager) other;
         return addressBook.equals(otherModelManager.addressBook)
                 && userPrefs.equals(otherModelManager.userPrefs)
-                && filteredPersons.equals(otherModelManager.filteredPersons);
+                && filteredPersons.equals(otherModelManager.filteredPersons)
+                && displayedPerformanceNotes.equals(otherModelManager.displayedPerformanceNotes);
     }
 
     @Override
@@ -254,5 +260,21 @@ public class ModelManager implements Model {
         requireNonNull(person);
         Month current = Month.now();
         return feeTracker.getDerivedStatusofMonth(person, current);
+    }
+
+    @Override
+    public ObservableList<PerformanceNote> getDisplayedPerformanceNotes() {
+        return FXCollections.unmodifiableObservableList(displayedPerformanceNotes);
+    }
+
+    @Override
+    public void setDisplayedPerformanceNotes(List<PerformanceNote> notes) {
+        requireNonNull(notes);
+        displayedPerformanceNotes.setAll(notes);
+    }
+
+    @Override
+    public void clearDisplayedPerformanceNotes() {
+        displayedPerformanceNotes.clear();
     }
 }
