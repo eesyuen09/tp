@@ -34,16 +34,33 @@ public class AttendanceList {
      * Returns true if attendance is already marked as present for this date.
      *
      * @param date The date to check.
-     * @return true if the date has a present attendance record.
+     * @return True if the date has a present attendance record.
      */
     public boolean hasAttendanceMarked(Date date) {
+        requireNonNull(date);
         return records.stream()
-                .anyMatch(attendance -> attendance.getDate().equals(date));
+                .anyMatch(attendance -> attendance.getDate().equals(date)
+                        && attendance.isStudentPresent());
     }
 
     /**
+     * Returns true if attendance is already marked as absent for this date.
+     *
+     * @param date The date to check.
+     * @return True if the date has an absent attendance record.
+     */
+    public boolean hasAttendanceUnmarked(Date date) {
+        requireNonNull(date);
+        return records.stream()
+                .anyMatch(attendance -> attendance.getDate().equals(date)
+                        && attendance.notPresent());
+    }
+
+
+    /**
      * Marks student as present on this date.
-     * If record exists, updates it. Otherwise, creates new record.
+     * If a record exists for this date, it is replaced with a present record.
+     * Otherwise, a new present record is created.
      *
      * @param date The date to mark attendance.
      */
