@@ -39,13 +39,13 @@ public class ClassTagCommandParser implements Parser<Command> {
 
         switch (commandFlag.toLowerCase()) {
 
-        case AddClassTagCommand.COMMAND_WORD:
+        case AddClassTagCommand.COMMAND_FLAG:
             return parseAddCommand(argMultimap);
 
-        case DeleteClassTagCommand.COMMAND_WORD:
+        case DeleteClassTagCommand.COMMAND_FLAG:
             return parseDeleteCommand(argMultimap);
 
-        case ListClassTagCommand.COMMAND_WORD:
+        case ListClassTagCommand.COMMAND_FLAG:
             return parseListCommand(argMultimap, preamble);
 
         default:
@@ -97,7 +97,7 @@ public class ClassTagCommandParser implements Parser<Command> {
      */
     private ListClassTagCommand parseListCommand(ArgumentMultimap argMultimap, String preamble) throws ParseException {
         // The list command should not have any arguments after the flag or any prefixes.
-        if (!preamble.equalsIgnoreCase(ListClassTagCommand.COMMAND_WORD)
+        if (!preamble.equalsIgnoreCase(ListClassTagCommand.COMMAND_FLAG)
                 || argMultimap.getValue(PREFIX_CLASSTAG).isPresent()) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, ListClassTagCommand.MESSAGE_USAGE));
         }

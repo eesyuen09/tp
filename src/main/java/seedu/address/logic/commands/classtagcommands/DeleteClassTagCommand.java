@@ -16,11 +16,11 @@ import seedu.address.model.tag.ClassTag;
  */
 public class DeleteClassTagCommand extends ClassTagCommand {
 
-    public static final String COMMAND_WORD = "-d";
+    public static final String COMMAND_FLAG = "-d";
 
     public static final String MESSAGE_USAGE = "Deletes an existing class tag from the system.\n"
             + "Parameters: " + PREFIX_CLASSTAG + "TAG_NAME\n"
-            + "Example: tag " + COMMAND_WORD + " " + PREFIX_CLASSTAG + "Sec3_AMath";
+            + "Example: " + COMMAND_WORD + " " + COMMAND_FLAG + " " + PREFIX_CLASSTAG + "Sec3_AMath";
 
     public static final String MESSAGE_SUCCESS = "Tag deleted: %1$s";
     public static final String MESSAGE_TAG_NOT_FOUND = "This class tag does not exist.";

@@ -13,7 +13,7 @@ import seedu.address.model.tag.ClassTag;
  */
 public class ListClassTagCommand extends ClassTagCommand {
 
-    public static final String COMMAND_WORD = "-l";
+    public static final String COMMAND_FLAG = "-l";
 
     public static final String MESSAGE_SUCCESS = "Listed all class tags:\n%1$s";
     public static final String MESSAGE_NO_TAGS_FOUND = "No class tags found. "
