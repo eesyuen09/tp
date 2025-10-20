@@ -1,15 +1,20 @@
 package seedu.address.logic.commands.performance;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.testutil.Assert.assertThrows;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.model.AddressBook;
@@ -55,6 +60,7 @@ public class PerfViewCommandTest {
         String expectedMessage = validPerson.getName() + " Performance Notes:\n(none)";
 
         assertCommandSuccess(new PerfViewCommand(VALID_STUDENT_ID), model, expectedMessage, model);
+        assertTrue(model.getDisplayedPerformanceNotes().isEmpty());
     }
 
     @Test
@@ -73,6 +79,7 @@ public class PerfViewCommandTest {
                 + "1. " + note.getDate().getFormattedDate() + ": " + VALID_NOTE_1;
 
         assertCommandSuccess(new PerfViewCommand(VALID_STUDENT_ID), model, expectedMessage, model);
+        assertEquals(List.of(note), model.getDisplayedPerformanceNotes());
     }
 
     @Test
@@ -94,6 +101,7 @@ public class PerfViewCommandTest {
                 + "2. " + note2.getDate().getFormattedDate() + ": " + VALID_NOTE_2;
 
         assertCommandSuccess(new PerfViewCommand(VALID_STUDENT_ID), model, expectedMessage, model);
+        assertEquals(List.of(note1, note2), model.getDisplayedPerformanceNotes());
     }
 
     @Test
@@ -113,6 +121,7 @@ public class PerfViewCommandTest {
                 + "1. " + note.getDate().getFormattedDate() + ": " + VALID_NOTE_1;
 
         assertTrue(result.getFeedbackToUser().equals(expectedMessage));
+        assertEquals(List.of(note), modelStub.getDisplayedNotes());
     }
 
     @Test
@@ -145,6 +154,7 @@ public class PerfViewCommandTest {
      */
     private class ModelStubWithPerson extends ModelStub {
         private final Person person;
+        private List<PerformanceNote> displayedNotes = new ArrayList<>();
 
         ModelStubWithPerson(Person person) {
             this.person = person;
@@ -161,6 +171,25 @@ public class PerfViewCommandTest {
         @Override
         public ReadOnlyAddressBook getAddressBook() {
             return new AddressBook();
+        }
+
+        @Override
+        public ObservableList<PerformanceNote> getDisplayedPerformanceNotes() {
+            return FXCollections.unmodifiableObservableList(FXCollections.observableArrayList(displayedNotes));
+        }
+
+        @Override
+        public void setDisplayedPerformanceNotes(List<PerformanceNote> notes) {
+            displayedNotes = new ArrayList<>(notes);
+        }
+
+        @Override
+        public void clearDisplayedPerformanceNotes() {
+            displayedNotes = new ArrayList<>();
+        }
+
+        List<PerformanceNote> getDisplayedNotes() {
+            return displayedNotes;
         }
     }
 }
