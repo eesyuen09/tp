@@ -7,6 +7,7 @@ import java.util.function.Predicate;
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.model.fee.FeeState;
+import seedu.address.model.person.Date;
 import seedu.address.model.person.Month;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
@@ -134,5 +135,23 @@ public interface Model {
     Predicate<Person> unpaidStudents(Month month);
 
     Optional<FeeState> getCurrentFeeState(Person person);
+
+    /**
+     * Marks the given student as present on the given date.
+     * The student must already exist in the address book.
+     *
+     * @param studentId The student ID of the student to mark attendance for.
+     * @param date The date to mark attendance on.
+     */
+    void markAttendance(StudentId studentId, Date date);
+
+    /**
+     * Marks the given student as absent on the given date.
+     * The student must already exist in the address book.
+     *
+     * @param studentId The student ID of the student to unmark attendance for.
+     * @param date The date to unmark attendance on.
+     */
+    void unmarkAttendance(StudentId studentId, Date date);
 
 }

@@ -2,6 +2,7 @@ package seedu.address.logic.commands.attendance;
 
 import static java.util.Objects.requireNonNull;
 
+import seedu.address.logic.Messages;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
@@ -19,6 +20,8 @@ public class AttendanceViewCommand extends AttendanceCommand {
 
     /**
      * Creates an AttendanceViewCommand to view attendance history for the specified student.
+     *
+     * @param studentId The student ID of the student to view attendance for.
      */
     public AttendanceViewCommand(StudentId studentId) {
         super(studentId);
@@ -29,13 +32,13 @@ public class AttendanceViewCommand extends AttendanceCommand {
         requireNonNull(model);
 
         Person person = model.getPersonById(studentId)
-                .orElseThrow(() -> new CommandException("Student ID not found: " + studentId));
-
-        String attendanceHistory = formatAttendanceRecords(person);
+                .orElseThrow(() -> new CommandException(Messages.MESSAGE_STUDENT_ID_NOT_FOUND));
 
         if (person.getAttendanceList().size() == 0) {
             return new CommandResult(String.format(MESSAGE_NO_RECORDS, person.getName()));
         }
+
+        String attendanceHistory = formatAttendanceRecords(person);
 
         return new CommandResult(String.format(MESSAGE_VIEW_SUCCESS, person.getName(), attendanceHistory));
     }
@@ -44,15 +47,11 @@ public class AttendanceViewCommand extends AttendanceCommand {
      * Formats the attendance records for display.
      */
     private String formatAttendanceRecords(Person person) {
-        if (person.getAttendanceList().size() == 0) {
-            return "No records";
-        }
-
         StringBuilder sb = new StringBuilder();
         person.getAttendanceList().asUnmodifiableList().stream()
                 .sorted((a1, a2) -> a1.getDate().toString().compareTo(a2.getDate().toString()))
                 .forEach(attendance -> {
-                    sb.append(attendance.getDate())
+                    sb.append(attendance.getDate().getFormattedDate())
                             .append(": ")
                             .append(attendance.isStudentPresent() ? "Present" : "Absent")
                             .append("\n");
