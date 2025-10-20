@@ -20,7 +20,7 @@ import seedu.address.model.tag.ClassTag;
  * Supported:
  *   filter -p  m/MMYY   -> show PAID students for month
  *   filter -up m/MMYY   -> show UNPAID students for month
- *   filter -t  t/CLASS_TAG    -> show students with CLASS_TAG
+ *   filter -t t/CLASS_TAG    -> show students with CLASS_TAG
  */
 public class FilterCommandParser implements Parser<Command> {
 
@@ -69,7 +69,9 @@ public class FilterCommandParser implements Parser<Command> {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, usage));
         }
 
-        if (!arePrefixesPresent(argMultimap, PREFIX_MONTH) || argMultimap.getValue(PREFIX_CLASSTAG).isPresent()) {
+        if (!arePrefixesPresent(argMultimap, PREFIX_MONTH)
+                || argMultimap.getValue(PREFIX_MONTH).get().isEmpty()
+                || argMultimap.getValue(PREFIX_CLASSTAG).isPresent()) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, usage));
         }
 
@@ -92,7 +94,9 @@ public class FilterCommandParser implements Parser<Command> {
                     ClassTagFilterCommand.MESSAGE_USAGE));
         }
 
-        if (!arePrefixesPresent(argMultimap, PREFIX_CLASSTAG) || argMultimap.getValue(PREFIX_MONTH).isPresent()) {
+        if (!arePrefixesPresent(argMultimap, PREFIX_CLASSTAG)
+                || argMultimap.getValue(PREFIX_CLASSTAG).get().isEmpty()
+                || argMultimap.getValue(PREFIX_MONTH).isPresent()) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT,
                     ClassTagFilterCommand.MESSAGE_USAGE));
         }

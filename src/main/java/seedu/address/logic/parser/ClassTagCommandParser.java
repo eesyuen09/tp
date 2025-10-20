@@ -62,6 +62,11 @@ public class ClassTagCommandParser implements Parser<Command> {
      * @throws ParseException If the arguments are invalid.
      */
     private AddClassTagCommand parseAddCommand(ArgumentMultimap argMultimap) throws ParseException {
+
+        if (!argMultimap.getPreamble().trim().equalsIgnoreCase(AddClassTagCommand.COMMAND_FLAG)) {
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddClassTagCommand.MESSAGE_USAGE));
+        }
+
         if (!arePrefixesPresent(argMultimap, PREFIX_CLASSTAG)
                 || argMultimap.getValue(PREFIX_CLASSTAG).isEmpty()) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddClassTagCommand.MESSAGE_USAGE));
@@ -80,6 +85,12 @@ public class ClassTagCommandParser implements Parser<Command> {
      * @throws ParseException If the arguments are invalid.
      */
     private DeleteClassTagCommand parseDeleteCommand(ArgumentMultimap argMultimap) throws ParseException {
+
+        if (!argMultimap.getPreamble().trim().equalsIgnoreCase(DeleteClassTagCommand.COMMAND_FLAG)) {
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                    DeleteClassTagCommand.MESSAGE_USAGE));
+        }
+
         if (!arePrefixesPresent(argMultimap, PREFIX_CLASSTAG)
                 || argMultimap.getValue(PREFIX_CLASSTAG).isEmpty()) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT,
