@@ -29,8 +29,9 @@ public class PerformanceNoteTest {
     @Test
     public void constructor_noteTooLong_throwsIllegalArgumentException() {
         String overLengthNote = "a".repeat(PerformanceNote.MAX_NOTE_LEN + 1);
-        assertThrows(IllegalArgumentException.class, "Error: performance note exceeds maximum length of 200 characters",
-                () -> new PerformanceNote(VALID_DATE_1, overLengthNote));
+        assertThrows(IllegalArgumentException.class,
+                "Error: performance note exceeds maximum length of 200 characters", () ->
+                        new PerformanceNote(VALID_DATE_1, overLengthNote));
     }
 
     @Test

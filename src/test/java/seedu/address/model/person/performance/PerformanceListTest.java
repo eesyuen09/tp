@@ -50,8 +50,8 @@ public class PerformanceListTest {
         PerformanceList list = new PerformanceList();
         list.add(new PerformanceNote(VALID_DATE_1, NOTE_1));
         assertThrows(IllegalArgumentException.class,
-                "A performance note already exists for this date.",
-                () -> list.add(new PerformanceNote(VALID_DATE_1, NOTE_2)));
+                "A performance note already exists for this date.", () ->
+                        list.add(new PerformanceNote(VALID_DATE_1, NOTE_2)));
     }
 
     @Test
@@ -77,8 +77,8 @@ public class PerformanceListTest {
         list.add(new PerformanceNote(VALID_DATE_2, NOTE_2));
 
         assertThrows(IllegalArgumentException.class,
-                "A performance note already exists for this date.",
-                () -> list.set(1, new PerformanceNote(VALID_DATE_2, NOTE_3)));
+                "A performance note already exists for this date.", () ->
+                        list.set(1, new PerformanceNote(VALID_DATE_2, NOTE_3)));
     }
 
     @Test
@@ -114,8 +114,8 @@ public class PerformanceListTest {
         list.add(new PerformanceNote(VALID_DATE_1, NOTE_1));
 
         List<PerformanceNote> unmodifiable = list.asUnmodifiableList();
-        assertThrows(UnsupportedOperationException.class,
-                () -> unmodifiable.add(new PerformanceNote(VALID_DATE_2, NOTE_2)));
+        assertThrows(UnsupportedOperationException.class, () ->
+                unmodifiable.add(new PerformanceNote(VALID_DATE_2, NOTE_2)));
     }
 
     @Test
