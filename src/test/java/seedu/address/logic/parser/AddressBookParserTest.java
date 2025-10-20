@@ -202,6 +202,14 @@ public class AddressBookParserTest {
     }
 
     @Test
+    public void parseCommand_attendance() throws Exception {
+        // Test that attendance commands are parsed correctly
+        assertTrue(parser.parseCommand("att -v s/0123") instanceof AttendanceViewCommand);
+        assertTrue(parser.parseCommand("att -m s/0123 d/13012025") instanceof AttendanceMarkCommand);
+        assertTrue(parser.parseCommand("att -u s/0123 d/13012025") instanceof AttendanceUnmarkCommand);
+    }
+
+    @Test
     public void parseCommand_attendanceMark() throws Exception {
         String studentId = "0123";
         String date = "13012025";
@@ -225,5 +233,105 @@ public class AddressBookParserTest {
         AttendanceViewCommand command = (AttendanceViewCommand) parser.parseCommand(
                 AttendanceCommand.COMMAND_WORD + " -v s/" + studentId);
         assertEquals(new AttendanceViewCommand(new StudentId(studentId)), command);
+    }
+
+    @Test
+    public void parseCommand_attendanceEmptyArgs_throwsParseException() {
+        assertThrows(ParseException.class,
+            String.format(MESSAGE_INVALID_COMMAND_FORMAT, AttendanceCommand.MESSAGE_USAGE), () ->
+                parser.parseCommand(AttendanceCommand.COMMAND_WORD));
+    }
+
+    @Test
+    public void parseCommand_attendanceInvalidFlag_throwsParseException() {
+        assertThrows(ParseException.class,
+            String.format(MESSAGE_INVALID_COMMAND_FORMAT, AttendanceCommand.MESSAGE_USAGE), () ->
+                parser.parseCommand(AttendanceCommand.COMMAND_WORD + " -x s/0123 d/13012025"));
+    }
+
+    @Test
+    public void parseCommand_attendanceMarkMissingStudentId_throwsParseException() {
+        assertThrows(ParseException.class,
+            String.format(MESSAGE_INVALID_COMMAND_FORMAT, AttendanceCommand.MESSAGE_USAGE), () ->
+                parser.parseCommand(AttendanceCommand.COMMAND_WORD + " -m d/13012025"));
+    }
+
+    @Test
+    public void parseCommand_attendanceMarkMissingDate_throwsParseException() {
+        assertThrows(ParseException.class,
+            String.format(MESSAGE_INVALID_COMMAND_FORMAT, AttendanceCommand.MESSAGE_USAGE), () ->
+                parser.parseCommand(AttendanceCommand.COMMAND_WORD + " -m s/0123"));
+    }
+
+    @Test
+    public void parseCommand_attendanceMarkInvalidStudentId_throwsParseException() {
+        assertThrows(ParseException.class, () ->
+                parser.parseCommand(AttendanceCommand.COMMAND_WORD + " -m s/abc d/13012025"));
+    }
+
+    @Test
+    public void parseCommand_attendanceMarkInvalidDate_throwsParseException() {
+        assertThrows(ParseException.class, () ->
+                parser.parseCommand(AttendanceCommand.COMMAND_WORD + " -m s/0123 d/99999999"));
+    }
+
+    @Test
+    public void parseCommand_attendanceMarkWithPreamble_throwsParseException() {
+        assertThrows(ParseException.class,
+            String.format(MESSAGE_INVALID_COMMAND_FORMAT, AttendanceCommand.MESSAGE_USAGE), () ->
+                parser.parseCommand(AttendanceCommand.COMMAND_WORD + " -m extra s/0123 d/13012025"));
+    }
+
+    @Test
+    public void parseCommand_attendanceUnmarkMissingStudentId_throwsParseException() {
+        assertThrows(ParseException.class,
+            String.format(MESSAGE_INVALID_COMMAND_FORMAT, AttendanceCommand.MESSAGE_USAGE), () ->
+                parser.parseCommand(AttendanceCommand.COMMAND_WORD + " -u d/13012025"));
+    }
+
+    @Test
+    public void parseCommand_attendanceUnmarkMissingDate_throwsParseException() {
+        assertThrows(ParseException.class,
+            String.format(MESSAGE_INVALID_COMMAND_FORMAT, AttendanceCommand.MESSAGE_USAGE), () ->
+                parser.parseCommand(AttendanceCommand.COMMAND_WORD + " -u s/0123"));
+    }
+
+    @Test
+    public void parseCommand_attendanceUnmarkInvalidStudentId_throwsParseException() {
+        assertThrows(ParseException.class, () ->
+                parser.parseCommand(AttendanceCommand.COMMAND_WORD + " -u s/12345 d/13012025"));
+    }
+
+    @Test
+    public void parseCommand_attendanceUnmarkInvalidDate_throwsParseException() {
+        assertThrows(ParseException.class, () ->
+                parser.parseCommand(AttendanceCommand.COMMAND_WORD + " -u s/0123 d/31022025"));
+    }
+
+    @Test
+    public void parseCommand_attendanceUnmarkWithPreamble_throwsParseException() {
+        assertThrows(ParseException.class,
+            String.format(MESSAGE_INVALID_COMMAND_FORMAT, AttendanceCommand.MESSAGE_USAGE), () ->
+                parser.parseCommand(AttendanceCommand.COMMAND_WORD + " -u preamble s/0123 d/13012025"));
+    }
+
+    @Test
+    public void parseCommand_attendanceViewMissingStudentId_throwsParseException() {
+        assertThrows(ParseException.class,
+            String.format(MESSAGE_INVALID_COMMAND_FORMAT, AttendanceCommand.MESSAGE_USAGE), () ->
+                parser.parseCommand(AttendanceCommand.COMMAND_WORD + " -v"));
+    }
+
+    @Test
+    public void parseCommand_attendanceViewInvalidStudentId_throwsParseException() {
+        assertThrows(ParseException.class, () ->
+                parser.parseCommand(AttendanceCommand.COMMAND_WORD + " -v s/invalid"));
+    }
+
+    @Test
+    public void parseCommand_attendanceViewWithPreamble_throwsParseException() {
+        assertThrows(ParseException.class,
+            String.format(MESSAGE_INVALID_COMMAND_FORMAT, AttendanceCommand.MESSAGE_USAGE), () ->
+                parser.parseCommand(AttendanceCommand.COMMAND_WORD + " -v extra s/0123"));
     }
 }

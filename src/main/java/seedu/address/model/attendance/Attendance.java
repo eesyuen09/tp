@@ -3,10 +3,13 @@ package seedu.address.model.attendance;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.Objects;
+
 import seedu.address.model.person.Date;
 
 /**
  * Represents an attendance record for a specific date.
+ * Each record indicates whether a student was present or absent on that date.
  */
 public class Attendance {
     private final Date date;
@@ -14,6 +17,9 @@ public class Attendance {
 
     /**
      * Constructs an Attendance record.
+     *
+     * @param date The date of the attendance record.
+     * @param isPresent True if the student was present, false otherwise.
      */
     public Attendance(Date date, boolean isPresent) {
         requireNonNull(date);
@@ -50,7 +56,7 @@ public class Attendance {
 
     @Override
     public int hashCode() {
-        return date.hashCode();
+        return Objects.hash(date, isPresent);
     }
 
     @Override
