@@ -48,8 +48,8 @@ public class AttendanceViewCommandTest {
 
         String feedback = commandResult.getFeedbackToUser();
         assertTrue(feedback.contains(validPerson.getName().toString()));
-        assertTrue(feedback.contains(VALID_DATE_1.toString()));
-        assertTrue(feedback.contains(VALID_DATE_2.toString()));
+        assertTrue(feedback.contains(VALID_DATE_1.getFormattedDate()));
+        assertTrue(feedback.contains(VALID_DATE_2.getFormattedDate()));
     }
 
     @Test

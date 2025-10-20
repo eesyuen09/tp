@@ -51,7 +51,7 @@ public class AttendanceViewCommand extends AttendanceCommand {
         person.getAttendanceList().asUnmodifiableList().stream()
                 .sorted((a1, a2) -> a1.getDate().toString().compareTo(a2.getDate().toString()))
                 .forEach(attendance -> {
-                    sb.append(attendance.getDate())
+                    sb.append(attendance.getDate().getFormattedDate())
                             .append(": ")
                             .append(attendance.isStudentPresent() ? "Present" : "Absent")
                             .append("\n");

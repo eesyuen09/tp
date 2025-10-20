@@ -44,7 +44,8 @@ public class AttendanceUnmarkCommand extends AttendanceCommand {
 
         model.unmarkAttendance(studentId, date);
 
-        return new CommandResult(String.format(MESSAGE_UNMARK_SUCCESS, personToEdit.getName(), date));
+        return new CommandResult(String.format(MESSAGE_UNMARK_SUCCESS, personToEdit.getName(),
+                date.getFormattedDate()));
     }
 
     @Override

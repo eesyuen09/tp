@@ -47,7 +47,7 @@ public class AttendanceMarkCommandTest {
         CommandResult commandResult = new AttendanceMarkCommand(VALID_STUDENT_ID, VALID_DATE).execute(modelStub);
 
         assertEquals(String.format(AttendanceMarkCommand.MESSAGE_MARK_SUCCESS,
-                        validPerson.getName(), VALID_DATE),
+                        validPerson.getName(), VALID_DATE.getFormattedDate()),
                 commandResult.getFeedbackToUser());
         assertTrue(modelStub.markAttendanceCalled);
 
@@ -70,7 +70,7 @@ public class AttendanceMarkCommandTest {
 
         // Should succeed - can change from absent to present
         assertEquals(String.format(AttendanceMarkCommand.MESSAGE_MARK_SUCCESS,
-                        validPerson.getName(), VALID_DATE),
+                        validPerson.getName(), VALID_DATE.getFormattedDate()),
                 commandResult.getFeedbackToUser());
         assertTrue(modelStub.markAttendanceCalled);
     }
@@ -154,6 +154,7 @@ public class AttendanceMarkCommandTest {
             person = person.withAttendanceList(updatedAttendance);
         }
     }
+
 
     /**
      * A Model stub that does not contain any person.

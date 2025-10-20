@@ -38,11 +38,12 @@ public class AttendanceMarkCommand extends AttendanceCommand {
                 .orElseThrow(() -> new CommandException(Messages.MESSAGE_STUDENT_ID_NOT_FOUND));
 
         if (personToEdit.getAttendanceList().hasAttendanceMarked(date)) {
-            throw new CommandException(String.format(MESSAGE_ALREADY_MARKED, personToEdit.getName(), date));
+            throw new CommandException(String.format(MESSAGE_ALREADY_MARKED,
+                    personToEdit.getName(), date.getFormattedDate()));
         }
         model.markAttendance(studentId, date);
 
-        return new CommandResult(String.format(MESSAGE_MARK_SUCCESS, personToEdit.getName(), date));
+        return new CommandResult(String.format(MESSAGE_MARK_SUCCESS, personToEdit.getName(), date.getFormattedDate()));
     }
 
     @Override
