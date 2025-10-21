@@ -98,7 +98,7 @@ public class FeeViewCommandTest {
 
     @Test
     public void execute_studentNotFound_throws() {
-        StudentId missing = new StudentId("9999");
+        StudentId missing = new StudentId("0123");
         FeeViewCommand cmd = new FeeViewCommand(missing, Optional.empty());
 
         CommandException ex = assertThrows(CommandException.class, () -> cmd.execute(model));
@@ -116,11 +116,11 @@ public class FeeViewCommandTest {
         FeeViewCommand a3 = new FeeViewCommand(aliceId, Optional.of(start));
         FeeViewCommand b1 = new FeeViewCommand(bensonId, Optional.empty());
 
-        assertTrue(a1.equals(a1));        // same instance
-        assertTrue(a1.equals(a2));        // same values
-        assertFalse(a1.equals(a3));       // different optional start
-        assertFalse(a1.equals(b1));       // different student
-        assertFalse(a1.equals(null));     // null
-        assertFalse(a1.equals(42));       // different type
+        assertTrue(a1.equals(a1)); // same instance
+        assertTrue(a1.equals(a2)); // same values
+        assertFalse(a1.equals(a3)); // different optional start
+        assertFalse(a1.equals(b1)); // different student
+        assertFalse(a1.equals(null)); // null
+        assertFalse(a1.equals(42)); // different type
     }
 }
