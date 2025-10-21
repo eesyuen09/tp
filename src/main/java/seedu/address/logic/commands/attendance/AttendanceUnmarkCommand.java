@@ -21,6 +21,7 @@ public class AttendanceUnmarkCommand extends AttendanceCommand {
     public static final String MESSAGE_UNMARK_SUCCESS = "Unmarked attendance for: %1$s on %2$s for class %3$s";
     public static final String MESSAGE_ALREADY_UNMARKED =
             "Attendance for %1$s on %2$s for class %3$s is already unmarked.";
+    public static final String MESSAGE_STUDENT_DOES_NOT_HAVE_TAG = "Student %1$s does not have the class tag: %2$s";
 
     private final Date date;
     private final ClassTag classTag;
@@ -42,6 +43,11 @@ public class AttendanceUnmarkCommand extends AttendanceCommand {
 
         Person personToEdit = model.getPersonById(studentId)
                 .orElseThrow(() -> new CommandException(Messages.MESSAGE_STUDENT_ID_NOT_FOUND));
+
+        if (!personToEdit.getTags().contains(classTag)) {
+            throw new CommandException(String.format(MESSAGE_STUDENT_DOES_NOT_HAVE_TAG,
+                    personToEdit.getName(), classTag.tagName));
+        }
 
         if (personToEdit.getAttendanceList().hasAttendanceUnmarked(date, classTag)) {
             throw new CommandException(String.format(MESSAGE_ALREADY_UNMARKED,

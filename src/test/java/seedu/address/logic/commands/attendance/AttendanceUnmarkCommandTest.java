@@ -45,7 +45,8 @@ public class AttendanceUnmarkCommandTest {
     @Test
     public void execute_validStudentAndDate_unmarkSuccessful() throws Exception {
         ModelStubWithPerson modelStub = new ModelStubWithPerson();
-        Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID_STRING).build();
+        Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID_STRING)
+                .withTags("Math").build();
         // Mark attendance first so we can unmark it
         AttendanceList attendanceList = new AttendanceList();
         attendanceList.markAttendance(VALID_DATE, VALID_CLASS_TAG);
@@ -65,7 +66,8 @@ public class AttendanceUnmarkCommandTest {
     @Test
     public void execute_attendanceNotMarked_marksAsAbsent() throws CommandException {
         ModelStubWithPerson modelStub = new ModelStubWithPerson();
-        Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID_STRING).build();
+        Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID_STRING)
+                .withTags("Math").build();
         // Don't mark attendance - person has no attendance records
         modelStub.person = validPerson;
 
@@ -84,7 +86,8 @@ public class AttendanceUnmarkCommandTest {
     @Test
     public void execute_alreadyMarkedAbsent_throwsCommandException() throws Exception {
         ModelStubWithPerson modelStub = new ModelStubWithPerson();
-        Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID_STRING).build();
+        Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID_STRING)
+                .withTags("Math").build();
 
         // Mark attendance as absent first
         AttendanceList attendanceList = new AttendanceList();
@@ -95,6 +98,19 @@ public class AttendanceUnmarkCommandTest {
         AttendanceUnmarkCommand command = new AttendanceUnmarkCommand(VALID_STUDENT_ID, VALID_DATE, VALID_CLASS_TAG);
 
         // Should throw exception because attendance is already marked as absent
+        assertThrows(CommandException.class, () -> command.execute(modelStub));
+    }
+
+    //student does not have the specified class tag
+    @Test
+    public void execute_studentDoesNotHaveTag_throwsCommandException() {
+        ModelStubWithPerson modelStub = new ModelStubWithPerson();
+        Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID_STRING)
+                .withTags("Science").build(); // Student has Science tag, not Math
+        modelStub.person = validPerson;
+
+        AttendanceUnmarkCommand command = new AttendanceUnmarkCommand(VALID_STUDENT_ID, VALID_DATE, VALID_CLASS_TAG);
+
         assertThrows(CommandException.class, () -> command.execute(modelStub));
     }
 
