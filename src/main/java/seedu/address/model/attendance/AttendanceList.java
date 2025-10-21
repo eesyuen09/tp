@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 
 import seedu.address.model.person.Date;
+import seedu.address.model.tag.ClassTag;
 
 /**
  * A list of attendance records.
@@ -31,56 +32,68 @@ public class AttendanceList {
     }
 
     /**
-     * Returns true if attendance is already marked as present for this date.
+     * Returns true if attendance is already marked as present for this date and class tag.
      *
      * @param date The date to check.
-     * @return True if the date has a present attendance record.
+     * @param classTag The class tag to check.
+     * @return True if the date and class tag have a present attendance record.
      */
-    public boolean hasAttendanceMarked(Date date) {
+    public boolean hasAttendanceMarked(Date date, ClassTag classTag) {
         requireNonNull(date);
+        requireNonNull(classTag);
         return records.stream()
                 .anyMatch(attendance -> attendance.getDate().equals(date)
+                        && attendance.getClassTag().equals(classTag)
                         && attendance.isStudentPresent());
     }
 
     /**
-     * Returns true if attendance is already marked as absent for this date.
+     * Returns true if attendance is already marked as absent for this date and class tag.
      *
      * @param date The date to check.
-     * @return True if the date has an absent attendance record.
+     * @param classTag The class tag to check.
+     * @return True if the date and class tag have an absent attendance record.
      */
-    public boolean hasAttendanceUnmarked(Date date) {
+    public boolean hasAttendanceUnmarked(Date date, ClassTag classTag) {
         requireNonNull(date);
+        requireNonNull(classTag);
         return records.stream()
                 .anyMatch(attendance -> attendance.getDate().equals(date)
+                        && attendance.getClassTag().equals(classTag)
                         && attendance.notPresent());
     }
 
 
     /**
-     * Marks student as present on this date.
-     * If a record exists for this date, it is replaced with a present record.
+     * Marks student as present on this date for a specific class.
+     * If a record exists for this date and class, it is replaced with a present record.
      * Otherwise, a new present record is created.
      *
      * @param date The date to mark attendance.
+     * @param classTag The class tag for the attendance.
      */
-    public void markAttendance(Date date) {
+    public void markAttendance(Date date, ClassTag classTag) {
         requireNonNull(date);
-        records.removeIf(attendance -> attendance.getDate().equals(date));
-        records.add(new Attendance(date, true));
+        requireNonNull(classTag);
+        records.removeIf(attendance -> attendance.getDate().equals(date)
+                && attendance.getClassTag().equals(classTag));
+        records.add(new Attendance(date, classTag, true));
     }
 
     /**
-     * Marks student as absent on this date.
-     * If a present record exists, removes it and adds an absent record.
-     * If no record exists, creates a new absent record.
+     * Marks student as absent on this date for a specific class.
+     * If a record exists for this date and class, it is replaced with an absent record.
+     * Otherwise, a new absent record is created.
      *
      * @param date The date to unmark attendance.
+     * @param classTag The class tag for the attendance.
      */
-    public void unmarkAttendance(Date date) {
+    public void unmarkAttendance(Date date, ClassTag classTag) {
         requireNonNull(date);
-        records.removeIf(attendance -> attendance.getDate().equals(date));
-        records.add(new Attendance(date, false));
+        requireNonNull(classTag);
+        records.removeIf(attendance -> attendance.getDate().equals(date)
+                && attendance.getClassTag().equals(classTag));
+        records.add(new Attendance(date, classTag, false));
     }
 
     /**

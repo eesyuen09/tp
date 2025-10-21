@@ -213,26 +213,30 @@ public class AddressBookParserTest {
     public void parseCommand_attendance() throws Exception {
         // Test that attendance commands are parsed correctly
         assertTrue(parser.parseCommand("att -v s/0123") instanceof AttendanceViewCommand);
-        assertTrue(parser.parseCommand("att -m s/0123 d/13012025") instanceof AttendanceMarkCommand);
-        assertTrue(parser.parseCommand("att -u s/0123 d/13012025") instanceof AttendanceUnmarkCommand);
+        assertTrue(parser.parseCommand("att -m s/0123 d/13012025 t/Math") instanceof AttendanceMarkCommand);
+        assertTrue(parser.parseCommand("att -u s/0123 d/13012025 t/Math") instanceof AttendanceUnmarkCommand);
     }
 
     @Test
     public void parseCommand_attendanceMark() throws Exception {
         String studentId = "0123";
         String date = "13012025";
+        String classTag = "Math";
         AttendanceMarkCommand command = (AttendanceMarkCommand) parser.parseCommand(
-                AttendanceCommand.COMMAND_WORD + " -m s/" + studentId + " d/" + date);
-        assertEquals(new AttendanceMarkCommand(new StudentId(studentId), new Date(date)), command);
+                AttendanceCommand.COMMAND_WORD + " -m s/" + studentId + " d/" + date + " t/" + classTag);
+        assertEquals(new AttendanceMarkCommand(new StudentId(studentId), new Date(date),
+                new ClassTag(classTag)), command);
     }
 
     @Test
     public void parseCommand_attendanceUnmark() throws Exception {
         String studentId = "0123";
         String date = "13012025";
+        String classTag = "Math";
         AttendanceUnmarkCommand command = (AttendanceUnmarkCommand) parser.parseCommand(
-                AttendanceCommand.COMMAND_WORD + " -u s/" + studentId + " d/" + date);
-        assertEquals(new AttendanceUnmarkCommand(new StudentId(studentId), new Date(date)), command);
+                AttendanceCommand.COMMAND_WORD + " -u s/" + studentId + " d/" + date + " t/" + classTag);
+        assertEquals(new AttendanceUnmarkCommand(new StudentId(studentId), new Date(date),
+                new ClassTag(classTag)), command);
     }
 
     @Test
