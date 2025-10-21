@@ -49,6 +49,10 @@ public class FeeCommandParser implements Parser<FeeCommand> {
         if (!arePrefixesPresent(argMultimap, PREFIX_STUDENTID, PREFIX_MONTH)) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, FeeMarkPaidCommand.MESSAGE_USAGE));
         }
+        String expectedPreamble = FeeMarkPaidCommand.COMMAND_FLAG;
+        if (!argMultimap.getPreamble().trim().equalsIgnoreCase(expectedPreamble)) {
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, FeeMarkPaidCommand.MESSAGE_USAGE));
+        }
         argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_STUDENTID, PREFIX_MONTH);
 
         StudentId studentId = ParserUtil.parseStudentId(argMultimap.getValue(PREFIX_STUDENTID).get());
@@ -60,6 +64,10 @@ public class FeeCommandParser implements Parser<FeeCommand> {
     /** Parse arguments for FeeMarkUnaidCommand*/
     private FeeCommand parseMarkUnpaid(ArgumentMultimap argMultimap) throws ParseException {
         if (!arePrefixesPresent(argMultimap, PREFIX_STUDENTID, PREFIX_MONTH)) {
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, FeeMarkUnpaidCommand.MESSAGE_USAGE));
+        }
+        String expectedPreamble = FeeMarkUnpaidCommand.COMMAND_FLAG;
+        if (!argMultimap.getPreamble().trim().equalsIgnoreCase(expectedPreamble)) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, FeeMarkUnpaidCommand.MESSAGE_USAGE));
         }
         argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_STUDENTID, PREFIX_MONTH);
@@ -74,6 +82,10 @@ public class FeeCommandParser implements Parser<FeeCommand> {
     private FeeCommand parseView(ArgumentMultimap argMultimap) throws ParseException {
         argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_STUDENTID, PREFIX_MONTH);
         if (!arePrefixesPresent(argMultimap, PREFIX_STUDENTID)) {
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, FeeViewCommand.MESSAGE_USAGE));
+        }
+        String expectedPreamble = FeeViewCommand.COMMAND_FLAG;
+        if (!argMultimap.getPreamble().trim().equalsIgnoreCase(expectedPreamble)) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, FeeViewCommand.MESSAGE_USAGE));
         }
 

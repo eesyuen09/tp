@@ -68,7 +68,7 @@ public class FeeViewCommand extends FeeCommand {
         Map<Month, FeeState> history = tracker.getPaymentHistory(person, requestedStart, end);
 
         if (history.isEmpty()) {
-            return new CommandResult(String.format(MESSAGE_NO_HISTORY_IN_RANGE, enrolled));
+            return new CommandResult(String.format(MESSAGE_NO_HISTORY_IN_RANGE, enrolled.toHumanReadable()));
         }
         List<String> rows = new ArrayList<>();
         for (Map.Entry<Month, FeeState> entry : history.entrySet()) {
@@ -76,7 +76,8 @@ public class FeeViewCommand extends FeeCommand {
             FeeState state = entry.getValue();
             // to check if the payment status is unpaid in default or explicitly set to unpaid
             boolean explicit = tracker.getExplicitStatusOfMonth(studentId, month).isPresent();
-            rows.add(String.format("%s : %s (%s)", month.toHumanReadable(), state.name(), explicit ? "explicit" : "default"));
+            rows.add(String.format("%s : %s (%s)", month.toHumanReadable(), state.name(),
+                explicit ? "marked" : "default"));
         }
 
 
