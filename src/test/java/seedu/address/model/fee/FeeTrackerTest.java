@@ -3,10 +3,7 @@ package seedu.address.model.fee;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -110,40 +107,4 @@ public class FeeTrackerTest {
         assertTrue(ft.getDerivedStatusofMonth(p, any).isEmpty());
     }
 
-//    @Test
-//    public void getPaymentHistory_beforeEnrollment() {
-//        FeeTracker ft = new FeeTracker();
-//        Person p = mkPerson("0008", "1025", "F");
-//        Month latest = new Month("0925"); // before enrolled 10/25
-//
-//        Map<Month, FeeState> history = ft.getPaymentHistory(p, latest);
-//        assertTrue(history.isEmpty());
-//    }
-//
-//    @Test
-//    public void getPaymentHistory_inclusiveRange_defaultsAndOverrides() {
-//        FeeTracker ft = new FeeTracker();
-//        Person p = mkPerson("0010", "0825", "H");
-//        Month latest = new Month("1025"); // 08/25..10/25 inclusive: 3 months
-//
-//        // Mark only September paid
-//        Month aug = new Month("0825");
-//        Month sep = new Month("0925");
-//        Month oct = new Month("1025");
-//        ft.markPaid(p.getStudentId(), sep);
-//
-//        Map<Month, FeeState> history = ft.getPaymentHistory(p, latest);
-//
-//        // Size and keys order
-//        assertEquals(3, history.size());
-//        List<Month> keys = new ArrayList<>(history.keySet());
-//        assertEquals(aug, keys.get(0));
-//        assertEquals(sep, keys.get(1));
-//        assertEquals(oct, keys.get(2));
-//
-//        // Values (defaults to UNPAID except explicit PAID for Sep)
-//        assertEquals(FeeState.UNPAID, history.get(aug));
-//        assertEquals(FeeState.PAID, history.get(sep));
-//        assertEquals(FeeState.UNPAID, history.get(oct));
-//    }
 }

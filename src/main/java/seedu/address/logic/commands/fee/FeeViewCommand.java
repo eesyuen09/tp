@@ -62,6 +62,7 @@ public class FeeViewCommand extends FeeCommand {
 
         Month end = Month.now();
         Month requestedStart = startMonthOpt.orElse(enrolled);
+        Month effectiveStart = requestedStart.isBefore(enrolled) ? enrolled : requestedStart;
 
         FeeTracker tracker = model.getAddressBook().getFeeTracker();
         Map<Month, FeeState> history = tracker.getPaymentHistory(person, requestedStart, end);
@@ -75,16 +76,14 @@ public class FeeViewCommand extends FeeCommand {
             FeeState state = entry.getValue();
             // to check if the payment status is unpaid in default or explicitly set to unpaid
             boolean explicit = tracker.getExplicitStatusOfMonth(studentId, month).isPresent();
-            rows.add(String.format("%s : %s (%s)", month.toString(), state.name(), explicit ? "explicit" : "default"));
+            rows.add(String.format("%s : %s (%s)", month.toHumanReadable(), state.name(), explicit ? "explicit" : "default"));
         }
 
-        Month effectiveStart = history.keySet().iterator().next();
-        // Get last key for display
-        Month effectiveEnd = history.keySet().stream().reduce((a, b) -> b).orElse(end);
 
         String header = String.format(
-            "Payment history for %s (%s → %s, %d months)",
-            person.getName().fullName, effectiveStart, effectiveEnd, history.size());
+            "Payment history for %s from %s to %s (%d months) \nEnrolled Month: %s",
+            person.getName().fullName, effectiveStart.toHumanReadable(), end.toHumanReadable(),
+            history.size(), enrolled.toHumanReadable());
 
         return new CommandResult(header + "\n" + String.join("\n", rows));
     }
