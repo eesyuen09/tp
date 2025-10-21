@@ -82,6 +82,7 @@ public class FeeCommandParser implements Parser<FeeCommand> {
     private FeeCommand parseView(ArgumentMultimap argMultimap) throws ParseException {
         argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_STUDENTID, PREFIX_MONTH);
         if (!arePrefixesPresent(argMultimap, PREFIX_STUDENTID)) {
+
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, FeeViewCommand.MESSAGE_USAGE));
         }
         String expectedPreamble = FeeViewCommand.COMMAND_FLAG;

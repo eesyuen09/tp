@@ -45,6 +45,7 @@ public class FeeViewCommand extends FeeCommand {
     public FeeViewCommand(StudentId studentId, Optional<Month> startMonthOpt) {
         requireNonNull(studentId);
         this.studentId = studentId;
+        // Handle possible null Optional
         this.startMonthOpt = startMonthOpt == null ? Optional.empty() : startMonthOpt;
     }
 
