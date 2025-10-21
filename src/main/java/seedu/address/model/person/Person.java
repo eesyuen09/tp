@@ -44,7 +44,7 @@ public class Person {
      */
     public Person(Name name, Phone phone, Email email, Address address, Set<ClassTag> tags,
                   Month enrolledMonth, Set<Attendance> attendanceRecords, PerformanceList performanceList) {
-        this(name, phone, email, address, tags, new StudentId(), enrolledMonth,
+        this(name, phone, email, address, tags, null, enrolledMonth,
                 attendanceRecords, performanceList); // StudentId to be set later
     }
 
@@ -63,7 +63,7 @@ public class Person {
     public Person(Name name, Phone phone, Email email, Address address, Set<ClassTag> tags,
                   StudentId studentId, Month enrolledMonth, Set<Attendance> attendanceRecords,
                   PerformanceList performanceList) {
-        requireAllNonNull(name, phone, email, address, studentId, enrolledMonth);
+        requireAllNonNull(name, phone, email, address, enrolledMonth);
         this.name = name;
         this.phone = phone;
         this.email = email;
@@ -75,6 +75,25 @@ public class Person {
         }
         this.attendanceRecords = new HashSet<>(attendanceRecords);
         this.performanceList = (performanceList == null) ? new PerformanceList() : performanceList;
+    }
+
+    /**
+     * Returns a new {@code Person} instance with a newly generated {@link StudentId}
+     * if this person does not already have one.
+     * <p>
+     * If the current person already has a {@code StudentId}, this method simply
+     * returns the same {@code Person} instance without any modification.
+     * <p>
+     * This method may throw an {@link seedu.address.model.person.exceptions.ExceedMaxStudentsException}
+     * if the maximum number of student IDs has been reached.
+     *
+     */
+    public Person withStudentId() {
+        if (this.studentId != null) {
+            return this;
+        }
+        return new Person(name, phone, email, address, tags, new StudentId(),
+                enrolledMonth, attendanceRecords, performanceList);
     }
 
     /**

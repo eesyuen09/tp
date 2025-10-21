@@ -48,7 +48,8 @@ public class PerfDeleteCommand extends PerfCommand {
         requireNonNull(model);
 
         Person student = model.getPersonById(studentId)
-                .orElseThrow(() -> new CommandException(Messages.MESSAGE_STUDENT_ID_NOT_FOUND));
+                .orElseThrow(() -> new CommandException(
+                        String.format(Messages.MESSAGE_STUDENT_ID_NOT_FOUND, studentId)));
 
         List<PerformanceNote> current = student.getPerformanceList().asUnmodifiableList();
         PerformanceList copy = new PerformanceList(new ArrayList<>(current));

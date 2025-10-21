@@ -2,6 +2,7 @@ package seedu.address.logic.commands.attendance;
 
 import static java.util.Objects.requireNonNull;
 
+import seedu.address.logic.Messages;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
@@ -33,7 +34,8 @@ public class AttendanceUnmarkCommand extends AttendanceCommand {
         requireNonNull(model);
 
         Person personToEdit = model.getPersonById(studentId)
-                .orElseThrow(() -> new CommandException("Student ID not found: " + studentId));
+                .orElseThrow(() -> new CommandException(
+                        String.format(Messages.MESSAGE_STUDENT_ID_NOT_FOUND, studentId)));
 
         personToEdit.unmarkAttendance(date);
         return new CommandResult(String.format(MESSAGE_UNMARK_SUCCESS, personToEdit.getName(), date));
