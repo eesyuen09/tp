@@ -60,12 +60,12 @@ public class FeeViewCommand extends FeeCommand {
             throw new CommandException("Student has no enrolled month recorded.");
         }
 
-        Month end = Month.now();
+        Month endMonth = Month.now();
         Month requestedStart = startMonthOpt.orElse(enrolled);
         Month effectiveStart = requestedStart.isBefore(enrolled) ? enrolled : requestedStart;
 
         FeeTracker tracker = model.getAddressBook().getFeeTracker();
-        Map<Month, FeeState> history = tracker.getPaymentHistory(person, requestedStart, end);
+        Map<Month, FeeState> history = tracker.getPaymentHistory(person, effectiveStart, endMonth);
 
         if (history.isEmpty()) {
             return new CommandResult(String.format(MESSAGE_NO_HISTORY_IN_RANGE, enrolled.toHumanReadable()));
@@ -75,15 +75,15 @@ public class FeeViewCommand extends FeeCommand {
             Month month = entry.getKey();
             FeeState state = entry.getValue();
             // to check if the payment status is unpaid in default or explicitly set to unpaid
-            boolean explicit = tracker.getExplicitStatusOfMonth(studentId, month).isPresent();
+            boolean isExplicit = tracker.getExplicitStatusOfMonth(studentId, month).isPresent();
             rows.add(String.format("%s : %s (%s)", month.toHumanReadable(), state.name(),
-                explicit ? "marked" : "default"));
+                isExplicit ? "marked" : "default"));
         }
 
 
         String header = String.format(
             "Payment history for %s from %s to %s (%d months) \nEnrolled Month: %s",
-            person.getName().fullName, effectiveStart.toHumanReadable(), end.toHumanReadable(),
+            person.getName().fullName, effectiveStart.toHumanReadable(), endMonth.toHumanReadable(),
             history.size(), enrolled.toHumanReadable());
 
         return new CommandResult(header + "\n" + String.join("\n", rows));
