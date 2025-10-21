@@ -13,6 +13,7 @@ import seedu.address.logic.commands.attendance.AttendanceViewCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.Date;
 import seedu.address.model.person.StudentId;
+import seedu.address.model.tag.ClassTag;
 
 public class AttendanceCommandParserTest {
 
@@ -40,8 +41,10 @@ public class AttendanceCommandParserTest {
     public void parse_markCommand_success() throws Exception {
         String studentId = "0123";
         String date = "13012025";
-        AttendanceCommand command = parser.parse("-m s/" + studentId + " d/" + date);
-        AttendanceMarkCommand expectedCommand = new AttendanceMarkCommand(new StudentId(studentId), new Date(date));
+        String classTag = "Math";
+        AttendanceCommand command = parser.parse("-m s/" + studentId + " d/" + date + " t/" + classTag);
+        AttendanceMarkCommand expectedCommand = new AttendanceMarkCommand(new StudentId(studentId),
+                new Date(date), new ClassTag(classTag));
         assertEquals(expectedCommand, command);
     }
 
@@ -67,8 +70,10 @@ public class AttendanceCommandParserTest {
     public void parse_unmarkCommand_success() throws Exception {
         String studentId = "0456";
         String date = "15022025";
-        AttendanceCommand command = parser.parse("-u s/" + studentId + " d/" + date);
-        AttendanceUnmarkCommand expectedCommand = new AttendanceUnmarkCommand(new StudentId(studentId), new Date(date));
+        String classTag = "Science";
+        AttendanceCommand command = parser.parse("-u s/" + studentId + " d/" + date + " t/" + classTag);
+        AttendanceUnmarkCommand expectedCommand = new AttendanceUnmarkCommand(new StudentId(studentId),
+                new Date(date), new ClassTag(classTag));
         assertEquals(expectedCommand, command);
     }
 

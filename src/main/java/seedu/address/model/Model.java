@@ -137,21 +137,23 @@ public interface Model {
     Optional<FeeState> getCurrentFeeState(Person person);
 
     /**
-     * Marks the given student as present on the given date.
+     * Marks the given student as present on the given date for a specific class.
      * The student must already exist in the address book.
      *
      * @param studentId The student ID of the student to mark attendance for.
      * @param date The date to mark attendance on.
+     * @param classTag The class tag for the attendance.
      */
-    void markAttendance(StudentId studentId, Date date);
+    void markAttendance(StudentId studentId, Date date, ClassTag classTag);
 
     /**
-     * Marks the given student as absent on the given date.
+     * Marks the given student as absent on the given date for a specific class.
      * The student must already exist in the address book.
      *
      * @param studentId The student ID of the student to unmark attendance for.
      * @param date The date to unmark attendance on.
+     * @param classTag The class tag for the attendance.
      */
-    void unmarkAttendance(StudentId studentId, Date date);
+    void unmarkAttendance(StudentId studentId, Date date, ClassTag classTag);
 
 }

@@ -243,54 +243,60 @@ public class ModelManagerTest {
     public void markAttendance_validStudentAndDate_success() {
         modelManager.addPerson(ALICE);
         Date date = new seedu.address.model.person.Date("15012025");
+        ClassTag classTag = new ClassTag("Math");
 
-        modelManager.markAttendance(ALICE.getStudentId(), date);
+        modelManager.markAttendance(ALICE.getStudentId(), date, classTag);
 
         // Verify attendance was marked
         Person updatedPerson = modelManager.getPersonById(ALICE.getStudentId()).get();
-        assertTrue(updatedPerson.getAttendanceList().hasAttendanceMarked(date));
+        assertTrue(updatedPerson.getAttendanceList().hasAttendanceMarked(date, classTag));
     }
 
     @Test
     public void markAttendance_nullStudentId_throwsNullPointerException() {
         Date date = new seedu.address.model.person.Date("15012025");
-        assertThrows(NullPointerException.class, () -> modelManager.markAttendance(null, date));
+        ClassTag classTag = new ClassTag("Math");
+        assertThrows(NullPointerException.class, () -> modelManager.markAttendance(null, date, classTag));
     }
 
     @Test
     public void markAttendance_nullDate_throwsNullPointerException() {
         modelManager.addPerson(ALICE);
+        ClassTag classTag = new ClassTag("Math");
         assertThrows(NullPointerException.class, () ->
-                modelManager.markAttendance(ALICE.getStudentId(), null));
+                modelManager.markAttendance(ALICE.getStudentId(), null, classTag));
     }
 
     @Test
     public void unmarkAttendance_validStudentAndDate_success() {
         modelManager.addPerson(ALICE);
         Date date = new seedu.address.model.person.Date("15012025");
+        ClassTag classTag = new ClassTag("Math");
 
         // Mark first
-        modelManager.markAttendance(ALICE.getStudentId(), date);
+        modelManager.markAttendance(ALICE.getStudentId(), date, classTag);
 
         // Then unmark
-        modelManager.unmarkAttendance(ALICE.getStudentId(), date);
+        modelManager.unmarkAttendance(ALICE.getStudentId(), date, classTag);
 
         // Verify attendance was unmarked (marked as absent)
         Person updatedPerson = modelManager.getPersonById(ALICE.getStudentId()).get();
-        assertFalse(updatedPerson.getAttendanceList().hasAttendanceMarked(date));
+        assertFalse(updatedPerson.getAttendanceList().hasAttendanceMarked(date, classTag));
     }
 
     @Test
     public void unmarkAttendance_nullStudentId_throwsNullPointerException() {
         Date date = new seedu.address.model.person.Date("15012025");
-        assertThrows(NullPointerException.class, () -> modelManager.unmarkAttendance(null, date));
+        ClassTag classTag = new ClassTag("Math");
+        assertThrows(NullPointerException.class, () -> modelManager.unmarkAttendance(null, date, classTag));
     }
 
     @Test
     public void unmarkAttendance_nullDate_throwsNullPointerException() {
         modelManager.addPerson(ALICE);
+        ClassTag classTag = new ClassTag("Math");
         assertThrows(NullPointerException.class, () ->
-                modelManager.unmarkAttendance(ALICE.getStudentId(), null));
+                modelManager.unmarkAttendance(ALICE.getStudentId(), null, classTag));
     }
 
     @Test
@@ -298,20 +304,21 @@ public class ModelManagerTest {
         modelManager.addPerson(ALICE);
         Date date1 = new seedu.address.model.person.Date("15012025");
         Date date2 = new seedu.address.model.person.Date("16012025");
+        ClassTag classTag = new ClassTag("Math");
 
         // Mark two dates
-        modelManager.markAttendance(ALICE.getStudentId(), date1);
-        modelManager.markAttendance(ALICE.getStudentId(), date2);
+        modelManager.markAttendance(ALICE.getStudentId(), date1, classTag);
+        modelManager.markAttendance(ALICE.getStudentId(), date2, classTag);
 
         Person updatedPerson = modelManager.getPersonById(ALICE.getStudentId()).get();
-        assertTrue(updatedPerson.getAttendanceList().hasAttendanceMarked(date1));
-        assertTrue(updatedPerson.getAttendanceList().hasAttendanceMarked(date2));
+        assertTrue(updatedPerson.getAttendanceList().hasAttendanceMarked(date1, classTag));
+        assertTrue(updatedPerson.getAttendanceList().hasAttendanceMarked(date2, classTag));
 
         // Unmark one date
-        modelManager.unmarkAttendance(ALICE.getStudentId(), date1);
+        modelManager.unmarkAttendance(ALICE.getStudentId(), date1, classTag);
 
         updatedPerson = modelManager.getPersonById(ALICE.getStudentId()).get();
-        assertFalse(updatedPerson.getAttendanceList().hasAttendanceMarked(date1));
-        assertTrue(updatedPerson.getAttendanceList().hasAttendanceMarked(date2));
+        assertFalse(updatedPerson.getAttendanceList().hasAttendanceMarked(date1, classTag));
+        assertTrue(updatedPerson.getAttendanceList().hasAttendanceMarked(date2, classTag));
     }
 }
