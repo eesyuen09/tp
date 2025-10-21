@@ -7,6 +7,7 @@ import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSucces
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.logic.Messages;
 import seedu.address.logic.commands.classtagcommands.AddClassTagCommand;
 import seedu.address.logic.commands.classtagcommands.ClassTagCommand;
 import seedu.address.logic.commands.classtagcommands.DeleteClassTagCommand;
@@ -72,10 +73,52 @@ public class ClassTagCommandParserTest {
     public void parse_listWithArguments_failure() {
         String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, ListClassTagCommand.MESSAGE_USAGE);
 
-        // with extra text after flag
+
+        assertParseFailure(parser, " -l -l", expectedMessage);
+
         assertParseFailure(parser, " -l extra", expectedMessage);
 
-        // with prefix
         assertParseFailure(parser, " -l " + PREFIX_CLASSTAG + "someTag", expectedMessage);
     }
+
+    @Test
+    public void parse_multipleFlags_failure() {
+
+        String expectedAddMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddClassTagCommand.MESSAGE_USAGE);
+        assertParseFailure(parser, " -a -t " + PREFIX_CLASSTAG + "Sec3_Math", expectedAddMessage);
+        assertParseFailure(parser, " -a -l " + PREFIX_CLASSTAG + "Sec3_Math", expectedAddMessage);
+
+        String expectedDeleteMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                DeleteClassTagCommand.MESSAGE_USAGE);
+        assertParseFailure(parser, " -d -a " + PREFIX_CLASSTAG + "Sec3_Math", expectedDeleteMessage);
+
+        String expectedTopLevelMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, ClassTagCommand.MESSAGE_USAGE);
+        assertParseFailure(parser, " -x -a " + PREFIX_CLASSTAG + "Sec3_Math", expectedTopLevelMessage);
+    }
+
+    @Test
+    public void parse_unexpectedPrefix_failure() {
+
+        assertParseFailure(parser, " -a s/Sec3_Math", String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                AddClassTagCommand.MESSAGE_USAGE));
+        assertParseFailure(parser, " -d s/Sec3_Math",
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteClassTagCommand.MESSAGE_USAGE));
+    }
+
+    @Test
+    public void parse_repeatedPrefix_failure() {
+        String expectedMessage = String.format(Messages.MESSAGE_DUPLICATE_FIELDS + "t/");
+
+        assertParseFailure(parser, " -a " + PREFIX_CLASSTAG + "Tag1 "
+                + PREFIX_CLASSTAG + "Tag2", expectedMessage);
+    }
+
+    @Test
+    public void parse_emptyInput_failure() {
+        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, ClassTagCommand.MESSAGE_USAGE);
+        assertParseFailure(parser, "", expectedMessage);
+        assertParseFailure(parser, "   ", expectedMessage);
+    }
+
 }
+

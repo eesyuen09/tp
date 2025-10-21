@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.logic.Messages;
 import seedu.address.logic.commands.AddCommand;
 import seedu.address.logic.commands.ClearCommand;
 import seedu.address.logic.commands.DeleteCommand;
@@ -29,6 +30,7 @@ import seedu.address.logic.commands.attendance.AttendanceUnmarkCommand;
 import seedu.address.logic.commands.attendance.AttendanceViewCommand;
 import seedu.address.logic.commands.classtagcommands.AddClassTagCommand;
 import seedu.address.logic.commands.classtagcommands.ClassTagCommand;
+import seedu.address.logic.commands.classtagcommands.ClassTagFilterCommand;
 import seedu.address.logic.commands.fee.FeeCommand;
 import seedu.address.logic.commands.fee.FeeFilterPaidCommand;
 import seedu.address.logic.commands.fee.FeeFilterUnpaidCommand;
@@ -44,6 +46,7 @@ import seedu.address.model.tag.ClassTag;
 import seedu.address.testutil.EditPersonDescriptorBuilder;
 import seedu.address.testutil.PersonBuilder;
 import seedu.address.testutil.PersonUtil;
+import seedu.address.testutil.TypicalClassTags;
 
 
 public class AddressBookParserTest {
@@ -180,8 +183,12 @@ public class AddressBookParserTest {
     @Test
     public void parseCommand_filterMissingMonth_failure() {
         assertThrows(ParseException.class,
-            String.format(MESSAGE_INVALID_COMMAND_FORMAT, FilterCommand.MESSAGE_USAGE), () -> parser.parseCommand(
-                "filter -p"));
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                        FeeFilterPaidCommand.MESSAGE_USAGE), () -> parser.parseCommand("filter -p"));
+
+        assertThrows(ParseException.class,
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                        FeeFilterUnpaidCommand.MESSAGE_USAGE), () -> parser.parseCommand("filter -up"));
     }
 
     @Test
@@ -192,13 +199,14 @@ public class AddressBookParserTest {
 
     @Test
     public void parseCommand_unrecognisedInput_throwsParseException() {
-        assertThrows(ParseException.class, String.format(MESSAGE_INVALID_COMMAND_FORMAT, HelpCommand.MESSAGE_USAGE), ()
-            -> parser.parseCommand(""));
+        assertThrows(ParseException.class, String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                HelpCommand.MESSAGE_USAGE), () -> parser.parseCommand(""));
     }
 
     @Test
     public void parseCommand_unknownCommand_throwsParseException() {
-        assertThrows(ParseException.class, MESSAGE_UNKNOWN_COMMAND, () -> parser.parseCommand("unknownCommand"));
+        assertThrows(ParseException.class,
+                MESSAGE_UNKNOWN_COMMAND, () -> parser.parseCommand("unknownCommand"));
     }
 
     @Test
@@ -234,6 +242,85 @@ public class AddressBookParserTest {
                 AttendanceCommand.COMMAND_WORD + " -v s/" + studentId);
         assertEquals(new AttendanceViewCommand(new StudentId(studentId)), command);
     }
+
+    @Test
+    public void parseCommand_filterClassTag_success() throws Exception {
+        ClassTag tag = TypicalClassTags.SEC3_MATHS;
+        String command = "filter " + ClassTagFilterCommand.COMMAND_FLAG + " t/" + tag.tagName;
+        assertEquals(new ClassTagFilterCommand(tag), parser.parseCommand(command));
+
+        // tolerate extra whitespace
+        String commandWithWhitespace = "  filter   " + ClassTagFilterCommand.COMMAND_FLAG
+                + "    t/   " + tag.tagName + "  ";
+        assertEquals(new ClassTagFilterCommand(tag), parser.parseCommand(commandWithWhitespace));
+    }
+
+    @Test
+    public void parseCommand_filterClassTag_missingPrefix() {
+        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, ClassTagFilterCommand.MESSAGE_USAGE);
+        String command = "filter " + ClassTagFilterCommand.COMMAND_FLAG + " " + TypicalClassTags.SEC3_MATHS.tagName;
+        assertThrows(ParseException.class, expectedMessage, () -> parser.parseCommand(command));
+    }
+
+    @Test
+    public void parseCommand_filterClassTag_emptyValue() {
+        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, ClassTagFilterCommand.MESSAGE_USAGE);
+        String command = "filter " + ClassTagFilterCommand.COMMAND_FLAG + " t/";
+        assertThrows(ParseException.class, expectedMessage, () -> parser.parseCommand(command));
+    }
+
+    @Test
+    public void parseCommand_filterClassTag_duplicateTagPrefix() {
+        String command = "filter " + ClassTagFilterCommand.COMMAND_FLAG + " t/Tag1 t/Tag2";
+
+        assertThrows(ParseException.class,
+                Messages.MESSAGE_DUPLICATE_FIELDS + "t/", () -> parser.parseCommand(command));
+    }
+
+    @Test
+    public void parseCommand_filterClassTag_extraPreamble() {
+        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, ClassTagFilterCommand.MESSAGE_USAGE);
+
+        // extra text
+        String command = "filter " + ClassTagFilterCommand.COMMAND_FLAG + " extra t/"
+                + TypicalClassTags.SEC3_MATHS.tagName;
+        assertThrows(ParseException.class, expectedMessage, () -> parser.parseCommand(command));
+
+        // extra other prefix
+        String command2 = "filter " + ClassTagFilterCommand.COMMAND_FLAG + " s/123 t/"
+                + TypicalClassTags.SEC3_MATHS.tagName;
+        assertThrows(ParseException.class, expectedMessage, () -> parser.parseCommand(command2));
+    }
+
+    @Test
+    public void parseCommand_filterMissingClassTag_failure() {
+
+        assertThrows(ParseException.class,
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                        ClassTagFilterCommand.MESSAGE_USAGE), () -> parser.parseCommand("filter -t"));
+    }
+
+    @Test
+    public void parseCommand_filter_conflictingPrefixes() {
+        // -p flag with t/
+        String command1 = "filter -p m/0925 t/MyTag";
+        assertThrows(ParseException.class,
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                        FeeFilterPaidCommand.MESSAGE_USAGE), () -> parser.parseCommand(command1));
+
+        // -up flag with t/
+        String command2 = "filter -up m/0925 t/MyTag";
+        assertThrows(ParseException.class,
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                        FeeFilterUnpaidCommand.MESSAGE_USAGE), () -> parser.parseCommand(command2));
+
+        // -t flag with m/
+        String command3 = "filter -t t/MyTag m/0925";
+        assertThrows(ParseException.class,
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                        ClassTagFilterCommand.MESSAGE_USAGE), () -> parser.parseCommand(command3));
+    }
+
 
     @Test
     public void parseCommand_attendanceEmptyArgs_throwsParseException() {
