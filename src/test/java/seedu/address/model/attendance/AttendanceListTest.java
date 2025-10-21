@@ -71,6 +71,47 @@ public class AttendanceListTest {
     }
 
     @Test
+    public void hasAttendanceUnmarked_noRecords_returnsFalse() {
+        AttendanceList attendanceList = new AttendanceList();
+        assertFalse(attendanceList.hasAttendanceUnmarked(VALID_DATE_1, VALID_CLASS_TAG_1));
+    }
+
+    @Test
+    public void hasAttendanceUnmarked_recordExists_returnsTrue() {
+        AttendanceList attendanceList = new AttendanceList();
+        attendanceList.unmarkAttendance(VALID_DATE_1, VALID_CLASS_TAG_1);
+        assertTrue(attendanceList.hasAttendanceUnmarked(VALID_DATE_1, VALID_CLASS_TAG_1));
+    }
+
+    @Test
+    public void hasAttendanceUnmarked_differentDate_returnsFalse() {
+        AttendanceList attendanceList = new AttendanceList();
+        attendanceList.unmarkAttendance(VALID_DATE_1, VALID_CLASS_TAG_1);
+        assertFalse(attendanceList.hasAttendanceUnmarked(VALID_DATE_2, VALID_CLASS_TAG_1));
+    }
+
+    @Test
+    public void hasAttendanceUnmarked_differentClassTag_returnsFalse() {
+        AttendanceList attendanceList = new AttendanceList();
+        attendanceList.unmarkAttendance(VALID_DATE_1, VALID_CLASS_TAG_1);
+        assertFalse(attendanceList.hasAttendanceUnmarked(VALID_DATE_1, VALID_CLASS_TAG_2));
+    }
+
+    @Test
+    public void hasAttendanceUnmarked_markedAsPresent_returnsFalse() {
+        AttendanceList attendanceList = new AttendanceList();
+        attendanceList.markAttendance(VALID_DATE_1, VALID_CLASS_TAG_1);
+        assertFalse(attendanceList.hasAttendanceUnmarked(VALID_DATE_1, VALID_CLASS_TAG_1));
+    }
+
+    @Test
+    public void hasAttendanceUnmarked_null_throwsNullPointerException() {
+        AttendanceList attendanceList = new AttendanceList();
+        assertThrows(NullPointerException.class, () -> attendanceList.hasAttendanceUnmarked(null, VALID_CLASS_TAG_1));
+        assertThrows(NullPointerException.class, () -> attendanceList.hasAttendanceUnmarked(VALID_DATE_1, null));
+    }
+
+    @Test
     public void markAttendance_null_throwsNullPointerException() {
         AttendanceList attendanceList = new AttendanceList();
         assertThrows(NullPointerException.class, () -> attendanceList.markAttendance(null, VALID_CLASS_TAG_1));
