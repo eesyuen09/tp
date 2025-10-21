@@ -1,26 +1,43 @@
-package seedu.address.model.person;
+package seedu.address.model.attendance;
 
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.Objects;
+
+import seedu.address.model.person.Date;
+import seedu.address.model.tag.ClassTag;
+
 /**
- * Represents an attendance record for a specific date.
+ * Represents an attendance record for a specific date and class.
+ * Each record indicates whether a student was present or absent on that date for a specific class.
  */
 public class Attendance {
     private final Date date;
+    private final ClassTag classTag;
     private final boolean isPresent;
 
     /**
      * Constructs an Attendance record.
+     *
+     * @param date The date of the attendance record.
+     * @param classTag The class tag for the attendance record.
+     * @param isPresent True if the student was present, false otherwise.
      */
-    public Attendance(Date date, boolean isPresent) {
+    public Attendance(Date date, ClassTag classTag, boolean isPresent) {
         requireNonNull(date);
+        requireNonNull(classTag);
         this.date = date;
+        this.classTag = classTag;
         this.isPresent = isPresent;
     }
 
     public Date getDate() {
         return date;
+    }
+
+    public ClassTag getClassTag() {
+        return classTag;
     }
 
     public boolean isStudentPresent() {
@@ -43,16 +60,17 @@ public class Attendance {
 
         Attendance otherAttendance = (Attendance) other;
         return date.equals(otherAttendance.date)
+                && classTag.equals(otherAttendance.classTag)
                 && isPresent == otherAttendance.isPresent;
     }
 
     @Override
     public int hashCode() {
-        return date.hashCode();
+        return Objects.hash(date, classTag, isPresent);
     }
 
     @Override
     public String toString() {
-        return date.toString() + ": " + (isPresent ? "Present" : "Absent");
+        return date.toString() + " " + classTag.toString() + ": " + (isPresent ? "Present" : "Absent");
     }
 }

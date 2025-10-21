@@ -12,8 +12,10 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.LogsCenter;
+import seedu.address.model.attendance.AttendanceList;
 import seedu.address.model.fee.FeeState;
 import seedu.address.model.fee.FeeTracker;
+import seedu.address.model.person.Date;
 import seedu.address.model.person.Month;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
@@ -166,6 +168,38 @@ public class ModelManager implements Model {
         requireNonNull(studentId);
         requireNonNull(month);
         feeTracker.markUnpaid(studentId, month);
+    }
+
+    @Override
+    public void markAttendance(StudentId studentId, Date date, ClassTag classTag) {
+        requireAllNonNull(studentId, date, classTag);
+
+        Person person = getPersonById(studentId)
+                .orElseThrow(() -> new IllegalArgumentException("Student ID not found: " + studentId));
+
+        AttendanceList updatedAttendance = new AttendanceList(
+                person.getAttendanceList().asUnmodifiableList());
+        updatedAttendance.markAttendance(date, classTag);
+
+        Person updatedPerson = person.withAttendanceList(updatedAttendance);
+
+        addressBook.setPerson(person, updatedPerson);
+    }
+
+    @Override
+    public void unmarkAttendance(StudentId studentId, Date date, ClassTag classTag) {
+        requireAllNonNull(studentId, date, classTag);
+
+        Person person = getPersonById(studentId)
+                .orElseThrow(() -> new IllegalArgumentException("Student ID not found: " + studentId));
+
+        AttendanceList updatedAttendance = new AttendanceList(
+                person.getAttendanceList().asUnmodifiableList());
+        updatedAttendance.unmarkAttendance(date, classTag);
+
+        Person updatedPerson = person.withAttendanceList(updatedAttendance);
+
+        addressBook.setPerson(person, updatedPerson);
     }
 
     //=========== Filtered Person List Accessors =============================================================

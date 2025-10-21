@@ -10,6 +10,7 @@ import seedu.address.model.Model;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.ReadOnlyUserPrefs;
 import seedu.address.model.fee.FeeState;
+import seedu.address.model.person.Date;
 import seedu.address.model.person.Month;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
@@ -126,7 +127,14 @@ public class ModelStub implements Model {
     public void markUnpaid(StudentId studentId, Month month) {
         throw new AssertionError("This method should not be called.");
     }
-
+    @Override
+    public void markAttendance(StudentId studentId, Date date, ClassTag classTag) {
+        throw new AssertionError("This method should not be called.");
+    }
+    @Override
+    public void unmarkAttendance(StudentId studentId, Date date, ClassTag classTag) {
+        throw new AssertionError("This method should not be called.");
+    }
     @Override
     public Optional<FeeState> getCurrentFeeState(Person person) {
         throw new AssertionError("This method should not be called.");

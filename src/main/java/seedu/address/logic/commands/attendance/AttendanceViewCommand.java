@@ -20,6 +20,8 @@ public class AttendanceViewCommand extends AttendanceCommand {
 
     /**
      * Creates an AttendanceViewCommand to view attendance history for the specified student.
+     *
+     * @param studentId The student ID of the student to view attendance for.
      */
     public AttendanceViewCommand(StudentId studentId) {
         super(studentId);
@@ -33,11 +35,11 @@ public class AttendanceViewCommand extends AttendanceCommand {
                 .orElseThrow(() -> new CommandException(
                         String.format(Messages.MESSAGE_STUDENT_ID_NOT_FOUND, studentId)));
 
-        String attendanceHistory = formatAttendanceRecords(person);
-
-        if (person.getAttendanceRecords().isEmpty()) {
+        if (person.getAttendanceList().size() == 0) {
             return new CommandResult(String.format(MESSAGE_NO_RECORDS, person.getName()));
         }
+
+        String attendanceHistory = formatAttendanceRecords(person);
 
         return new CommandResult(String.format(MESSAGE_VIEW_SUCCESS, person.getName(), attendanceHistory));
     }
@@ -46,15 +48,19 @@ public class AttendanceViewCommand extends AttendanceCommand {
      * Formats the attendance records for display.
      */
     private String formatAttendanceRecords(Person person) {
-        if (person.getAttendanceRecords().isEmpty()) {
-            return "No records";
-        }
-
         StringBuilder sb = new StringBuilder();
-        person.getAttendanceRecords().stream()
-                .sorted((a1, a2) -> a1.getDate().toString().compareTo(a2.getDate().toString()))
+        person.getAttendanceList().asUnmodifiableList().stream()
+                .sorted((a1, a2) -> {
+                    int dateComparison = a1.getDate().toString().compareTo(a2.getDate().toString());
+                    if (dateComparison != 0) {
+                        return dateComparison;
+                    }
+                    return a1.getClassTag().tagName.compareTo(a2.getClassTag().tagName);
+                })
                 .forEach(attendance -> {
-                    sb.append(attendance.getDate())
+                    sb.append(attendance.getDate().getFormattedDate())
+                            .append(" - ")
+                            .append(attendance.getClassTag().tagName)
                             .append(": ")
                             .append(attendance.isStudentPresent() ? "Present" : "Absent")
                             .append("\n");

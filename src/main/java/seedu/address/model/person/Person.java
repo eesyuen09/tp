@@ -8,6 +8,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import seedu.address.commons.util.ToStringBuilder;
+import seedu.address.model.attendance.AttendanceList;
 import seedu.address.model.person.performance.PerformanceList;
 import seedu.address.model.tag.ClassTag;
 
@@ -26,7 +27,7 @@ public class Person {
     // Data fields
     private final Address address;
     private final Set<ClassTag> tags = new HashSet<>();
-    private final Set<Attendance> attendanceRecords;
+    private final AttendanceList attendanceList;
     private final Month enrolledMonth;
     private final PerformanceList performanceList;
 
@@ -43,9 +44,9 @@ public class Person {
      * @param enrolledMonth The person's enrolled month
      */
     public Person(Name name, Phone phone, Email email, Address address, Set<ClassTag> tags,
-                  Month enrolledMonth, Set<Attendance> attendanceRecords, PerformanceList performanceList) {
+                  Month enrolledMonth, AttendanceList attendanceList, PerformanceList performanceList) {
         this(name, phone, email, address, tags, null, enrolledMonth,
-                attendanceRecords, performanceList); // StudentId to be set later
+                attendanceList, performanceList); // StudentId to be set later
     }
 
     /**
@@ -61,7 +62,7 @@ public class Person {
      * @param enrolledMonth The person's enrolled month.
      */
     public Person(Name name, Phone phone, Email email, Address address, Set<ClassTag> tags,
-                  StudentId studentId, Month enrolledMonth, Set<Attendance> attendanceRecords,
+                  StudentId studentId, Month enrolledMonth, AttendanceList attendanceList,
                   PerformanceList performanceList) {
         requireAllNonNull(name, phone, email, address, enrolledMonth);
         this.name = name;
@@ -73,7 +74,7 @@ public class Person {
         if (tags != null) {
             this.tags.addAll(tags);
         }
-        this.attendanceRecords = new HashSet<>(attendanceRecords);
+        this.attendanceList = (attendanceList == null) ? new AttendanceList() : attendanceList;
         this.performanceList = (performanceList == null) ? new PerformanceList() : performanceList;
     }
 
@@ -93,7 +94,7 @@ public class Person {
             return this;
         }
         return new Person(name, phone, email, address, tags, new StudentId(),
-                enrolledMonth, attendanceRecords, performanceList);
+                enrolledMonth, attendanceList, performanceList);
     }
 
     /**
@@ -103,7 +104,17 @@ public class Person {
      */
     public Person withPerformanceList(PerformanceList newList) {
         return new Person(this.name, this.phone, this.email, this.address, this.tags, this.studentId,
-                this.enrolledMonth, this.attendanceRecords, newList);
+                this.enrolledMonth, this.attendanceList, newList);
+    }
+
+    /**
+     * Returns a new Person object with the updated AttendanceList.
+     * @param newList The new AttendanceList to be associated with the person.
+     * @return A new Person object with the updated AttendanceList.
+     */
+    public Person withAttendanceList(AttendanceList newList) {
+        return new Person(this.name, this.phone, this.email, this.address, this.tags, this.studentId,
+                this.enrolledMonth, newList, this.performanceList);
     }
 
     public Name getName() {
@@ -160,43 +171,11 @@ public class Person {
     }
 
     /**
-     * Returns true if attendance is already marked as present for this date.
+     * Returns the attendance list for this person.
+     * @return the AttendanceList of the person.
      */
-    public boolean hasAttendanceMarked(Date date) {
-        return attendanceRecords.stream()
-                .anyMatch(attendance -> attendance.getDate().equals(date));
-    }
-
-    /**
-     * Marks student as present on this date.
-     * If record exists, updates it. Otherwise,
-     * creates new record.
-     */
-    public void markAttendance(Date date) {
-        attendanceRecords.removeIf(attendance -> attendance.getDate().equals(date));
-        // Add new present record
-        attendanceRecords.add(new Attendance(date, true));
-    }
-
-    /**
-     * Marks student as absent on this date.
-     * If a present record exists, removes it and adds an absent record.
-     * If no record exists, creates a new absent record.
-     */
-    public void unmarkAttendance(Date date) {
-        // Remove any existing record for this date (whether present or absent)
-        attendanceRecords.removeIf(attendance -> attendance.getDate().equals(date));
-
-        // Add new absent record
-        attendanceRecords.add(new Attendance(date, false));
-    }
-
-
-    /**
-     * Returns all attendance records.
-     */
-    public Set<Attendance> getAttendanceRecords() {
-        return Collections.unmodifiableSet(attendanceRecords);
+    public AttendanceList getAttendanceList() {
+        return attendanceList;
     }
 
     /**
