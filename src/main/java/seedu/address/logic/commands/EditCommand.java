@@ -78,7 +78,7 @@ public class EditCommand extends Command {
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
         if (!model.hasPersonWithId(studentId)) {
-            throw new CommandException(Messages.MESSAGE_STUDENT_ID_NOT_FOUND);
+            throw new CommandException(String.format(Messages.MESSAGE_STUDENT_ID_NOT_FOUND, studentId));
         }
 
         Person personToEdit = model.getPersonById(studentId).get();

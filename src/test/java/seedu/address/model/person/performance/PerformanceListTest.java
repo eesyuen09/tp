@@ -13,15 +13,22 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import seedu.address.model.person.Date;
+import seedu.address.model.person.performance.exceptions.PerformanceNoteNotFoundException;
+import seedu.address.model.tag.ClassTag;
 
 public class PerformanceListTest {
 
-    private static final Date VALID_DATE_1 = new Date("17102025");
-    private static final Date VALID_DATE_2 = new Date("18102025");
-    private static final Date VALID_DATE_3 = new Date("19102025");
+    private static final Date DATE_1 = new Date("17102025");
+    private static final Date DATE_2 = new Date("18102025");
+    private static final Date DATE_3 = new Date("19102025");
+
+    private static final ClassTag CLASS_1 = new ClassTag("CS1010");
+    private static final ClassTag CLASS_2 = new ClassTag("CS2030");
+    private static final ClassTag CLASS_3 = new ClassTag("CS2103");
+
     private static final String NOTE_1 = "Scored 85% on mock test.";
     private static final String NOTE_2 = "Incomplete homework.";
-    private static final String NOTE_3 = "Need to revise this topic more.";
+    private static final String NOTE_3 = "Needs improvement in coding speed.";
 
     @Test
     public void constructor_nullList_throwsNullPointerException() {
@@ -31,8 +38,8 @@ public class PerformanceListTest {
     @Test
     public void constructor_withInitialNotes_success() {
         List<PerformanceNote> initial = new ArrayList<>();
-        initial.add(new PerformanceNote(VALID_DATE_1, NOTE_1));
-        initial.add(new PerformanceNote(VALID_DATE_2, NOTE_2));
+        initial.add(new PerformanceNote(DATE_1, CLASS_1, NOTE_1));
+        initial.add(new PerformanceNote(DATE_2, CLASS_2, NOTE_2));
 
         PerformanceList list = new PerformanceList(initial);
         assertEquals(2, list.size());
@@ -46,18 +53,18 @@ public class PerformanceListTest {
     }
 
     @Test
-    public void add_duplicateDate_throwsIllegalArgumentException() {
+    public void add_duplicateDateAndClassTag_throwsIllegalArgumentException() {
         PerformanceList list = new PerformanceList();
-        list.add(new PerformanceNote(VALID_DATE_1, NOTE_1));
+        list.add(new PerformanceNote(DATE_1, CLASS_1, NOTE_1));
+        String messageDuplicateNote = "A performance note already exists for this date and class tag.";
         assertThrows(IllegalArgumentException.class,
-                "A performance note already exists for this date.", () ->
-                        list.add(new PerformanceNote(VALID_DATE_1, NOTE_2)));
+                messageDuplicateNote, () -> list.add(new PerformanceNote(DATE_1, CLASS_1, NOTE_2)));
     }
 
     @Test
     public void add_validNote_success() {
         PerformanceList list = new PerformanceList();
-        PerformanceNote note = new PerformanceNote(VALID_DATE_1, NOTE_1);
+        PerformanceNote note = new PerformanceNote(DATE_1, CLASS_1, NOTE_1);
         list.add(note);
 
         assertEquals(1, list.size());
@@ -65,105 +72,77 @@ public class PerformanceListTest {
     }
 
     @Test
-    public void set_invalidIndex_throwsIndexOutOfBoundsException() {
+    public void editPerformanceNote_valid_success() {
         PerformanceList list = new PerformanceList();
-        assertThrows(IndexOutOfBoundsException.class, () -> list.set(1, new PerformanceNote(VALID_DATE_1, NOTE_1)));
-    }
+        list.add(new PerformanceNote(DATE_1, CLASS_1, NOTE_1));
 
-    @Test
-    public void set_duplicateDate_throwsIllegalArgumentException() {
-        PerformanceList list = new PerformanceList();
-        list.add(new PerformanceNote(VALID_DATE_1, NOTE_1));
-        list.add(new PerformanceNote(VALID_DATE_2, NOTE_2));
-
-        assertThrows(IllegalArgumentException.class,
-                "A performance note already exists for this date.", () ->
-                        list.set(1, new PerformanceNote(VALID_DATE_2, NOTE_3)));
-    }
-
-    @Test
-    public void set_validIndex_success() {
-        PerformanceList list = new PerformanceList();
-        list.add(new PerformanceNote(VALID_DATE_1, NOTE_1));
-        PerformanceNote replacement = new PerformanceNote(VALID_DATE_1, NOTE_2);
-
-        list.set(1, replacement);
+        list.editPerformanceNote(DATE_1, CLASS_1, NOTE_2);
         assertEquals(NOTE_2, list.asUnmodifiableList().get(0).getNote());
     }
 
     @Test
-    public void remove_invalidIndex_throwsIndexOutOfBoundsException() {
+    public void editPerformanceNote_nonexistent_throwsException() {
         PerformanceList list = new PerformanceList();
-        assertThrows(IndexOutOfBoundsException.class, () -> list.remove(1));
+        list.add(new PerformanceNote(DATE_1, CLASS_1, NOTE_1));
+
+        assertThrows(PerformanceNoteNotFoundException.class,
+                null, () -> list.editPerformanceNote(DATE_2, CLASS_2, NOTE_3));
     }
 
     @Test
-    public void remove_validIndex_returnsRemovedNote() {
+    public void remove_valid_success() {
         PerformanceList list = new PerformanceList();
-        PerformanceNote note = new PerformanceNote(VALID_DATE_1, NOTE_1);
+        PerformanceNote note = new PerformanceNote(DATE_1, CLASS_1, NOTE_1);
         list.add(note);
 
-        PerformanceNote removed = list.remove(1);
+        PerformanceNote removed = list.remove(DATE_1, CLASS_1);
         assertSame(note, removed);
         assertTrue(list.asUnmodifiableList().isEmpty());
     }
 
     @Test
+    public void remove_nonexistent_throwsException() {
+        PerformanceList list = new PerformanceList();
+        list.add(new PerformanceNote(DATE_1, CLASS_1, NOTE_1));
+
+        assertThrows(PerformanceNoteNotFoundException.class,
+                null, () -> list.remove(DATE_2, CLASS_2));
+    }
+
+    @Test
     public void asUnmodifiableList_cannotModify() {
         PerformanceList list = new PerformanceList();
-        list.add(new PerformanceNote(VALID_DATE_1, NOTE_1));
+        list.add(new PerformanceNote(DATE_1, CLASS_1, NOTE_1));
 
         List<PerformanceNote> unmodifiable = list.asUnmodifiableList();
-        assertThrows(UnsupportedOperationException.class, () ->
-                unmodifiable.add(new PerformanceNote(VALID_DATE_2, NOTE_2)));
+        assertThrows(UnsupportedOperationException.class, () -> unmodifiable.add(new PerformanceNote(DATE_2,
+                CLASS_2, NOTE_2)));
     }
 
     @Test
     public void size_multipleNotes_returnsCount() {
         PerformanceList list = new PerformanceList();
-        list.add(new PerformanceNote(VALID_DATE_1, NOTE_1));
-        list.add(new PerformanceNote(VALID_DATE_2, NOTE_2));
-        list.add(new PerformanceNote(VALID_DATE_3, NOTE_3));
+        list.add(new PerformanceNote(DATE_1, CLASS_1, NOTE_1));
+        list.add(new PerformanceNote(DATE_2, CLASS_2, NOTE_2));
+        list.add(new PerformanceNote(DATE_3, CLASS_3, NOTE_3));
 
         assertEquals(3, list.size());
     }
 
     @Test
-    public void equals() {
-        PerformanceList list = new PerformanceList();
-        list.add(new PerformanceNote(VALID_DATE_1, NOTE_1));
+    public void equals_and_hashCode() {
+        PerformanceList list1 = new PerformanceList();
+        list1.add(new PerformanceNote(DATE_1, CLASS_1, NOTE_1));
 
-        PerformanceList sameValues = new PerformanceList();
-        sameValues.add(new PerformanceNote(VALID_DATE_1, NOTE_1));
-        PerformanceList differentValues = new PerformanceList();
-        differentValues.add(new PerformanceNote(VALID_DATE_2, NOTE_2));
+        PerformanceList list2 = new PerformanceList();
+        list2.add(new PerformanceNote(DATE_1, CLASS_1, NOTE_1));
 
-        assertTrue(list.equals(list));
-        assertTrue(list.equals(sameValues));
-        assertFalse(list.equals(null));
-        assertFalse(list.equals(1));
-        assertFalse(list.equals(differentValues));
-    }
+        PerformanceList list3 = new PerformanceList();
+        list3.add(new PerformanceNote(DATE_2, CLASS_2, NOTE_2));
 
-    @Test
-    public void hashCode_sameValues_sameHash() {
-        PerformanceList list = new PerformanceList();
-        list.add(new PerformanceNote(VALID_DATE_1, NOTE_1));
-
-        PerformanceList sameValues = new PerformanceList();
-        sameValues.add(new PerformanceNote(VALID_DATE_1, NOTE_1));
-
-        assertEquals(list.hashCode(), sameValues.hashCode());
-    }
-
-    @Test
-    public void hashCode_differentValues_differentHash() {
-        PerformanceList list = new PerformanceList();
-        list.add(new PerformanceNote(VALID_DATE_1, NOTE_1));
-
-        PerformanceList differentValues = new PerformanceList();
-        differentValues.add(new PerformanceNote(VALID_DATE_2, NOTE_2));
-
-        assertNotEquals(list.hashCode(), differentValues.hashCode());
+        assertTrue(list1.equals(list2));
+        assertFalse(list1.equals(list3));
+        assertEquals(list1.hashCode(), list2.hashCode());
+        assertNotEquals(list1.hashCode(), list3.hashCode());
     }
 }

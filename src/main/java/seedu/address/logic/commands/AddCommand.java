@@ -11,7 +11,7 @@ import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.person.Person;
-import seedu.address.model.person.StudentId;
+import seedu.address.model.person.exceptions.ExceedMaxStudentsException;
 import seedu.address.model.tag.ClassTag;
 
 /**
@@ -37,7 +37,8 @@ public class AddCommand extends Command {
     public static final String MESSAGE_DUPLICATE_PERSON = "This person already exists in the address book";
     public static final String MESSAGE_TAG_NOT_FOUND = "One or more class tags do not exist: %s. "
             + "Please create them first with the 'tag -a' command.";
-
+    public static final String MESSAGE_MAX_STUDENTS_EXCEEDED =
+            "Cannot add more students as the maximum limit of 9999 has been reached.";
 
     private final Person toAdd;
 
@@ -54,7 +55,6 @@ public class AddCommand extends Command {
         requireNonNull(model);
 
         if (model.hasPerson(toAdd)) {
-            StudentId.rollbackId();
             throw new CommandException(MESSAGE_DUPLICATE_PERSON);
         }
 
@@ -64,7 +64,11 @@ public class AddCommand extends Command {
             }
         }
 
-        model.addPerson(toAdd);
+        try {
+            model.addPerson(toAdd.withStudentId());
+        } catch (ExceedMaxStudentsException e) {
+            throw new CommandException(MESSAGE_MAX_STUDENTS_EXCEEDED);
+        }
         return new CommandResult(String.format(MESSAGE_SUCCESS, Messages.format(toAdd)));
     }
 

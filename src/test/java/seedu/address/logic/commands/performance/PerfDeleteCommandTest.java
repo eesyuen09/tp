@@ -21,6 +21,7 @@ import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
 import seedu.address.model.person.performance.PerformanceList;
 import seedu.address.model.person.performance.PerformanceNote;
+import seedu.address.model.tag.ClassTag;
 import seedu.address.testutil.ModelStub;
 import seedu.address.testutil.PersonBuilder;
 
@@ -29,30 +30,48 @@ public class PerfDeleteCommandTest {
     private static final StudentId VALID_STUDENT_ID = new StudentId("0123");
     private static final Date VALID_DATE_1 = new Date("15032024");
     private static final String VALID_NOTE_1 = "Good performance in class";
-    private static final Date VALID_DATE_2 = new Date("20032024");
-    private static final String VALID_NOTE_2 = "Excellent homework submission";
-    private static final Date VALID_DATE_3 = new Date("25032024");
-    private static final String VALID_NOTE_3 = "Participated actively in discussion";
-    private static final int VALID_INDEX = 1;
+    private static final ClassTag VALID_TAG_1 = new ClassTag("Math");
+
 
     @Test
-    public void constructor_nullStudentId_throwsNullPointerException() {
-        assertThrows(NullPointerException.class, () -> new PerfDeleteCommand(null, VALID_INDEX));
+    public void constructor_nullArguments_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> new PerfDeleteCommand(null, VALID_DATE_1, VALID_TAG_1));
+        assertThrows(NullPointerException.class, () -> new PerfDeleteCommand(VALID_STUDENT_ID, null, VALID_TAG_1));
+        assertThrows(NullPointerException.class, () -> new PerfDeleteCommand(VALID_STUDENT_ID, VALID_DATE_1, null));
     }
 
     @Test
     public void execute_studentNotFound_throwsCommandException() {
         Model model = new ModelManager(new AddressBook(), new UserPrefs());
-        PerfDeleteCommand perfDeleteCommand = new PerfDeleteCommand(VALID_STUDENT_ID, VALID_INDEX);
+        PerfDeleteCommand command = new PerfDeleteCommand(VALID_STUDENT_ID, VALID_DATE_1, VALID_TAG_1);
 
-        assertCommandFailure(perfDeleteCommand, model, Messages.MESSAGE_STUDENT_ID_NOT_FOUND);
+        assertCommandFailure(command, model, String.format(Messages.MESSAGE_STUDENT_ID_NOT_FOUND, VALID_STUDENT_ID));
     }
 
     @Test
-    public void execute_validIndexOneNote_deleteSuccessful() throws Exception {
-        Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID.toString()).build();
+    public void execute_studentWithoutTag_throwsCommandException() {
+        Person person = new PersonBuilder().withStudentId(VALID_STUDENT_ID.toString())
+                .withTags("Science") // missing "Math"
+                .build();
+        Model model = new ModelManager(new AddressBook(), new UserPrefs());
+        model.addPerson(person);
 
-        PerformanceNote note = new PerformanceNote(VALID_DATE_1, VALID_NOTE_1);
+        PerfDeleteCommand command = new PerfDeleteCommand(VALID_STUDENT_ID, VALID_DATE_1, VALID_TAG_1);
+
+        String expectedMessage = String.format(PerfDeleteCommand.MESSAGE_STUDENT_DOES_NOT_HAVE_TAG,
+                person.getName(), VALID_TAG_1.tagName);
+
+        assertCommandFailure(command, model, expectedMessage);
+    }
+
+    @Test
+    public void execute_validDelete_successful() throws Exception {
+        Person validPerson = new PersonBuilder()
+                .withStudentId(VALID_STUDENT_ID.toString())
+                .withTags("Math")
+                .build();
+
+        PerformanceNote note = new PerformanceNote(VALID_DATE_1, VALID_TAG_1, VALID_NOTE_1);
         PerformanceList performanceList = new PerformanceList();
         performanceList.add(note);
         Person personWithNote = validPerson.withPerformanceList(performanceList);
@@ -61,154 +80,89 @@ public class PerfDeleteCommandTest {
         model.addPerson(personWithNote);
 
         Model expectedModel = new ModelManager(new AddressBook(), new UserPrefs());
-        Person personWithoutNote = validPerson.withPerformanceList(new PerformanceList());
-        expectedModel.addPerson(personWithoutNote);
+        expectedModel.addPerson(validPerson.withPerformanceList(new PerformanceList()));
 
-        String expectedMessage = String.format(PerfCommand.DELETED, VALID_INDEX, validPerson.getName());
+        String expectedMessage = String.format(PerfCommand.DELETED,
+                validPerson.getName(), VALID_TAG_1.tagName, VALID_DATE_1.getFormattedDate());
 
-        assertCommandSuccess(new PerfDeleteCommand(VALID_STUDENT_ID, VALID_INDEX),
+        assertCommandSuccess(new PerfDeleteCommand(VALID_STUDENT_ID, VALID_DATE_1, VALID_TAG_1),
                 model, expectedMessage, expectedModel);
     }
 
     @Test
-    public void execute_validIndexMultipleNotes_deleteSuccessful() throws Exception {
-        Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID.toString()).build();
-
-        PerformanceNote note1 = new PerformanceNote(VALID_DATE_1, VALID_NOTE_1);
-        PerformanceNote note2 = new PerformanceNote(VALID_DATE_2, VALID_NOTE_2);
-        PerformanceNote note3 = new PerformanceNote(VALID_DATE_3, VALID_NOTE_3);
-        PerformanceList performanceList = new PerformanceList();
-        performanceList.add(note1);
-        performanceList.add(note2);
-        performanceList.add(note3);
-        Person personWithNotes = validPerson.withPerformanceList(performanceList);
-
-        Model model = new ModelManager(new AddressBook(), new UserPrefs());
-        model.addPerson(personWithNotes);
-
-        // Expected: delete note at index 2 (note2), leaving note1 and note3
-        PerformanceList expectedList = new PerformanceList();
-        expectedList.add(note1);
-        expectedList.add(note3);
-        Person personAfterDelete = validPerson.withPerformanceList(expectedList);
-
-        Model expectedModel = new ModelManager(new AddressBook(), new UserPrefs());
-        expectedModel.addPerson(personAfterDelete);
-
-        String expectedMessage = String.format(PerfCommand.DELETED, 2, validPerson.getName());
-
-        assertCommandSuccess(new PerfDeleteCommand(VALID_STUDENT_ID, 2),
-                model, expectedMessage, expectedModel);
-    }
-
-    @Test
-    public void execute_invalidIndexTooLarge_throwsCommandException() {
-        Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID.toString()).build();
-
-        PerformanceNote note = new PerformanceNote(VALID_DATE_1, VALID_NOTE_1);
-        PerformanceList performanceList = new PerformanceList();
-        performanceList.add(note);
-        Person personWithNote = validPerson.withPerformanceList(performanceList);
-
-        Model model = new ModelManager(new AddressBook(), new UserPrefs());
-        model.addPerson(personWithNote);
-
-        PerfDeleteCommand perfDeleteCommand = new PerfDeleteCommand(VALID_STUDENT_ID, 5);
-
-        assertCommandFailure(perfDeleteCommand, model, "Error: Invalid performance note index.");
-    }
-
-    @Test
-    public void execute_invalidIndexZero_throwsCommandException() {
-        Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID.toString()).build();
-
-        PerformanceNote note = new PerformanceNote(VALID_DATE_1, VALID_NOTE_1);
-        PerformanceList performanceList = new PerformanceList();
-        performanceList.add(note);
-        Person personWithNote = validPerson.withPerformanceList(performanceList);
-
-        Model model = new ModelManager(new AddressBook(), new UserPrefs());
-        model.addPerson(personWithNote);
-
-        PerfDeleteCommand perfDeleteCommand = new PerfDeleteCommand(VALID_STUDENT_ID, 0);
-
-        assertCommandFailure(perfDeleteCommand, model, "Error: Invalid performance note index.");
-    }
-
-    @Test
-    public void execute_invalidIndexNegative_throwsCommandException() {
-        Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID.toString()).build();
-
-        PerformanceNote note = new PerformanceNote(VALID_DATE_1, VALID_NOTE_1);
-        PerformanceList performanceList = new PerformanceList();
-        performanceList.add(note);
-        Person personWithNote = validPerson.withPerformanceList(performanceList);
-
-        Model model = new ModelManager(new AddressBook(), new UserPrefs());
-        model.addPerson(personWithNote);
-
-        PerfDeleteCommand perfDeleteCommand = new PerfDeleteCommand(VALID_STUDENT_ID, -1);
-
-        assertCommandFailure(perfDeleteCommand, model, "Error: Invalid performance note index.");
-    }
-
-    @Test
-    public void execute_deleteFromEmptyList_throwsCommandException() {
-        Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID.toString()).build();
+    public void execute_noteNotFound_throwsCommandException() {
+        // Create a student with the class tag but no performance notes
+        Person validPerson = new PersonBuilder()
+                .withStudentId(VALID_STUDENT_ID.toString())
+                .withTags(VALID_TAG_1.tagName) // ensure student has the class tag
+                .build();
 
         Model model = new ModelManager(new AddressBook(), new UserPrefs());
         model.addPerson(validPerson);
 
-        PerfDeleteCommand perfDeleteCommand = new PerfDeleteCommand(VALID_STUDENT_ID, VALID_INDEX);
+        // Attempt to delete a performance note for a date where none exists
+        PerfDeleteCommand command = new PerfDeleteCommand(VALID_STUDENT_ID, VALID_DATE_1, VALID_TAG_1);
 
-        assertCommandFailure(perfDeleteCommand, model, "Error: Invalid performance note index.");
+        assertCommandFailure(command, model,
+                "No performance note found for the given date and class tag.");
     }
 
     @Test
     public void execute_deleteUsingModelStub_success() throws Exception {
-        Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID.toString()).build();
+        Person validPerson = new PersonBuilder()
+                .withStudentId(VALID_STUDENT_ID.toString())
+                .withTags("Math")
+                .build();
 
-        PerformanceNote note = new PerformanceNote(VALID_DATE_1, VALID_NOTE_1);
-        PerformanceList performanceList = new PerformanceList();
-        performanceList.add(note);
-        Person personWithNote = validPerson.withPerformanceList(performanceList);
+        PerformanceNote note = new PerformanceNote(VALID_DATE_1, VALID_TAG_1 , VALID_NOTE_1);
+        PerformanceList list = new PerformanceList();
+        list.add(note);
+        Person personWithNote = validPerson.withPerformanceList(list);
 
         ModelStubAcceptingPerformanceNoteDeleted modelStub =
                 new ModelStubAcceptingPerformanceNoteDeleted(personWithNote);
 
-        new PerfDeleteCommand(VALID_STUDENT_ID, VALID_INDEX).execute(modelStub);
+        new PerfDeleteCommand(VALID_STUDENT_ID, VALID_DATE_1, VALID_TAG_1).execute(modelStub);
 
         assertTrue(modelStub.updatedPerson.getPerformanceList().asUnmodifiableList().isEmpty());
     }
 
     @Test
     public void equals() {
-        StudentId studentIdA = new StudentId("0123");
-        StudentId studentIdB = new StudentId("0234");
+        StudentId studentA = new StudentId("0123");
+        StudentId studentB = new StudentId("0456");
+        Date dateA = new Date("15032024");
+        Date dateB = new Date("16032024");
+        ClassTag tagA = new ClassTag("Math");
+        ClassTag tagB = new ClassTag("Science");
 
-        PerfDeleteCommand deleteCommand1 = new PerfDeleteCommand(studentIdA, 1);
-        PerfDeleteCommand deleteCommand2 = new PerfDeleteCommand(studentIdB, 1);
-        PerfDeleteCommand deleteCommand3 = new PerfDeleteCommand(studentIdA, 2);
+        PerfDeleteCommand cmd1 = new PerfDeleteCommand(studentA, dateA, tagA);
+        PerfDeleteCommand cmd2 = new PerfDeleteCommand(studentB, dateA, tagA);
+        PerfDeleteCommand cmd3 = new PerfDeleteCommand(studentA, dateB, tagA);
+        PerfDeleteCommand cmd4 = new PerfDeleteCommand(studentA, dateA, tagB);
 
-        // same object -> returns true
-        assertTrue(deleteCommand1.equals(deleteCommand1));
+        // same object
+        assertTrue(cmd1.equals(cmd1));
 
-        // same values -> returns true
-        PerfDeleteCommand deleteCommand1Copy = new PerfDeleteCommand(studentIdA, 1);
-        assertTrue(deleteCommand1.equals(deleteCommand1Copy));
+        // same values
+        assertTrue(cmd1.equals(new PerfDeleteCommand(studentA, dateA, tagA)));
 
-        // different types -> returns false
-        assertFalse(deleteCommand1.equals(1));
+        // different studentId
+        assertFalse(cmd1.equals(cmd2));
 
-        // null -> returns false
-        assertFalse(deleteCommand1.equals(null));
+        // different date
+        assertFalse(cmd1.equals(cmd3));
 
-        // different student ID -> returns false
-        assertFalse(deleteCommand1.equals(deleteCommand2));
+        // different tag
+        assertFalse(cmd1.equals(cmd4));
 
-        // different index -> returns false
-        assertFalse(deleteCommand1.equals(deleteCommand3));
+        // null
+        assertFalse(cmd1.equals(null));
+
+        // different type
+        assertFalse(cmd1.equals(1));
     }
+
 
     /**
      * A Model stub that always accepts the performance note being deleted.

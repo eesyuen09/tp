@@ -32,7 +32,8 @@ public class AttendanceViewCommand extends AttendanceCommand {
         requireNonNull(model);
 
         Person person = model.getPersonById(studentId)
-                .orElseThrow(() -> new CommandException(Messages.MESSAGE_STUDENT_ID_NOT_FOUND));
+                .orElseThrow(() -> new CommandException(
+                        String.format(Messages.MESSAGE_STUDENT_ID_NOT_FOUND, studentId)));
 
         if (person.getAttendanceList().size() == 0) {
             return new CommandResult(String.format(MESSAGE_NO_RECORDS, person.getName()));

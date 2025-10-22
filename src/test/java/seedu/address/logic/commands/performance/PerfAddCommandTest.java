@@ -21,6 +21,7 @@ import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
 import seedu.address.model.person.performance.PerformanceList;
 import seedu.address.model.person.performance.PerformanceNote;
+import seedu.address.model.tag.ClassTag;
 import seedu.address.testutil.ModelStub;
 import seedu.address.testutil.PersonBuilder;
 
@@ -28,32 +29,40 @@ public class PerfAddCommandTest {
 
     private static final StudentId VALID_STUDENT_ID = new StudentId("0123");
     private static final Date VALID_DATE = new Date("15032024");
+    private static final ClassTag VALID_CLASS_TAG = new ClassTag("Math");
     private static final String VALID_NOTE = "Good performance in class";
 
     @Test
     public void constructor_nullStudentId_throwsNullPointerException() {
         assertThrows(NullPointerException.class, () ->
-                new PerfAddCommand(null, VALID_DATE, VALID_NOTE));
+                new PerfAddCommand(null, VALID_DATE, VALID_CLASS_TAG, VALID_NOTE));
     }
 
     @Test
     public void constructor_nullDate_throwsNullPointerException() {
         assertThrows(NullPointerException.class, () ->
-                new PerfAddCommand(VALID_STUDENT_ID, null, VALID_NOTE));
+                new PerfAddCommand(VALID_STUDENT_ID, null, VALID_CLASS_TAG, VALID_NOTE));
+    }
+
+    @Test
+    public void constructor_nullClassTag_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () ->
+                new PerfAddCommand(VALID_STUDENT_ID, VALID_DATE, null, VALID_NOTE));
     }
 
     @Test
     public void constructor_nullNote_throwsNullPointerException() {
         assertThrows(NullPointerException.class, () ->
-                new PerfAddCommand(VALID_STUDENT_ID, VALID_DATE, null));
+                new PerfAddCommand(VALID_STUDENT_ID, VALID_DATE, VALID_CLASS_TAG, null));
     }
 
     @Test
     public void execute_performanceNoteAcceptedByModel_addSuccessful() throws Exception {
-        Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID.toString()).build();
+        Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID.toString())
+                .withTags(VALID_CLASS_TAG.tagName).build();
         Model model = new ModelManager(new AddressBook(), new UserPrefs());
         model.addPerson(validPerson);
-        PerformanceNote note = new PerformanceNote(VALID_DATE, VALID_NOTE);
+        PerformanceNote note = new PerformanceNote(VALID_DATE, VALID_CLASS_TAG, VALID_NOTE);
         PerformanceList performanceList = new PerformanceList();
         performanceList.add(note);
 
@@ -61,52 +70,89 @@ public class PerfAddCommandTest {
         Person personWithNote = validPerson.withPerformanceList(performanceList);
         expectedModel.addPerson(personWithNote);
 
-        String expectedMessage = String.format(PerfCommand.ADDED,
-                validPerson.getName(), note.getDate().getFormattedDate());
+        String expectedMessage = String.format(
+                PerfCommand.ADDED,
+                validPerson.getName(),
+                VALID_CLASS_TAG.tagName,
+                note.getDate().getFormattedDate()
+        );
 
-        assertCommandSuccess(new PerfAddCommand(VALID_STUDENT_ID, VALID_DATE, VALID_NOTE),
+        assertCommandSuccess(new PerfAddCommand(VALID_STUDENT_ID, VALID_DATE, VALID_CLASS_TAG, VALID_NOTE),
                 model, expectedMessage, expectedModel);
     }
 
     @Test
     public void execute_studentNotFound_throwsCommandException() {
         Model model = new ModelManager(new AddressBook(), new UserPrefs());
-        PerfAddCommand perfAddCommand = new PerfAddCommand(VALID_STUDENT_ID, VALID_DATE, VALID_NOTE);
+        PerfAddCommand perfAddCommand = new PerfAddCommand(VALID_STUDENT_ID, VALID_DATE, VALID_CLASS_TAG, VALID_NOTE);
 
-        assertCommandFailure(perfAddCommand, model, Messages.MESSAGE_STUDENT_ID_NOT_FOUND);
+        assertCommandFailure(perfAddCommand, model,
+                String.format(Messages.MESSAGE_STUDENT_ID_NOT_FOUND, VALID_STUDENT_ID));
+    }
+
+    @Test
+    public void execute_studentMissingClassTag_throwsCommandException() {
+        // Student missing required class tag
+        Person personWithoutTag = new PersonBuilder()
+                .withStudentId(VALID_STUDENT_ID.toString())
+                .withTags("Science") // different tag
+                .build();
+
+        Model model = new ModelManager(new AddressBook(), new UserPrefs());
+        model.addPerson(personWithoutTag);
+
+        PerfAddCommand command = new PerfAddCommand(VALID_STUDENT_ID, VALID_DATE, VALID_CLASS_TAG, VALID_NOTE);
+
+        String expectedMessage = String.format(
+                PerfAddCommand.MESSAGE_STUDENT_DOES_NOT_HAVE_TAG,
+                personWithoutTag.getName(),
+                VALID_CLASS_TAG.tagName
+        );
+
+        assertCommandFailure(command, model, expectedMessage);
     }
 
     @Test
     public void equals() {
-        StudentId studentIdA = new StudentId("0123");
-        StudentId studentIdB = new StudentId("0234");
+        StudentId idA = new StudentId("0123");
+        StudentId idB = new StudentId("0234");
+        Date dateA = new Date("15032024");
+        Date dateB = new Date("16032024");
+        ClassTag tagA = new ClassTag("Math");
+        ClassTag tagB = new ClassTag("Science");
+        String noteA = "Good performance";
+        String noteB = "Needs improvement";
 
-        PerfAddCommand addNoteACommand = new PerfAddCommand(studentIdA, VALID_DATE, VALID_NOTE);
-        PerfAddCommand addNoteBCommand = new PerfAddCommand(studentIdB, VALID_DATE, VALID_NOTE);
-        PerfAddCommand addNoteDifferentDate = new PerfAddCommand(studentIdA, new Date("16032024"), VALID_NOTE);
-        PerfAddCommand addNoteDifferentNote = new PerfAddCommand(studentIdA, VALID_DATE, "Different note");
+        PerfAddCommand commandA = new PerfAddCommand(idA, dateA, tagA, noteA);
+        PerfAddCommand commandACopy = new PerfAddCommand(idA, dateA, tagA, noteA);
+        PerfAddCommand commandDifferentId = new PerfAddCommand(idB, dateA, tagA, noteA);
+        PerfAddCommand commandDifferentDate = new PerfAddCommand(idA, dateB, tagA, noteA);
+        PerfAddCommand commandDifferentTag = new PerfAddCommand(idA, dateA, tagB, noteA);
+        PerfAddCommand commandDifferentNote = new PerfAddCommand(idA, dateA, tagA, noteB);
 
-        // same object -> returns true
-        assertTrue(addNoteACommand.equals(addNoteACommand));
+        // same object -> true
+        assertTrue(commandA.equals(commandA));
 
-        // same values -> returns true
-        PerfAddCommand addNoteACommandCopy = new PerfAddCommand(studentIdA, VALID_DATE, VALID_NOTE);
-        assertTrue(addNoteACommand.equals(addNoteACommandCopy));
+        // same values -> true
+        assertTrue(commandA.equals(commandACopy));
 
-        // different types -> returns false
-        assertFalse(addNoteACommand.equals(1));
+        // different types -> false
+        assertFalse(commandA.equals(1));
 
-        // null -> returns false
-        assertFalse(addNoteACommand.equals(null));
+        // null -> false
+        assertFalse(commandA.equals(null));
 
-        // different student ID -> returns false
-        assertFalse(addNoteACommand.equals(addNoteBCommand));
+        // different studentId -> false
+        assertFalse(commandA.equals(commandDifferentId));
 
-        // different date -> returns false
-        assertFalse(addNoteACommand.equals(addNoteDifferentDate));
+        // different date -> false
+        assertFalse(commandA.equals(commandDifferentDate));
 
-        // different note -> returns false
-        assertFalse(addNoteACommand.equals(addNoteDifferentNote));
+        // different tag -> false
+        assertFalse(commandA.equals(commandDifferentTag));
+
+        // different note -> false
+        assertFalse(commandA.equals(commandDifferentNote));
     }
 
     /**
