@@ -139,25 +139,6 @@ Expected output:
 
 ---
 
-### Filtering persons by class tag : `filter -t`
-
-Filters the main list to show only persons who are assigned the specified class tag.
-
-Format: `filter -t t/TAG_NAME`
-
-Notes:
-- The class tag must already exist in the system.
-- Tag name matching is case\-insensitive.
-
-Examples:
-- `filter -t t/Sec3_Maths` — Shows only students who have the `Sec3_Maths` tag.
-- `filter -t t/jc1_physics` — Shows only students who have the `JC1_Physics` tag.
-
-Expected output:
-
-![filter by class_tag](images/FilterByClassTag.png)
----
-
 ### Adding a person: `add`
 
 Adds a person to the address book.
@@ -286,3 +267,7 @@ Action     | Format, Examples
 **Find**   | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`
 **List**   | `list`
 **Help**   | `help`
+**Class Tag (add)**    | `tag -a t/TAG_NAME`<br> e.g., `tag -a t/Sec3_Maths`
+**Class Tag (delete)** | `tag -d t/TAG_NAME`<br> e.g., `tag -d t/Sec3_Maths`
+**Class Tag (list)**   | `tag -l`<br> e.g., `tag -l`
+**Filter (by class tag)** | `filter -t t/TAG_NAME`<br> e.g., `filter -t t/Sec3_Maths`
