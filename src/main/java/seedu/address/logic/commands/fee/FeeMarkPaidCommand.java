@@ -22,7 +22,7 @@ public class FeeMarkPaidCommand extends FeeCommand {
 
     public static final String COMMAND_FLAG = "-p";
     public static final String MESSAGE_USAGE =
-        String.format("%s %s %sSTUDENT_ID %sMMYY\nExample: %s %s %ss/0123 %sm/0925",
+        String.format("%s %s %sSTUDENT_ID %sMMYY\nExample: %s %s %s0123 %s0925",
             COMMAND_WORD, COMMAND_FLAG, PREFIX_STUDENTID, PREFIX_MONTH,
             COMMAND_WORD, COMMAND_FLAG, PREFIX_STUDENTID, PREFIX_MONTH);
 
