@@ -9,6 +9,7 @@ import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import seedu.address.model.person.exceptions.DuplicatePersonException;
+import seedu.address.model.person.exceptions.ExceedMaxStudentsException;
 import seedu.address.model.person.exceptions.PersonNotFoundException;
 
 /**
@@ -43,8 +44,12 @@ public class UniquePersonList implements Iterable<Person> {
     public void add(Person toAdd) {
         requireNonNull(toAdd);
         if (contains(toAdd)) {
-            StudentId.rollbackId();
             throw new DuplicatePersonException();
+        }
+        try {
+            toAdd = toAdd.withStudentId();
+        } catch (ExceedMaxStudentsException e) {
+            throw e;
         }
         internalList.add(toAdd);
     }

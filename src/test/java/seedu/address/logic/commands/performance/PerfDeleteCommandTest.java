@@ -45,7 +45,7 @@ public class PerfDeleteCommandTest {
         Model model = new ModelManager(new AddressBook(), new UserPrefs());
         PerfDeleteCommand command = new PerfDeleteCommand(VALID_STUDENT_ID, VALID_DATE_1, VALID_TAG_1);
 
-        assertCommandFailure(command, model, Messages.MESSAGE_STUDENT_ID_NOT_FOUND);
+        assertCommandFailure(command, model, String.format(Messages.MESSAGE_STUDENT_ID_NOT_FOUND, VALID_STUDENT_ID));
     }
 
     @Test

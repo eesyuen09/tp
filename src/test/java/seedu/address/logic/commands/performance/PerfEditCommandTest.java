@@ -52,7 +52,7 @@ public class PerfEditCommandTest {
         Model model = new ModelManager(new AddressBook(), new UserPrefs());
         PerfEditCommand command = new PerfEditCommand(VALID_STUDENT_ID, VALID_DATE_1, VALID_CLASS_TAG_1, EDITED_NOTE);
 
-        assertCommandFailure(command, model, Messages.MESSAGE_STUDENT_ID_NOT_FOUND);
+        assertCommandFailure(command, model, String.format(Messages.MESSAGE_STUDENT_ID_NOT_FOUND, VALID_STUDENT_ID));
     }
 
     @Test

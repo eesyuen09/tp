@@ -59,7 +59,8 @@ public class PerfDeleteCommand extends PerfCommand {
         requireNonNull(model);
 
         Person student = model.getPersonById(studentId)
-                .orElseThrow(() -> new CommandException(Messages.MESSAGE_STUDENT_ID_NOT_FOUND));
+                .orElseThrow(() -> new CommandException(
+                        String.format(Messages.MESSAGE_STUDENT_ID_NOT_FOUND, studentId)));
 
         if (!student.getTags().contains(classTag)) {
             throw new CommandException(String.format(MESSAGE_STUDENT_DOES_NOT_HAVE_TAG,

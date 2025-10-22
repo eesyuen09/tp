@@ -40,7 +40,8 @@ public class AttendanceMarkCommand extends AttendanceCommand {
         requireNonNull(model);
 
         Person personToEdit = model.getPersonById(studentId)
-                .orElseThrow(() -> new CommandException(Messages.MESSAGE_STUDENT_ID_NOT_FOUND));
+                .orElseThrow(() -> new CommandException(
+                        String.format(Messages.MESSAGE_STUDENT_ID_NOT_FOUND, studentId)));
 
         if (!personToEdit.getTags().contains(classTag)) {
             throw new CommandException(String.format(MESSAGE_STUDENT_DOES_NOT_HAVE_TAG,

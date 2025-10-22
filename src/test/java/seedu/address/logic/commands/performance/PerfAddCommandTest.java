@@ -86,7 +86,8 @@ public class PerfAddCommandTest {
         Model model = new ModelManager(new AddressBook(), new UserPrefs());
         PerfAddCommand perfAddCommand = new PerfAddCommand(VALID_STUDENT_ID, VALID_DATE, VALID_CLASS_TAG, VALID_NOTE);
 
-        assertCommandFailure(perfAddCommand, model, Messages.MESSAGE_STUDENT_ID_NOT_FOUND);
+        assertCommandFailure(perfAddCommand, model,
+                String.format(Messages.MESSAGE_STUDENT_ID_NOT_FOUND, VALID_STUDENT_ID));
     }
 
     @Test

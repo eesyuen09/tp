@@ -35,7 +35,7 @@ public class DeleteCommand extends Command {
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
         if (!model.hasPersonWithId(targetId)) {
-            throw new CommandException(Messages.MESSAGE_STUDENT_ID_NOT_FOUND);
+            throw new CommandException(String.format(Messages.MESSAGE_STUDENT_ID_NOT_FOUND, targetId));
         }
 
         Person personToDelete = model.getPersonById(targetId).get();
