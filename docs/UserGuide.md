@@ -75,6 +75,69 @@ Shows a message explaining how to access the help page.
 
 Format: `help`
 
+### Adding a class tag : `tag -a`
+
+Adds a new class tag to the system. This allows you to categorize students by the classes they attend.
+
+Format: `tag -a t/TAG_NAME`
+
+Notes:
+- Tag names must be 1\-30 characters long and can only contain alphanumeric characters and underscores (`_`). Spaces or other special characters are not allowed.
+- Tag names are case\-insensitive when checking for duplicates, but the original casing is preserved when added.
+
+Examples:
+- `tag -a t/Sec3_Maths` — Adds a class tag named `Sec3_Maths`.
+- `tag -a t/JC1_Physics` — Adds a class tag named `JC1_Physics`.
+
+Expected output:
+- `New class tag added: Sec3_Maths`  
+  or  
+  `This class tag already exists.`
+
+---
+
+### Deleting a class tag : `tag -d`
+
+Deletes an existing class tag from the system.
+
+⚠️ Important: You can only delete a class tag if it is not currently assigned to any person in the address book. Remove the tag from all students first before deleting.
+
+Format: `tag -d t/TAG_NAME`
+
+Notes:
+- Tag name matching is case\-insensitive.
+
+Examples:
+- `tag -d t/Sec3_Maths` — Deletes the class tag named `Sec3_Maths`.
+- `tag -d t/jc1_physics` — Deletes the class tag named `JC1_Physics`.
+
+Expected output:
+- `Tag deleted: Sec3_Maths`  
+  or  
+  `This class tag does not exist.`  
+  or  
+  `Cannot delete tag 'Sec3_Maths' because it is still assigned to one or more students. Please remove the tag from all students first.`
+
+---
+
+### Listing all class tags : `tag -l`
+
+Shows a list of all class tags currently created in the address book.
+
+Format: `tag -l`
+
+Examples:
+- `tag -l`
+
+Expected output:
+- If tags exist:  
+  `Listed all class tags:`  
+  `1. JC1_Physics`  
+  `2. Sec3_Maths`
+- If no tags exist:  
+  `No class tags found. You can add one using the 'tag -a' command.`
+
+---
 
 ### Adding a person: `add`
 
@@ -438,3 +501,7 @@ Action     | Format, Examples
 **Find**   | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`
 **List**   | `list`
 **Help**   | `help`
+**Class Tag (add)**    | `tag -a t/TAG_NAME`<br> e.g., `tag -a t/Sec3_Maths`
+**Class Tag (delete)** | `tag -d t/TAG_NAME`<br> e.g., `tag -d t/Sec3_Maths`
+**Class Tag (list)**   | `tag -l`<br> e.g., `tag -l`
+**Filter (by class tag)** | `filter -t t/TAG_NAME`<br> e.g., `filter -t t/Sec3_Maths`
