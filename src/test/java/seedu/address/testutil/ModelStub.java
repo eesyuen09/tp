@@ -1,6 +1,7 @@
 package seedu.address.testutil;
 
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
@@ -14,6 +15,7 @@ import seedu.address.model.person.Date;
 import seedu.address.model.person.Month;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
+import seedu.address.model.person.performance.PerformanceNote;
 import seedu.address.model.tag.ClassTag;
 
 /**
@@ -142,6 +144,21 @@ public class ModelStub implements Model {
 
     @Override
     public boolean hasPersonWithId(StudentId studentId) {
+        throw new AssertionError("This method should not be called.");
+    }
+
+    @Override
+    public ObservableList<PerformanceNote> getDisplayedPerformanceNotes() {
+        throw new AssertionError("This method should not be called.");
+    }
+
+    @Override
+    public void setDisplayedPerformanceNotes(List<PerformanceNote> notes) {
+        throw new AssertionError("This method should not be called.");
+    }
+
+    @Override
+    public void clearDisplayedPerformanceNotes() {
         throw new AssertionError("This method should not be called.");
     }
 }

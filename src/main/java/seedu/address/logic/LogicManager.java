@@ -5,6 +5,8 @@ import static java.util.Objects.requireNonNull;
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
@@ -20,6 +22,7 @@ import seedu.address.model.Model;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.fee.FeeState;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.performance.PerformanceNote;
 import seedu.address.storage.Storage;
 
 /**
@@ -52,7 +55,14 @@ public class LogicManager implements Logic {
 
         CommandResult commandResult;
         Command command = addressBookParser.parseCommand(commandText);
-        commandResult = command.execute(model);
+        List<PerformanceNote> previousNotes = new ArrayList<>(model.getDisplayedPerformanceNotes());
+        model.clearDisplayedPerformanceNotes();
+        try {
+            commandResult = command.execute(model);
+        } catch (CommandException e) {
+            model.setDisplayedPerformanceNotes(previousNotes);
+            throw e;
+        }
 
         try {
             storage.saveAddressBook(model.getAddressBook());
@@ -94,5 +104,10 @@ public class LogicManager implements Logic {
     public Optional<FeeState> getCurrentFeeState(Person person) {
         requireNonNull(person);
         return model.getCurrentFeeState(person);
+    }
+
+    @Override
+    public ObservableList<PerformanceNote> getDisplayedPerformanceNotes() {
+        return model.getDisplayedPerformanceNotes();
     }
 }
