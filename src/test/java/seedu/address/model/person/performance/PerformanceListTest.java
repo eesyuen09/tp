@@ -56,7 +56,7 @@ public class PerformanceListTest {
     public void add_duplicateDateAndClassTag_throwsIllegalArgumentException() {
         PerformanceList list = new PerformanceList();
         list.add(new PerformanceNote(DATE_1, CLASS_1, NOTE_1));
-        String messageDuplicateNote = "A performance note for the given date and class tag already exists.";
+        String messageDuplicateNote = "A performance note already exists for this date and class tag.";
         assertThrows(IllegalArgumentException.class,
                 messageDuplicateNote, () -> list.add(new PerformanceNote(DATE_1, CLASS_1, NOTE_2)));
     }
