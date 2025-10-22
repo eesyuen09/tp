@@ -14,39 +14,46 @@ import seedu.address.logic.commands.performance.PerfViewCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.Date;
 import seedu.address.model.person.StudentId;
+import seedu.address.model.tag.ClassTag;
 
 public class PerfCommandParserTest {
 
     private static final String VALID_DATE = "15032024";
-    private static final String VALID_INDEX = "1";
     private static final String VALID_NOTE = "Good performance in class";
     private static final String VALID_STUDENT_ID = "0123";
+    private static final String VALID_CLASS_TAG = "CS2103T";
 
     private final PerfCommandParser parser = new PerfCommandParser();
 
+    // ==================== General Tests ====================
+
     @Test
     public void parse_emptyArgs_throwsParseException() {
-        assertThrows(ParseException.class, String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                PerfCommand.MESSAGE_USAGE), () -> parser.parse(""));
+        assertThrows(ParseException.class,
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                        PerfCommand.MESSAGE_USAGE), () -> parser.parse(""));
     }
 
     @Test
     public void parse_whitespaceOnly_throwsParseException() {
-        assertThrows(ParseException.class, String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                PerfCommand.MESSAGE_USAGE), () -> parser.parse("   "));
+        assertThrows(ParseException.class,
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                        PerfCommand.MESSAGE_USAGE), () -> parser.parse("   "));
     }
 
     @Test
     public void parse_invalidFlag_throwsParseException() {
-        assertThrows(ParseException.class, String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                PerfCommand.MESSAGE_USAGE), () -> parser.parse("-x s/0123 d/15032024 pn/note"));
+        assertThrows(ParseException.class,
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                        PerfCommand.MESSAGE_USAGE), () -> parser.parse("-x s/0123 d/15032024 t/CS2103T pn/note"));
     }
 
     @Test
     public void parse_noFlag_throwsParseException() {
-        assertThrows(ParseException.class, String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                PerfCommand.MESSAGE_USAGE), () -> parser.parse("s/" + VALID_STUDENT_ID + " d/" + VALID_DATE
-                + " pn/" + VALID_NOTE));
+        assertThrows(ParseException.class,
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                        PerfCommand.MESSAGE_USAGE), () -> parser.parse("s/" + VALID_STUDENT_ID
+                        + " d/" + VALID_DATE + " t/" + VALID_CLASS_TAG + " pn/" + VALID_NOTE));
     }
 
     @Test
@@ -58,76 +65,89 @@ public class PerfCommandParserTest {
 
     @Test
     public void parse_addCommand_success() throws Exception {
-        String studentId = "0123";
-        String date = "15032024";
-        String note = "Good performance";
-        PerfCommand command = (PerfAddCommand) parser.parse("-a s/" + studentId + " d/" + date + " pn/" + note);
-        PerfAddCommand expectedCommand = new PerfAddCommand(new StudentId(studentId), new Date(date), note);
+        PerfCommand command = (PerfAddCommand) parser.parse(
+                "-a s/" + VALID_STUDENT_ID + " d/" + VALID_DATE + " t/" + VALID_CLASS_TAG + " pn/" + VALID_NOTE);
+        PerfAddCommand expectedCommand = new PerfAddCommand(
+                new StudentId(VALID_STUDENT_ID), new Date(VALID_DATE), new ClassTag(VALID_CLASS_TAG), VALID_NOTE);
         assertEquals(expectedCommand, command);
     }
 
     @Test
     public void parse_addCommandMissingStudentId_throwsParseException() {
-        assertThrows(ParseException.class, String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                PerfCommand.MESSAGE_USAGE), () -> parser.parse("-a d/15032024 pn/note"));
+        assertThrows(ParseException.class,
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                        PerfCommand.MESSAGE_USAGE), () -> parser.parse("-a d/15032024 t/CS2103T pn/note"));
     }
 
     @Test
     public void parse_addCommandMissingDate_throwsParseException() {
-        assertThrows(ParseException.class, String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                PerfCommand.MESSAGE_USAGE), () -> parser.parse("-a s/0123 pn/note"));
+        assertThrows(ParseException.class,
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                        PerfCommand.MESSAGE_USAGE), () -> parser.parse("-a s/0123 t/CS2103T pn/note"));
+    }
+
+    @Test
+    public void parse_addCommandMissingClassTag_throwsParseException() {
+        assertThrows(ParseException.class,
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                        PerfCommand.MESSAGE_USAGE), () -> parser.parse("-a s/0123 d/15032024 pn/note"));
     }
 
     @Test
     public void parse_addCommandMissingNote_throwsParseException() {
-        assertThrows(ParseException.class, String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                PerfCommand.MESSAGE_USAGE), () -> parser.parse("-a s/0123 d/15032024"));
+        assertThrows(ParseException.class,
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                        PerfCommand.MESSAGE_USAGE), () -> parser.parse("-a s/0123 d/15032024 t/CS2103T"));
     }
 
     @Test
     public void parse_addCommandInvalidStudentId_throwsParseException() {
-        assertThrows(ParseException.class, () -> parser.parse("-a s/Invalid123 d/15032024 pn/note"));
+        assertThrows(ParseException.class, () -> parser.parse("-a s/Invalid123 d/15032024 t/CS2103T pn/note"));
     }
 
     @Test
     public void parse_addCommandNoteExceedsMaxLength_throwsParseException() {
         String longNote = "a".repeat(201);
-        assertThrows(ParseException.class, () -> parser.parse("-a s/0123 d/15032024 pn/" + longNote));
+        assertThrows(ParseException.class, () -> parser.parse("-a s/0123 d/15032024 t/CS2103T pn/" + longNote));
     }
 
     @Test
     public void parse_addCommandNoteAtMaxLength_success() throws Exception {
         String maxNote = "a".repeat(200);
-        PerfCommand command = (PerfAddCommand) parser.parse("-a s/0123 d/15032024 pn/" + maxNote);
-        PerfAddCommand expectedCommand = new PerfAddCommand(new StudentId("0123"), new Date("15032024"), maxNote);
+        PerfCommand command = (PerfAddCommand) parser.parse(
+                "-a s/0123 d/15032024 t/CS2103T pn/" + maxNote);
+        PerfAddCommand expectedCommand = new PerfAddCommand(
+                new StudentId("0123"), new Date("15032024"), new ClassTag("CS2103T"), maxNote);
         assertEquals(expectedCommand, command);
     }
 
     @Test
     public void parse_addCommandWithPreamble_throwsParseException() {
-        assertThrows(ParseException.class, String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                PerfCommand.MESSAGE_USAGE), () -> parser.parse("-a extra s/0123 d/15032024 pn/note"));
+        String command = "-a extra s/0123 d/15032024 t/CS2103T pn/note";
+        assertThrows(ParseException.class,
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                        PerfCommand.MESSAGE_USAGE), () -> parser.parse(command));
     }
 
     @Test
     public void parse_addCommandDuplicatePrefixes_throwsParseException() {
-        assertThrows(ParseException.class, () -> parser.parse("-a s/0123 s/0234 d/15032024 pn/note"));
+        assertThrows(ParseException.class, () -> parser.parse("-a s/0123 s/0234 d/15032024 t/CS2103T pn/note"));
     }
 
     // ==================== PerfViewCommand Tests ====================
 
     @Test
     public void parse_viewCommand_success() throws Exception {
-        String studentId = "0123";
-        PerfCommand command = (PerfViewCommand) parser.parse("-v s/" + studentId);
-        PerfViewCommand expectedCommand = new PerfViewCommand(new StudentId(studentId));
+        PerfCommand command = (PerfViewCommand) parser.parse("-v s/" + VALID_STUDENT_ID);
+        PerfViewCommand expectedCommand = new PerfViewCommand(new StudentId(VALID_STUDENT_ID));
         assertEquals(expectedCommand, command);
     }
 
     @Test
     public void parse_viewCommandMissingStudentId_throwsParseException() {
-        assertThrows(ParseException.class, String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                PerfCommand.MESSAGE_USAGE), () -> parser.parse("-v"));
+        assertThrows(ParseException.class,
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                        PerfCommand.MESSAGE_USAGE), () -> parser.parse("-v"));
     }
 
     @Test
@@ -137,118 +157,87 @@ public class PerfCommandParserTest {
 
     @Test
     public void parse_viewCommandWithPreamble_throwsParseException() {
-        assertThrows(ParseException.class, String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                PerfCommand.MESSAGE_USAGE), () -> parser.parse("-v extra s/0123"));
+        assertThrows(ParseException.class,
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                        PerfCommand.MESSAGE_USAGE), () -> parser.parse("-v extra s/0123"));
     }
 
     // ==================== PerfEditCommand Tests ====================
 
     @Test
     public void parse_editCommand_success() throws Exception {
-        String studentId = "0123";
-        String index = "1";
-        String note = "Updated note";
-        PerfCommand command = (PerfEditCommand) parser.parse("-e s/" + studentId + " i/" + index + " pn/" + note);
-        PerfEditCommand expectedCommand = new PerfEditCommand(new StudentId(studentId), Integer.parseInt(index), note);
+        String newNote = "Updated performance note";
+        PerfCommand command = (PerfEditCommand) parser.parse(
+                "-e s/" + VALID_STUDENT_ID + " d/" + VALID_DATE + " t/" + VALID_CLASS_TAG + " pn/" + newNote);
+        PerfEditCommand expectedCommand = new PerfEditCommand(
+                new StudentId(VALID_STUDENT_ID), new Date(VALID_DATE), new ClassTag(VALID_CLASS_TAG), newNote);
         assertEquals(expectedCommand, command);
     }
 
     @Test
     public void parse_editCommandMissingStudentId_throwsParseException() {
-        assertThrows(ParseException.class, String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                PerfCommand.MESSAGE_USAGE), () -> parser.parse("-e i/1 pn/note"));
+        assertThrows(ParseException.class,
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                        PerfCommand.MESSAGE_USAGE), () -> parser.parse("-e d/15032024 t/CS2103T pn/note"));
     }
 
     @Test
-    public void parse_editCommandMissingIndex_throwsParseException() {
-        assertThrows(ParseException.class, String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                PerfCommand.MESSAGE_USAGE), () -> parser.parse("-e s/0123 pn/note"));
+    public void parse_editCommandMissingDate_throwsParseException() {
+        assertThrows(ParseException.class,
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                        PerfCommand.MESSAGE_USAGE), () -> parser.parse("-e s/0123 t/CS2103T pn/note"));
+    }
+
+    @Test
+    public void parse_editCommandMissingClassTag_throwsParseException() {
+        assertThrows(ParseException.class,
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                        PerfCommand.MESSAGE_USAGE), () -> parser.parse("-e s/0123 d/15032024 pn/note"));
     }
 
     @Test
     public void parse_editCommandMissingNote_throwsParseException() {
-        assertThrows(ParseException.class, String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                PerfCommand.MESSAGE_USAGE), () -> parser.parse("-e s/0123 i/1"));
-    }
-
-    @Test
-    public void parse_editCommandInvalidStudentId_throwsParseException() {
-        assertThrows(ParseException.class, () -> parser.parse("-e s/Invalid123 i/1 pn/note"));
-    }
-
-    @Test
-    public void parse_editCommandInvalidIndexNegative_throwsParseException() {
-        assertThrows(ParseException.class, () -> parser.parse("-e s/0123 i/-1 pn/note"));
-    }
-
-    @Test
-    public void parse_editCommandInvalidIndexZero_throwsParseException() {
-        assertThrows(ParseException.class, () -> parser.parse("-e s/0123 i/0 pn/note"));
-    }
-
-    @Test
-    public void parse_editCommandInvalidIndexNotNumeric_throwsParseException() {
-        assertThrows(ParseException.class, () -> parser.parse("-e s/0123 i/abc pn/note"));
-    }
-
-    @Test
-    public void parse_editCommandNoteExceedsMaxLength_throwsParseException() {
-        String longNote = "a".repeat(201);
-        assertThrows(ParseException.class, () -> parser.parse("-e s/0123 i/1 pn/" + longNote));
-    }
-
-    @Test
-    public void parse_editCommandWithPreamble_throwsParseException() {
-        assertThrows(ParseException.class, String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                PerfCommand.MESSAGE_USAGE), () -> parser.parse("-e extra s/0123 i/1 pn/note"));
+        assertThrows(ParseException.class,
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                        PerfCommand.MESSAGE_USAGE), () -> parser.parse("-e s/0123 d/15032024 t/CS2103T"));
     }
 
     // ==================== PerfDeleteCommand Tests ====================
 
     @Test
     public void parse_deleteCommand_success() throws Exception {
-        String studentId = "0123";
-        String index = "1";
-        PerfCommand command = (PerfDeleteCommand) parser.parse("-d s/" + studentId + " i/" + index);
-        PerfDeleteCommand expectedCommand = new PerfDeleteCommand(new StudentId(studentId), Integer.parseInt(index));
+        PerfCommand command = (PerfDeleteCommand) parser.parse(
+                "-d s/" + VALID_STUDENT_ID + " d/" + VALID_DATE + " t/" + VALID_CLASS_TAG);
+        PerfDeleteCommand expectedCommand = new PerfDeleteCommand(
+                new StudentId(VALID_STUDENT_ID), new Date(VALID_DATE), new ClassTag(VALID_CLASS_TAG));
         assertEquals(expectedCommand, command);
     }
 
     @Test
     public void parse_deleteCommandMissingStudentId_throwsParseException() {
-        assertThrows(ParseException.class, String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                PerfCommand.MESSAGE_USAGE), () -> parser.parse("-d i/1"));
+        assertThrows(ParseException.class,
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                        PerfCommand.MESSAGE_USAGE), () -> parser.parse("-d d/15032024 t/CS2103T"));
     }
 
     @Test
-    public void parse_deleteCommandMissingIndex_throwsParseException() {
-        assertThrows(ParseException.class, String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                PerfCommand.MESSAGE_USAGE), () -> parser.parse("-d s/0123"));
+    public void parse_deleteCommandMissingDate_throwsParseException() {
+        assertThrows(ParseException.class,
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                        PerfCommand.MESSAGE_USAGE), () -> parser.parse("-d s/0123 t/CS2103T"));
     }
 
     @Test
-    public void parse_deleteCommandInvalidStudentId_throwsParseException() {
-        assertThrows(ParseException.class, () -> parser.parse("-d s/Invalid123 i/1"));
-    }
-
-    @Test
-    public void parse_deleteCommandInvalidIndexNegative_throwsParseException() {
-        assertThrows(ParseException.class, () -> parser.parse("-d s/0123 i/-1"));
-    }
-
-    @Test
-    public void parse_deleteCommandInvalidIndexZero_throwsParseException() {
-        assertThrows(ParseException.class, () -> parser.parse("-d s/0123 i/0"));
-    }
-
-    @Test
-    public void parse_deleteCommandInvalidIndexNotNumeric_throwsParseException() {
-        assertThrows(ParseException.class, () -> parser.parse("-d s/0123 i/xyz"));
+    public void parse_deleteCommandMissingClassTag_throwsParseException() {
+        assertThrows(ParseException.class,
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                        PerfCommand.MESSAGE_USAGE), () -> parser.parse("-d s/0123 d/15032024"));
     }
 
     @Test
     public void parse_deleteCommandWithPreamble_throwsParseException() {
-        assertThrows(ParseException.class, String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                PerfCommand.MESSAGE_USAGE), () -> parser.parse("-d preamble s/0123 i/1"));
+        assertThrows(ParseException.class,
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                        PerfCommand.MESSAGE_USAGE), () -> parser.parse("-d preamble s/0123 d/15032024 t/CS2103T"));
     }
 }

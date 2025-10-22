@@ -1,7 +1,8 @@
 package seedu.address.logic.commands.performance;
 
 import static java.util.Objects.requireNonNull;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_INDEX;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_CLASSTAG;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_DATE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NOTE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_STUDENTID;
 
@@ -12,10 +13,13 @@ import seedu.address.logic.Messages;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
+import seedu.address.model.person.Date;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
 import seedu.address.model.person.performance.PerformanceList;
 import seedu.address.model.person.performance.PerformanceNote;
+import seedu.address.model.person.performance.exceptions.PerformanceNoteNotFoundException;
+import seedu.address.model.tag.ClassTag;
 
 /**
  * Edits a performance note of a student.
@@ -26,26 +30,32 @@ public class PerfEditCommand extends PerfCommand {
             + ": Edits a note of a student on indicated date. "
             + "Parameters: "
             + PREFIX_STUDENTID + "STUDENTID "
-            + PREFIX_INDEX + "INDEX "
+            + PREFIX_DATE + "DATE "
+            + PREFIX_CLASSTAG + "CLASS_TAG "
             + PREFIX_NOTE + "PERFORMANCE NOTE ";
 
     private final StudentId studentId;
-    private final int index;
+    private final Date date;
+    private final ClassTag classTag;
     private final String note;
 
     /**
-     * Creates an PerfEditCommand to edit the specified {@code note} of the student of given {@code studentId}
-     * at the specified {@code index}.
-     * @param studentId ID of the student to edit the performance note from
-     * @param index index of the performance note to be edited
-     * @param note the new performance note
+     * Creates a {@code PerfEditCommand} to edit a performance note
+     * of a student identified by the given {@code studentId} for the
+     * specified {@code date} and {@code classTag}.
+     *
+     * @param studentId ID of the student whose performance note is to be edited
+     * @param date The date of the performance note to edit
+     * @param classTag The class tag of the performance note to edit
+     * @param note The new content of the performance note
      */
-    public PerfEditCommand(StudentId studentId, int index, String note) {
+    public PerfEditCommand(StudentId studentId, Date date, ClassTag classTag, String note) {
         requireNonNull(studentId);
         requireNonNull(note);
 
         this.studentId = studentId;
-        this.index = index;
+        this.date = date;
+        this.classTag = classTag;
         this.note = note;
     }
 
@@ -57,26 +67,24 @@ public class PerfEditCommand extends PerfCommand {
                 .orElseThrow(() -> new CommandException(
                         String.format(Messages.MESSAGE_STUDENT_ID_NOT_FOUND, studentId)));
 
+        if (!student.getTags().contains(classTag)) {
+            throw new CommandException(String.format(MESSAGE_STUDENT_DOES_NOT_HAVE_TAG,
+                    student.getName(), classTag.tagName));
+        }
+
         List<PerformanceNote> current = student.getPerformanceList().asUnmodifiableList();
         PerformanceList copy = new PerformanceList(new ArrayList<>(current));
 
-        int zeroBasedIndex = index - 1;
-        if (zeroBasedIndex < 0 || zeroBasedIndex >= copy.size()) {
-            throw new CommandException("Error: Invalid performance note index.");
-        }
-
-        PerformanceNote old = copy.asUnmodifiableList().get(zeroBasedIndex);
-        PerformanceNote edited;
         try {
-            edited = new PerformanceNote(old.getDate(), note);
-        } catch (IllegalArgumentException e) {
-            throw new CommandException(e.getMessage());
+            copy.editPerformanceNote(date, classTag, note);
+        } catch (PerformanceNoteNotFoundException e) {
+            throw new CommandException("No performance note found for the given date and class tag.");
         }
-
-        copy.set(index, edited);
 
         model.setPerson(student, student.withPerformanceList(copy));
-        return new CommandResult(String.format(PerfCommand.EDITED, index, student.getName()));
+
+        return new CommandResult(String.format(PerfCommand.EDITED, student.getName(),
+                classTag.tagName, date.getFormattedDate()));
     }
 
     @Override
@@ -90,7 +98,9 @@ public class PerfEditCommand extends PerfCommand {
         }
 
         PerfEditCommand otherPerfEditCommand = (PerfEditCommand) other;
-        return studentId.equals(otherPerfEditCommand.studentId) && index == otherPerfEditCommand.index
+        return studentId.equals(otherPerfEditCommand.studentId)
+                && classTag.equals(otherPerfEditCommand.classTag)
+                && date.equals(otherPerfEditCommand.date)
                 && note.equals(otherPerfEditCommand.note);
     }
 

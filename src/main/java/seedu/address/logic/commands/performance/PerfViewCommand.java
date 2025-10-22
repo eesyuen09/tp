@@ -52,7 +52,8 @@ public class PerfViewCommand extends PerfCommand {
         sb.append(student.getName()).append(" Performance Notes:\n");
         for (int i = 0; i < notes.size(); i++) {
             PerformanceNote n = notes.get(i);
-            sb.append(String.format("%d. %s: %s\n", i + 1, n.getDate().getFormattedDate(), n.getNote()));
+            sb.append(String.format("%d. %s %s: %s\n", i + 1,
+                    n.getDate().getFormattedDate(), n.getClassTag().tagName, n.getNote()));
         }
         return new CommandResult(sb.toString().trim());
     }

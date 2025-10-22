@@ -7,6 +7,8 @@ import java.util.Collections;
 import java.util.List;
 
 import seedu.address.model.person.Date;
+import seedu.address.model.person.performance.exceptions.PerformanceNoteNotFoundException;
+import seedu.address.model.tag.ClassTag;
 
 /**
  * A list of performance notes.
@@ -38,47 +40,56 @@ public class PerformanceList {
      */
     public void add(PerformanceNote note) {
         requireNonNull(note);
-        if (indexOfDate(note.getDate()) != -1) {
-            throw new IllegalArgumentException("A performance note already exists for this date.");
+        if (duplivateValidation(note.getDate(), note.getClassTag()) != -1) {
+            throw new IllegalArgumentException("A performance note already exists for this date and class tag.");
         }
         notes.add(note);
     }
 
     /**
-     * Replaces the performance note at the given one-based index with the new note.
+     * Edits an existing performance note identified by its date and class tag.
      *
-     * @param oneBasedIndex One-based index of the performance note to be replaced.
-     * @param newNote The new performance note.
+     * @param date The date of the performance note to edit.
+     * @param classTag The class tag of the performance note to edit.
+     * @param newNote The new note content.
+     * @throws IllegalArgumentException if no matching performance note is found.
      */
-    public void set(int oneBasedIndex, PerformanceNote newNote) {
-        int i = oneBasedIndex - 1;
-        if (i < 0 || i >= notes.size()) {
-            throw new IndexOutOfBoundsException("Error: Invalid performance note index.");
+    public void editPerformanceNote(Date date, ClassTag classTag, String newNote) {
+        for (int i = 0; i < notes.size(); i++) {
+            PerformanceNote note = notes.get(i);
+            if (note.getDate().equals(date) && note.getClassTag().equals(classTag)) {
+                PerformanceNote edited = new PerformanceNote(date, classTag, newNote);
+                notes.set(i, edited);
+                return;
+            }
         }
-        int clash = indexOfDate(newNote.getDate());
-        if (clash != -1 && clash != i) {
-            throw new IllegalArgumentException("A performance note already exists for this date.");
-        }
-        notes.set(i, newNote);
+        throw new PerformanceNoteNotFoundException();
     }
+
+
 
     /**
-     * Removes the performance note at the given one-based index.
+     * Removes the performance note matching the given date and class tag.
      *
-     * @param oneBasedIndex One-based index of the performance note to be removed.
-     * @return The removed performance note.
+     * @param date The date of the performance note to remove.
+     * @param classTag The class tag of the performance note to remove.
+     * @return The removed {@code PerformanceNote}.
+     * @throws IllegalArgumentException if no matching performance note is found.
      */
-    public PerformanceNote remove(int oneBasedIndex) {
-        int i = oneBasedIndex - 1;
-        if (i < 0 || i >= notes.size()) {
-            throw new IndexOutOfBoundsException("Error: Invalid performance note index.");
+    public PerformanceNote remove(Date date, ClassTag classTag) {
+        for (int i = 0; i < notes.size(); i++) {
+            PerformanceNote note = notes.get(i);
+            if (note.getDate().equals(date) && note.getClassTag().equals(classTag)) {
+                return notes.remove(i);
+            }
         }
-        return notes.remove(i);
+        throw new PerformanceNoteNotFoundException();
     }
 
-    private int indexOfDate(Date date) {
+    private int duplivateValidation(Date date, ClassTag classTag) {
         for (int i = 0; i < notes.size(); i++) {
-            if (notes.get(i).getDate().equals(date)) {
+            PerformanceNote note = notes.get(i);
+            if (note.getDate().equals(date) && note.getClassTag().equals(classTag)) {
                 return i;
             }
         }

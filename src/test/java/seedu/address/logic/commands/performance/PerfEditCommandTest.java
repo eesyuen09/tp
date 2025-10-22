@@ -22,6 +22,7 @@ import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
 import seedu.address.model.person.performance.PerformanceList;
 import seedu.address.model.person.performance.PerformanceNote;
+import seedu.address.model.tag.ClassTag;
 import seedu.address.testutil.ModelStub;
 import seedu.address.testutil.PersonBuilder;
 
@@ -29,203 +30,88 @@ public class PerfEditCommandTest {
 
     private static final StudentId VALID_STUDENT_ID = new StudentId("0123");
     private static final Date VALID_DATE_1 = new Date("15032024");
+    private static final ClassTag VALID_CLASS_TAG_1 = new ClassTag("CS2103T");
     private static final String VALID_NOTE_1 = "Good performance in class";
-    private static final Date VALID_DATE_2 = new Date("20032024");
-    private static final String VALID_NOTE_2 = "Excellent homework submission";
-    private static final Date VALID_DATE_3 = new Date("25032024");
-    private static final String VALID_NOTE_3 = "Participated actively in discussion";
+
     private static final String EDITED_NOTE = "Updated performance note";
-    private static final int VALID_INDEX = 1;
 
     @Test
     public void constructor_nullStudentId_throwsNullPointerException() {
         assertThrows(NullPointerException.class, () ->
-                new PerfEditCommand(null, VALID_INDEX, EDITED_NOTE));
+                new PerfEditCommand(null, VALID_DATE_1, VALID_CLASS_TAG_1, EDITED_NOTE));
     }
 
     @Test
     public void constructor_nullNote_throwsNullPointerException() {
         assertThrows(NullPointerException.class, () ->
-                new PerfEditCommand(VALID_STUDENT_ID, VALID_INDEX, null));
+                new PerfEditCommand(VALID_STUDENT_ID, VALID_DATE_1, VALID_CLASS_TAG_1, null));
     }
 
     @Test
     public void execute_studentNotFound_throwsCommandException() {
         Model model = new ModelManager(new AddressBook(), new UserPrefs());
-        PerfEditCommand perfEditCommand = new PerfEditCommand(VALID_STUDENT_ID, VALID_INDEX, EDITED_NOTE);
+        PerfEditCommand command = new PerfEditCommand(VALID_STUDENT_ID, VALID_DATE_1, VALID_CLASS_TAG_1, EDITED_NOTE);
 
-        assertCommandFailure(perfEditCommand, model,
-                String.format(Messages.MESSAGE_STUDENT_ID_NOT_FOUND, VALID_STUDENT_ID));
+        assertCommandFailure(command, model, String.format(Messages.MESSAGE_STUDENT_ID_NOT_FOUND, VALID_STUDENT_ID));
     }
 
     @Test
-    public void execute_validIndexOneNote_editSuccessful() throws Exception {
-        Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID.toString()).build();
+    public void execute_studentDoesNotHaveClassTag_throwsCommandException() {
+        Person student = new PersonBuilder().withStudentId(VALID_STUDENT_ID.toString()).build();
+        Model model = new ModelManager(new AddressBook(), new UserPrefs());
+        model.addPerson(student);
 
-        PerformanceNote note = new PerformanceNote(VALID_DATE_1, VALID_NOTE_1);
-        PerformanceList performanceList = new PerformanceList();
-        performanceList.add(note);
-        Person personWithNote = validPerson.withPerformanceList(performanceList);
+        PerfEditCommand command = new PerfEditCommand(VALID_STUDENT_ID, VALID_DATE_1, VALID_CLASS_TAG_1, EDITED_NOTE);
+
+        String expectedMessage = String.format(PerfEditCommand.MESSAGE_STUDENT_DOES_NOT_HAVE_TAG,
+                student.getName(), VALID_CLASS_TAG_1.tagName);
+
+        assertCommandFailure(command, model, expectedMessage);
+    }
+
+    @Test
+    public void execute_editPerformanceNote_success() throws Exception {
+        Person student = new PersonBuilder().withStudentId(VALID_STUDENT_ID.toString())
+                .withTags(VALID_CLASS_TAG_1.tagName).build();
+
+        PerformanceNote note = new PerformanceNote(VALID_DATE_1, VALID_CLASS_TAG_1, VALID_NOTE_1);
+        PerformanceList list = new PerformanceList();
+        list.add(note);
+        Person studentWithNote = student.withPerformanceList(list);
 
         Model model = new ModelManager(new AddressBook(), new UserPrefs());
-        model.addPerson(personWithNote);
+        model.addPerson(studentWithNote);
 
-        PerformanceNote editedNote = new PerformanceNote(VALID_DATE_1, EDITED_NOTE);
+        // Expected edited performance note
+        PerformanceNote editedNote = new PerformanceNote(VALID_DATE_1, VALID_CLASS_TAG_1, EDITED_NOTE);
         PerformanceList expectedList = new PerformanceList();
         expectedList.add(editedNote);
-        Person personWithEditedNote = validPerson.withPerformanceList(expectedList);
+        Person expectedPerson = student.withPerformanceList(expectedList);
 
         Model expectedModel = new ModelManager(new AddressBook(), new UserPrefs());
-        expectedModel.addPerson(personWithEditedNote);
+        expectedModel.addPerson(expectedPerson);
 
-        String expectedMessage = String.format(PerfCommand.EDITED, VALID_INDEX, validPerson.getName());
+        String expectedMessage = String.format(PerfCommand.EDITED,
+                student.getName(), VALID_CLASS_TAG_1.tagName, VALID_DATE_1.getFormattedDate());
 
-        assertCommandSuccess(new PerfEditCommand(VALID_STUDENT_ID, VALID_INDEX, EDITED_NOTE),
+        assertCommandSuccess(new PerfEditCommand(VALID_STUDENT_ID, VALID_DATE_1, VALID_CLASS_TAG_1, EDITED_NOTE),
                 model, expectedMessage, expectedModel);
-    }
-
-    @Test
-    public void execute_validIndexMultipleNotes_editSuccessful() throws Exception {
-        Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID.toString()).build();
-
-        PerformanceNote note1 = new PerformanceNote(VALID_DATE_1, VALID_NOTE_1);
-        PerformanceNote note2 = new PerformanceNote(VALID_DATE_2, VALID_NOTE_2);
-        PerformanceNote note3 = new PerformanceNote(VALID_DATE_3, VALID_NOTE_3);
-        PerformanceList performanceList = new PerformanceList();
-        performanceList.add(note1);
-        performanceList.add(note2);
-        performanceList.add(note3);
-        Person personWithNotes = validPerson.withPerformanceList(performanceList);
-
-        Model model = new ModelManager(new AddressBook(), new UserPrefs());
-        model.addPerson(personWithNotes);
-
-        // Edit note at index 2 (note2)
-        PerformanceNote editedNote2 = new PerformanceNote(VALID_DATE_2, EDITED_NOTE);
-        PerformanceList expectedList = new PerformanceList();
-        expectedList.add(note1);
-        expectedList.add(editedNote2);
-        expectedList.add(note3);
-        Person personAfterEdit = validPerson.withPerformanceList(expectedList);
-
-        Model expectedModel = new ModelManager(new AddressBook(), new UserPrefs());
-        expectedModel.addPerson(personAfterEdit);
-
-        String expectedMessage = String.format(PerfCommand.EDITED, 2, validPerson.getName());
-
-        assertCommandSuccess(new PerfEditCommand(VALID_STUDENT_ID, 2, EDITED_NOTE),
-                model, expectedMessage, expectedModel);
-    }
-
-    @Test
-    public void execute_editLastNote_editSuccessful() throws Exception {
-        Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID.toString()).build();
-
-        PerformanceNote note1 = new PerformanceNote(VALID_DATE_1, VALID_NOTE_1);
-        PerformanceNote note2 = new PerformanceNote(VALID_DATE_2, VALID_NOTE_2);
-        PerformanceNote note3 = new PerformanceNote(VALID_DATE_3, VALID_NOTE_3);
-        PerformanceList performanceList = new PerformanceList();
-        performanceList.add(note1);
-        performanceList.add(note2);
-        performanceList.add(note3);
-        Person personWithNotes = validPerson.withPerformanceList(performanceList);
-
-        Model model = new ModelManager(new AddressBook(), new UserPrefs());
-        model.addPerson(personWithNotes);
-
-        // Edit last note (index 3)
-        PerformanceNote editedNote3 = new PerformanceNote(VALID_DATE_3, EDITED_NOTE);
-        PerformanceList expectedList = new PerformanceList();
-        expectedList.add(note1);
-        expectedList.add(note2);
-        expectedList.add(editedNote3);
-        Person personAfterEdit = validPerson.withPerformanceList(expectedList);
-
-        Model expectedModel = new ModelManager(new AddressBook(), new UserPrefs());
-        expectedModel.addPerson(personAfterEdit);
-
-        String expectedMessage = String.format(PerfCommand.EDITED, 3, validPerson.getName());
-
-        assertCommandSuccess(new PerfEditCommand(VALID_STUDENT_ID, 3, EDITED_NOTE),
-                model, expectedMessage, expectedModel);
-    }
-
-    @Test
-    public void execute_invalidIndexTooLarge_throwsCommandException() {
-        Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID.toString()).build();
-
-        PerformanceNote note = new PerformanceNote(VALID_DATE_1, VALID_NOTE_1);
-        PerformanceList performanceList = new PerformanceList();
-        performanceList.add(note);
-        Person personWithNote = validPerson.withPerformanceList(performanceList);
-
-        Model model = new ModelManager(new AddressBook(), new UserPrefs());
-        model.addPerson(personWithNote);
-
-        PerfEditCommand perfEditCommand = new PerfEditCommand(VALID_STUDENT_ID, 5, EDITED_NOTE);
-
-        assertCommandFailure(perfEditCommand, model, "Error: Invalid performance note index.");
-    }
-
-    @Test
-    public void execute_invalidIndexZero_throwsCommandException() {
-        Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID.toString()).build();
-
-        PerformanceNote note = new PerformanceNote(VALID_DATE_1, VALID_NOTE_1);
-        PerformanceList performanceList = new PerformanceList();
-        performanceList.add(note);
-        Person personWithNote = validPerson.withPerformanceList(performanceList);
-
-        Model model = new ModelManager(new AddressBook(), new UserPrefs());
-        model.addPerson(personWithNote);
-
-        PerfEditCommand perfEditCommand = new PerfEditCommand(VALID_STUDENT_ID, 0, EDITED_NOTE);
-
-        assertCommandFailure(perfEditCommand, model, "Error: Invalid performance note index.");
-    }
-
-    @Test
-    public void execute_invalidIndexNegative_throwsCommandException() {
-        Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID.toString()).build();
-
-        PerformanceNote note = new PerformanceNote(VALID_DATE_1, VALID_NOTE_1);
-        PerformanceList performanceList = new PerformanceList();
-        performanceList.add(note);
-        Person personWithNote = validPerson.withPerformanceList(performanceList);
-
-        Model model = new ModelManager(new AddressBook(), new UserPrefs());
-        model.addPerson(personWithNote);
-
-        PerfEditCommand perfEditCommand = new PerfEditCommand(VALID_STUDENT_ID, -1, EDITED_NOTE);
-
-        assertCommandFailure(perfEditCommand, model, "Error: Invalid performance note index.");
-    }
-
-    @Test
-    public void execute_editFromEmptyList_throwsCommandException() {
-        Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID.toString()).build();
-
-        Model model = new ModelManager(new AddressBook(), new UserPrefs());
-        model.addPerson(validPerson);
-
-        PerfEditCommand perfEditCommand = new PerfEditCommand(VALID_STUDENT_ID, VALID_INDEX, EDITED_NOTE);
-
-        assertCommandFailure(perfEditCommand, model, "Error: Invalid performance note index.");
     }
 
     @Test
     public void execute_editUsingModelStub_success() throws Exception {
-        Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID.toString()).build();
+        Person student = new PersonBuilder().withStudentId(VALID_STUDENT_ID.toString())
+                .withTags(VALID_CLASS_TAG_1.tagName).build();
 
-        PerformanceNote note = new PerformanceNote(VALID_DATE_1, VALID_NOTE_1);
-        PerformanceList performanceList = new PerformanceList();
-        performanceList.add(note);
-        Person personWithNote = validPerson.withPerformanceList(performanceList);
+        PerformanceNote note = new PerformanceNote(VALID_DATE_1, VALID_CLASS_TAG_1, VALID_NOTE_1);
+        PerformanceList list = new PerformanceList();
+        list.add(note);
+        Person studentWithNote = student.withPerformanceList(list);
 
         ModelStubAcceptingPerformanceNoteEdited modelStub =
-                new ModelStubAcceptingPerformanceNoteEdited(personWithNote);
+                new ModelStubAcceptingPerformanceNoteEdited(studentWithNote);
 
-        new PerfEditCommand(VALID_STUDENT_ID, VALID_INDEX, EDITED_NOTE).execute(modelStub);
+        new PerfEditCommand(VALID_STUDENT_ID, VALID_DATE_1, VALID_CLASS_TAG_1, EDITED_NOTE).execute(modelStub);
 
         assertEquals(EDITED_NOTE,
                 modelStub.updatedPerson.getPerformanceList().asUnmodifiableList().get(0).getNote());
@@ -233,41 +119,47 @@ public class PerfEditCommandTest {
 
     @Test
     public void equals() {
-        StudentId studentIdA = new StudentId("0123");
-        StudentId studentIdB = new StudentId("0234");
+        PerfEditCommand commandA = new PerfEditCommand(VALID_STUDENT_ID,
+                VALID_DATE_1, VALID_CLASS_TAG_1, EDITED_NOTE);
+        PerfEditCommand commandB = new PerfEditCommand(new StudentId("0234"),
+                VALID_DATE_1, VALID_CLASS_TAG_1, EDITED_NOTE);
+        PerfEditCommand commandC = new PerfEditCommand(VALID_STUDENT_ID,
+                new Date("01012025"), VALID_CLASS_TAG_1, EDITED_NOTE);
+        PerfEditCommand commandD = new PerfEditCommand(VALID_STUDENT_ID,
+                VALID_DATE_1, new ClassTag("CS1231"), EDITED_NOTE);
+        PerfEditCommand commandE = new PerfEditCommand(VALID_STUDENT_ID,
+                VALID_DATE_1, VALID_CLASS_TAG_1, "Different note");
 
-        PerfEditCommand editCommand1 = new PerfEditCommand(studentIdA, 1, EDITED_NOTE);
-        PerfEditCommand editCommand2 = new PerfEditCommand(studentIdB, 1, EDITED_NOTE);
-        PerfEditCommand editCommand3 = new PerfEditCommand(studentIdA, 2, EDITED_NOTE);
-        PerfEditCommand editCommand4 = new PerfEditCommand(studentIdA, 1, "Different note");
+        // same object -> true
+        assertTrue(commandA.equals(commandA));
 
-        // same object -> returns true
-        assertTrue(editCommand1.equals(editCommand1));
+        // same values -> true
+        assertTrue(commandA.equals(new PerfEditCommand(VALID_STUDENT_ID,
+                VALID_DATE_1, VALID_CLASS_TAG_1, EDITED_NOTE)));
 
-        // same values -> returns true
-        PerfEditCommand editCommand1Copy = new PerfEditCommand(studentIdA, 1, EDITED_NOTE);
-        assertTrue(editCommand1.equals(editCommand1Copy));
+        // different types -> false
+        assertFalse(commandA.equals(1));
 
-        // different types -> returns false
-        assertFalse(editCommand1.equals(1));
+        // null -> false
+        assertFalse(commandA.equals(null));
 
-        // null -> returns false
-        assertFalse(editCommand1.equals(null));
+        // different student ID -> false
+        assertFalse(commandA.equals(commandB));
 
-        // different student ID -> returns false
-        assertFalse(editCommand1.equals(editCommand2));
+        // different date -> false
+        assertFalse(commandA.equals(commandC));
 
-        // different index -> returns false
-        assertFalse(editCommand1.equals(editCommand3));
+        // different classTag -> false
+        assertFalse(commandA.equals(commandD));
 
-        // different note -> returns false
-        assertFalse(editCommand1.equals(editCommand4));
+        // different note -> false
+        assertFalse(commandA.equals(commandE));
     }
 
     /**
      * A Model stub that always accepts the performance note being edited.
      */
-    private class ModelStubAcceptingPerformanceNoteEdited extends ModelStub {
+    private static class ModelStubAcceptingPerformanceNoteEdited extends ModelStub {
         private final Person person;
         private Person updatedPerson;
 
