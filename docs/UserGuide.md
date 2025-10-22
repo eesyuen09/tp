@@ -4,9 +4,9 @@
   pageNav: 3
 ---
 
-# AB-3 User Guide
+# Tuto User Guide
 
-AddressBook Level 3 (AB3) is a **desktop app for managing contacts, optimized for use via a  Line Interface** (CLI) while still having the benefits of a Graphical User Interface (GUI). If you can type fast, AB3 can get your contact management tasks done faster than traditional GUI apps.
+Tuto is a **desktop app for managing contacts, optimized for use via a  Line Interface** (CLI) while still having the benefits of a Graphical User Interface (GUI). If you can type fast, Tuto can get your contact management tasks done faster than traditional GUI apps.
 
 <!-- * Table of Contents -->
 <page-nav-print />
@@ -146,6 +146,145 @@ Examples:
 * `list` followed by `delete 2` deletes the 2nd person in the address book.
 * `find Betsy` followed by `delete 1` deletes the 1st person in the results of the `find` command.
 
+## Managing students' payment: `fee` Commands
+The `fee` command family allows you to **record, update, and view student payment statuses**.  
+This helps tutors and administrators track monthly tuition fee payments efficiently and keep student records up to date.
+<box type="info" seamless>
+
+**Overview of fee commands**
+
+| Command                        | Description |
+|--------------------------------|--------------|
+| `fee -p s/STUDENT_ID m/MMYY`   | Marks a student as **PAID** for a specified month |
+| `fee -up s/STUDENT_ID m/MMYY`  | Marks a student as **UNPAID** for a specified month |
+| `fee -v s/STUDENT_ID [m/MMYY]` | Views a student’s **payment history** |
+</box>
+
+
+### 1. Marking a student as PAID: 
+
+Marks a student’s payment status as **PAID** for a specific month.
+
+**Format:** fee -p s/STUDENT_ID m/MMYY
+
+**Examples:**
+- `fee -p s/0001 m/0925` — marks student `0001`(Bernice Yu) as **paid** for **September 2025**.
+- `fee -p s/0003 m/0825` — marks student `0003`(David Li) as **paid** for **August 2025**.
+
+<box type="tip" seamless>
+If the month precedes the student’s enrollment month, the command will be rejected with an error message.
+</box>
+
+**Expected output:**  
+Bernice Yu has been successfully marked as Paid for September 2025.  
+David Li has been successfully marked as Paid for August 2025.
+
+### 2. Marking a student as UNPAID:
+
+Marks a student’s payment status as **UNPAID** for one specific month.  
+Use this for corrections or when a payment was previously marked as paid but has not been settled.
+
+**Format:** fee -up s/STUDENT_ID m/MMYY
+
+**Examples:**
+- `fee -up s/0001 m/0925` — marks student `0001`(Bernice Yu) as **unpaid** for **September 2025**.
+- `fee -up s/0003 m/0825` — marks student `0003`(David Li) as **unpaid** for **August 2025**.
+
+<box type="tip" seamless>
+If the month precedes the student’s enrollment month, the command will be rejected with an error message.
+</box>
+
+**Expected output:**  
+Bernice Yu has been successfully marked as Unpaid for September 2025.   
+David Li has been successfully marked as Unpaid for August 2025.
+
+### 3. Viewing a student’s payment history:
+
+Displays a student’s payment history from a starting month up to the current month.   
+
+
+**Format:** fee -v s/STUDENT_ID [m/MMYY]
+
+**Examples:**
+- `fee -v s/0001` — shows payment history for student `0001` from their enrollment month to the current month.
+- `fee -v s/0001 m/0525` — shows payment history starting **May 2025** to the current month.
+
+
+<box type="tip" seamless>
+
+If the starting month is not provided or the starting month provided precedes the
+student's enrollment month, the history will start from the student's enrollment month.
+
+</box>
+
+**Expected Output:**  
+Payment history for Bernice Yu from June 2025 to October 2025 (5 months)  
+Enrolled Month: June 2025  
+June 2025 : UNPAID (default)  
+July 2025 : UNPAID (default)  
+August 2025 : UNPAID (default)  
+September 2025 : PAID (marked)  
+October 2025 : PAID (marked)
+
+<box type="info" seamless>
+
+**Interpreting the results:**  
+- `marked` — the payment was explicitly set (via `fee -p` or `fee -up`).  
+- `default` — the month had no explicit record and is assumed **UNPAID**.  
+
+</box>
+
+---
+
+### Filter students: `filter`
+
+The `filter` command allows you to quickly find students based on specific criteria such as **payment status** or **class tags**.  
+This is useful for tutors and administrators who want to check which students 
+have paid or are unpaid for a given month, or to focus on a specific class group.
+
+### Overview
+
+Filtering supports three main types of criteria:
+
+| Flag | Meaning | Example |
+|------|----------|----------|
+| `-p` | Show students marked as **PAID** for a specific month | `filter -p m/1025` |
+| `-up` | Show students marked (or defaulted) as **UNPAID** | `filter -up m/1125` |
+| `-t` | Show students belonging to a particular **class tag** | `filter -t t/Sec3_Maths` |
+
+You can only use **one flag** per command.  
+Each filter updates the main student list view to display only matching entries.
+
+### Filter by PAID status : `filter -p`
+
+Shows all students whose payment status is **PAID** for a given month.
+
+**Format:**  
+filter -p m/MMYY
+
+**Example:**  
+filter -p m/1025
+
+**Expected Output:**  
+Showing PAID students for October 2025.
+
+### Filter by UNPAID status : `filter -up`
+
+Shows all students whose payment status is **UNPAID** for a given month.  
+<box type="info" seamless>
+If a student has never been explicitly marked as PAID, their status is treated as **UNPAID by default**.
+</box>
+
+**Format:**  
+filter -up m/MMYY
+
+**Example:**  
+filter -up m/1025
+
+**Expected Output:**  
+Showing UNPAID students for October 2025.
+
+
 ### Clearing all entries : `clear`
 
 Clears all entries from the address book.
@@ -196,7 +335,7 @@ _Details coming soon ..._
 ## Command summary
 
 Action     | Format, Examples
------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------|----------------------------------------------------------------------------------------------------------------------------------------------------------
 **Add**    | `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​` <br> e.g., `add n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 t/friend t/colleague`
 **Clear**  | `clear`
 **Delete** | `delete INDEX`<br> e.g., `delete 3`
@@ -204,3 +343,16 @@ Action     | Format, Examples
 **Find**   | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`
 **List**   | `list`
 **Help**   | `help`
+| **Mark as PAID** | `fee -p s/STUDENT_ID m/MMYY` <br> e.g., `fee -p s/0001 m/1025` <br>|
+| **Mark as UNPAID** | `fee -up s/STUDENT_ID m/MMYY` <br> e.g., `fee -up s/0001 m/1125` <br>|
+| **View Payment History** | `fee -v s/STUDENT_ID [m/MMYY]` <br> e.g., `fee -v s/0001` <br> or `fee -v s/0001 m/0725`|
+| **Filter by PAID** | `filter -p m/MMYY` <br> e.g., `filter -p m/1025` <br> |
+| **Filter by UNPAID** | `filter -up m/MMYY` <br> e.g., `filter -up m/1125` <br> |
+| **Filter by Class Tag** | `filter -t t/CLASS_TAG` <br> e.g., `filter -t t/Sec3_Maths` <br> |
+
+<box type="tip" seamless>
+
+*Tip:* Use `list` to reset the view after filtering or updating payment histories.
+
+</box>
+
