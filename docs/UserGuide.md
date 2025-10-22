@@ -146,6 +146,86 @@ Examples:
 * `list` followed by `delete 2` deletes the 2nd person in the address book.
 * `find Betsy` followed by `delete 1` deletes the 1st person in the results of the `find` command.
 
+## Managing students' attendance: `att` 
+The `att` command family allows you to **record, update, and view student attendance**.
+Each attendance record is tied to both a date and a class tag, allowing tutors to manage students who attend multiple classes efficiently.
+
+<box type="info" seamless>
+
+**Overview of att commands**
+
+| Command                                    | Description                                                                                |
+|--------------------------------------------|--------------------------------------------------------------------------------------------|
+| `att -m s/STUDENT_ID d/DDMMYYYY t/TAG_NAME` | Marks a student as **PRESENT** for a given date and class tag                              |
+| `att -u s/STUDENT_ID d/DDMMYYYY t/TAG_NAME` | Marks a student as **ABSENT** for a given date and class tag or undoes a marked attendance |
+| `att -v s/STUDENT_ID`                       | Views a student's **attendance records**                                                   |
+</box>
+
+
+### 1. Marking a student as PRESENT:
+
+Marks a student's attendance as **PRESENT** for a specific date and class.
+
+**Format:** `att -m s/STUDENT_ID d/DDMMYYYY t/TAG_NAME`
+
+**Examples:**
+- `att -m s/0001 d/15092025 t/Math` — marks student `0001`(Bernice Yu) as **present** for **15 September 2025** in **Math** class.
+- `att -m s/0003 d/20082025 t/Science` — marks student `0003`(David Li) as **present** for **20 August 2025** in **Science** class.
+
+<box type="tip" seamless>
+The student must have the specified class tag. If the student doesn't have the tag, the command will be rejected with an error message.
+</box>
+
+**Expected output:**<br>
+Marked attendance for: Bernice Yu on 15/09/2025 for class Math<br>
+Marked attendance for: David Li on 20/08/2025 for class Science
+
+### 2. Marking a student as ABSENT:
+
+Marks a student's attendance as **ABSENT** for a specific date and class.
+Use this to record absences or to change a previously marked **PRESENT** attendance to **ABSENT**.
+
+**Format:** `att -u s/STUDENT_ID d/DDMMYYYY t/TAG_NAME`
+
+**Examples:**
+- `att -u s/0001 d/15092025 t/Math` — marks student `0001`(Bernice Yu) as **absent** for **15 September 2025** in **Math** class.
+- `att -u s/0003 d/20082025 t/Science` — marks student `0003`(David Li) as **absent** for **20 August 2025** in **Science** class.
+
+<box type="tip" seamless>
+The student must have the specified class tag. If the student doesn't have the tag, the command will be rejected with an error message.
+</box>
+
+**Expected output:**<br>
+Unmarked attendance for: Bernice Yu on 15/09/2025 for class Math<br>
+Unmarked attendance for: David Li on 20/08/2025 for class Science
+
+### 3. Viewing a student's attendance records:
+
+Displays all attendance records for a specific student across all their classes.
+
+**Format:** `att -v s/STUDENT_ID`
+
+**Examples:**
+- `att -v s/0001` — shows all attendance records for student `0001`(Bernice Yu).
+- `att -v s/0003` — shows all attendance records for student `0003`(David Li).
+
+
+<box type="tip" seamless>
+
+If no attendance records exist for the student, a message will be displayed indicating no records were found.
+
+</box>
+
+**Expected Output:**<br>
+Showing attendance records for: Bernice Yu<br>
+15/09/2025 - Math: Present<br>
+16/09/2025 - Math: Absent<br>
+20/09/2025 - Science: Present
+
+<box type="info" seamless>
+
+</box>
+
 ### Clearing all entries : `clear`
 
 Clears all entries from the address book.
@@ -204,3 +284,7 @@ Action     | Format, Examples
 **Find**   | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`
 **List**   | `list`
 **Help**   | `help`
+**Mark Attendance as PRESENT** | `att -m s/STUDENT_ID d/DDMMYYYY t/TAG_NAME` <br> e.g., `att -m s/0001 d/15092025 t/Math`
+**Mark Attendance as ABSENT** | `att -u s/STUDENT_ID d/DDMMYYYY t/TAG_NAME` <br> e.g., `att -u s/0001 d/15092025 t/Math`
+**View Attendance Records** | `att -v s/STUDENT_ID` <br> e.g., `att -v s/0001`
+
