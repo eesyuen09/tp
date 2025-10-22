@@ -2,8 +2,8 @@ package seedu.address.logic.parser;
 
 import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_CLASSTAG;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DATE;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_INDEX;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NOTE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_STUDENTID;
 
@@ -16,6 +16,7 @@ import seedu.address.logic.commands.performance.PerfViewCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.Date;
 import seedu.address.model.person.StudentId;
+import seedu.address.model.tag.ClassTag;
 
 /**
  * Parses arguments for the 'perf' command.
@@ -58,11 +59,11 @@ public class PerfCommandParser implements Parser<Command> {
      */
     private PerfAddCommand parseAddCommand(String args) throws ParseException {
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(" " + args,
-                PREFIX_STUDENTID, PREFIX_DATE, PREFIX_NOTE);
+                PREFIX_STUDENTID, PREFIX_DATE, PREFIX_CLASSTAG, PREFIX_NOTE);
 
-        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_STUDENTID, PREFIX_DATE, PREFIX_NOTE);
+        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_STUDENTID, PREFIX_DATE, PREFIX_CLASSTAG, PREFIX_NOTE);
 
-        if (!arePrefixesPresent(argMultimap, PREFIX_STUDENTID, PREFIX_DATE, PREFIX_NOTE)
+        if (!arePrefixesPresent(argMultimap, PREFIX_STUDENTID, PREFIX_DATE, PREFIX_CLASSTAG, PREFIX_NOTE)
                 || !argMultimap.getPreamble().trim().isEmpty()) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT,
                     PerfCommand.MESSAGE_USAGE));
@@ -70,13 +71,16 @@ public class PerfCommandParser implements Parser<Command> {
 
         String studentIdString = argMultimap.getValue(PREFIX_STUDENTID).get();
         String dateString = argMultimap.getValue(PREFIX_DATE).get();
+        String classTagString = argMultimap.getValue(PREFIX_CLASSTAG).get();
         String note = argMultimap.getValue(PREFIX_NOTE).get();
+
 
         StudentId studentId = ParserUtil.parseStudentId(studentIdString);
         Date date = ParserUtil.parseDate(dateString);
+        ClassTag classTag = ParserUtil.parseClassTag(classTagString);
         validateNoteLen(note);
 
-        return new PerfAddCommand(studentId, date, note);
+        return new PerfAddCommand(studentId, date, classTag, note);
     }
 
     /**
@@ -105,25 +109,27 @@ public class PerfCommandParser implements Parser<Command> {
      */
     private PerfEditCommand parseEditCommand(String args) throws ParseException {
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(" " + args,
-                PREFIX_STUDENTID, PREFIX_INDEX, PREFIX_NOTE);
+                PREFIX_STUDENTID, PREFIX_DATE, PREFIX_CLASSTAG, PREFIX_NOTE);
 
-        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_STUDENTID, PREFIX_INDEX, PREFIX_NOTE);
+        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_STUDENTID, PREFIX_DATE, PREFIX_CLASSTAG, PREFIX_NOTE);
 
-        if (!arePrefixesPresent(argMultimap, PREFIX_STUDENTID, PREFIX_INDEX, PREFIX_NOTE)
+        if (!arePrefixesPresent(argMultimap, PREFIX_STUDENTID, PREFIX_DATE, PREFIX_CLASSTAG, PREFIX_NOTE)
                 || !argMultimap.getPreamble().trim().isEmpty()) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT,
                     PerfCommand.MESSAGE_USAGE));
         }
 
         String studentIdString = argMultimap.getValue(PREFIX_STUDENTID).get();
-        String indexString = argMultimap.getValue(PREFIX_INDEX).get();
+        String dateString = argMultimap.getValue(PREFIX_DATE).get();
+        String classTagString = argMultimap.getValue(PREFIX_CLASSTAG).get();
         String note = argMultimap.getValue(PREFIX_NOTE).get();
 
         StudentId studentId = ParserUtil.parseStudentId(studentIdString);
-        int index = parseOneBasedIndex(indexString);
+        Date date = ParserUtil.parseDate(dateString);
+        ClassTag classTag = ParserUtil.parseClassTag(classTagString);
         validateNoteLen(note);
 
-        return new PerfEditCommand(studentId, index, note);
+        return new PerfEditCommand(studentId, date, classTag, note);
     }
 
     /**
@@ -131,24 +137,25 @@ public class PerfCommandParser implements Parser<Command> {
      */
     private PerfDeleteCommand parseDeleteCommand(String args) throws ParseException {
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(" " + args,
-                PREFIX_STUDENTID, PREFIX_INDEX);
+                PREFIX_STUDENTID, PREFIX_DATE, PREFIX_CLASSTAG);
 
-        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_STUDENTID, PREFIX_INDEX);
+        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_STUDENTID, PREFIX_DATE, PREFIX_CLASSTAG);
 
-        if (!arePrefixesPresent(argMultimap, PREFIX_STUDENTID, PREFIX_INDEX)
+        if (!arePrefixesPresent(argMultimap, PREFIX_STUDENTID, PREFIX_DATE, PREFIX_CLASSTAG)
                 || !argMultimap.getPreamble().trim().isEmpty()) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT,
                     PerfCommand.MESSAGE_USAGE));
         }
 
         String studentIdString = argMultimap.getValue(PREFIX_STUDENTID).get();
-        String indexString = argMultimap.getValue(PREFIX_INDEX).get();
+        String dateString = argMultimap.getValue(PREFIX_DATE).get();
+        String classTagString = argMultimap.getValue(PREFIX_CLASSTAG).get();
 
         StudentId studentId = ParserUtil.parseStudentId(studentIdString);
+        Date date = ParserUtil.parseDate(dateString);
+        ClassTag classTag = ParserUtil.parseClassTag(classTagString);
 
-        int index = parseOneBasedIndex(indexString);
-
-        return new PerfDeleteCommand(studentId, index);
+        return new PerfDeleteCommand(studentId, date, classTag);
     }
 
     /**
@@ -159,17 +166,6 @@ public class PerfCommandParser implements Parser<Command> {
                 .allMatch(prefix -> argumentMultimap.getValue(prefix).isPresent());
     }
 
-    private static int parseOneBasedIndex(String s) throws ParseException {
-        try {
-            int v = Integer.parseInt(s.trim());
-            if (v < 1) {
-                throw new NumberFormatException();
-            }
-            return v;
-        } catch (NumberFormatException e) {
-            throw new ParseException("Error: Invalid performance note index.");
-        }
-    }
 
     private static void validateNoteLen(String note) throws ParseException {
         if (note.length() > 200) {
@@ -177,9 +173,4 @@ public class PerfCommandParser implements Parser<Command> {
         }
     }
 
-    private static void validateDateFormat(String date) throws ParseException {
-        if (!date.matches("\\d{8}")) {
-            throw new ParseException("Invalid date format. Use: DDMMYYYY");
-        }
-    }
 }

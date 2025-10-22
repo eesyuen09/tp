@@ -1,7 +1,9 @@
 package seedu.address.logic.commands.performance;
 
 import static java.util.Objects.requireNonNull;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_INDEX;
+import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_CLASSTAG;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_DATE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_STUDENTID;
 
 import java.util.ArrayList;
@@ -11,10 +13,13 @@ import seedu.address.logic.Messages;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
+import seedu.address.model.person.Date;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
 import seedu.address.model.person.performance.PerformanceList;
 import seedu.address.model.person.performance.PerformanceNote;
+import seedu.address.model.person.performance.exceptions.PerformanceNoteNotFoundException;
+import seedu.address.model.tag.ClassTag;
 
 /**
  * Deletes a performance note of a student.
@@ -25,22 +30,28 @@ public class PerfDeleteCommand extends PerfCommand {
             + ": Deletes a note of the student and date indicated. "
             + "Parameters: "
             + PREFIX_STUDENTID + "STUDENTID "
-            + PREFIX_INDEX + "INDEX ";
+            + PREFIX_DATE + "DATE "
+            + PREFIX_CLASSTAG + "CLASS_TAG ";
+    public static final String MESSAGE_STUDENT_DOES_NOT_HAVE_TAG = "Student %1$s does not have the class tag: %2$s";
 
     private final StudentId studentId;
-    private final int index;
+    private final Date date;
+    private final ClassTag classTag;
 
     /**
-     * Creates an PerfDeleteCommand to delete the specified {@code note} of the student of given {@code studentId}
-     * at the specified {@code index}.
-     * @param studentId ID of the student to delete the performance note from
-     * @param index index of the performance note to be deleted
+     * Creates a {@code PerfDeleteCommand} to remove a performance note
+     * of a student identified by the given {@code studentId} for the
+     * specified {@code date} and {@code classTag}.
+     *
+     * @param studentId ID of the student whose performance note is to be deleted
+     * @param date The date of the performance note to delete
+     * @param classTag The class tag of the performance note to delete
      */
-    public PerfDeleteCommand(StudentId studentId, int index) {
-        requireNonNull(studentId);
-
+    public PerfDeleteCommand(StudentId studentId, Date date, ClassTag classTag) {
+        requireAllNonNull(studentId , date, classTag);
         this.studentId = studentId;
-        this.index = index;
+        this.date = date;
+        this.classTag = classTag;
     }
 
     @Override
@@ -50,17 +61,23 @@ public class PerfDeleteCommand extends PerfCommand {
         Person student = model.getPersonById(studentId)
                 .orElseThrow(() -> new CommandException(Messages.MESSAGE_STUDENT_ID_NOT_FOUND));
 
+        if (!student.getTags().contains(classTag)) {
+            throw new CommandException(String.format(MESSAGE_STUDENT_DOES_NOT_HAVE_TAG,
+                    student.getName(), classTag.tagName));
+        }
+
         List<PerformanceNote> current = student.getPerformanceList().asUnmodifiableList();
         PerformanceList copy = new PerformanceList(new ArrayList<>(current));
 
         try {
-            copy.remove(index);
-        } catch (IndexOutOfBoundsException e) {
-            throw new CommandException("Error: Invalid performance note index.");
+            copy.remove(date, classTag);
+        } catch (PerformanceNoteNotFoundException e) {
+            throw new CommandException("No performance note found for the given date and class tag.");
         }
 
         model.setPerson(student, student.withPerformanceList(copy));
-        return new CommandResult(String.format(PerfCommand.DELETED, index, student.getName()));
+        return new CommandResult(String.format(PerfCommand.DELETED, student.getName(),
+                classTag.tagName, date.getFormattedDate()));
     }
 
     @Override
@@ -74,7 +91,9 @@ public class PerfDeleteCommand extends PerfCommand {
         }
 
         PerfDeleteCommand otherPerfDeleteCommand = (PerfDeleteCommand) other;
-        return studentId.equals(otherPerfDeleteCommand.studentId) && index == otherPerfDeleteCommand.index;
+        return studentId.equals(otherPerfDeleteCommand.studentId)
+                && classTag.equals(otherPerfDeleteCommand.classTag)
+                && date.equals(otherPerfDeleteCommand.date);
     }
 
 }
