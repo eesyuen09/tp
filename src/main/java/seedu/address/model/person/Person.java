@@ -40,7 +40,7 @@ public class Person {
      * @param phone   The person's phone number.
      * @param email   The person's email address.
      * @param address The person's address.
-     * @param tags    A set of tags associated with the person.
+     * @param tags    A set of class tags associated with the person.
      * @param enrolledMonth The person's enrolled month
      */
     public Person(Name name, Phone phone, Email email, Address address, Set<ClassTag> tags,
@@ -57,7 +57,7 @@ public class Person {
      * @param phone      The person's phone number.
      * @param email      The person's email address.
      * @param address    The person's address.
-     * @param tags       A set of tags associated with the person.
+     * @param tags       A set of class tags associated with the person.
      * @param studentId  The student's unique ID.
      * @param enrolledMonth The person's enrolled month.
      */
