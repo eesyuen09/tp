@@ -31,6 +31,9 @@ public class PerformanceListPanel extends UiPart<Region> {
         performanceListView.setCellFactory(listView -> new PerformanceListViewCell());
     }
 
+    /**
+     * Custom {@code ListCell} that displays the graphics of a {@code PerformanceNote} using a {@code PerformanceNoteCard}.
+     */
     class PerformanceListViewCell extends ListCell<PerformanceNote> {
         @Override
         protected void updateItem(PerformanceNote note, boolean empty) {
