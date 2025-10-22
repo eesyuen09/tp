@@ -48,7 +48,8 @@ public class PerfViewCommandTest {
         Model model = new ModelManager(new AddressBook(), new UserPrefs());
         PerfViewCommand perfViewCommand = new PerfViewCommand(VALID_STUDENT_ID);
 
-        assertCommandFailure(perfViewCommand, model, Messages.MESSAGE_STUDENT_ID_NOT_FOUND);
+        assertCommandFailure(perfViewCommand, model,
+                String.format(Messages.MESSAGE_STUDENT_ID_NOT_FOUND, VALID_STUDENT_ID));
     }
 
     @Test

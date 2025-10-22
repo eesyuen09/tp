@@ -130,11 +130,11 @@ public class ModelStub implements Model {
         throw new AssertionError("This method should not be called.");
     }
     @Override
-    public void markAttendance(StudentId studentId, Date date) {
+    public void markAttendance(StudentId studentId, Date date, ClassTag classTag) {
         throw new AssertionError("This method should not be called.");
     }
     @Override
-    public void unmarkAttendance(StudentId studentId, Date date) {
+    public void unmarkAttendance(StudentId studentId, Date date, ClassTag classTag) {
         throw new AssertionError("This method should not be called.");
     }
     @Override

@@ -176,15 +176,15 @@ public class ModelManager implements Model {
     }
 
     @Override
-    public void markAttendance(StudentId studentId, Date date) {
-        requireAllNonNull(studentId, date);
+    public void markAttendance(StudentId studentId, Date date, ClassTag classTag) {
+        requireAllNonNull(studentId, date, classTag);
 
         Person person = getPersonById(studentId)
                 .orElseThrow(() -> new IllegalArgumentException("Student ID not found: " + studentId));
 
         AttendanceList updatedAttendance = new AttendanceList(
                 person.getAttendanceList().asUnmodifiableList());
-        updatedAttendance.markAttendance(date);
+        updatedAttendance.markAttendance(date, classTag);
 
         Person updatedPerson = person.withAttendanceList(updatedAttendance);
 
@@ -192,15 +192,15 @@ public class ModelManager implements Model {
     }
 
     @Override
-    public void unmarkAttendance(StudentId studentId, Date date) {
-        requireAllNonNull(studentId, date);
+    public void unmarkAttendance(StudentId studentId, Date date, ClassTag classTag) {
+        requireAllNonNull(studentId, date, classTag);
 
         Person person = getPersonById(studentId)
                 .orElseThrow(() -> new IllegalArgumentException("Student ID not found: " + studentId));
 
         AttendanceList updatedAttendance = new AttendanceList(
                 person.getAttendanceList().asUnmodifiableList());
-        updatedAttendance.unmarkAttendance(date);
+        updatedAttendance.unmarkAttendance(date, classTag);
 
         Person updatedPerson = person.withAttendanceList(updatedAttendance);
 

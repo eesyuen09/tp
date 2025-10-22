@@ -32,7 +32,8 @@ public class AttendanceViewCommand extends AttendanceCommand {
         requireNonNull(model);
 
         Person person = model.getPersonById(studentId)
-                .orElseThrow(() -> new CommandException(Messages.MESSAGE_STUDENT_ID_NOT_FOUND));
+                .orElseThrow(() -> new CommandException(
+                        String.format(Messages.MESSAGE_STUDENT_ID_NOT_FOUND, studentId)));
 
         if (person.getAttendanceList().size() == 0) {
             return new CommandResult(String.format(MESSAGE_NO_RECORDS, person.getName()));
@@ -49,9 +50,17 @@ public class AttendanceViewCommand extends AttendanceCommand {
     private String formatAttendanceRecords(Person person) {
         StringBuilder sb = new StringBuilder();
         person.getAttendanceList().asUnmodifiableList().stream()
-                .sorted((a1, a2) -> a1.getDate().toString().compareTo(a2.getDate().toString()))
+                .sorted((a1, a2) -> {
+                    int dateComparison = a1.getDate().toString().compareTo(a2.getDate().toString());
+                    if (dateComparison != 0) {
+                        return dateComparison;
+                    }
+                    return a1.getClassTag().tagName.compareTo(a2.getClassTag().tagName);
+                })
                 .forEach(attendance -> {
                     sb.append(attendance.getDate().getFormattedDate())
+                            .append(" - ")
+                            .append(attendance.getClassTag().tagName)
                             .append(": ")
                             .append(attendance.isStudentPresent() ? "Present" : "Absent")
                             .append("\n");

@@ -15,6 +15,7 @@ import seedu.address.model.attendance.AttendanceList;
 import seedu.address.model.person.Date;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
+import seedu.address.model.tag.ClassTag;
 import seedu.address.testutil.ModelStub;
 import seedu.address.testutil.PersonBuilder;
 
@@ -26,6 +27,7 @@ public class AttendanceViewCommandTest {
     private static final String VALID_STUDENT_ID_STRING = "1111";
     private static final Date VALID_DATE_1 = new Date("13012025");
     private static final Date VALID_DATE_2 = new Date("14012025");
+    private static final ClassTag VALID_CLASS_TAG = new ClassTag("Math");
 
     @Test
     public void constructor_nullStudentId_throwsNullPointerException() {
@@ -38,9 +40,9 @@ public class AttendanceViewCommandTest {
         Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID_STRING).build();
         // Mark some attendance records
         AttendanceList attendanceList = new AttendanceList();
-        attendanceList.markAttendance(VALID_DATE_1);
-        attendanceList.markAttendance(VALID_DATE_2);
-        attendanceList.unmarkAttendance(VALID_DATE_2); // Mark one as absent
+        attendanceList.markAttendance(VALID_DATE_1, VALID_CLASS_TAG);
+        attendanceList.markAttendance(VALID_DATE_2, VALID_CLASS_TAG);
+        attendanceList.unmarkAttendance(VALID_DATE_2, VALID_CLASS_TAG); // Mark one as absent
         validPerson = validPerson.withAttendanceList(attendanceList);
         modelStub.person = validPerson;
 

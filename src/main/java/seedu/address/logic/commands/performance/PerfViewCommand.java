@@ -39,7 +39,8 @@ public class PerfViewCommand extends PerfCommand {
         requireNonNull(model);
 
         Person student = model.getPersonById(studentId)
-                .orElseThrow(() -> new CommandException(Messages.MESSAGE_STUDENT_ID_NOT_FOUND));
+                .orElseThrow(() -> new CommandException(
+                        String.format(Messages.MESSAGE_STUDENT_ID_NOT_FOUND, studentId)));
 
         List<PerformanceNote> notes = student.getPerformanceList().asUnmodifiableList();
         model.setDisplayedPerformanceNotes(notes);

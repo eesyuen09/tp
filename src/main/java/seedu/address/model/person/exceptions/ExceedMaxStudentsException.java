@@ -5,6 +5,6 @@ package seedu.address.model.person.exceptions;
  */
 public class ExceedMaxStudentsException extends RuntimeException {
     public ExceedMaxStudentsException() {
-        super("Maximum number of student IDs reached");
+        super("Cannot add more students as the maximum limit of 9999 has been reached.");
     }
 }

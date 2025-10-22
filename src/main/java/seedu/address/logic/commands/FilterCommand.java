@@ -7,10 +7,10 @@ public abstract class FilterCommand extends Command {
 
     public static final String COMMAND_WORD = "filter";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ":  Filters the student list by specific criteria.\n"
-            + "Flags available:\n"
-            + "  -p  : Show students marked as PAID for a given month.\n"
-            + "  -up : Show students marked (or inferred) as UNPAID for a given month.\n"
-            + "Example: " + COMMAND_WORD + "-p m/0925 \n";
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Filters students based on criteria.\n"
+            + "Examples: \n"
+            + "  " + COMMAND_WORD + " -p m/1025 (Filters by PAID status for Oct 2025)\n"
+            + "  " + COMMAND_WORD + " -up m/1125 (Filters by UNPAID status for Nov 2025)\n"
+            + "  " + COMMAND_WORD + " -t t/Sec3_Maths (Filters by class tag 'Sec3_Maths')";
 
 }

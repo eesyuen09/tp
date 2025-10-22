@@ -129,7 +129,7 @@ public class JsonAdaptedFeeRecordTest {
     @Test
     public void applyToFeeTracker_nonExistentStudent_throwsIllegalValueException() {
         JsonAdaptedFeeRecord record = new JsonAdaptedFeeRecord(
-            new StudentId("9999"), validMonth, FeeState.PAID);
+            new StudentId("0123"), validMonth, FeeState.PAID);
         assertThrows(IllegalValueException.class, () -> record.applyToFeeTracker(addressBook));
     }
 
