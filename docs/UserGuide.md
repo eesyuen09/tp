@@ -146,7 +146,7 @@ Examples:
 * `list` followed by `delete 2` deletes the 2nd person in the address book.
 * `find Betsy` followed by `delete 1` deletes the 1st person in the results of the `find` command.
 
-## Managing students' payment: `fee` Commands
+### Managing students' payment: `fee` Commands
 The `fee` command family allows you to **record, update, and view student payment statuses**.  
 This helps tutors and administrators track monthly tuition fee payments efficiently and keep student records up to date.
 <box type="info" seamless>
@@ -283,6 +283,23 @@ filter -up m/1025
 
 **Expected Output:**  
 Showing UNPAID students for October 2025.
+
+### Filtering persons by class tag : `filter -t`
+
+Filters the main list to show only persons who are assigned the specified class tag.
+
+Format: filter -t t/TAG_NAME
+
+Notes:
+- The class tag must already exist in the system.
+- Tag name matching is case\-insensitive.
+
+Examples:
+- filter -t t/Sec3_Maths — Shows only students who have the Sec3_Maths tag.
+- filter -t t/jc1_physics — Shows only students who have the JC1_Physics tag.
+
+Expected output:
+![filterByClassTag.jpg](images/filterByClassTag.jpg)
 
 
 ### Clearing all entries : `clear`
