@@ -20,7 +20,7 @@ public abstract class PerfCommand extends Command {
             + "Subcommands:\n"
             + "  " + COMMAND_WORD + " -a: Adds a performance note. Usage: "
             + COMMAND_WORD + " -a " + PREFIX_STUDENTID + "STUDENT_ID "
-            + PREFIX_DATE + "DDMMYYYY " + PREFIX_NOTE + "NOTE\n"
+            + PREFIX_DATE + "DDMMYYYY " + PREFIX_CLASSTAG + "CLASS_TAG " + PREFIX_NOTE + "NOTE\n"
             + "  " + COMMAND_WORD + " -v: Views performance notes. Usage: "
             + COMMAND_WORD + " -v " + PREFIX_STUDENTID + "STUDENT_ID\n"
             + "  " + COMMAND_WORD + " -e: Edits a performance note. Usage: "
@@ -29,6 +29,7 @@ public abstract class PerfCommand extends Command {
             + "  " + COMMAND_WORD + " -d: Deletes a performance note. Usage: "
             + COMMAND_WORD + " -d " + PREFIX_STUDENTID + "STUDENT_ID " + PREFIX_DATE + "DDMMYYYY "
             + PREFIX_CLASSTAG + "CLASS_TAG";
+    public static final String MESSAGE_STUDENT_DOES_NOT_HAVE_TAG = "Student %1$s does not have the class tag: %2$s";
 
     /**
      * Success message for adding a performance note.

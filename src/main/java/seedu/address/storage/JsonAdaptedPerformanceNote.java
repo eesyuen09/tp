@@ -62,7 +62,7 @@ public class JsonAdaptedPerformanceNote {
             throw new IllegalValueException(ClassTag.MESSAGE_CONSTRAINTS);
         }
         if (note == null) {
-            throw new IllegalValueException("Performance note   · cannot be null!");
+            throw new IllegalValueException("Performance note cannot be null!");
         }
         return new PerformanceNote(new Date(date), new ClassTag(classTag), note);
     }

@@ -32,7 +32,6 @@ public class PerfDeleteCommand extends PerfCommand {
             + PREFIX_STUDENTID + "STUDENTID "
             + PREFIX_DATE + "DATE "
             + PREFIX_CLASSTAG + "CLASS_TAG ";
-    public static final String MESSAGE_STUDENT_DOES_NOT_HAVE_TAG = "Student %1$s does not have the class tag: %2$s";
 
     private final StudentId studentId;
     private final Date date;

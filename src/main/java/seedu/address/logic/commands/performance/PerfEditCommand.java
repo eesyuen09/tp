@@ -33,7 +33,6 @@ public class PerfEditCommand extends PerfCommand {
             + PREFIX_DATE + "DATE "
             + PREFIX_CLASSTAG + "CLASS_TAG "
             + PREFIX_NOTE + "PERFORMANCE NOTE ";
-    public static final String MESSAGE_STUDENT_DOES_NOT_HAVE_TAG = "Student %1$s does not have the class tag: %2$s";
 
     private final StudentId studentId;
     private final Date date;
