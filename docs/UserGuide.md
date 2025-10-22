@@ -301,7 +301,85 @@ Examples:
 Expected output:
 ![filterByClassTag.jpg](images/filterByClassTag.jpg)
 
+## Managing students' attendance: `att`
+The `att` command family allows you to **record, update, and view student attendance**.
+Each attendance record is tied to both a date and a class tag, allowing tutors to manage students who attend multiple classes efficiently.
 
+<box type="info" seamless>
+
+**Overview of att commands**
+
+| Command                                    | Description                                                                                |
+|--------------------------------------------|--------------------------------------------------------------------------------------------|
+| `att -m s/STUDENT_ID d/DDMMYYYY t/TAG_NAME` | Marks a student as **PRESENT** for a given date and class tag                              |
+| `att -u s/STUDENT_ID d/DDMMYYYY t/TAG_NAME` | Marks a student as **ABSENT** for a given date and class tag or undoes a marked attendance |
+| `att -v s/STUDENT_ID`                       | Views a student's **attendance records**                                                   |
+</box>
+
+
+### 1. Marking a student as PRESENT:
+
+Marks a student's attendance as **PRESENT** for a specific date and class.
+
+**Format:** `att -m s/STUDENT_ID d/DDMMYYYY t/TAG_NAME`
+
+**Examples:**
+- `att -m s/0001 d/15092025 t/Math` — marks student `0001`(Bernice Yu) as **present** for **15 September 2025** in **Math** class.
+- `att -m s/0003 d/20082025 t/Science` — marks student `0003`(David Li) as **present** for **20 August 2025** in **Science** class.
+
+<box type="tip" seamless>
+The student must have the specified class tag. If the student doesn't have the tag, the command will be rejected with an error message.
+</box>
+
+**Expected output:**<br>
+Marked attendance for: Bernice Yu on 15/09/2025 for class Math<br>
+Marked attendance for: David Li on 20/08/2025 for class Science
+
+### 2. Marking a student as ABSENT:
+
+Marks a student's attendance as **ABSENT** for a specific date and class.
+Use this to record absences or to change a previously marked **PRESENT** attendance to **ABSENT**.
+
+**Format:** `att -u s/STUDENT_ID d/DDMMYYYY t/TAG_NAME`
+
+**Examples:**
+- `att -u s/0001 d/15092025 t/Math` — marks student `0001`(Bernice Yu) as **absent** for **15 September 2025** in **Math** class.
+- `att -u s/0003 d/20082025 t/Science` — marks student `0003`(David Li) as **absent** for **20 August 2025** in **Science** class.
+
+<box type="tip" seamless>
+The student must have the specified class tag. If the student doesn't have the tag, the command will be rejected with an error message.
+</box>
+
+**Expected output:**<br>
+Unmarked attendance for: Bernice Yu on 15/09/2025 for class Math<br>
+Unmarked attendance for: David Li on 20/08/2025 for class Science
+
+### 3. Viewing a student's attendance records:
+
+Displays all attendance records for a specific student across all their classes.
+
+**Format:** `att -v s/STUDENT_ID`
+
+**Examples:**
+- `att -v s/0001` — shows all attendance records for student `0001`(Bernice Yu).
+- `att -v s/0003` — shows all attendance records for student `0003`(David Li).
+
+
+<box type="tip" seamless>
+
+If no attendance records exist for the student, a message will be displayed indicating no records were found.
+
+</box>
+
+**Expected Output:**<br>
+Showing attendance records for: Bernice Yu<br>
+15/09/2025 - Math: Present<br>
+16/09/2025 - Math: Absent<br>
+20/09/2025 - Science: Present
+
+<box type="info" seamless>
+
+</box>
 ### Clearing all entries : `clear`
 
 Clears all entries from the address book.
@@ -352,7 +430,7 @@ _Details coming soon ..._
 ## Command summary
 
 Action     | Format, Examples
------------|----------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 **Add**    | `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​` <br> e.g., `add n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 t/friend t/colleague`
 **Clear**  | `clear`
 **Delete** | `delete INDEX`<br> e.g., `delete 3`
@@ -360,16 +438,3 @@ Action     | Format, Examples
 **Find**   | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`
 **List**   | `list`
 **Help**   | `help`
-| **Mark as PAID** | `fee -p s/STUDENT_ID m/MMYY` <br> e.g., `fee -p s/0001 m/1025` <br>|
-| **Mark as UNPAID** | `fee -up s/STUDENT_ID m/MMYY` <br> e.g., `fee -up s/0001 m/1125` <br>|
-| **View Payment History** | `fee -v s/STUDENT_ID [m/MMYY]` <br> e.g., `fee -v s/0001` <br> or `fee -v s/0001 m/0725`|
-| **Filter by PAID** | `filter -p m/MMYY` <br> e.g., `filter -p m/1025` <br> |
-| **Filter by UNPAID** | `filter -up m/MMYY` <br> e.g., `filter -up m/1125` <br> |
-| **Filter by Class Tag** | `filter -t t/CLASS_TAG` <br> e.g., `filter -t t/Sec3_Maths` <br> |
-
-<box type="tip" seamless>
-
-*Tip:* Use `list` to reset the view after filtering or updating payment histories.
-
-</box>
-
