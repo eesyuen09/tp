@@ -56,6 +56,8 @@ public class AttendanceCommandParser implements Parser<AttendanceCommand> {
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(" " + args,
                 PREFIX_STUDENTID, PREFIX_DATE, PREFIX_CLASSTAG);
 
+        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_STUDENTID, PREFIX_DATE, PREFIX_CLASSTAG);
+
         if (!arePrefixesPresent(argMultimap, PREFIX_STUDENTID, PREFIX_DATE, PREFIX_CLASSTAG)
                 || !argMultimap.getPreamble().trim().isEmpty()) {
             throw new ParseException(
@@ -76,6 +78,8 @@ public class AttendanceCommandParser implements Parser<AttendanceCommand> {
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(" " + args,
                 PREFIX_STUDENTID, PREFIX_DATE, PREFIX_CLASSTAG);
 
+        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_STUDENTID, PREFIX_DATE, PREFIX_CLASSTAG);
+
         if (!arePrefixesPresent(argMultimap, PREFIX_STUDENTID, PREFIX_DATE, PREFIX_CLASSTAG)
                 || !argMultimap.getPreamble().trim().isEmpty()) {
             throw new ParseException(
@@ -94,6 +98,8 @@ public class AttendanceCommandParser implements Parser<AttendanceCommand> {
      */
     private AttendanceViewCommand parseViewCommand(String args) throws ParseException {
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(" " + args, PREFIX_STUDENTID);
+
+        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_STUDENTID, PREFIX_DATE, PREFIX_CLASSTAG);
 
         if (!arePrefixesPresent(argMultimap, PREFIX_STUDENTID)
                 || !argMultimap.getPreamble().trim().isEmpty()) {

@@ -2,8 +2,11 @@ package seedu.address.ui;
 
 import java.util.logging.Logger;
 
+import javafx.beans.binding.Bindings;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.input.KeyCombination;
@@ -16,6 +19,7 @@ import seedu.address.logic.Logic;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.model.person.performance.PerformanceNote;
 
 /**
  * The Main Window. Provides the basic application layout containing
@@ -34,6 +38,7 @@ public class MainWindow extends UiPart<Stage> {
     private PersonListPanel personListPanel;
     private ResultDisplay resultDisplay;
     private HelpWindow helpWindow;
+    private PerformanceListPanel performanceListPanel;
 
     @FXML
     private StackPane commandBoxPlaceholder;
@@ -111,7 +116,20 @@ public class MainWindow extends UiPart<Stage> {
      */
     void fillInnerParts() {
         personListPanel = new PersonListPanel(logic.getFilteredPersonList(), p -> logic.getCurrentFeeState(p));
-        personListPanelPlaceholder.getChildren().add(personListPanel.getRoot());
+        performanceListPanel = new PerformanceListPanel(logic.getDisplayedPerformanceNotes());
+
+        Node personListRoot = personListPanel.getRoot();
+        Node performanceListRoot = performanceListPanel.getRoot();
+
+        ObservableList<PerformanceNote> displayedNotes = logic.getDisplayedPerformanceNotes();
+
+        performanceListRoot.visibleProperty().bind(Bindings.isNotEmpty(displayedNotes));
+        performanceListRoot.managedProperty().bind(performanceListRoot.visibleProperty());
+
+        personListRoot.visibleProperty().bind(Bindings.isEmpty(displayedNotes));
+        personListRoot.managedProperty().bind(personListRoot.visibleProperty());
+
+        personListPanelPlaceholder.getChildren().addAll(personListRoot, performanceListRoot);
 
         resultDisplay = new ResultDisplay();
         resultDisplayPlaceholder.getChildren().add(resultDisplay.getRoot());

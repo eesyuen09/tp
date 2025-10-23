@@ -43,6 +43,7 @@ public class PerfViewCommand extends PerfCommand {
                         String.format(Messages.MESSAGE_STUDENT_ID_NOT_FOUND, studentId)));
 
         List<PerformanceNote> notes = student.getPerformanceList().asUnmodifiableList();
+        model.setDisplayedPerformanceNotes(notes);
 
         if (notes.isEmpty()) {
             return new CommandResult(student.getName() + " Performance Notes:\n(none)");
@@ -52,7 +53,8 @@ public class PerfViewCommand extends PerfCommand {
         sb.append(student.getName()).append(" Performance Notes:\n");
         for (int i = 0; i < notes.size(); i++) {
             PerformanceNote n = notes.get(i);
-            sb.append(String.format("%d. %s: %s\n", i + 1, n.getDate().getFormattedDate(), n.getNote()));
+            sb.append(String.format("%d. %s %s: %s\n", i + 1,
+                    n.getDate().getFormattedDate(), n.getClassTag().tagName, n.getNote()));
         }
         return new CommandResult(sb.toString().trim());
     }

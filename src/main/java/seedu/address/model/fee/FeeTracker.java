@@ -70,26 +70,35 @@ public class FeeTracker {
     }
 
     /**
-     * Builds a payment history for a student, starting from their enrollment month
-     * up to the specified current month. Months without explicit records default to UNPAID.
+     * Builds a payment history of a student from the start month to the end month.
      *
      * @param person  The student whose payment history to generate.
-     * @param latest The latest month to include in the report.
+     * @param start The earliest month to include in the report.
+     * @param end The latest month to include in the report.
      * @return A map of {@code Month → FeeState}, or an empty map if the student is not yet enrolled.
      */
-    public Map<Month, FeeState> getPaymentHistory(Person person, Month latest) {
+    public Map<Month, FeeState> getPaymentHistory(Person person, Month start, Month end) {
         requireNonNull(person);
-        requireNonNull(latest);
+        requireNonNull(start);
+        requireNonNull(end);
+
         Month enrolled = person.getEnrolledMonth();
-        if (enrolled == null || latest.isBefore(enrolled)) {
+        if (enrolled == null) {
+            return Map.of();
+        }
+
+        Month effectiveStart = start.isBefore(enrolled) ? enrolled : start;
+
+        // Nothing to show if end precedes effectiveStart
+        if (end.isBefore(effectiveStart)) {
             return Map.of();
         }
 
         Map<Month, FeeState> history = new LinkedHashMap<>();
-        Month current = enrolled;
-        while (current.isBefore(latest) || current.equals(latest)) {
-            history.put(current, getExplicitStatusOfMonth(person.getStudentId(), current)
-                    .orElse(FeeState.UNPAID));
+        Month current = effectiveStart;
+        while (current.isBefore(end) || current.equals(end)) {
+            FeeState state = getDerivedStatusofMonth(person, current).orElse(FeeState.UNPAID);
+            history.put(current, state);
             current = current.plusMonths(1);
         }
         return history;

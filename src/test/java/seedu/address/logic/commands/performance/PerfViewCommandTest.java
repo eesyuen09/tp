@@ -1,15 +1,20 @@
 package seedu.address.logic.commands.performance;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.testutil.Assert.assertThrows;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.model.AddressBook;
@@ -22,6 +27,7 @@ import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
 import seedu.address.model.person.performance.PerformanceList;
 import seedu.address.model.person.performance.PerformanceNote;
+import seedu.address.model.tag.ClassTag;
 import seedu.address.testutil.ModelStub;
 import seedu.address.testutil.PersonBuilder;
 
@@ -29,8 +35,10 @@ public class PerfViewCommandTest {
 
     private static final StudentId VALID_STUDENT_ID = new StudentId("0123");
     private static final Date VALID_DATE_1 = new Date("15032024");
+    private static final ClassTag VALID_CLASS_TAG_1 = new ClassTag("CS2103T");
     private static final String VALID_NOTE_1 = "Good performance in class";
     private static final Date VALID_DATE_2 = new Date("20032024");
+    private static final ClassTag VALID_CLASS_TAG_2 = new ClassTag("CS1231");
     private static final String VALID_NOTE_2 = "Excellent homework submission";
 
     @Test
@@ -41,111 +49,116 @@ public class PerfViewCommandTest {
     @Test
     public void execute_studentNotFound_throwsCommandException() {
         Model model = new ModelManager(new AddressBook(), new UserPrefs());
-        PerfViewCommand perfViewCommand = new PerfViewCommand(VALID_STUDENT_ID);
+        PerfViewCommand command = new PerfViewCommand(VALID_STUDENT_ID);
 
-        assertCommandFailure(perfViewCommand, model,
-                String.format(Messages.MESSAGE_STUDENT_ID_NOT_FOUND, VALID_STUDENT_ID));
+        assertCommandFailure(command, model, String.format(Messages.MESSAGE_STUDENT_ID_NOT_FOUND, VALID_STUDENT_ID));
     }
 
     @Test
     public void execute_studentWithNoNotes_returnsNoneMessage() throws Exception {
-        Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID.toString()).build();
+        Person student = new PersonBuilder().withStudentId(VALID_STUDENT_ID.toString()).build();
         Model model = new ModelManager(new AddressBook(), new UserPrefs());
-        model.addPerson(validPerson);
+        model.addPerson(student);
 
-        String expectedMessage = validPerson.getName() + " Performance Notes:\n(none)";
-
+        String expectedMessage = student.getName() + " Performance Notes:\n(none)";
         assertCommandSuccess(new PerfViewCommand(VALID_STUDENT_ID), model, expectedMessage, model);
+        assertTrue(model.getDisplayedPerformanceNotes().isEmpty());
     }
 
     @Test
     public void execute_studentWithOneNote_displaysNote() throws Exception {
-        Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID.toString()).build();
+        Person student = new PersonBuilder().withStudentId(VALID_STUDENT_ID.toString()).build();
 
-        PerformanceNote note = new PerformanceNote(VALID_DATE_1, VALID_NOTE_1);
-        PerformanceList performanceList = new PerformanceList();
-        performanceList.add(note);
-        Person personWithNote = validPerson.withPerformanceList(performanceList);
+        PerformanceNote note = new PerformanceNote(VALID_DATE_1, VALID_CLASS_TAG_1, VALID_NOTE_1);
+        PerformanceList list = new PerformanceList();
+        list.add(note);
+        Person studentWithNote = student.withPerformanceList(list);
 
         Model model = new ModelManager(new AddressBook(), new UserPrefs());
-        model.addPerson(personWithNote);
+        model.addPerson(studentWithNote);
 
-        String expectedMessage = personWithNote.getName() + " Performance Notes:\n"
-                + "1. " + note.getDate().getFormattedDate() + ": " + VALID_NOTE_1;
+        String expectedMessage = studentWithNote.getName() + " Performance Notes:\n"
+                + "1. " + note.getDate().getFormattedDate() + " " + note.getClassTag().tagName
+                + ": " + note.getNote();
 
         assertCommandSuccess(new PerfViewCommand(VALID_STUDENT_ID), model, expectedMessage, model);
+        assertEquals(List.of(note), model.getDisplayedPerformanceNotes());
     }
 
     @Test
     public void execute_studentWithMultipleNotes_displaysAllNotes() throws Exception {
-        Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID.toString()).build();
+        Person student = new PersonBuilder().withStudentId(VALID_STUDENT_ID.toString()).build();
 
-        PerformanceNote note1 = new PerformanceNote(VALID_DATE_1, VALID_NOTE_1);
-        PerformanceNote note2 = new PerformanceNote(VALID_DATE_2, VALID_NOTE_2);
-        PerformanceList performanceList = new PerformanceList();
-        performanceList.add(note1);
-        performanceList.add(note2);
-        Person personWithNotes = validPerson.withPerformanceList(performanceList);
+        PerformanceNote note1 = new PerformanceNote(VALID_DATE_1, VALID_CLASS_TAG_1, VALID_NOTE_1);
+        PerformanceNote note2 = new PerformanceNote(VALID_DATE_2, VALID_CLASS_TAG_2, VALID_NOTE_2);
+        PerformanceList list = new PerformanceList();
+        list.add(note1);
+        list.add(note2);
+        Person studentWithNotes = student.withPerformanceList(list);
 
         Model model = new ModelManager(new AddressBook(), new UserPrefs());
-        model.addPerson(personWithNotes);
+        model.addPerson(studentWithNotes);
 
-        String expectedMessage = personWithNotes.getName() + " Performance Notes:\n"
-                + "1. " + note1.getDate().getFormattedDate() + ": " + VALID_NOTE_1 + "\n"
-                + "2. " + note2.getDate().getFormattedDate() + ": " + VALID_NOTE_2;
+        String expectedMessage = studentWithNotes.getName() + " Performance Notes:\n"
+                + "1. " + note1.getDate().getFormattedDate() + " " + note1.getClassTag().tagName
+                + ": " + note1.getNote() + "\n"
+                + "2. " + note2.getDate().getFormattedDate() + " " + note2.getClassTag().tagName
+                + ": " + note2.getNote();
 
         assertCommandSuccess(new PerfViewCommand(VALID_STUDENT_ID), model, expectedMessage, model);
+        assertEquals(List.of(note1, note2), model.getDisplayedPerformanceNotes());
     }
 
     @Test
     public void execute_studentWithNotesUsingModelStub_success() throws Exception {
-        Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID.toString()).build();
+        Person student = new PersonBuilder().withStudentId(VALID_STUDENT_ID.toString()).build();
 
-        PerformanceNote note = new PerformanceNote(VALID_DATE_1, VALID_NOTE_1);
-        PerformanceList performanceList = new PerformanceList();
-        performanceList.add(note);
-        Person personWithNote = validPerson.withPerformanceList(performanceList);
+        PerformanceNote note = new PerformanceNote(VALID_DATE_1, VALID_CLASS_TAG_1, VALID_NOTE_1);
+        PerformanceList list = new PerformanceList();
+        list.add(note);
+        Person studentWithNote = student.withPerformanceList(list);
 
-        ModelStubWithPerson modelStub = new ModelStubWithPerson(personWithNote);
-
+        ModelStubWithPerson modelStub = new ModelStubWithPerson(studentWithNote);
         CommandResult result = new PerfViewCommand(VALID_STUDENT_ID).execute(modelStub);
 
-        String expectedMessage = personWithNote.getName() + " Performance Notes:\n"
-                + "1. " + note.getDate().getFormattedDate() + ": " + VALID_NOTE_1;
+        String expectedMessage = studentWithNote.getName() + " Performance Notes:\n"
+                + "1. " + note.getDate().getFormattedDate() + " " + note.getClassTag().tagName
+                + ": " + note.getNote();
 
         assertTrue(result.getFeedbackToUser().equals(expectedMessage));
+        assertEquals(List.of(note), modelStub.getDisplayedNotes());
     }
 
     @Test
     public void equals() {
-        StudentId studentIdA = new StudentId("0123");
-        StudentId studentIdB = new StudentId("0234");
+        StudentId idA = new StudentId("0123");
+        StudentId idB = new StudentId("0234");
 
-        PerfViewCommand viewCommandA = new PerfViewCommand(studentIdA);
-        PerfViewCommand viewCommandB = new PerfViewCommand(studentIdB);
+        PerfViewCommand commandA = new PerfViewCommand(idA);
+        PerfViewCommand commandB = new PerfViewCommand(idB);
 
-        // same object -> returns true
-        assertTrue(viewCommandA.equals(viewCommandA));
+        // same object -> true
+        assertTrue(commandA.equals(commandA));
 
-        // same values -> returns true
-        PerfViewCommand viewCommandACopy = new PerfViewCommand(studentIdA);
-        assertTrue(viewCommandA.equals(viewCommandACopy));
+        // same values -> true
+        assertTrue(commandA.equals(new PerfViewCommand(idA)));
 
-        // different types -> returns false
-        assertFalse(viewCommandA.equals(1));
+        // different types -> false
+        assertFalse(commandA.equals(1));
 
-        // null -> returns false
-        assertFalse(viewCommandA.equals(null));
+        // null -> false
+        assertFalse(commandA.equals(null));
 
-        // different student ID -> returns false
-        assertFalse(viewCommandA.equals(viewCommandB));
+        // different student ID -> false
+        assertFalse(commandA.equals(commandB));
     }
 
     /**
-     * A Model stub that contains a single person.
+     * Model stub containing a single person.
      */
-    private class ModelStubWithPerson extends ModelStub {
+    private static class ModelStubWithPerson extends ModelStub {
         private final Person person;
+        private List<PerformanceNote> displayedNotes = new ArrayList<>();
 
         ModelStubWithPerson(Person person) {
             this.person = person;
@@ -162,6 +175,25 @@ public class PerfViewCommandTest {
         @Override
         public ReadOnlyAddressBook getAddressBook() {
             return new AddressBook();
+        }
+
+        @Override
+        public ObservableList<PerformanceNote> getDisplayedPerformanceNotes() {
+            return FXCollections.unmodifiableObservableList(FXCollections.observableArrayList(displayedNotes));
+        }
+
+        @Override
+        public void setDisplayedPerformanceNotes(List<PerformanceNote> notes) {
+            displayedNotes = new ArrayList<>(notes);
+        }
+
+        @Override
+        public void clearDisplayedPerformanceNotes() {
+            displayedNotes = new ArrayList<>();
+        }
+
+        List<PerformanceNote> getDisplayedNotes() {
+            return displayedNotes;
         }
     }
 }
