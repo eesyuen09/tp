@@ -52,6 +52,9 @@ Tuto is a **desktop app for managing contacts, optimized for use via a  Line Int
 * Words in `UPPER_CASE` are the parameters to be supplied by the user.<br>
   e.g. in `add n/NAME`, `NAME` is a parameter which can be used as `add n/John Doe`.
 
+* Each student added will be automatically assigned a unique `Student ID` in a 4-digit format, which is used to identify the student for edit and delete commands.
+  e.g. `0020`, `2413`
+
 * Items in square brackets are optional.<br>
   e.g `n/NAME [t/TAG]` can be used as `n/John Doe t/friend` or as `n/John Doe`.
 
@@ -74,6 +77,92 @@ Shows a message explaining how to access the help page.
 ![help message](images/helpMessage.png)
 
 Format: `help`
+
+
+### Adding a student: `add`
+
+Adds a student to the address book.
+
+Format: `add n/NAME p/PHONE e/EMAIL a/ADDRESS [t/CLASS_TAG]...`
+
+- Adds a new student with the specified name, phone number, email, and address.
+- Class tags (`t/CLASS_TAG`) are optional; a student can have any number of tags, including none.
+- Tags must exist in the system. If a specified tag does not exist, the command will fail.
+
+<box type="tip" seamless>
+
+**Tip:** You can add multiple tags by specifying `t/TAG1 t/TAG2 ...`.  
+A student can also have zero tags.
+</box>
+
+**Examples:**
+
+- `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01`  
+  Adds a student with no tags.
+
+- `add n/Betsy Crowe t/friend e/betsycrowe@example.com a/Newgate Prison p/1234567 t/criminal`  
+  Adds a student with two tags: `friend` and `criminal`.
+
+### Listing all students : `list`
+
+Shows a list of all students in the address book.
+
+Format: `list`
+
+### Editing a student : `edit`
+
+Edits the details of an existing student in the address book using their student ID.
+
+Format: `edit s/STUDENT_ID [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/CLASS_TAG]...`
+
+* Edits the student identified by the given `STUDENT_ID`.
+* At least one of the optional fields must be provided.
+* Existing values will be updated to the input values.
+* When editing class tags:
+    - Adding new tags: type `t/TAG1 t/TAG2 ...` (existing tags **remain**; new ones are **added**).
+    - Clearing all tags: type `t/` with no tags specified.
+
+**Examples:**
+
+- `edit s/2042 p/91234567 e/johndoe@example.com`  
+  Edits the phone number and email of the student with ID `2042`.
+
+- `edit s/2042 n/Betsy Crower t/`  
+  Edits the name of the student with ID `2042` to `Betsy Crower` and clears all existing class tags.
+
+- `edit s/2042 t/MATH101 t/CS102`  
+  Updates the class tags of the student with ID `2042` to `MATH101` and `CS102`.
+
+### Locating students by name: `find`
+
+Finds students whose names contain any of the given keywords.
+
+Format: `find KEYWORD [MORE_KEYWORDS]`
+
+* The search is case-insensitive. e.g `hans` will match `Hans`
+* The order of the keywords does not matter. e.g. `Hans Bo` will match `Bo Hans`
+* Only the name is searched.
+* Only full words will be matched e.g. `Han` will not match `Hans`
+* Persons matching at least one keyword will be returned (i.e. `OR` search).
+  e.g. `Hans Bo` will return `Hans Gruber`, `Bo Yang`
+
+Examples:
+* `find John` returns `john` and `John Doe`
+* `find alex david` returns `Alex Yeoh`, `David Li`<br>
+  ![result for 'find alex david'](images/findAlexDavidResult.png)
+
+### Deleting a Person: `delete`
+
+Deletes a specified student from the address book using their student ID.
+
+Format: `delete s/STUDENT_ID`
+
+- Removes the student with the matching `STUDENT_ID` from the address book.
+- The `STUDENT_ID` must correspond to an existing student in the list.
+
+Examples:
+* `delete s/0230` deletes the student with ID `0230` from the address book.
+* `find Betsy` followed by `delete s/2042` deletes the student with ID `2042` from the search results.
 
 ### Adding a class tag : `tag -a`
 
@@ -139,76 +228,6 @@ Expected output:
 
 ---
 
-### Adding a person: `add`
-
-Adds a person to the address book.
-
-Format: `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​`
-
-<box type="tip" seamless>
-
-**Tip:** A person can have any number of tags (including 0)
-</box>
-
-Examples:
-* `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01`
-* `add n/Betsy Crowe t/friend e/betsycrowe@example.com a/Newgate Prison p/1234567 t/criminal`
-
-### Listing all persons : `list`
-
-Shows a list of all persons in the address book.
-
-Format: `list`
-
-### Editing a person : `edit`
-
-Edits an existing person in the address book.
-
-Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`
-
-* Edits the person at the specified `INDEX`. The index refers to the index number shown in the displayed person list. The index **must be a positive integer** 1, 2, 3, …​
-* At least one of the optional fields must be provided.
-* Existing values will be updated to the input values.
-* When editing tags, the existing tags of the person will be removed i.e adding of tags is not cumulative.
-* You can remove all the person’s tags by typing `t/` without
-    specifying any tags after it.
-
-Examples:
-*  `edit 1 p/91234567 e/johndoe@example.com` Edits the phone number and email address of the 1st person to be `91234567` and `johndoe@example.com` respectively.
-*  `edit 2 n/Betsy Crower t/` Edits the name of the 2nd person to be `Betsy Crower` and clears all existing tags.
-
-### Locating persons by name: `find`
-
-Finds persons whose names contain any of the given keywords.
-
-Format: `find KEYWORD [MORE_KEYWORDS]`
-
-* The search is case-insensitive. e.g `hans` will match `Hans`
-* The order of the keywords does not matter. e.g. `Hans Bo` will match `Bo Hans`
-* Only the name is searched.
-* Only full words will be matched e.g. `Han` will not match `Hans`
-* Persons matching at least one keyword will be returned (i.e. `OR` search).
-  e.g. `Hans Bo` will return `Hans Gruber`, `Bo Yang`
-
-Examples:
-* `find John` returns `john` and `John Doe`
-* `find alex david` returns `Alex Yeoh`, `David Li`<br>
-  ![result for 'find alex david'](images/findAlexDavidResult.png)
-
-### Deleting a person : `delete`
-
-Deletes the specified person from the address book.
-
-Format: `delete INDEX`
-
-* Deletes the person at the specified `INDEX`.
-* The index refers to the index number shown in the displayed person list.
-* The index **must be a positive integer** 1, 2, 3, …​
-
-Examples:
-* `list` followed by `delete 2` deletes the 2nd person in the address book.
-* `find Betsy` followed by `delete 1` deletes the 1st person in the results of the `find` command.
-
 ### Managing students' payment: `fee` Commands
 The `fee` command family allows you to **record, update, and view student payment statuses**.  
 This helps tutors and administrators track monthly tuition fee payments efficiently and keep student records up to date.
@@ -224,7 +243,7 @@ This helps tutors and administrators track monthly tuition fee payments efficien
 </box>
 
 
-### 1. Marking a student as PAID: 
+### 1. Marking a student as PAID:
 
 Marks a student’s payment status as **PAID** for a specific month.
 
@@ -263,7 +282,7 @@ David Li has been successfully marked as Unpaid for August 2025.
 
 ### 3. Viewing a student’s payment history:
 
-Displays a student’s payment history from a starting month up to the current month.   
+Displays a student’s payment history from a starting month up to the current month.
 
 
 **Format:** fee -v s/STUDENT_ID [m/MMYY]
@@ -291,9 +310,9 @@ October 2025 : PAID (marked)
 
 <box type="info" seamless>
 
-**Interpreting the results:**  
-- `marked` — the payment was explicitly set (via `fee -p` or `fee -up`).  
-- `default` — the month had no explicit record and is assumed **UNPAID**.  
+**Interpreting the results:**
+- `marked` — the payment was explicitly set (via `fee -p` or `fee -up`).
+- `default` — the month had no explicit record and is assumed **UNPAID**.
 
 </box>
 
@@ -302,7 +321,7 @@ October 2025 : PAID (marked)
 ### Filter students: `filter`
 
 The `filter` command allows you to quickly find students based on specific criteria such as **payment status** or **class tags**.  
-This is useful for tutors and administrators who want to check which students 
+This is useful for tutors and administrators who want to check which students
 have paid or are unpaid for a given month, or to focus on a specific class group.
 
 ### Overview
@@ -443,6 +462,7 @@ Showing attendance records for: Bernice Yu<br>
 <box type="info" seamless>
 
 </box>
+
 ### Clearing all entries : `clear`
 
 Clears all entries from the address book.
@@ -470,10 +490,6 @@ If your changes to the data file makes its format invalid, AddressBook will disc
 Furthermore, certain edits can cause the AddressBook to behave in unexpected ways (e.g., if a value entered is outside the acceptable range). Therefore, edit the data file only if you are confident that you can update it correctly.
 </box>
 
-### Archiving data files `[coming in v2.0]`
-
-_Details coming soon ..._
-
 --------------------------------------------------------------------------------------------------------------------
 
 ## FAQ
@@ -494,10 +510,10 @@ _Details coming soon ..._
 
 Action     | Format, Examples
 -----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-**Add**    | `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​` <br> e.g., `add n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 t/friend t/colleague`
+**Add**    | `add n/NAME p/PHONE e/EMAIL a/ADDRESS [t/CLASS_TAG]…​` <br> e.g., `add n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 t/Math t/Science`
 **Clear**  | `clear`
-**Delete** | `delete INDEX`<br> e.g., `delete 3`
-**Edit**   | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com`
+**Delete** | `delete s/STUDENT_ID`<br> e.g., `delete s/0230`
+**Edit**   | `edit s/STUDENT_ID [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`<br> e.g.,`edit s/1234 n/James Lee e/jameslee@example.com`
 **Find**   | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`
 **List**   | `list`
 **Help**   | `help`
