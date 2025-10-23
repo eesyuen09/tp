@@ -383,7 +383,7 @@ Examples:
 Expected output:
 ![filterByClassTag.jpg](images/filterByClassTag.jpg)
 
-## Managing students' attendance: `att`
+### Managing students' attendance: `att`
 The `att` command family allows you to **record, update, and view student attendance**.
 Each attendance record is tied to both a date and a class tag, allowing tutors to manage students who attend multiple classes efficiently.
 
@@ -463,6 +463,69 @@ Showing attendance records for: Bernice Yu<br>
 
 </box>
 
+### Tracking students' performance: `perf` commands
+The `perf` command family allows you to track students' performance in class.
+This helps you to monitor and manage students' academic progress effectively.
+
+**Overview of perf commands**
+
+| Command | Description |
+|---------|-------------|
+| `perf add` | Add performance data for a student |
+| `perf view` | View performance data for a student |
+| `perf edit` | Edit existing performance data for a student |
+| `perf delete` | Delete performance data for a student |
+
+
+### 1. Adding a performance note for a student:
+
+Adds a performance note for a student in a specific class on a specific date.
+
+**Format**: `perf -a s/STUDENT_ID d/DATE t/TAG_NAME pn/PERFORMANCE_NOTE`
+
+**Examples:**
+- `perf -a s/0001 d/18092025 t/Sec3_Maths pn/Scored 85% on mock test`
+
+**Expected output:**
+Performance note successfully added for John Tan in Sec3_Maths on 18-09-2025.
+
+### 2. Viewing performance notes for a student:
+
+Displays all performance notes for a student.
+
+**Format**: `perf -v s/STUDENT_ID`
+
+**Examples:**
+- `perf -v s/0001`
+
+**Expected output:**
+Performance notes for John Tan:
+- Sec3_Maths on 18-09-2025: Scored 85% on mock test
+
+### 3. Editing a performance note for a student:
+
+Edits an existing performance note for a student.
+
+**Format**: `perf -e s/STUDENT_ID d/DATE t/TAG_NAME pn/PERFORMANCE_NOTE`
+
+**Examples:**
+- `perf -e s/0001 d/18092025 t/Sec3_Maths pn/Scored 90% on mock test after re-evaluation`
+
+**Expected output:**
+- Performance note for %s in %s on %s successfully edited.
+
+### 4. Deleting a performance note for a student:
+
+Deletes a performance note for a student.
+
+**Format**: `perf -d s/STUDENT_ID d/DATE t/TAG_NAME`
+
+**Examples:**
+- `perf -d s/0001 d/18092025 t/Sec3_Maths`
+
+**Expected output:**
+- Performance note for John Tan in Sec3_Maths on 18-09-2025 successfully deleted.
+
 ### Clearing all entries : `clear`
 
 Clears all entries from the address book.
@@ -490,6 +553,10 @@ If your changes to the data file makes its format invalid, AddressBook will disc
 Furthermore, certain edits can cause the AddressBook to behave in unexpected ways (e.g., if a value entered is outside the acceptable range). Therefore, edit the data file only if you are confident that you can update it correctly.
 </box>
 
+### Archiving data files `[coming in v2.0]`
+
+_Details coming soon ..._
+
 --------------------------------------------------------------------------------------------------------------------
 
 ## FAQ
@@ -508,16 +575,20 @@ Furthermore, certain edits can cause the AddressBook to behave in unexpected way
 
 ## Command summary
 
-Action     | Format, Examples
------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-**Add**    | `add n/NAME p/PHONE e/EMAIL a/ADDRESS [t/CLASS_TAG]…​` <br> e.g., `add n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 t/Math t/Science`
-**Clear**  | `clear`
-**Delete** | `delete s/STUDENT_ID`<br> e.g., `delete s/0230`
-**Edit**   | `edit s/STUDENT_ID [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`<br> e.g.,`edit s/1234 n/James Lee e/jameslee@example.com`
-**Find**   | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`
-**List**   | `list`
-**Help**   | `help`
-**Class Tag (add)**    | `tag -a t/TAG_NAME`<br> e.g., `tag -a t/Sec3_Maths`
-**Class Tag (delete)** | `tag -d t/TAG_NAME`<br> e.g., `tag -d t/Sec3_Maths`
-**Class Tag (list)**   | `tag -l`<br> e.g., `tag -l`
-**Filter (by class tag)** | `filter -t t/TAG_NAME`<br> e.g., `filter -t t/Sec3_Maths`
+| Action                      | Format, Examples                                                                                                                                                 |
+|-----------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Add**                     | `add n/NAME p/PHONE e/EMAIL a/ADDRESS [t/CLASS_TAG]…​` <br> e.g., `add n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 t/Math t/Science` |
+| **Clear**                   | `clear`                                                                                                                                                          |
+| **Delete**                  | `delete s/STUDENT_ID`<br> e.g., `delete s/0230`                                                                                                                  |
+| **Edit**                    | `edit s/STUDENT_ID [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`<br> e.g.,`edit s/1234 n/James Lee e/jameslee@example.com`                          |
+| **Find**                    | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`                                                                                                       |
+| **List**                    | `list`                                                                                                                                                           |
+| **Help**                    | `help`                                                                                                                                                           |
+| **Class Tag (add)**         | `tag -a t/TAG_NAME`<br> e.g., `tag -a t/Sec3_Maths`                                                                                                              |
+| **Class Tag (delete)**      | `tag -d t/TAG_NAME`<br> e.g., `tag -d t/Sec3_Maths`                                                                                                              |
+| **Class Tag (list)**        | `tag -l`<br> e.g., `tag -l`                                                                                                                                      |
+| **Filter (by class tag)**   | `filter -t t/TAG_NAME`<br> e.g., `filter -t t/Sec3_Maths`                                                                                                        |
+| **Add performance note**    | `perf -a s/STUDENT_ID d/DATE t/TAG_NAME pn/PERFORMANCE_NOTE` <br> e.g., `perf -a s/0001 d/18092025 t/Sec3_Maths pn/Scored 85% on mock test`                      |
+| **View performance notes**  | `perf -v s/STUDENT_ID` <br> e.g., `perf -v s/0001`                                                                                                               |
+| **Edit performance note**   | `perf -e s/STUDENT_ID d/DATE t/TAG_NAME pn/PERFORMANCE_NOTE` <br> e.g., `perf -e s/0001 d/18092025 t/Sec3_Maths pn/Scored 90% on mock test after re-evaluation`  |
+| **Delete performance note** | `perf -d s/STUDENT_ID d/DATE t/TAG_NAME` <br> e.g., `perf -d s/0001 d/18092025 t/Sec3_Maths`                                                                     |
