@@ -43,6 +43,7 @@ public class PerfViewCommand extends PerfCommand {
                         String.format(Messages.MESSAGE_STUDENT_ID_NOT_FOUND, studentId)));
 
         List<PerformanceNote> notes = student.getPerformanceList().asUnmodifiableList();
+        model.setDisplayedPerformanceNotes(notes);
 
         if (notes.isEmpty()) {
             return new CommandResult(student.getName() + " Performance Notes:\n(none)");
