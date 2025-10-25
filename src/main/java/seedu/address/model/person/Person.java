@@ -142,7 +142,7 @@ public class Person {
     }
 
     /**
-     * Returns an immutable class tag set, which throws {@code UnsupportedOperationException}
+     * Returns an immutable ClassTag set, which throws {@code UnsupportedOperationException}
      * if modification is attempted.
      */
     public Set<ClassTag> getTags() {

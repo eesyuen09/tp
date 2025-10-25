@@ -16,7 +16,7 @@ import seedu.address.model.tag.ClassTag;
 
 
 /**
- * Parses input arguments and creates the correct Command object for tag-related operations.
+ * Parses input arguments and creates the correct Command object for ClassTag-related operations.
  */
 public class ClassTagCommandParser implements Parser<Command> {
 
