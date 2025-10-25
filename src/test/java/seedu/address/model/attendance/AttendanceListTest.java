@@ -278,4 +278,73 @@ public class AttendanceListTest {
 
         assertNotEquals(attendanceList1.hashCode(), attendanceList2.hashCode());
     }
+
+    @Test
+    public void deleteAttendance_null_throwsNullPointerException() {
+        AttendanceList attendanceList = new AttendanceList();
+        assertThrows(NullPointerException.class, () -> attendanceList.deleteAttendance(null, VALID_CLASS_TAG_1));
+        assertThrows(NullPointerException.class, () -> attendanceList.deleteAttendance(VALID_DATE_1, null));
+    }
+
+    @Test
+    public void deleteAttendance_existingRecord_success() {
+        AttendanceList attendanceList = new AttendanceList();
+        attendanceList.markAttendance(VALID_DATE_1, VALID_CLASS_TAG_1);
+
+        assertEquals(1, attendanceList.size());
+        assertTrue(attendanceList.hasAttendanceMarked(VALID_DATE_1, VALID_CLASS_TAG_1));
+
+        attendanceList.deleteAttendance(VALID_DATE_1, VALID_CLASS_TAG_1);
+
+        assertEquals(0, attendanceList.size());
+        assertFalse(attendanceList.hasAttendanceMarked(VALID_DATE_1, VALID_CLASS_TAG_1));
+    }
+
+    @Test
+    public void deleteAttendance_nonExistingRecord_noChange() {
+        AttendanceList attendanceList = new AttendanceList();
+        attendanceList.markAttendance(VALID_DATE_1, VALID_CLASS_TAG_1);
+
+        assertEquals(1, attendanceList.size());
+
+        // Try to delete a non-existing record
+        attendanceList.deleteAttendance(VALID_DATE_2, VALID_CLASS_TAG_1);
+
+        // Size should remain the same
+        assertEquals(1, attendanceList.size());
+        assertTrue(attendanceList.hasAttendanceMarked(VALID_DATE_1, VALID_CLASS_TAG_1));
+    }
+
+    @Test
+    public void deleteAttendance_multipleRecords_deletesOnlySpecified() {
+        AttendanceList attendanceList = new AttendanceList();
+        attendanceList.markAttendance(VALID_DATE_1, VALID_CLASS_TAG_1);
+        attendanceList.markAttendance(VALID_DATE_2, VALID_CLASS_TAG_1);
+        attendanceList.markAttendance(VALID_DATE_1, VALID_CLASS_TAG_2);
+
+        assertEquals(3, attendanceList.size());
+
+        // Delete only one specific record
+        attendanceList.deleteAttendance(VALID_DATE_1, VALID_CLASS_TAG_1);
+
+        assertEquals(2, attendanceList.size());
+        assertFalse(attendanceList.hasAttendanceMarked(VALID_DATE_1, VALID_CLASS_TAG_1));
+        assertTrue(attendanceList.hasAttendanceMarked(VALID_DATE_2, VALID_CLASS_TAG_1));
+        assertTrue(attendanceList.hasAttendanceMarked(VALID_DATE_1, VALID_CLASS_TAG_2));
+    }
+
+    @Test
+    public void deleteAttendance_unmarkedRecord_success() {
+        AttendanceList attendanceList = new AttendanceList();
+        attendanceList.unmarkAttendance(VALID_DATE_1, VALID_CLASS_TAG_1);
+
+        assertEquals(1, attendanceList.size());
+        assertTrue(attendanceList.hasAttendanceUnmarked(VALID_DATE_1, VALID_CLASS_TAG_1));
+
+        // Delete the unmarked (absent) record
+        attendanceList.deleteAttendance(VALID_DATE_1, VALID_CLASS_TAG_1);
+
+        assertEquals(0, attendanceList.size());
+        assertFalse(attendanceList.hasAttendanceUnmarked(VALID_DATE_1, VALID_CLASS_TAG_1));
+    }
 }
