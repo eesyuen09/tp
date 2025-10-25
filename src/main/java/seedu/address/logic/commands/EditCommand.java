@@ -51,7 +51,8 @@ public class EditCommand extends Command {
             + "Example: " + COMMAND_WORD + " 1 "
             + PREFIX_STUDENTID + "2042"
             + PREFIX_PHONE + "91234567 "
-            + PREFIX_EMAIL + "johndoe@example.com";
+            + PREFIX_EMAIL + "johndoe@example.com"
+            + PREFIX_CLASSTAG + "Sec3_Maths";
 
     public static final String MESSAGE_EDIT_PERSON_SUCCESS = "Edited Person: %1$s";
     public static final String MESSAGE_NOT_EDITED = "At least one field to edit must be provided.";
@@ -77,23 +78,24 @@ public class EditCommand extends Command {
     @Override
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
+
         if (!model.hasPersonWithId(studentId)) {
             throw new CommandException(String.format(Messages.MESSAGE_STUDENT_ID_NOT_FOUND, studentId));
         }
 
         Person personToEdit = model.getPersonById(studentId).get();
-        Person editedPerson = createEditedPerson(personToEdit, editPersonDescriptor);
+
+        Optional<Set<ClassTag>> correctlyCasedTagsOptional;
+        try {
+            correctlyCasedTagsOptional = resolveTagsForEdit(model, editPersonDescriptor);
+        } catch (CommandException e) {
+            throw e;
+        }
+
+        Person editedPerson = createEditedPerson(personToEdit, editPersonDescriptor, correctlyCasedTagsOptional);
 
         if (!personToEdit.isSamePerson(editedPerson) && model.hasPerson(editedPerson)) {
             throw new CommandException(MESSAGE_DUPLICATE_PERSON);
-        }
-
-        if (editPersonDescriptor.getTags().isPresent()) {
-            for (ClassTag tag : editedPerson.getTags()) {
-                if (!model.hasClassTag(tag)) {
-                    throw new CommandException(String.format(MESSAGE_TAG_NOT_FOUND, tag.tagName));
-                }
-            }
         }
 
         model.setPerson(personToEdit, editedPerson);
@@ -102,21 +104,65 @@ public class EditCommand extends Command {
     }
 
     /**
-     * Creates and returns a {@code Person} with the details of {@code personToEdit}
-     * edited with {@code editPersonDescriptor}.
+     * Resolves the tags provided in the {@code EditPersonDescriptor} against the {@code Model}
+     * to get the correctly cased versions.
+     *
+     * @param model The current Model.
+     * @param descriptor The descriptor containing potential tag edits.
+     * @return An Optional containing the resolved set of tags (possibly empty if 't/' was used).
+     *         Returns Optional.empty() if tags were not specified for edit in the descriptor.
+     * @throws CommandException If a specified tag does not exist in the Model.
      */
-    private static Person createEditedPerson(Person personToEdit, EditPersonDescriptor editPersonDescriptor) {
+    private Optional<Set<ClassTag>> resolveTagsForEdit(Model model, EditPersonDescriptor descriptor)
+            throws CommandException {
+
+        // No tags were specified for edit
+        if (!descriptor.getTags().isPresent()) {
+            return Optional.empty();
+        }
+
+        Set<ClassTag> userProvidedTags = descriptor.getTags().get();
+        Set<ClassTag> correctlyCasedTags = new HashSet<>();
+
+        // User explicitly provided 't/' to clear tags
+        if (userProvidedTags.isEmpty()) {
+            return Optional.of(correctlyCasedTags);
+        }
+
+        for (ClassTag userTag : userProvidedTags) {
+            Optional<ClassTag> foundTag = model.findClassTag(userTag);
+            if (foundTag.isPresent()) {
+                correctlyCasedTags.add(foundTag.get());
+            } else {
+                throw new CommandException(String.format(MESSAGE_TAG_NOT_FOUND, userTag.tagName));
+            }
+        }
+        return Optional.of(correctlyCasedTags);
+    }
+
+    /**
+     * Creates and returns a {@code Person} with the details of {@code personToEdit}
+     * edited with {@code editPersonDescriptor}. Uses correctly cased tags if provided.
+     *
+     * @param personToEdit The original person.
+     * @param editPersonDescriptor The descriptor containing edits.
+     * @param finalTagsToSet Optional containing the correctly cased tag set if tags were edited, otherwise empty.
+     */
+    private static Person createEditedPerson(Person personToEdit, EditPersonDescriptor editPersonDescriptor,
+                                             Optional<Set<ClassTag>> finalTagsToSet) {
         assert personToEdit != null;
 
         Name updatedName = editPersonDescriptor.getName().orElse(personToEdit.getName());
         Phone updatedPhone = editPersonDescriptor.getPhone().orElse(personToEdit.getPhone());
         Email updatedEmail = editPersonDescriptor.getEmail().orElse(personToEdit.getEmail());
         Address updatedAddress = editPersonDescriptor.getAddress().orElse(personToEdit.getAddress());
-        Set<ClassTag> updatedTags = editPersonDescriptor.getTags().orElse(personToEdit.getTags());
+        Set<ClassTag> updatedTags = finalTagsToSet.orElse(personToEdit.getTags());
+
         StudentId updatedStudentId = personToEdit.getStudentId();
         Month enrolledMonth = personToEdit.getEnrolledMonth();
         AttendanceList attendanceList = personToEdit.getAttendanceList();
         PerformanceList updatedPerformanceList = personToEdit.getPerformanceList();
+
         return new Person(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags,
                 updatedStudentId, enrolledMonth, attendanceList, updatedPerformanceList);
     }

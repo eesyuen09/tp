@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.Messages.MESSAGE_STUDENT_ID_NOT_FOUND;
 import static seedu.address.logic.commands.CommandTestUtil.DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.DESC_BOB;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_CLASS_TAG_MATHS;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_CLASS_TAG_PHYSICS;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_NAME_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_PHONE_BOB;
@@ -60,14 +61,20 @@ public class EditCommandTest {
 
     @Test
     public void execute_someFieldsSpecifiedUnfilteredList_success() {
+
         Person personToEdit = BENSON;
         StudentId studentId = personToEdit.getStudentId();
 
+        // Expected person keeps original tags and adds new name/phone
         Person editedPerson = new PersonBuilder(personToEdit).withName(VALID_NAME_BOB)
-                .withPhone(VALID_PHONE_BOB).withTags(VALID_CLASS_TAG_PHYSICS).build();
+                .withPhone(VALID_PHONE_BOB)
+                .withTags(VALID_CLASS_TAG_MATHS, VALID_CLASS_TAG_PHYSICS)
+                .build();
 
         EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder().withName(VALID_NAME_BOB)
-                .withPhone(VALID_PHONE_BOB).withTags(VALID_CLASS_TAG_PHYSICS).build();
+                .withPhone(VALID_PHONE_BOB)
+                .withTags(VALID_CLASS_TAG_PHYSICS, VALID_CLASS_TAG_MATHS)
+                .build();
 
         EditCommand editCommand = new EditCommand(studentId, descriptor);
 
@@ -80,6 +87,68 @@ public class EditCommandTest {
         assertCommandSuccess(editCommand, model, expectedMessage, expectedModel);
     }
 
+    @Test
+    public void execute_editTagsWithDifferentCase_successUsesCorrectCase() {
+
+        Person personToEdit = ALICE;
+        StudentId studentId = personToEdit.getStudentId();
+
+        String correctMathTagLowercase = VALID_CLASS_TAG_MATHS.toLowerCase();
+        String correctPhysicsTagLowercase = VALID_CLASS_TAG_PHYSICS.toLowerCase();
+
+        EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder()
+                .withTags(correctMathTagLowercase, correctPhysicsTagLowercase)
+                .build();
+
+        EditCommand editCommand = new EditCommand(studentId, descriptor);
+
+
+        Person editedPerson = new PersonBuilder(personToEdit)
+                .withTags(VALID_CLASS_TAG_MATHS, VALID_CLASS_TAG_PHYSICS)
+                .build();
+
+        String expectedMessage = String.format(EditCommand.MESSAGE_EDIT_PERSON_SUCCESS, Messages.format(editedPerson));
+
+        Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
+        Person personToEditInExpectedModel = expectedModel.getPersonById(studentId).get();
+        expectedModel.setPerson(personToEditInExpectedModel, editedPerson);
+
+
+        assertCommandSuccess(editCommand, model, expectedMessage, expectedModel);
+
+        Person personAfterEdit = model.getPersonById(studentId).get();
+        assertTrue(personAfterEdit.getTags().contains(new ClassTag(VALID_CLASS_TAG_MATHS)));
+        assertTrue(personAfterEdit.getTags().contains(new ClassTag(VALID_CLASS_TAG_PHYSICS)));
+    }
+
+    @Test
+    public void execute_clearTags_success() {
+
+        Person personToEdit = BENSON;
+        StudentId studentId = personToEdit.getStudentId();
+        assertTrue(personToEdit.getTags().size() > 0); // Pre-condition check
+
+        // Descriptor to clear tags (empty tag set via builder)
+        EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder().withTags().build();
+        EditCommand editCommand = new EditCommand(studentId, descriptor);
+
+        // Expected person has no tags
+        Person editedPerson = new PersonBuilder(personToEdit).withTags().build();
+
+        String expectedMessage = String.format(EditCommand.MESSAGE_EDIT_PERSON_SUCCESS, Messages.format(editedPerson));
+
+        Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
+        expectedModel.setPerson(personToEdit, editedPerson);
+
+        assertCommandSuccess(editCommand, model, expectedMessage, expectedModel);
+
+        // Verify tags are actually empty in the model
+        Person personAfterEdit = model.getPersonById(studentId).get();
+        assertTrue(personAfterEdit.getTags().isEmpty());
+    }
+
+
+    //Perhaps a Buggy Test Case
     @Test
     public void execute_noFieldSpecifiedUnfilteredList_success() {
         StudentId studentId = ALICE.getStudentId();
@@ -187,3 +256,5 @@ public class EditCommandTest {
     }
 
 }
+
+

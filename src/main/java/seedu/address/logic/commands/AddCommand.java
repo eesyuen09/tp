@@ -2,9 +2,14 @@ package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_CLASSTAG;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
+
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
@@ -27,11 +32,13 @@ public class AddCommand extends Command {
             + PREFIX_PHONE + "PHONE "
             + PREFIX_EMAIL + "EMAIL "
             + PREFIX_ADDRESS + "ADDRESS "
+            + "[" + PREFIX_CLASSTAG + "CLASS_TAG]...\n"
             + "Example: " + COMMAND_WORD + " "
             + PREFIX_NAME + "John Doe "
             + PREFIX_PHONE + "98765432 "
             + PREFIX_EMAIL + "johnd@example.com "
-            + PREFIX_ADDRESS + "311, Clementi Ave 2, #02-25 ";
+            + PREFIX_ADDRESS + "311, Clementi Ave 2, #02-25 "
+            + PREFIX_CLASSTAG + "Sec3_Maths";
 
     public static final String MESSAGE_SUCCESS = "New person added: %1$s";
     public static final String MESSAGE_DUPLICATE_PERSON = "This person already exists in the address book";
@@ -58,18 +65,44 @@ public class AddCommand extends Command {
             throw new CommandException(MESSAGE_DUPLICATE_PERSON);
         }
 
-        for (ClassTag tag : toAdd.getTags()) {
-            if (!model.hasClassTag(tag)) {
-                throw new CommandException(String.format(MESSAGE_TAG_NOT_FOUND, tag.tagName));
-            }
+        Person finalPersonToAdd;
+        try {
+            finalPersonToAdd = createPersonWithCorrectlyCasedTags(model);
+        } catch (CommandException e) {
+            throw e;
         }
 
         try {
-            model.addPerson(toAdd.withStudentId());
+            model.addPerson(finalPersonToAdd.withStudentId());
         } catch (ExceedMaxStudentsException e) {
             throw new CommandException(MESSAGE_MAX_STUDENTS_EXCEEDED);
         }
         return new CommandResult(String.format(MESSAGE_SUCCESS, Messages.format(toAdd)));
+    }
+
+    private Person createPersonWithCorrectlyCasedTags(Model model) throws CommandException {
+        Set<ClassTag> correctlyCasedTags = new HashSet<>();
+
+        for (ClassTag tag : toAdd.getTags()) {
+            Optional<ClassTag> foundTag = model.findClassTag(tag);
+
+            if (foundTag.isPresent()) {
+                correctlyCasedTags.add(foundTag.get());
+            } else {
+                throw new CommandException(String.format(MESSAGE_TAG_NOT_FOUND, tag.tagName));
+            }
+        }
+
+        return new Person(
+                toAdd.getName(),
+                toAdd.getPhone(),
+                toAdd.getEmail(),
+                toAdd.getAddress(),
+                correctlyCasedTags,
+                toAdd.getEnrolledMonth(),
+                toAdd.getAttendanceList(),
+                toAdd.getPerformanceList()
+        );
     }
 
     @Override
