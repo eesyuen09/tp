@@ -15,6 +15,8 @@ public class Date {
 
     public static final String MESSAGE_CONSTRAINTS =
             "Date should only contain numbers in the format DDMMYYYY";
+    public static final String MESSAGE_INVALID_DATE =
+            "Date is not a valid calendar date";
     public static final String VALIDATION_REGEX = "^(0[1-9]|[12][0-9]|3[01])(0[1-9]|1[0-2])(19|20)\\d\\d$";
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("ddMMyyyy");
     public final String value;
@@ -26,8 +28,17 @@ public class Date {
      */
     public Date(String date) {
         requireNonNull(date);
-        checkArgument(isValidDate(date), MESSAGE_CONSTRAINTS);
+        checkArgument(isValidFormat(date), MESSAGE_CONSTRAINTS);
+        checkArgument(isValidDate(date), MESSAGE_INVALID_DATE);
         value = date;
+    }
+
+    /**
+     * Returns true if a given string matches the expected date format.
+     * Only checks format (DDMMYYYY), not whether the date is logically valid.
+     */
+    public static boolean isValidFormat(String test) {
+        return test.matches(VALIDATION_REGEX);
     }
 
     /**
