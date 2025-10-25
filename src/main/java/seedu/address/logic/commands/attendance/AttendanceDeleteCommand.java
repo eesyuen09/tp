@@ -17,7 +17,8 @@ import seedu.address.model.tag.ClassTag;
 public class AttendanceDeleteCommand extends AttendanceCommand {
 
     public static final String MESSAGE_DELETE_SUCCESS = "Deleted attendance for: %1$s on %2$s for class %3$s";
-    public static final String MESSAGE_NO_ATTENDANCE_RECORD = "No attendance record found for %1$s on %2$s for class %3$s";
+    public static final String MESSAGE_NO_ATTENDANCE_RECORD = "No attendance record found for %1$s "
+            + "on %2$s for class %3$s";
     public static final String MESSAGE_STUDENT_DOES_NOT_HAVE_TAG = "Student %1$s does not have the class tag: %2$s";
 
     private final Date date;
@@ -80,3 +81,5 @@ public class AttendanceDeleteCommand extends AttendanceCommand {
     }
 
 }
+
+
