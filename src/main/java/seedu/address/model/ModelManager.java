@@ -245,13 +245,13 @@ public class ModelManager implements Model {
     @Override
     public Predicate<Person> paidStudents(Month month) {
         requireNonNull(month);
-        return p -> feeTracker.getDerivedStatusofMonth(p, month).orElse(null) == FeeState.PAID;
+        return p -> feeTracker.getDerivedStatusOfMonth(p, month).orElse(null) == FeeState.PAID;
     }
 
     @Override
     public Predicate<Person> unpaidStudents(Month month) {
         requireNonNull(month);
-        return p -> feeTracker.getDerivedStatusofMonth(p, month).orElse(null) == FeeState.UNPAID;
+        return p -> feeTracker.getDerivedStatusOfMonth(p, month).orElse(null) == FeeState.UNPAID;
     }
 
 
@@ -259,7 +259,7 @@ public class ModelManager implements Model {
     public Optional<FeeState> getCurrentFeeState(Person person) {
         requireNonNull(person);
         Month current = Month.now();
-        return feeTracker.getDerivedStatusofMonth(person, current);
+        return feeTracker.getDerivedStatusOfMonth(person, current);
     }
 
     @Override

@@ -61,7 +61,7 @@ public class FeeTracker {
      * @return {@code Optional.of(PAID/UNPAID)} if the month is on or after enrollment,
      *         or {@code Optional.empty()} if before enrollment.
      */
-    public Optional<FeeState> getDerivedStatusofMonth(Person person, Month month) {
+    public Optional<FeeState> getDerivedStatusOfMonth(Person person, Month month) {
         Month start = person.getEnrolledMonth();
         if (start == null || month.isBefore(start)) {
             return Optional.empty(); // not tracked
@@ -97,7 +97,7 @@ public class FeeTracker {
         Map<Month, FeeState> history = new LinkedHashMap<>();
         Month current = effectiveStart;
         while (current.isBefore(end) || current.equals(end)) {
-            FeeState state = getDerivedStatusofMonth(person, current).orElse(FeeState.UNPAID);
+            FeeState state = getDerivedStatusOfMonth(person, current).orElse(FeeState.UNPAID);
             history.put(current, state);
             current = current.plusMonths(1);
         }

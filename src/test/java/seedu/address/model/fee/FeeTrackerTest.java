@@ -66,7 +66,7 @@ public class FeeTrackerTest {
         Person p = mkPerson("0003", "0925", "A");
         Month earlier = new Month("0825"); // before enrolled 09/25
 
-        assertTrue(ft.getDerivedStatusofMonth(p, earlier).isEmpty());
+        assertTrue(ft.getDerivedStatusOfMonth(p, earlier).isEmpty());
     }
 
     @Test
@@ -75,7 +75,7 @@ public class FeeTrackerTest {
         Person p = mkPerson("0004", "0825", "B");
         Month sept = new Month("0925");
 
-        assertEquals(Optional.of(FeeState.UNPAID), ft.getDerivedStatusofMonth(p, sept));
+        assertEquals(Optional.of(FeeState.UNPAID), ft.getDerivedStatusOfMonth(p, sept));
     }
 
     @Test
@@ -85,7 +85,7 @@ public class FeeTrackerTest {
         Month sept = new Month("0925");
 
         ft.markPaid(p.getStudentId(), sept);
-        assertEquals(Optional.of(FeeState.PAID), ft.getDerivedStatusofMonth(p, sept));
+        assertEquals(Optional.of(FeeState.PAID), ft.getDerivedStatusOfMonth(p, sept));
     }
 
     @Test
@@ -95,7 +95,7 @@ public class FeeTrackerTest {
         Month sept = new Month("0925");
 
         ft.markUnpaid(p.getStudentId(), sept);
-        assertEquals(Optional.of(FeeState.UNPAID), ft.getDerivedStatusofMonth(p, sept));
+        assertEquals(Optional.of(FeeState.UNPAID), ft.getDerivedStatusOfMonth(p, sept));
     }
 
     @Test
@@ -104,7 +104,7 @@ public class FeeTrackerTest {
         Person p = mkPerson("0007", null, "E"); // no enrollment
         Month any = new Month("0925");
 
-        assertTrue(ft.getDerivedStatusofMonth(p, any).isEmpty());
+        assertTrue(ft.getDerivedStatusOfMonth(p, any).isEmpty());
     }
 
     @Test
