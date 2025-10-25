@@ -138,6 +138,10 @@ public class ModelStub implements Model {
         throw new AssertionError("This method should not be called.");
     }
     @Override
+    public void deleteAttendance(StudentId studentId, Date date, ClassTag classTag) {
+        throw new AssertionError("This method should not be called.");
+    }
+    @Override
     public Optional<FeeState> getCurrentFeeState(Person person) {
         throw new AssertionError("This method should not be called.");
     }

@@ -97,6 +97,35 @@ public class AttendanceList {
     }
 
     /**
+     * Returns true if an attendance record exists for this date and class tag.
+     *
+     * @param date The date to check.
+     * @param classTag The class tag to check.
+     * @return True if an attendance record exists for the date and class tag.
+     */
+    public boolean hasAttendanceRecord(Date date, ClassTag classTag) {
+        requireNonNull(date);
+        requireNonNull(classTag);
+        return records.stream()
+                .anyMatch(attendance -> attendance.getDate().equals(date)
+                        && attendance.getClassTag().equals(classTag));
+    }
+
+    /**
+     * Deletes the attendance record for this date and class tag.
+     * If no record exists, no action is taken.
+     *
+     * @param date The date of the attendance record to delete.
+     * @param classTag The class tag of the attendance record to delete.
+     */
+    public void deleteAttendance(Date date, ClassTag classTag) {
+        requireNonNull(date);
+        requireNonNull(classTag);
+        records.removeIf(attendance -> attendance.getDate().equals(date)
+                && attendance.getClassTag().equals(classTag));
+    }
+
+    /**
      * Returns the attendance records as an unmodifiable list.
      *
      * @return Unmodifiable list of attendance records.

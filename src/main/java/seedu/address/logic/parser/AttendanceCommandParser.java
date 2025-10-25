@@ -6,6 +6,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_DATE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_STUDENTID;
 
 import seedu.address.logic.commands.attendance.AttendanceCommand;
+import seedu.address.logic.commands.attendance.AttendanceDeleteCommand;
 import seedu.address.logic.commands.attendance.AttendanceMarkCommand;
 import seedu.address.logic.commands.attendance.AttendanceUnmarkCommand;
 import seedu.address.logic.commands.attendance.AttendanceViewCommand;
@@ -41,6 +42,8 @@ public class AttendanceCommandParser implements Parser<AttendanceCommand> {
             return parseMarkCommand(arguments);
         case "-u":
             return parseUnmarkCommand(arguments);
+        case "-d":
+            return parseDeleteCommand(arguments);
         case "-v":
             return parseViewCommand(arguments);
         default:
@@ -91,6 +94,28 @@ public class AttendanceCommandParser implements Parser<AttendanceCommand> {
         ClassTag classTag = ParserUtil.parseClassTag(argMultimap.getValue(PREFIX_CLASSTAG).get());
 
         return new AttendanceUnmarkCommand(studentId, date, classTag);
+    }
+
+    /**
+     * Parses arguments for the delete attendance command.
+     */
+    private AttendanceDeleteCommand parseDeleteCommand(String args) throws ParseException {
+        ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(" " + args,
+                PREFIX_STUDENTID, PREFIX_DATE, PREFIX_CLASSTAG);
+
+        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_STUDENTID, PREFIX_DATE, PREFIX_CLASSTAG);
+
+        if (!arePrefixesPresent(argMultimap, PREFIX_STUDENTID, PREFIX_DATE, PREFIX_CLASSTAG)
+                || !argMultimap.getPreamble().trim().isEmpty()) {
+            throw new ParseException(
+                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, AttendanceCommand.MESSAGE_USAGE));
+        }
+
+        StudentId studentId = ParserUtil.parseStudentId(argMultimap.getValue(PREFIX_STUDENTID).get());
+        Date date = ParserUtil.parseDate(argMultimap.getValue(PREFIX_DATE).get());
+        ClassTag classTag = ParserUtil.parseClassTag(argMultimap.getValue(PREFIX_CLASSTAG).get());
+
+        return new AttendanceDeleteCommand(studentId, date, classTag);
     }
 
     /**

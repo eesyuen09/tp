@@ -26,11 +26,15 @@ public abstract class AttendanceCommand extends Command {
             + PREFIX_CLASSTAG + "CLASS_TAG\n"
             + "  Unmark: -u " + PREFIX_STUDENTID + "STUDENTID " + PREFIX_DATE + "DATE (format: DDMMYYYY) "
             + PREFIX_CLASSTAG + "CLASS_TAG\n"
+            + "  Delete: -d " + PREFIX_STUDENTID + "STUDENTID " + PREFIX_DATE + "DATE (format: DDMMYYYY) "
+            + PREFIX_CLASSTAG + "CLASS_TAG\n"
             + "  View: -v " + PREFIX_STUDENTID + "STUDENTID\n"
             + "Examples:\n"
             + "  " + COMMAND_WORD + " -m " + PREFIX_STUDENTID + "0123 " + PREFIX_DATE + "15092025 "
             + PREFIX_CLASSTAG + "Sec3_AMath\n"
             + "  " + COMMAND_WORD + " -u " + PREFIX_STUDENTID + "0123 " + PREFIX_DATE + "15092025 "
+            + PREFIX_CLASSTAG + "Sec3_AMath\n"
+            + "  " + COMMAND_WORD + " -d " + PREFIX_STUDENTID + "0123 " + PREFIX_DATE + "15092025 "
             + PREFIX_CLASSTAG + "Sec3_AMath\n"
             + "  " + COMMAND_WORD + " -v " + PREFIX_STUDENTID + "0123 ";
 

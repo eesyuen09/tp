@@ -158,6 +158,16 @@ public interface Model {
      */
     void unmarkAttendance(StudentId studentId, Date date, ClassTag classTag);
 
+    /**
+     * Deletes the attendance record for the given student on the given date for a specific class.
+     * The student must already exist in the address book.
+     *
+     * @param studentId The student ID of the student to delete attendance for.
+     * @param date The date to delete attendance on.
+     * @param classTag The class tag for the attendance.
+     */
+    void deleteAttendance(StudentId studentId, Date date, ClassTag classTag);
+
     /** Returns an unmodifiable view of the performance notes currently displayed in the UI. */
     ObservableList<PerformanceNote> getDisplayedPerformanceNotes();
 
