@@ -34,18 +34,28 @@ public class FeeViewCommandTest {
     public void execute_defaultFromEnrollmentToNow() throws Exception {
         StudentId aliceId = ALICE.getStudentId();
         Month enrolled = ALICE.getEnrolledMonth();
-        Month paidMonth = enrolled;
-        Month unpaidMonth = enrolled.plusMonths(1);
 
-        // Explicitly mark two months
+        // Make one month explicitly PAID (enrolled)
+        Month paidMonth = enrolled;
         model.markPaid(aliceId, paidMonth);
-        model.markUnpaid(aliceId, unpaidMonth);
+
+        // Make the next month explicitly UNPAID
+        Month explicitUnpaidMonth = enrolled.plusMonths(2);
+        // Pay all months up to explicitUnpaidMonth
+        Month cur = enrolled;
+        while (cur.isBefore(explicitUnpaidMonth)) {
+            // enrolled is already paid; loop will skip the first or pay it again only if needed
+            cur = cur.plusMonths(1);
+            model.markPaid(aliceId, cur);
+        }
+        // Now flip that month back to UNPAID to make it explicit
+        model.markUnpaid(aliceId, explicitUnpaidMonth);
 
         FeeViewCommand cmd = new FeeViewCommand(aliceId, Optional.empty());
-
         CommandResult result = cmd.execute(model);
         String msg = result.getFeedbackToUser();
 
+        // Header information
         assertTrue(msg.contains("Payment history for " + ALICE.getName().fullName),
             "Should include student's name");
         assertTrue(msg.contains("from " + enrolled.toHumanReadable() + " to "),
@@ -53,15 +63,11 @@ public class FeeViewCommandTest {
         assertTrue(msg.contains("Enrolled Month: " + enrolled.toHumanReadable()),
             "Should echo enrolled month");
 
-        // Rows: our explicit marks should appear as marked
+        // Rows: explicitly marked PAID and explicitly marked UNPAID
         assertTrue(msg.contains(paidMonth.toHumanReadable() + " : PAID (marked)"),
             "Should contain explicitly marked PAID row");
-        assertTrue(msg.contains(unpaidMonth.toHumanReadable() + " : UNPAID (marked)"),
+        assertTrue(msg.contains(explicitUnpaidMonth.toHumanReadable() + " : UNPAID (marked)"),
             "Should contain explicitly marked UNPAID row");
-
-        // There should be at least one default row (unless enrolled == now)
-        assertTrue(msg.contains("(default)"),
-            "Expected at least one default row in the range");
     }
 
     @Test

@@ -15,6 +15,7 @@ import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.person.Month;
+import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
 
 /**
@@ -29,6 +30,22 @@ public class FeeMarkPaidCommandTest {
         model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
     }
 
+    /**
+     * Pays all months from the person's enrolled month up to (but not including) the target month.
+     * This is needed now that marking a later month as PAID requires all earlier months to be PAID first.
+     */
+    private void payAllMonthsBefore(Model mm, Person p, Month target) {
+        Month enrolled = p.getEnrolledMonth();
+        if (enrolled == null) {
+            return;
+        }
+        Month cur = enrolled;
+        while (cur.isBefore(target)) {
+            mm.markPaid(p.getStudentId(), cur);
+            cur = cur.plusMonths(1);
+        }
+    }
+
     @Test
     public void execute_existingStudentMarksPaid_success() throws Exception {
         StudentId id = ALICE.getStudentId();
@@ -36,6 +53,8 @@ public class FeeMarkPaidCommandTest {
         FeeMarkPaidCommand command = new FeeMarkPaidCommand(id, month);
 
         Model expectedModel = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+        payAllMonthsBefore(model, ALICE, month);
+        payAllMonthsBefore(expectedModel, ALICE, month);
         expectedModel.markPaid(id, month);
 
         String expectedMessage = String.format(

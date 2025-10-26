@@ -15,6 +15,7 @@ import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.person.Month;
+import seedu.address.model.person.Person;
 
 /**
  * Integration tests for {@link FeeFilterUnpaidCommand}.
@@ -34,14 +35,30 @@ public class FeeFilterUnpaidCommandTest {
         expectedModel.addPerson(BENSON);
     }
 
+    /**
+     * Pays all months from the person's enrolled month up to (but not including) the target month.
+     * This is needed now that marking a later month as PAID requires all earlier months to be PAID first.
+     */
+    private void payAllMonthsBefore(Model mm, Person p, Month target) {
+        Month enrolled = p.getEnrolledMonth();
+        if (enrolled == null) {
+            return;
+        }
+        Month cur = enrolled;
+        while (cur.isBefore(target)) {
+            mm.markPaid(p.getStudentId(), cur);
+            cur = cur.plusMonths(1);
+        }
+    }
+
     @Test
     public void execute_filtersOnlyUnpaidForGivenMonth_success() {
         Month month = Month.now();
 
-        model.markUnpaid(ALICE.getStudentId(), month);
-        model.markPaid(BENSON.getStudentId(), month);
+        payAllMonthsBefore(model, BENSON, month);
+        payAllMonthsBefore(expectedModel, BENSON, month);
 
-        expectedModel.markUnpaid(ALICE.getStudentId(), month);
+        model.markPaid(BENSON.getStudentId(), month);
         expectedModel.markPaid(BENSON.getStudentId(), month);
 
         FeeFilterUnpaidCommand cmd = new FeeFilterUnpaidCommand(month);
@@ -60,9 +77,13 @@ public class FeeFilterUnpaidCommandTest {
     public void execute_noUnpaidForGivenMonth_showsEmptyList() {
         Month month = Month.now();
 
+        payAllMonthsBefore(model, ALICE, month);
+        payAllMonthsBefore(model, BENSON, month);
         model.markPaid(ALICE.getStudentId(), month);
         model.markPaid(BENSON.getStudentId(), month);
 
+        payAllMonthsBefore(expectedModel, ALICE, month);
+        payAllMonthsBefore(expectedModel, BENSON, month);
         expectedModel.markPaid(ALICE.getStudentId(), month);
         expectedModel.markPaid(BENSON.getStudentId(), month);
 
