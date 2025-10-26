@@ -73,7 +73,6 @@ public class ClassTagCommandParserTest {
     public void parse_listWithArguments_failure() {
         String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, ListClassTagCommand.MESSAGE_USAGE);
 
-
         assertParseFailure(parser, " -l -l", expectedMessage);
 
         assertParseFailure(parser, " -l extra", expectedMessage);
