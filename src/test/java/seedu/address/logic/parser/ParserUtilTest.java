@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.Address;
+import seedu.address.model.person.Date;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Phone;
@@ -28,6 +29,8 @@ public class ParserUtilTest {
     private static final String INVALID_EMAIL = "example.com";
     private static final String INVALID_CLASS_TAG = "#Sec3_Math";
     private static final String INVALID_STUDENT_ID = "A123546"; // Missing 'A' prefix or checksum
+    private static final String INVALID_DATE_FORMAT = "12-09-2025"; // Wrong format
+    private static final String INVALID_DATE = "31022025"; // Feb 31 doesn't exist
 
     private static final String VALID_NAME = "Rachel Walker";
     private static final String VALID_PHONE = "123456";
@@ -36,6 +39,7 @@ public class ParserUtilTest {
     private static final String VALID_CLASS_TAG_1 = "Sec3_Math";
     private static final String VALID_CLASS_TAG_2 = "Sec4_English";
     private static final String VALID_STUDENT_ID = "1234";
+    private static final String VALID_DATE = "15092025";
 
 
     private static final String WHITESPACE = " \t\r\n";
@@ -168,6 +172,38 @@ public class ParserUtilTest {
         String idWithWhitespace = WHITESPACE + VALID_STUDENT_ID + WHITESPACE;
         StudentId expectedStudentId = new StudentId(VALID_STUDENT_ID);
         assertEquals(expectedStudentId, ParserUtil.parseStudentId(idWithWhitespace));
+    }
+
+    @Test
+    public void parseDate_null_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> ParserUtil.parseDate((String) null));
+    }
+
+    @Test
+    public void parseDate_invalidFormat_throwsParseException() {
+        // Test invalid format throws ParseException with MESSAGE_CONSTRAINTS
+        assertThrows(ParseException.class, Date.MESSAGE_CONSTRAINTS, () ->
+                ParserUtil.parseDate(INVALID_DATE_FORMAT));
+    }
+
+    @Test
+    public void parseDate_invalidDate_throwsParseException() {
+        // Test invalid calendar date throws ParseException with MESSAGE_INVALID_DATE
+        assertThrows(ParseException.class, Date.MESSAGE_INVALID_DATE, () ->
+                ParserUtil.parseDate(INVALID_DATE));
+    }
+
+    @Test
+    public void parseDate_validValueWithoutWhitespace_returnsDate() throws Exception {
+        Date expectedDate = new Date(VALID_DATE);
+        assertEquals(expectedDate, ParserUtil.parseDate(VALID_DATE));
+    }
+
+    @Test
+    public void parseDate_validValueWithWhitespace_returnsTrimmedDate() throws Exception {
+        String dateWithWhitespace = WHITESPACE + VALID_DATE + WHITESPACE;
+        Date expectedDate = new Date(VALID_DATE);
+        assertEquals(expectedDate, ParserUtil.parseDate(dateWithWhitespace));
     }
 
     @Test

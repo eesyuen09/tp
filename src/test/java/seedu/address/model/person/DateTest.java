@@ -7,24 +7,70 @@ import static seedu.address.testutil.Assert.assertThrows;
 import org.junit.jupiter.api.Test;
 
 public class DateTest {
+
     @Test
     public void constructor_null_throwsNullPointerException() {
         assertThrows(NullPointerException.class, () -> new Date(null));
     }
 
     @Test
-    public void constructor_invalidPhone_throwsIllegalArgumentException() {
-        String invalidDate = "";
-        assertThrows(IllegalArgumentException.class, () -> new Phone(invalidDate));
+    public void constructor_invalidFormat_throwsIllegalArgumentException() {
+        // Empty string
+        assertThrows(IllegalArgumentException.class, () -> new Date(""));
+
+        // Wrong format with dashes
+        assertThrows(IllegalArgumentException.class, () -> new Date("12-09-2025"));
+
+        // Wrong format with slashes
+        assertThrows(IllegalArgumentException.class, () -> new Date("12/09/2025"));
+
+        // Contains letters
+        assertThrows(IllegalArgumentException.class, () -> new Date("abc12345"));
     }
 
+    @Test
+    public void constructor_invalidDate_throwsIllegalArgumentException() {
+        // Feb 31 doesn't exist
+        assertThrows(IllegalArgumentException.class, () -> new Date("31022025"));
+
+        // 2026 is not a leap year
+        assertThrows(IllegalArgumentException.class, () -> new Date("29022026"));
+
+        // April has 30 days
+        assertThrows(IllegalArgumentException.class, () -> new Date("31042025"));
+    }
+
+    @Test
+    public void isValidFormat() {
+        // null format
+        assertThrows(NullPointerException.class, () -> Date.isValidFormat(null));
+
+        // invalid formats
+        assertFalse(Date.isValidFormat("")); // empty string
+        assertFalse(Date.isValidFormat(" ")); // spaces only
+        assertFalse(Date.isValidFormat("12-09-2025")); // wrong format with dashes
+        assertFalse(Date.isValidFormat("12/09/2025")); // wrong format with slashes
+        assertFalse(Date.isValidFormat("2025-09-12")); // wrong format YYYY-MM-DD
+        assertFalse(Date.isValidFormat("1209202")); // missing digit
+        assertFalse(Date.isValidFormat("120920255")); // extra digit
+        assertFalse(Date.isValidFormat("12092025a")); // contains letter
+        assertFalse(Date.isValidFormat("00092025")); // day 00
+        assertFalse(Date.isValidFormat("32092025")); // day 32
+        assertFalse(Date.isValidFormat("12002025")); // month 00
+        assertFalse(Date.isValidFormat("12132025")); // month 13
+
+        // valid formats (even if dates are invalid)
+        assertTrue(Date.isValidFormat("15092025")); // Sep 15
+        assertTrue(Date.isValidFormat("31022025")); // Feb 31 (valid format but invalid date)
+        assertTrue(Date.isValidFormat("29022026")); // Feb 29 non-leap year (valid format but invalid date)
+    }
 
     @Test
     public void isValidDate() {
         // null date
         assertThrows(NullPointerException.class, () -> Date.isValidDate(null));
 
-        // invalid dates - wrong format
+        // invalid formats
         assertFalse(Date.isValidDate("")); // empty string
         assertFalse(Date.isValidDate(" ")); // spaces only
         assertFalse(Date.isValidDate("12-09-2025")); // wrong format with dashes
@@ -33,8 +79,6 @@ public class DateTest {
         assertFalse(Date.isValidDate("1209202")); // missing digit
         assertFalse(Date.isValidDate("120920255")); // extra digit
         assertFalse(Date.isValidDate("12092025a")); // contains letter
-
-        // invalid dates - wrong day/month
         assertFalse(Date.isValidDate("00092025")); // day 00
         assertFalse(Date.isValidDate("32092025")); // day 32
         assertFalse(Date.isValidDate("12002025")); // month 00
@@ -85,11 +129,5 @@ public class DateTest {
 
         // different values -> returns false
         assertFalse(date.equals(new Date("16092025")));
-    }
-
-    @Test
-    public void debugTest() {
-        System.out.println("Testing 31022025: " + Date.isValidDate("31022025"));
-        System.out.println("Testing 15092025: " + Date.isValidDate("15092025"));
     }
 }
