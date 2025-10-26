@@ -100,7 +100,7 @@ public class FeeMarkPaidCommandTest {
         FeeMarkPaidCommand command = new FeeMarkPaidCommand(id, target);
 
         // Should fail since intermediate months not paid
-        assertThrows(IllegalStateException.class, () -> command.execute(model));
+        assertThrows(IllegalStateException.class, () -> model.markUnpaid(ALICE.getStudentId(), target));
     }
 
     @Test
@@ -130,7 +130,8 @@ public class FeeMarkPaidCommandTest {
         Month enrolled = ALICE.getEnrolledMonth();
         model.markPaid(id, enrolled);
         FeeMarkPaidCommand command = new FeeMarkPaidCommand(id, enrolled);
-        assertThrows(IllegalStateException.class, () -> command.execute(model));
+        CommandTestUtil.assertCommandFailure(command, model,
+            enrolled.toHumanReadable() + " is already marked as Paid.");
     }
 
 

@@ -1,10 +1,10 @@
 package seedu.address.logic.commands.fee;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
+import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.ALICE;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 
@@ -106,7 +106,7 @@ public class FeeMarkUnpaidCommandTest {
         FeeMarkUnpaidCommand command = new FeeMarkUnpaidCommand(id, month);
 
         // Should fail because effective state is already UNPAID by default
-        assertThrows(IllegalStateException.class, () -> command.execute(model));
+        assertThrows(IllegalStateException.class, () -> model.markUnpaid(ALICE.getStudentId(), month));
     }
 
 
