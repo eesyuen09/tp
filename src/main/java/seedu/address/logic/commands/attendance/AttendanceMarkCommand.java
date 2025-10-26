@@ -13,7 +13,7 @@ import seedu.address.model.tag.ClassTag;
 
 /**
  * Marks a student as present on a specific date for a specific class.
- * If an attendance record already exists for that date and class, it will be updated to present.
+ * If the attendance is already marked as present for that date and class, an exception is thrown.
  */
 public class AttendanceMarkCommand extends AttendanceCommand {
 
