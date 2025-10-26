@@ -79,6 +79,9 @@ public class ClassTagCommandParserTest {
         assertParseFailure(parser, " -l extra", expectedMessage);
 
         assertParseFailure(parser, " -l " + PREFIX_CLASSTAG + "someTag", expectedMessage);
+
+        assertParseFailure(parser, " -l -a " + PREFIX_CLASSTAG + "someTag", expectedMessage);
+
     }
 
     @Test
@@ -118,6 +121,41 @@ public class ClassTagCommandParserTest {
         String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, ClassTagCommand.MESSAGE_USAGE);
         assertParseFailure(parser, "", expectedMessage);
         assertParseFailure(parser, "   ", expectedMessage);
+    }
+
+    @Test
+    public void parse_preambleOnlyWord_failure() {
+        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, ClassTagCommand.MESSAGE_USAGE);
+        // lone word (simulates "tag  " when top-level parser passes args)
+        assertParseFailure(parser, "tag", expectedMessage);
+        assertParseFailure(parser, " tag ", expectedMessage);
+    }
+
+    @Test
+    public void parse_onlyHyphen_failure() {
+        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, ClassTagCommand.MESSAGE_USAGE);
+        // stray hyphen or whitespace around it
+        assertParseFailure(parser, "-", expectedMessage);
+        assertParseFailure(parser, " - ", expectedMessage);
+    }
+
+    @Test
+    public void parse_flagWithoutPrefix_failure() {
+        // flags with no prefix/value should fail with the command-specific usage message
+        assertParseFailure(parser, " -a ", String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                AddClassTagCommand.MESSAGE_USAGE));
+        assertParseFailure(parser, " -d ", String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                DeleteClassTagCommand.MESSAGE_USAGE));
+    }
+
+    @Test
+    public void parse_flagWithEmptyPrefixValue_failure() {
+        String expectedMessage = ClassTag.MESSAGE_CONSTRAINTS;
+        // flag followed by the class tag prefix but no value
+        assertParseFailure(parser, " -a " + PREFIX_CLASSTAG,
+                expectedMessage);
+        assertParseFailure(parser, " -d " + PREFIX_CLASSTAG,
+                expectedMessage);
     }
 
 }
