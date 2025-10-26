@@ -9,7 +9,7 @@ import seedu.address.model.Model;
 import seedu.address.model.tag.ClassTag;
 
 /**
- * Adds a class tag to the address book.
+ * Adds a ClassTag to the address book.
  */
 public class AddClassTagCommand extends ClassTagCommand {
 

@@ -117,6 +117,15 @@ public interface Model {
     void deleteClassTag(ClassTag toDelete);
 
     /**
+     * Finds and returns the existing ClassTag that matches the given tag case-insensitively.
+     *
+     * @param classTag The ClassTag (potentially with user-input casing) to search for.
+     * @return An Optional containing the existing ClassTag with its original casing if found,
+     *         otherwise Optional.empty().
+     */
+    Optional<ClassTag> findClassTag(ClassTag classTag);
+
+    /**
      * Returns {@code true} if the address book contains a {@code Person} with the specified {@code StudentId}.
      */
     boolean hasPersonWithId(StudentId studentId);

@@ -14,7 +14,7 @@ import seedu.address.model.tag.ClassTag;
 
 /**
  * Filters and lists all persons in address book who have the specified ClassTag.
- * Tag matching is case-insensitive.
+ * ClassTag matching is case-insensitive.
  */
 public class ClassTagFilterCommand extends FilterCommand {
 

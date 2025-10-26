@@ -142,6 +142,14 @@ public class ModelManager implements Model {
         addressBook.deleteClassTag(classTag);
     }
 
+    @Override
+    public Optional<ClassTag> findClassTag(ClassTag classTag) {
+        requireNonNull(classTag);
+        return addressBook.getClassTagList().stream()
+                .filter(existingTag -> existingTag.equals(classTag))
+                .findFirst();
+    }
+
     /**
      * Retrieves a {@link Person} from the filtered list by their {@link StudentId}.
      *

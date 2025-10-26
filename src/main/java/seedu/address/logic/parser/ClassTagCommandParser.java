@@ -4,8 +4,10 @@ package seedu.address.logic.parser;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_CLASSTAG;
 
+import java.util.logging.Logger;
 import java.util.stream.Stream;
 
+import seedu.address.commons.core.LogsCenter;
 import seedu.address.logic.commands.Command;
 import seedu.address.logic.commands.classtagcommands.AddClassTagCommand;
 import seedu.address.logic.commands.classtagcommands.ClassTagCommand;
@@ -16,9 +18,11 @@ import seedu.address.model.tag.ClassTag;
 
 
 /**
- * Parses input arguments and creates the correct Command object for tag-related operations.
+ * Parses input arguments and creates the correct Command object for ClassTag-related operations.
  */
 public class ClassTagCommandParser implements Parser<Command> {
+
+    private static final Logger logger = LogsCenter.getLogger(ClassTagCommandParser.class);
 
     /**
      * Parses the given {@code String} of arguments in the context of the ClassTagCommand
@@ -31,11 +35,15 @@ public class ClassTagCommandParser implements Parser<Command> {
 
         String preamble = argMultimap.getPreamble().trim();
 
+        logger.info(() -> String.format("Parsing ClassTagCommand; raw args: \"%s\", preamble: \"%s\"", args, preamble));
+
         if (preamble.isEmpty()) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, ClassTagCommand.MESSAGE_USAGE));
         }
 
         String commandFlag = preamble.split("\\s+")[0];
+
+        logger.info(() -> String.format("Detected command flag: %s", commandFlag));
 
         switch (commandFlag.toLowerCase()) {
 
@@ -63,6 +71,8 @@ public class ClassTagCommandParser implements Parser<Command> {
      */
     private AddClassTagCommand parseAddCommand(ArgumentMultimap argMultimap) throws ParseException {
 
+        assert argMultimap != null : "argMultimap must not be null for add";
+
         if (!argMultimap.getPreamble().trim().equalsIgnoreCase(AddClassTagCommand.COMMAND_FLAG)) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddClassTagCommand.MESSAGE_USAGE));
         }
@@ -75,6 +85,7 @@ public class ClassTagCommandParser implements Parser<Command> {
         argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_CLASSTAG);
         ClassTag classTag = ParserUtil.parseClassTag(argMultimap.getValue(PREFIX_CLASSTAG).get());
 
+        logger.info(() -> String.format("AddClassTagCommand parsed with classTag: %s", classTag));
         return new AddClassTagCommand(classTag);
     }
 
@@ -85,6 +96,8 @@ public class ClassTagCommandParser implements Parser<Command> {
      * @throws ParseException If the arguments are invalid.
      */
     private DeleteClassTagCommand parseDeleteCommand(ArgumentMultimap argMultimap) throws ParseException {
+
+        assert argMultimap != null : "argMultimap must not be null for delete";
 
         if (!argMultimap.getPreamble().trim().equalsIgnoreCase(DeleteClassTagCommand.COMMAND_FLAG)) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT,
@@ -100,6 +113,7 @@ public class ClassTagCommandParser implements Parser<Command> {
         argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_CLASSTAG);
         ClassTag classTag = ParserUtil.parseClassTag(argMultimap.getValue(PREFIX_CLASSTAG).get());
 
+        logger.info(() -> String.format("DeleteClassTagCommand parsed with classTag: %s", classTag));
         return new DeleteClassTagCommand(classTag);
     }
 
@@ -107,11 +121,16 @@ public class ClassTagCommandParser implements Parser<Command> {
      * Parses arguments for the {@code ListClassTagCommand}.
      */
     private ListClassTagCommand parseListCommand(ArgumentMultimap argMultimap, String preamble) throws ParseException {
+
+        assert preamble != null : "preamble must not be null for list";
+
         // The list command should not have any arguments after the flag or any prefixes.
         if (!preamble.equalsIgnoreCase(ListClassTagCommand.COMMAND_FLAG)
                 || argMultimap.getValue(PREFIX_CLASSTAG).isPresent()) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, ListClassTagCommand.MESSAGE_USAGE));
         }
+
+        logger.info("ListClassTagCommand parsed successfully");
         return new ListClassTagCommand();
     }
 
