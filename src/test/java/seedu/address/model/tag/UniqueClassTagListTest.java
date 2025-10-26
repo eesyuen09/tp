@@ -41,6 +41,10 @@ public class UniqueClassTagListTest {
         uniqueClassTagList.add(tag1);
         ClassTag sameNameTag = new ClassTag("sec3_maths");
         assertTrue(uniqueClassTagList.contains(sameNameTag));
+
+        // Test mixed case
+        ClassTag sameNameTagMixed = new ClassTag("sEc3_MaThS");
+        assertTrue(uniqueClassTagList.contains(sameNameTagMixed));
     }
 
     @Test
@@ -59,6 +63,10 @@ public class UniqueClassTagListTest {
         uniqueClassTagList.add(tag1);
         ClassTag sameNameTag = new ClassTag("sec3_maths");
         assertThrows(DuplicateClassTagException.class, () -> uniqueClassTagList.add(sameNameTag));
+
+        // Test mixed case duplicate
+        ClassTag sameNameTagMixed = new ClassTag("sEc3_MaThS");
+        assertThrows(DuplicateClassTagException.class, () -> uniqueClassTagList.add(sameNameTagMixed));
     }
 
     @Test
@@ -75,6 +83,16 @@ public class UniqueClassTagListTest {
     public void remove_existingTag_removesTag() {
         uniqueClassTagList.add(tag1);
         uniqueClassTagList.remove(tag1);
+        UniqueClassTagList expectedList = new UniqueClassTagList();
+        assertEquals(expectedList, uniqueClassTagList);
+    }
+
+    // Test removing tag using different case
+    @Test
+    public void remove_existingTagDifferentCase_removesTag() {
+        uniqueClassTagList.add(tag1); // Added "Sec3_Maths"
+        ClassTag tagToRemoveLower = new ClassTag("sec3_maths");
+        uniqueClassTagList.remove(tagToRemoveLower); // Remove using lowercase
         UniqueClassTagList expectedList = new UniqueClassTagList();
         assertEquals(expectedList, uniqueClassTagList);
     }
@@ -98,6 +116,13 @@ public class UniqueClassTagListTest {
     public void setClassTags_listWithDuplicates_throwsDuplicateClassTagException() {
         List<ClassTag> listWithDuplicates = Arrays.asList(tag1, tag1);
         assertThrows(DuplicateClassTagException.class, () -> uniqueClassTagList.setClassTags(listWithDuplicates));
+    }
+
+    // Test setClassTags with case-insensitive duplicates
+    @Test
+    public void setClassTags_listWithCaseInsensitiveDuplicates_throwsDuplicateClassTagException() {
+        List<ClassTag> listWithCaseDuplicates = Arrays.asList(tag1, new ClassTag("sec3_maths"));
+        assertThrows(DuplicateClassTagException.class, () -> uniqueClassTagList.setClassTags(listWithCaseDuplicates));
     }
 
     @Test

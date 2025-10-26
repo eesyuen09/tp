@@ -1,4 +1,4 @@
-package seedu.address.logic.commands.classtagcommands;
+package seedu.address.logic.commands.classtag;
 
 import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_CLASSTAG;

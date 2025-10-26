@@ -1,4 +1,4 @@
-package seedu.address.logic.commands.classtagcommands;
+package seedu.address.logic.commands.classtag;
 
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 
