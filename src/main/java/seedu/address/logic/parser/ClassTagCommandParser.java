@@ -1,6 +1,7 @@
 package seedu.address.logic.parser;
 
 
+import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_CLASSTAG;
 
@@ -71,6 +72,8 @@ public class ClassTagCommandParser implements Parser<Command> {
      */
     private AddClassTagCommand parseAddCommand(ArgumentMultimap argMultimap) throws ParseException {
 
+        requireNonNull(argMultimap);
+
         assert argMultimap != null : "argMultimap must not be null for add";
 
         if (!argMultimap.getPreamble().trim().equalsIgnoreCase(AddClassTagCommand.COMMAND_FLAG)) {
@@ -97,6 +100,8 @@ public class ClassTagCommandParser implements Parser<Command> {
      */
     private DeleteClassTagCommand parseDeleteCommand(ArgumentMultimap argMultimap) throws ParseException {
 
+        requireNonNull(argMultimap);
+
         assert argMultimap != null : "argMultimap must not be null for delete";
 
         if (!argMultimap.getPreamble().trim().equalsIgnoreCase(DeleteClassTagCommand.COMMAND_FLAG)) {
@@ -122,6 +127,8 @@ public class ClassTagCommandParser implements Parser<Command> {
      */
     private ListClassTagCommand parseListCommand(ArgumentMultimap argMultimap, String preamble) throws ParseException {
 
+        requireNonNull(argMultimap);
+
         assert preamble != null : "preamble must not be null for list";
 
         // The list command should not have any arguments after the flag or any prefixes.
@@ -130,7 +137,7 @@ public class ClassTagCommandParser implements Parser<Command> {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, ListClassTagCommand.MESSAGE_USAGE));
         }
 
-        logger.info("ListClassTagCommand parsed successfully");
+        logger.info(() -> "ListClassTagCommand parsed successfully");
         return new ListClassTagCommand();
     }
 

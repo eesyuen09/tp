@@ -107,7 +107,7 @@ public class ClassTagCommandParserTest {
 
     @Test
     public void parse_repeatedPrefix_failure() {
-        String expectedMessage = String.format(Messages.MESSAGE_DUPLICATE_FIELDS + "t/");
+        String expectedMessage = String.format(Messages.MESSAGE_DUPLICATE_FIELDS + PREFIX_CLASSTAG);
 
         assertParseFailure(parser, " -a " + PREFIX_CLASSTAG + "Tag1 "
                 + PREFIX_CLASSTAG + "Tag2", expectedMessage);
