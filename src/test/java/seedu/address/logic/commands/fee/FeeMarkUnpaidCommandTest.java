@@ -1,6 +1,7 @@
 package seedu.address.logic.commands.fee;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
@@ -85,6 +86,7 @@ public class FeeMarkUnpaidCommandTest {
         assertCommandFailure(command, model, expectedMessage);
     }
 
+    @Test
     public void execute_monthBeforeEnrollment_throwsCommandException() {
         // Assuming ALICE’s enrolled month in TypicalPersons is "0825"
         StudentId id = ALICE.getStudentId();
@@ -95,6 +97,18 @@ public class FeeMarkUnpaidCommandTest {
         String expectedMessage = String.format(FeeCommand.MESSAGE_INVALID_MONTH, name, enrollment.toHumanReadable());
         CommandTestUtil.assertCommandFailure(command, model, expectedMessage);
     }
+
+    @Test
+    public void execute_alreadyUnpaid_throwsCommandException() {
+        StudentId id = ALICE.getStudentId();
+        Month month = ALICE.getEnrolledMonth(); // default UNPAID if not marked
+
+        FeeMarkUnpaidCommand command = new FeeMarkUnpaidCommand(id, month);
+
+        // Should fail because effective state is already UNPAID by default
+        assertThrows(IllegalStateException.class, () -> command.execute(model));
+    }
+
 
     @Test
     public void equals() {

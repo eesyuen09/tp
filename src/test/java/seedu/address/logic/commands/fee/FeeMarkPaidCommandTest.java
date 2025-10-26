@@ -3,6 +3,7 @@ package seedu.address.logic.commands.fee;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.Messages.MESSAGE_STUDENT_ID_NOT_FOUND;
+import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.ALICE;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 
@@ -91,6 +92,47 @@ public class FeeMarkPaidCommandTest {
         String expectedMessage = String.format(FeeCommand.MESSAGE_INVALID_MONTH, name, enrollment.toHumanReadable());
         CommandTestUtil.assertCommandFailure(command, model, expectedMessage);
     }
+
+    @Test
+    public void execute_earlierMonthUnpaid_throwsCommandException() {
+        StudentId id = ALICE.getStudentId();
+        Month target = ALICE.getEnrolledMonth().plusMonths(2); // skip one month
+        FeeMarkPaidCommand command = new FeeMarkPaidCommand(id, target);
+
+        // Should fail since intermediate months not paid
+        assertThrows(IllegalStateException.class, () -> command.execute(model));
+    }
+
+    @Test
+    public void execute_allEarlierMonthsPaid_success() throws Exception {
+        StudentId id = ALICE.getStudentId();
+        Month target = ALICE.getEnrolledMonth().plusMonths(2);
+        payAllMonthsBefore(model, ALICE, target);
+
+        Model expectedModel = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+        payAllMonthsBefore(expectedModel, ALICE, target);
+        expectedModel.markPaid(id, target);
+
+        FeeMarkPaidCommand command = new FeeMarkPaidCommand(id, target);
+
+        String expectedMessage = String.format(
+            FeeMarkPaidCommand.MESSAGE_SUCCESS,
+            ALICE.getName().fullName,
+            target.toHumanReadable()
+        );
+
+        CommandTestUtil.assertCommandSuccess(command, model, new CommandResult(expectedMessage), expectedModel);
+    }
+
+    @Test
+    public void execute_alreadyPaid_throwsCommandException() throws Exception {
+        StudentId id = ALICE.getStudentId();
+        Month enrolled = ALICE.getEnrolledMonth();
+        model.markPaid(id, enrolled);
+        FeeMarkPaidCommand command = new FeeMarkPaidCommand(id, enrolled);
+        assertThrows(IllegalStateException.class, () -> command.execute(model));
+    }
+
 
     @Test
     public void equals() {
