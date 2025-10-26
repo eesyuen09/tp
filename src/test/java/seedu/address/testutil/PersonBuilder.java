@@ -78,7 +78,7 @@ public class PersonBuilder {
     /**
      * Parses the {@code tags} into a {@code Set<ClassTag>} and set it to the {@code Person} that we are building.
      */
-    public PersonBuilder withTags(String ... tags) {
+    public PersonBuilder withClassTags(String ... tags) {
         this.tags = SampleDataUtil.getTagSet(tags);
         return this;
     }

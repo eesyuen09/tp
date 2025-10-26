@@ -30,6 +30,13 @@ public class ListClassTagCommandTest {
     }
 
     @Test
+    public void execute_listIsEmpty_showsEmptyList() {
+        // Model is initialized with no tags
+        String expectedMessage = ListClassTagCommand.MESSAGE_NO_TAGS_FOUND;
+        assertCommandSuccess(new ListClassTagCommand(), model, expectedMessage, expectedModel);
+    }
+
+    @Test
     public void execute_tagsExistInAddressBook_showsTagList() {
 
         ClassTag tag1 = new ClassTag("Sec3_Maths");

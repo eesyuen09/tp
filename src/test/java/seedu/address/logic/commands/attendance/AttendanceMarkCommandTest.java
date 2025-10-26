@@ -52,7 +52,7 @@ public class AttendanceMarkCommandTest {
     public void execute_validStudentAndDate_markSuccessful() throws Exception {
         ModelStubWithPerson modelStub = new ModelStubWithPerson();
         Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID_STRING)
-                .withTags("Math").build();
+                .withClassTags("Math").build();
         modelStub.person = validPerson;
 
         CommandResult commandResult = new AttendanceMarkCommand(VALID_STUDENT_ID,
@@ -70,7 +70,7 @@ public class AttendanceMarkCommandTest {
     public void execute_markedAsAbsent_markSuccessful() throws Exception {
         ModelStubWithPerson modelStub = new ModelStubWithPerson();
         Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID_STRING)
-                .withTags("Math").build();
+                .withClassTags("Math").build();
 
         // Mark attendance as absent first
         AttendanceList attendanceList = new AttendanceList();
@@ -103,7 +103,7 @@ public class AttendanceMarkCommandTest {
     public void execute_alreadyMarked_throwsCommandException() throws Exception {
         ModelStubWithPerson modelStub = new ModelStubWithPerson();
         Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID_STRING)
-                .withTags("Math").build();
+                .withClassTags("Math").build();
         // Mark attendance first
         AttendanceList attendanceList = new AttendanceList();
         attendanceList.markAttendance(VALID_DATE, VALID_CLASS_TAG);
@@ -120,7 +120,7 @@ public class AttendanceMarkCommandTest {
     public void execute_studentDoesNotHaveTag_throwsCommandException() {
         ModelStubWithPerson modelStub = new ModelStubWithPerson();
         Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID_STRING)
-                .withTags("Science").build(); // Student has Science tag, not Math
+                .withClassTags("Science").build(); // Student has Science tag, not Math
         modelStub.person = validPerson;
 
         AttendanceMarkCommand command = new AttendanceMarkCommand(VALID_STUDENT_ID, VALID_DATE, VALID_CLASS_TAG);

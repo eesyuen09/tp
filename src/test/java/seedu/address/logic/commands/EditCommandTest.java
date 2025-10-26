@@ -46,7 +46,7 @@ public class EditCommandTest {
     @Test
     public void execute_allFieldsSpecifiedUnfilteredList_success() {
         model.addClassTag(new ClassTag("Sec4_Maths"));
-        Person editedPerson = new PersonBuilder().withTags("Sec4_Maths").build();
+        Person editedPerson = new PersonBuilder().withClassTags("Sec4_Maths").build();
         EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder(editedPerson).build();
         StudentId studentId = ALICE.getStudentId();
         EditCommand editCommand = new EditCommand(studentId, descriptor);
@@ -68,12 +68,12 @@ public class EditCommandTest {
         // Expected person keeps original tags and adds new name/phone
         Person editedPerson = new PersonBuilder(personToEdit).withName(VALID_NAME_BOB)
                 .withPhone(VALID_PHONE_BOB)
-                .withTags(VALID_CLASS_TAG_MATHS, VALID_CLASS_TAG_PHYSICS)
+                .withClassTags(VALID_CLASS_TAG_MATHS, VALID_CLASS_TAG_PHYSICS)
                 .build();
 
         EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder().withName(VALID_NAME_BOB)
                 .withPhone(VALID_PHONE_BOB)
-                .withTags(VALID_CLASS_TAG_PHYSICS, VALID_CLASS_TAG_MATHS)
+                .withClassTags(VALID_CLASS_TAG_PHYSICS, VALID_CLASS_TAG_MATHS)
                 .build();
 
         EditCommand editCommand = new EditCommand(studentId, descriptor);
@@ -97,14 +97,14 @@ public class EditCommandTest {
         String correctPhysicsTagLowercase = VALID_CLASS_TAG_PHYSICS.toLowerCase();
 
         EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder()
-                .withTags(correctMathTagLowercase, correctPhysicsTagLowercase)
+                .withClassTags(correctMathTagLowercase, correctPhysicsTagLowercase)
                 .build();
 
         EditCommand editCommand = new EditCommand(studentId, descriptor);
 
 
         Person editedPerson = new PersonBuilder(personToEdit)
-                .withTags(VALID_CLASS_TAG_MATHS, VALID_CLASS_TAG_PHYSICS)
+                .withClassTags(VALID_CLASS_TAG_MATHS, VALID_CLASS_TAG_PHYSICS)
                 .build();
 
         String expectedMessage = String.format(EditCommand.MESSAGE_EDIT_PERSON_SUCCESS, Messages.format(editedPerson));
@@ -129,11 +129,11 @@ public class EditCommandTest {
         assertTrue(personToEdit.getTags().size() > 0); // Pre-condition check
 
         // Descriptor to clear tags (empty tag set via builder)
-        EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder().withTags().build();
+        EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder().withClassTags().build();
         EditCommand editCommand = new EditCommand(studentId, descriptor);
 
         // Expected person has no tags
-        Person editedPerson = new PersonBuilder(personToEdit).withTags().build();
+        Person editedPerson = new PersonBuilder(personToEdit).withClassTags().build();
 
         String expectedMessage = String.format(EditCommand.MESSAGE_EDIT_PERSON_SUCCESS, Messages.format(editedPerson));
 
@@ -211,7 +211,7 @@ public class EditCommandTest {
     @Test
     public void execute_editPersonWithNonExistentTag_throwsCommandException() {
         EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder(BENSON)
-                .withTags("NonExistentTag").build();
+                .withClassTags("NonExistentTag").build();
         EditCommand editCommand = new EditCommand(BENSON.getStudentId(), descriptor);
 
         assertCommandFailure(editCommand, model,

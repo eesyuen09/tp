@@ -30,8 +30,8 @@ public class ClassTagTest {
         String specialCharTagName = "Sec3@Math";
         assertThrows(IllegalArgumentException.class, () -> new ClassTag(specialCharTagName));
 
-        // Test with a name that is too long (over 30 chars)
-        String longTagName = "This_tag_name_is_way_too_long_to_be_valid";
+        // Test with a name that is too long (31 chars)
+        String longTagName = "This_is_invalid_tag_of_31chars_";
         assertThrows(IllegalArgumentException.class, () -> new ClassTag(longTagName));
 
         // Test with only punctuation
@@ -56,7 +56,7 @@ public class ClassTagTest {
         new ClassTag("a");
 
         // Test boundary length 30
-        new ClassTag("This_is_a_valid_tag_of_30char"); // 30 chars
+        new ClassTag("This_is_a_valid_tag_of_30chars"); // 30 chars
 
         // Test only numbers
         new ClassTag("12345");

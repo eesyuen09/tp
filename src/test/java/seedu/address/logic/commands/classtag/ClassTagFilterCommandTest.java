@@ -52,6 +52,34 @@ public class ClassTagFilterCommandTest {
         assertEquals(Arrays.asList(ALICE, BENSON), model.getFilteredPersonList());
     }
 
+    // Test filtering with a tag that exists but has different casing
+    @Test
+    public void execute_filterWithDifferentCaseTag_showsFilteredList() {
+
+        ClassTag originalTag = new ClassTag("Sec3_Maths");
+        if (!model.hasClassTag(originalTag)) {
+            model.addClassTag(originalTag);
+        }
+        if (!expectedModel.hasClassTag(originalTag)) {
+            expectedModel.addClassTag(originalTag);
+        }
+
+        // Command filters for "sec3_maths" (different case)
+        ClassTag filterTagLower = new ClassTag("sec3_mAths");
+        ClassTagFilterCommand command = new ClassTagFilterCommand(filterTagLower);
+
+        String expectedMessage = String.format(Messages.MESSAGE_PERSONS_LISTED_OVERVIEW, 2) + "\n"
+                + String.format(ClassTagFilterCommand.MESSAGE_SUCCESS, originalTag.tagName);
+
+        // The predicate should be created with the found tag (original case)
+        Predicate<Person> personHasTagPredicate = person -> person.getTags().stream()
+                .anyMatch(tag -> tag.equals(originalTag));
+        expectedModel.updateFilteredPersonList(personHasTagPredicate);
+
+        assertCommandSuccess(command, model, expectedMessage, expectedModel);
+        assertEquals(Arrays.asList(ALICE, BENSON), model.getFilteredPersonList());
+    }
+
     @Test
     public void execute_validClassTagNoPersons_noPersonsFound() {
         // A tag that exists but is not used by any typical person.

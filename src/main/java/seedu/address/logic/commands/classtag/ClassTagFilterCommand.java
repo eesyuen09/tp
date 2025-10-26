@@ -2,6 +2,7 @@ package seedu.address.logic.commands.classtag;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.Optional;
 import java.util.function.Predicate;
 
 import seedu.address.logic.Messages;
@@ -41,18 +42,22 @@ public class ClassTagFilterCommand extends FilterCommand {
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
 
-        if (!model.hasClassTag(toFilter)) {
+        Optional<ClassTag> foundTag = model.findClassTag(toFilter);
+
+        if (foundTag.isEmpty()) {
             throw new CommandException(MESSAGE_TAG_NOT_FOUND);
         }
 
+        ClassTag actualTag = foundTag.get();
+
         Predicate<Person> personHasTagPredicate = person -> person.getTags().stream()
-                .anyMatch(tag -> tag.equals(toFilter));
+                .anyMatch(tag -> tag.equals(actualTag));
 
         model.updateFilteredPersonList(personHasTagPredicate);
         return new CommandResult(
                 String.format(Messages.MESSAGE_PERSONS_LISTED_OVERVIEW,
                         model.getFilteredPersonList().size())
-                        + "\n" + String.format(MESSAGE_SUCCESS, toFilter.tagName)
+                        + "\n" + String.format(MESSAGE_SUCCESS, actualTag.tagName)
         );
     }
 
