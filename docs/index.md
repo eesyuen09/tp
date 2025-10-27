@@ -10,8 +10,8 @@
 
 ![Ui](images/Ui.png)
 
-*Tuto is a desktop application for managing your contact details.** While it has a GUI, most of the user interactions happen using a CLI (Command Line Interface).
-
+* Tuto is a desktop application to help freelance tutors organise students, track attendance and performance, and manage tuition fees, all in one platform designed to reduce admin work so they can focus on teaching.
+* While it has a GUI, most of the user interactions happen using a CLI (Command Line Interface).
 * If you are interested in using Tuto, head over to the [_Quick Start_ section of the **User Guide**](UserGuide.html#quick-start).
 * If you are interested about developing Tuto, the [**Developer Guide**](DeveloperGuide.html) is a good place to start.
 
