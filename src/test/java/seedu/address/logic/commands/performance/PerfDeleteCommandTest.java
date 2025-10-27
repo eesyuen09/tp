@@ -49,22 +49,6 @@ public class PerfDeleteCommandTest {
     }
 
     @Test
-    public void execute_studentWithoutTag_throwsCommandException() {
-        Person person = new PersonBuilder().withStudentId(VALID_STUDENT_ID.toString())
-                .withTags("Science") // missing "Math"
-                .build();
-        Model model = new ModelManager(new AddressBook(), new UserPrefs());
-        model.addPerson(person);
-
-        PerfDeleteCommand command = new PerfDeleteCommand(VALID_STUDENT_ID, VALID_DATE_1, VALID_TAG_1);
-
-        String expectedMessage = String.format(PerfDeleteCommand.MESSAGE_STUDENT_DOES_NOT_HAVE_TAG,
-                person.getName(), VALID_TAG_1.tagName);
-
-        assertCommandFailure(command, model, expectedMessage);
-    }
-
-    @Test
     public void execute_validDelete_successful() throws Exception {
         Person validPerson = new PersonBuilder()
                 .withStudentId(VALID_STUDENT_ID.toString())

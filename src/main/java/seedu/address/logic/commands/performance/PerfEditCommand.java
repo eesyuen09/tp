@@ -67,10 +67,6 @@ public class PerfEditCommand extends PerfCommand {
                 .orElseThrow(() -> new CommandException(
                         String.format(Messages.MESSAGE_STUDENT_ID_NOT_FOUND, studentId)));
 
-        if (!student.getTags().contains(classTag)) {
-            throw new CommandException(String.format(MESSAGE_STUDENT_DOES_NOT_HAVE_TAG,
-                    student.getName(), classTag.tagName));
-        }
 
         List<PerformanceNote> current = student.getPerformanceList().asUnmodifiableList();
         PerformanceList copy = new PerformanceList(new ArrayList<>(current));

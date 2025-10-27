@@ -56,20 +56,6 @@ public class PerfEditCommandTest {
     }
 
     @Test
-    public void execute_studentDoesNotHaveClassTag_throwsCommandException() {
-        Person student = new PersonBuilder().withStudentId(VALID_STUDENT_ID.toString()).build();
-        Model model = new ModelManager(new AddressBook(), new UserPrefs());
-        model.addPerson(student);
-
-        PerfEditCommand command = new PerfEditCommand(VALID_STUDENT_ID, VALID_DATE_1, VALID_CLASS_TAG_1, EDITED_NOTE);
-
-        String expectedMessage = String.format(PerfEditCommand.MESSAGE_STUDENT_DOES_NOT_HAVE_TAG,
-                student.getName(), VALID_CLASS_TAG_1.tagName);
-
-        assertCommandFailure(command, model, expectedMessage);
-    }
-
-    @Test
     public void execute_editPerformanceNote_success() throws Exception {
         Person student = new PersonBuilder().withStudentId(VALID_STUDENT_ID.toString())
                 .withTags(VALID_CLASS_TAG_1.tagName).build();
