@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import seedu.address.model.person.Date;
 import seedu.address.model.tag.ClassTag;
+import seedu.address.model.time.Date;
 
 /**
  * A list of attendance records.

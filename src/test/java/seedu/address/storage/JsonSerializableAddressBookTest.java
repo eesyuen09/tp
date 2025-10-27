@@ -20,10 +20,10 @@ import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.commons.util.JsonUtil;
 import seedu.address.model.AddressBook;
 import seedu.address.model.fee.FeeState;
-import seedu.address.model.person.Month;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
 import seedu.address.model.tag.ClassTag;
+import seedu.address.model.time.Month;
 import seedu.address.testutil.PersonBuilder;
 
 public class JsonSerializableAddressBookTest {

@@ -8,12 +8,12 @@ import java.util.function.Predicate;
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.model.fee.FeeState;
-import seedu.address.model.person.Date;
-import seedu.address.model.person.Month;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
 import seedu.address.model.person.performance.PerformanceNote;
 import seedu.address.model.tag.ClassTag;
+import seedu.address.model.time.Date;
+import seedu.address.model.time.Month;
 
 /**
  * The API of the Model component.

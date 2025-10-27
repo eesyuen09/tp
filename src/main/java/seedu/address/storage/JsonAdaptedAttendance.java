@@ -5,8 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.model.attendance.Attendance;
-import seedu.address.model.person.Date;
 import seedu.address.model.tag.ClassTag;
+import seedu.address.model.time.Date;
 
 /**
  * Jackson-friendly version of {@link Attendance}.

@@ -12,10 +12,10 @@ import org.junit.jupiter.api.Test;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.attendance.AttendanceList;
-import seedu.address.model.person.Date;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
 import seedu.address.model.tag.ClassTag;
+import seedu.address.model.time.Date;
 import seedu.address.testutil.ModelStub;
 import seedu.address.testutil.PersonBuilder;
 
