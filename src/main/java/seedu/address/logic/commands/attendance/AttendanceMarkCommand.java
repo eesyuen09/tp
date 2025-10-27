@@ -18,7 +18,7 @@ import seedu.address.model.tag.ClassTag;
 public class AttendanceMarkCommand extends AttendanceCommand {
 
     public static final String MESSAGE_MARK_SUCCESS = "Marked attendance for: %1$s on %2$s for class %3$s";
-    public static final String MESSAGE_ALREADY_MARKED = "Attendance for %1$s on %2$s for class %3$s already exists.";
+    public static final String MESSAGE_ALREADY_MARKED = "Attendance for %1$s on %2$s for class %3$s already marked.";
     public static final String MESSAGE_STUDENT_DOES_NOT_HAVE_TAG = "Student %1$s does not have the class tag: %2$s";
 
     private final Date date;
