@@ -17,12 +17,12 @@ import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.UserPrefs;
-import seedu.address.model.person.Date;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
 import seedu.address.model.person.performance.PerformanceList;
 import seedu.address.model.person.performance.PerformanceNote;
 import seedu.address.model.tag.ClassTag;
+import seedu.address.model.time.Date;
 import seedu.address.testutil.ModelStub;
 import seedu.address.testutil.PersonBuilder;
 

@@ -14,9 +14,9 @@ import seedu.address.logic.commands.performance.PerfDeleteCommand;
 import seedu.address.logic.commands.performance.PerfEditCommand;
 import seedu.address.logic.commands.performance.PerfViewCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
-import seedu.address.model.person.Date;
 import seedu.address.model.person.StudentId;
 import seedu.address.model.tag.ClassTag;
+import seedu.address.model.time.Date;
 
 /**
  * Parses arguments for the 'perf' command.

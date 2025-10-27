@@ -4,8 +4,8 @@ import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.util.Objects;
 
-import seedu.address.model.person.Date;
 import seedu.address.model.tag.ClassTag;
+import seedu.address.model.time.Date;
 
 /**
  * Represents a performance note for a student, consisting of a date and a note.
