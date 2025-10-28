@@ -415,9 +415,9 @@ Filters the main list to show only persons who are assigned the specified class 
 
 Format: filter -t t/TAG_NAME
 
-Notes:
-- The class tag must already exist in the system.
-- Tag name matching is case\-insensitive.
+Command Details and Constraints:
+* The class tag must already exist in the system. 
+* Tag name matching is case\-insensitive.
 
 Examples:
 - filter -t t/Sec3_Maths — Shows only students who have the Sec3_Maths tag.
