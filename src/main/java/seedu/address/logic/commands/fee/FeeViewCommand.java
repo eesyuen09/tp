@@ -13,9 +13,9 @@ import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.fee.FeeState;
 import seedu.address.model.fee.FeeTracker;
-import seedu.address.model.person.Month;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
+import seedu.address.model.time.Month;
 
 /**
  * View student's payment history

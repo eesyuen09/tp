@@ -11,8 +11,8 @@ import seedu.address.logic.commands.FilterCommand;
 import seedu.address.logic.commands.classtagcommands.ClassTagFilterCommand;
 import seedu.address.logic.commands.fee.FeeFilterPaidCommand;
 import seedu.address.logic.commands.fee.FeeFilterUnpaidCommand;
-import seedu.address.model.person.Month;
 import seedu.address.model.tag.ClassTag;
+import seedu.address.model.time.Month;
 import seedu.address.testutil.TypicalClassTags;
 
 public class FilterCommandParserTest {

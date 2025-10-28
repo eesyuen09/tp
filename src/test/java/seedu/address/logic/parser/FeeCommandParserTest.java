@@ -13,8 +13,8 @@ import seedu.address.logic.commands.fee.FeeMarkPaidCommand;
 import seedu.address.logic.commands.fee.FeeMarkUnpaidCommand;
 import seedu.address.logic.commands.fee.FeeViewCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
-import seedu.address.model.person.Month;
 import seedu.address.model.person.StudentId;
+import seedu.address.model.time.Month;
 
 /**
  * Unit tests for {@link FeeCommandParser}.

@@ -14,7 +14,7 @@ import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
-import seedu.address.model.person.Month;
+import seedu.address.model.time.Month;
 
 /**
  * Integration tests for {@link FeeFilterUnpaidCommand}.

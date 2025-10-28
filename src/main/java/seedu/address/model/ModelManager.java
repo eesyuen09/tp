@@ -17,12 +17,12 @@ import seedu.address.commons.core.LogsCenter;
 import seedu.address.model.attendance.AttendanceList;
 import seedu.address.model.fee.FeeState;
 import seedu.address.model.fee.FeeTracker;
-import seedu.address.model.person.Date;
-import seedu.address.model.person.Month;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
 import seedu.address.model.person.performance.PerformanceNote;
 import seedu.address.model.tag.ClassTag;
+import seedu.address.model.time.Date;
+import seedu.address.model.time.Month;
 
 /**
  * Represents the in-memory model of the address book data.
