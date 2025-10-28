@@ -13,7 +13,7 @@
 
 ## **Acknowledgements**
 
-_{ list here sources of all reused/adapted ideas, code, documentation, and third-party libraries -- include links to the original source as well }_
+We follow the project design and documentation structure of the AddressBook-Level3 project by SE-EDU.
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -134,7 +134,7 @@ The `Model` component,
 - `UniqueClassTagList` ensures no duplicate ClassTag names exist
 - Students can be assigned multiple ClassTags via the `classTags` field in `Person`
 - When a ClassTag is deleted, it must not be assigned to any student
-- ClassTags provide a way to filter and organize students by class
+- ClassTags provide a way to filter and organize students by class tag
 
 <box type="info" seamless>
 
