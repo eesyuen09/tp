@@ -14,7 +14,7 @@ import seedu.address.model.time.Date;
 /**
  * Marks a student as absent on a specific date for a specific class.
  * If the student was previously marked as present on that date for that class, the record is updated to absent.
- * If no present record exists for that date and class, an exception is thrown.
+ * If the attendance is already unmarked for that date and class, an exception is thrown.
  */
 public class AttendanceUnmarkCommand extends AttendanceCommand {
 
