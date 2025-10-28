@@ -111,6 +111,18 @@ public class FeeMarkUnpaidCommandTest {
         assertThrows(CommandException.class, () -> command.execute(model));
     }
 
+    @Test
+    public void execute_futureMonth_throwsCommandException() {
+        StudentId id = ALICE.getStudentId();
+        Month future = Month.now().plusMonths(1);
+        FeeMarkUnpaidCommand command = new FeeMarkUnpaidCommand(id, future);
+
+        String expectedMessage = "You can’t mark unpaid for a future month. "
+            + "Please try again when the month has started."; // same message
+
+        CommandTestUtil.assertCommandFailure(command, model, expectedMessage);
+    }
+
 
     @Test
     public void equals() {

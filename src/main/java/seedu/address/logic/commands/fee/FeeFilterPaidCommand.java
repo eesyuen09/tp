@@ -4,6 +4,7 @@ import static java.util.Objects.requireNonNull;
 
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.FilterCommand;
+import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.time.Month;
 
@@ -17,7 +18,7 @@ public class FeeFilterPaidCommand extends FilterCommand {
     public static final String MESSAGE_USAGE =
             COMMAND_WORD + " " + COMMAND_FLAG + " m/MMYY\n"
                     + "Example: filter -p m/0925"
-                    + "Filters the list to show only students who have PAID for the specified month.";
+                    + "\nFilters the list to show only students who have PAID for the specified month.";
 
     private final Month month;
 
@@ -26,8 +27,12 @@ public class FeeFilterPaidCommand extends FilterCommand {
     }
 
     @Override
-    public CommandResult execute(Model model) {
+    public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
+        if (month.isAfter(Month.now())) {
+            throw new CommandException("Cannot filter by future months. "
+                + "\nPlease select a month up to the current month.");
+        }
         model.updateFilteredPersonList(model.paidStudents(month));
         return new CommandResult(String.format("Showing PAID students for %s.", month.toHumanReadable()));
     }
