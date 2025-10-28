@@ -438,4 +438,80 @@ public class ModelManagerTest {
         assertFalse(updatedPerson.getAttendanceList().hasAttendanceMarked(date1, classTag));
         assertTrue(updatedPerson.getAttendanceList().hasAttendanceMarked(date2, classTag));
     }
+
+    @Test
+    public void deleteAttendance_validStudentAndDate_success() {
+        modelManager.addPerson(ALICE);
+        Date date = new Date("15012025");
+        ClassTag classTag = new ClassTag("Math");
+
+        // Mark first
+        modelManager.markAttendance(ALICE.getStudentId(), date, classTag);
+
+        // Verify attendance was marked
+        Person markedPerson = modelManager.getPersonById(ALICE.getStudentId()).get();
+        assertTrue(markedPerson.getAttendanceList().hasAttendanceMarked(date, classTag));
+
+        // Delete attendance
+        modelManager.deleteAttendance(ALICE.getStudentId(), date, classTag);
+
+        // Verify attendance record was deleted (not just marked as absent)
+        Person updatedPerson = modelManager.getPersonById(ALICE.getStudentId()).get();
+        assertFalse(updatedPerson.getAttendanceList().hasAttendanceMarked(date, classTag));
+    }
+
+    @Test
+    public void deleteAttendance_nullStudentId_throwsNullPointerException() {
+        Date date = new Date("15012025");
+        ClassTag classTag = new ClassTag("Math");
+        assertThrows(NullPointerException.class, () -> modelManager.deleteAttendance(null, date, classTag));
+    }
+
+    @Test
+    public void deleteAttendance_nullDate_throwsNullPointerException() {
+        modelManager.addPerson(ALICE);
+        ClassTag classTag = new ClassTag("Math");
+        assertThrows(NullPointerException.class, () ->
+                modelManager.deleteAttendance(ALICE.getStudentId(), null, classTag));
+    }
+
+    @Test
+    public void deleteAttendance_nullClassTag_throwsNullPointerException() {
+        modelManager.addPerson(ALICE);
+        Date date = new Date("15012025");
+        assertThrows(NullPointerException.class, () ->
+                modelManager.deleteAttendance(ALICE.getStudentId(), date, null));
+    }
+
+    @Test
+    public void deleteAttendance_nonExistentStudent_throwsIllegalArgumentException() {
+        StudentId fakeId = new StudentId("9999");
+        Date date = new Date("15012025");
+        ClassTag classTag = new ClassTag("Math");
+        assertThrows(IllegalArgumentException.class, () ->
+                modelManager.deleteAttendance(fakeId, date, classTag));
+    }
+
+    @Test
+    public void deleteAttendance_multipleRecords_deletesOnlySpecified() {
+        modelManager.addPerson(ALICE);
+        Date date1 = new Date("15012025");
+        Date date2 = new Date("16012025");
+        ClassTag classTag1 = new ClassTag("Math");
+        ClassTag classTag2 = new ClassTag("Science");
+
+        // Mark multiple attendance records
+        modelManager.markAttendance(ALICE.getStudentId(), date1, classTag1);
+        modelManager.markAttendance(ALICE.getStudentId(), date2, classTag1);
+        modelManager.markAttendance(ALICE.getStudentId(), date1, classTag2);
+
+        // Delete only one specific record
+        modelManager.deleteAttendance(ALICE.getStudentId(), date1, classTag1);
+
+        // Verify only the specified record was deleted
+        Person updatedPerson = modelManager.getPersonById(ALICE.getStudentId()).get();
+        assertFalse(updatedPerson.getAttendanceList().hasAttendanceMarked(date1, classTag1));
+        assertTrue(updatedPerson.getAttendanceList().hasAttendanceMarked(date2, classTag1));
+        assertTrue(updatedPerson.getAttendanceList().hasAttendanceMarked(date1, classTag2));
+    }
 }

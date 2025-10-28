@@ -238,6 +238,22 @@ public class ModelManager implements Model {
         addressBook.setPerson(person, updatedPerson);
     }
 
+    @Override
+    public void deleteAttendance(StudentId studentId, Date date, ClassTag classTag) {
+        requireAllNonNull(studentId, date, classTag);
+
+        Person person = getPersonById(studentId)
+                .orElseThrow(() -> new IllegalArgumentException("Student ID not found: " + studentId));
+
+        AttendanceList updatedAttendance = new AttendanceList(
+                person.getAttendanceList().asUnmodifiableList());
+        updatedAttendance.deleteAttendance(date, classTag);
+
+        Person updatedPerson = person.withAttendanceList(updatedAttendance);
+
+        addressBook.setPerson(person, updatedPerson);
+    }
+
     //=========== Filtered Person List Accessors =============================================================
 
     /**

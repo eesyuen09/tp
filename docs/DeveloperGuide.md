@@ -760,6 +760,26 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
       Use case ends.
 
+**Use case: Delete an attendance record**
+
+**MSS**
+1. User deletes an attendance record for a student on a specific date and class.
+2. Tuto deletes the attendance record.
+3. Tuto confirms that the attendance record has been deleted.
+
+   Use case ends.
+
+**Extensions**
+* 1a. The command format is invalid.
+    * 1a1. Tuto shows an error message with the correct usage format.
+
+      Use case ends.
+
+* 2a. No attendance record exists for the specified date and class.
+    * 2a1. Tuto shows an error message.
+
+      Use case ends.
+
 **Use case: View a student's attendance history**
 
 **MSS**

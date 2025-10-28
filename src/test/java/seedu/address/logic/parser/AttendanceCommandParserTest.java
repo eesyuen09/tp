@@ -7,6 +7,7 @@ import static seedu.address.testutil.Assert.assertThrows;
 import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.commands.attendance.AttendanceCommand;
+import seedu.address.logic.commands.attendance.AttendanceDeleteCommand;
 import seedu.address.logic.commands.attendance.AttendanceMarkCommand;
 import seedu.address.logic.commands.attendance.AttendanceUnmarkCommand;
 import seedu.address.logic.commands.attendance.AttendanceViewCommand;
@@ -113,6 +114,53 @@ public class AttendanceCommandParserTest {
     public void parse_viewCommandWithPreamble_throwsParseException() {
         assertThrows(ParseException.class, String.format(MESSAGE_INVALID_COMMAND_FORMAT,
                 AttendanceCommand.MESSAGE_USAGE), () -> parser.parse("-v extra s/0789"));
+    }
+
+    @Test
+    public void parse_deleteCommand_success() throws Exception {
+        String studentId = "0321";
+        String date = "20032025";
+        String classTag = "English";
+        AttendanceCommand command = parser.parse("-d s/" + studentId + " d/" + date + " t/" + classTag);
+        AttendanceDeleteCommand expectedCommand = new AttendanceDeleteCommand(new StudentId(studentId),
+                new Date(date), new ClassTag(classTag));
+        assertEquals(expectedCommand, command);
+    }
+
+    @Test
+    public void parse_deleteCommandMissingStudentId_throwsParseException() {
+        assertThrows(ParseException.class, String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                AttendanceCommand.MESSAGE_USAGE), () -> parser.parse("-d d/20032025 t/English"));
+    }
+
+    @Test
+    public void parse_deleteCommandMissingDate_throwsParseException() {
+        assertThrows(ParseException.class, String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                AttendanceCommand.MESSAGE_USAGE), () -> parser.parse("-d s/0321 t/English"));
+    }
+
+    @Test
+    public void parse_deleteCommandMissingClassTag_throwsParseException() {
+        assertThrows(ParseException.class, String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                AttendanceCommand.MESSAGE_USAGE), () -> parser.parse("-d s/0321 d/20032025"));
+    }
+
+    @Test
+    public void parse_deleteCommandWithPreamble_throwsParseException() {
+        assertThrows(ParseException.class, String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                AttendanceCommand.MESSAGE_USAGE), () -> parser.parse("-d extra s/0321 d/20032025 t/English"));
+    }
+
+    @Test
+    public void parse_markCommandMissingClassTag_throwsParseException() {
+        assertThrows(ParseException.class, String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                AttendanceCommand.MESSAGE_USAGE), () -> parser.parse("-m s/0123 d/13012025"));
+    }
+
+    @Test
+    public void parse_unmarkCommandMissingClassTag_throwsParseException() {
+        assertThrows(ParseException.class, String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                AttendanceCommand.MESSAGE_USAGE), () -> parser.parse("-u s/0456 d/15022025"));
     }
 
 }
