@@ -29,11 +29,9 @@ Tuto is a **desktop app for managing contacts, optimized for use via a Command L
 1. Type the command in the command box and press Enter to execute it. e.g. typing **`help`** and pressing Enter will open the help window.<br>
    Some example commands you can try:
 
-   * `list` : Lists all contacts.
+   * `list` : Lists all students.
 
-   * `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01` : Adds a contact named `John Doe` to the Address Book.
-
-   * `delete 3` : Deletes the 3rd contact shown in the current list.
+   * `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01` : Adds a student named `John Doe` to Tuto.
 
    * `clear` : Deletes all contacts.
 
@@ -56,15 +54,15 @@ Tuto is a **desktop app for managing contacts, optimized for use via a Command L
   e.g. `0020`, `2413`
 
 * Items in square brackets are optional.<br>
-  e.g `n/NAME [t/TAG]` can be used as `n/John Doe t/friend` or as `n/John Doe`.
+  e.g `n/NAME [t/CLASS_TAG]` can be used as `n/John Doe t/Math` or as `n/John Doe`.
 
 * Items with `…`​ after them can be used multiple times including zero times.<br>
-  e.g. `[t/TAG]…​` can be used as ` ` (i.e. 0 times), `t/friend`, `t/friend t/family` etc.
+  e.g. `[t/CLASS_TAG]…​` can be used as ` ` (i.e. 0 times), `t/Math`, `t/Math t/Science` etc.
 
 * Parameters can be in any order.<br>
   e.g. if the command specifies `n/NAME p/PHONE_NUMBER`, `p/PHONE_NUMBER n/NAME` is also acceptable.
 
-* Extraneous parameters for commands that do not take in parameters (such as `help`, `list`, `exit` and `clear`) will be ignored.<br>
+* Extraneous parameters for commands that do not take in parameters and flags (such as `help`, `list`, `exit` and `clear`) will be ignored.<br>
   e.g. if the command specifies `help 123`, it will be interpreted as `help`.
 
 * If you are using a PDF version of this document, be careful when copying and pasting commands that span multiple lines as space characters surrounding line-breaks may be omitted when copied over to the application.
@@ -190,12 +188,13 @@ Examples:
 Clears all entries from the address book.
 
 Format: `clear`
+
 ---
 
 ## Class Tag Management
 
-The Class Tag Management commands allow you to **create, delete, and list class tags** in the system.  
-Class tags are useful for organizing students by their class groups (e.g. `Sec3_Maths`, `JC1_Physics`).
+The Class Tag commands allow you to **create, delete, and list class tags** in the system.  
+Class tags are useful for organizing students by the classes they attend (e.g. `Sec3_Maths`, `JC1_Physics`).
 
 <box type="info" seamless>
 
@@ -215,42 +214,42 @@ Adds a new class tag to the system. This allows you to categorize students by th
 
 Format: `tag -a t/TAG_NAME`
 
-Notes:
-- Tag names must be 1\-30 characters long and can only contain alphanumeric characters and underscores (`_`). Spaces or other special characters are not allowed.
-- Tag names are case\-insensitive when checking for duplicates, but the original casing is preserved when added.
+Command Details and Constraints:
+* This command creates a new class tag with the specified `TAG_NAME`.
+* If a tag with the same name (case-insensitive) already exists, the command will not create a duplicate and will inform the user.
+* Tag names must be 1\-30 characters long and can only contain alphanumeric characters and underscores (`_`). Spaces or other special characters are not allowed.
+* Tag names are case\-insensitive when checking for duplicates, but the original casing is preserved when added.
 
 Examples:
 - `tag -a t/Sec3_Maths` — Adds a class tag named `Sec3_Maths`.
+  >**Expected output:** `New class tag added: Sec3_Maths`
 - `tag -a t/JC1_Physics` — Adds a class tag named `JC1_Physics`.
-
-Expected output:
-- `New class tag added: Sec3_Maths`  
-  or  
-  `This class tag already exists.`
-
+  >**Expected output:** `New class tag added: JC1_Physics`
+  
 ---
 
 ### 2. Deleting a class tag : `tag -d`
 
 Deletes an existing class tag from the system.
 
-⚠️ Important: You can only delete a class tag if it is not currently assigned to any person in the address book. Remove the tag from all students first before deleting.
-
 Format: `tag -d t/TAG_NAME`
 
-Notes:
-- Tag name matching is case\-insensitive.
+<box type="warning" seamless>
+<b>Warning:</b>
+You can only delete a class tag if it is not currently assigned to any student in the address book. Remove the tag from all students first before deleting.
+</box>
+
+Command Details and Constraints:
+* This command removes the class tag with the specified `TAG_NAME` from the system.
+* If the specified tag does not exist, the command will inform the user.
+* If the tag is currently assigned to one or more students, the command will not delete the tag and will inform the user to first remove the tag from all students.
+* Tag name matching is case\-insensitive.
 
 Examples:
 - `tag -d t/Sec3_Maths` — Deletes the class tag named `Sec3_Maths`.
-- `tag -d t/jc1_physics` — Deletes the class tag named `JC1_Physics`.
-
-Expected output:
-- `Tag deleted: Sec3_Maths`  
-  or  
-  `This class tag does not exist.`  
-  or  
-  `Cannot delete tag 'Sec3_Maths' because it is still assigned to one or more students. Please remove the tag from all students first.`
+>**Expected output:** `Tag deleted: Sec3_Maths`
+- `tag -d t/jc1_physics` — Deletes the class tag named `JC1_Physics`, regardless of case.
+>**Expected output:** `Tag deleted: JC1_Physics`
 
 ---
 
@@ -261,14 +260,13 @@ Shows a list of all class tags currently created in the address book.
 Format: `tag -l`
 
 Examples:
-- `tag -l`
-
-Expected output:
-- If tags exist:  
+- `tag -l`: If class tags `JC1_Physics` and `Sec3_Maths` exist in the system.
+>**Expected output:**  
   `Listed all class tags:`  
   `1. JC1_Physics`  
   `2. Sec3_Maths`
-- If no tags exist:  
+- `tag -l`: If no class tags exist in the system.
+>**Expected output:**  
   `No class tags found. You can add one using the 'tag -a' command.`
 
 ---
@@ -624,9 +622,9 @@ Furthermore, certain edits can cause the AddressBook to behave in unexpected way
 | **Find**                    | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`                                                                                                       |
 | **List**                    | `list`                                                                                                                                                           |
 | **Help**                    | `help`                                                                                                                                                           |
-| **Class Tag (add)**         | `tag -a t/TAG_NAME`<br> e.g., `tag -a t/Sec3_Maths`                                                                                                              |
-| **Class Tag (delete)**      | `tag -d t/TAG_NAME`<br> e.g., `tag -d t/Sec3_Maths`                                                                                                              |
-| **Class Tag (list)**        | `tag -l`<br> e.g., `tag -l`                                                                                                                                      |
+| **Class Tag (ADD)**         | `tag -a t/TAG_NAME`<br> e.g., `tag -a t/Sec3_Maths`                                                                                                              |
+| **Class Tag (DELETE)**      | `tag -d t/TAG_NAME`<br> e.g., `tag -d t/Sec3_Maths`                                                                                                              |
+| **Class Tag (LIST)**        | `tag -l`<br> e.g., `tag -l`                                                                                                                                      |
 | **Mark as PAID**            | `fee -p s/STUDENT_ID m/MMYY` <br> e.g., `fee -p s/0001 m/0925`                                                                                                   |
 | **Mark as UNPAID**          | `fee -up s/STUDENT_ID m/MMYY` <br> e.g., `fee -up s/0001 m/0925`                                                                                                 |
 | **View payment history**    | `fee -v s/STUDENT_ID [m/MMYY]` <br> e.g., `fee -v s/0001 m/0525`                                                                                                 |
