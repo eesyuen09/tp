@@ -43,11 +43,6 @@ public class AttendanceDeleteCommand extends AttendanceCommand {
                 .orElseThrow(() -> new CommandException(
                         String.format(Messages.MESSAGE_STUDENT_ID_NOT_FOUND, studentId)));
 
-        if (!personToEdit.getTags().contains(classTag)) {
-            throw new CommandException(String.format(MESSAGE_STUDENT_DOES_NOT_HAVE_TAG,
-                    personToEdit.getName(), classTag.tagName));
-        }
-
         if (!personToEdit.getAttendanceList().hasAttendanceRecord(date, classTag)) {
             throw new CommandException(String.format(MESSAGE_NO_ATTENDANCE_RECORD,
                     personToEdit.getName(), date.getFormattedDate(), classTag.tagName));
