@@ -185,42 +185,151 @@ ClassTag management is implemented through several key components:
     - `addClassTag(ClassTag)`: Adds a new ClassTag
     - `deleteClassTag(ClassTag)`: Removes a ClassTag
     - `findClassTag(String)`: Finds and returns a ClassTag by its name
+- `Person` objects maintain a `Set<ClassTag>` field that references ClassTags from the central `UniqueClassTagList`
   
 **Storage Component:**
-- `JsonAdaptedClassTag`: Converts ClassTag objects to/from JSON format
-- ClassTags are persisted as part of the `AddressBook` JSON file
-- The `classTags` list is serialized/deserialized alongside student data
+- `JsonAdaptedClassTag`: Converts ClassTag objects to/from JSON format for persistence
+- `JsonSerializableAddressBook`: Serializes both the central ClassTag list and student-ClassTag associations
+- ClassTags are persisted in two ways:
+    1. As a complete list in the `classTags` field of the address book
+    2. As references within each student's `tags` field
+- During deserialization, ClassTags are loaded first into the system, then students reference them by name
 
 **Logic Component:**
+
 The following commands handle ClassTag operations:
-- `AddClassTagCommand`: Creates a new ClassTag
-- `DeleteClassTagCommand`: Deletes an existing ClassTag
-- `ListClassTagCommand`: Lists all ClassTags
-- `ClassTagFilterCommand`: Filters students by ClassTag
+
+1. **AddClassTagCommand (triggered by `tag -a`)**: Creates a new ClassTag in the system
+    - Validates the ClassTag name format (1-30 alphanumeric characters and underscores)
+    - Checks for duplicates via `Model#hasClassTag()`
+    - Adds to `UniqueClassTagList` via `Model#addClassTag()`
+
+2. **DeleteClassTagCommand (triggered by `tag -d`)**: Deletes an existing ClassTag
+    - Validates the ClassTag exists
+    - Ensures no students are currently assigned to it
+    - Removes from `UniqueClassTagList` via `Model#deleteClassTag()`
+
+3. **ListClassTagCommand (triggered by `tag -l`)**: Lists all ClassTags in the system
+    - Retrieves all ClassTags from the Model
+    - Displays them in a numbered list
+
+4. **ClassTagFilterCommand (triggered by `filter -t`)**: Filters students by ClassTag
+    - Validates the ClassTag exists via `Model#findClassTag()`
+    - Updates the filtered person list to show only students with that ClassTag
+
+5. **AddCommand**: Adds a new student with optional ClassTag assignments
+    - Validates all specified ClassTags exist before creating the student
+    - Links student to ClassTags via references
+
+6. **EditCommand**: Edits student details including ClassTag assignments
+    - Can add, remove, or replace ClassTag assignments
+    - Validates all ClassTags exist before updating
+    - Empty ClassTag list (`t/`) removes all ClassTag assignments
+
+#### Sequence Diagram: Adding a ClassTag
+
+The following sequence diagram illustrates the interactions between components when a tutor creates a new ClassTag using the `tag -a` command:
+
+<puml src="diagrams/AddClassTagSequenceDiagram.puml" alt="AddClassTagSequenceDiagram" />
 
 #### Design Considerations
 
-**Aspect: ClassTag Storage:**
+**Aspect: ClassTag Storage Architecture:**
 
-* **Alternative 1 (current choice):** Store ClassTags separately in `UniqueClassTagList`
-    * Pros: Centralized management, enforces uniqueness at system level
-    * Cons: Requires additional data structure maintenance
+* **Alternative 1 (current choice):** Central storage in `UniqueClassTagList` with student references
+    * Pros:
+        - Single source of truth for all ClassTags
+        - Enforces uniqueness at system level
+        - Prevents orphaned or duplicate ClassTag names
+        - Easy to list all classes in the system
+        - Referential integrity - can prevent deletion of in-use ClassTags
+    * Cons:
+        - Requires additional validation when assigning ClassTags to students
+        - Slightly more complex implementation
 
 * **Alternative 2:** Store ClassTags only within each Student object
-    * Pros: Simpler data structure
-    * Cons: No centralized validation, potential for duplicates with different names
+    * Pros:
+        - Simpler data structure
+        - No need for separate ClassTag list
+        - Automatic cleanup when student is deleted
+    * Cons:
+        - No centralized management or validation
+        - Potential for duplicate ClassTag names with slight variations
+        - Cannot list all classes without scanning all students
+        - Cannot enforce consistent naming
+        - No way to track which classes exist in the system
 
+**Aspect: ClassTag Command Design:**
 
-#### Sequence Diagram Example
+* **Alternative 1 (current choice):** Single `tag` command with flags (`-a`, `-d`, `-l`)
+    * Pros:
+        - Consolidates related operations under one command word
+        - Reduces the number of top-level commands users need to remember
+        - Clear semantic grouping of ClassTag operations
+        - Single ClassTagCommandParser handles all tag operations, reducing parser classes and maintaining consistency
+    * Cons:
+        - More complex parsing logic to handle different flags
+
+* **Alternative 2:** Separate commands (`addtag`, `deletetag`, `listtag`)
+    * Pros:
+        - Simpler individual parsers
+        - No flag parsing needed
+    * Cons:
+        - More top-level commands to remember
+        - Less semantic grouping
+
+**Aspect: ClassTag Assignment Workflow:**
+
+* **Alternative 1 (current choice):** Integrate with Add and Edit commands
+    * Pros:
+        - Fewer commands for users to learn
+        - Natural workflow - assign classes when creating/modifying students
+        - Reduces command clutter
+    * Cons:
+        - Add and Edit commands have more responsibilities
+        - More complex command parsing
+
+* **Alternative 2:** Separate AssignClassTag and UnassignClassTag commands
+    * Pros:
+        - Single responsibility per command
+        - Simpler individual command implementations
+    * Cons:
+        - More commands for users to remember
+        - Extra steps in workflow (create student, then assign classes)
+        - Verbose for bulk operations
 
 #### Error Handling
 
-ClassTag operations include validation for:
-- Duplicate ClassTag names when creating
-- Non-existent ClassTags when deleting or assigning
-- ClassTags still assigned to students when attempting deletion
-- Invalid ClassTag name format
-- Non-existent ClassTags when adding/editing students with class tags
+ClassTag operations include comprehensive validation:
+
+**Creating ClassTags:**
+- Duplicate ClassTag names (case-insensitive)
+- Invalid ClassTag name format (must be 1-30 alphanumeric characters with underscores, no spaces)
+- Empty ClassTag name
+- Missing or invalid flag
+
+**Deleting ClassTags:**
+- Non-existent ClassTag
+- ClassTag still assigned to one or more students
+- Invalid command format
+- Invalid ClassTag format
+
+**Assigning ClassTags to Students:**
+- Non-existent ClassTag name when adding/editing students
+- Invalid ClassTag format in student commands
+- Attempting to assign a ClassTag that doesn't exist
+
+**Filtering by ClassTag:**
+- Non-existent ClassTag name
+- Invalid command format
+- Invalid ClassTag format
+
+**General Validation Rules:**
+- All tag commands enforce **strict parameter checking** — any extra text beyond the expected format is rejected
+- When multiple flags are present, only the **first valid flag** determines the command type; subsequent flags are treated as invalid parameters and cause the command to fail
+- Tag names are trimmed of leading/trailing whitespace before validation
+
+Each validation error provides clear, actionable feedback to help users correct their input.
 
 ### \[Proposed\] Undo/redo feature
 
