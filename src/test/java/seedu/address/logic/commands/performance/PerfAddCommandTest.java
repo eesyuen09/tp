@@ -59,7 +59,7 @@ public class PerfAddCommandTest {
     @Test
     public void execute_performanceNoteAcceptedByModel_addSuccessful() throws Exception {
         Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID.toString())
-                .withTags(VALID_CLASS_TAG.tagName).build();
+                .withClassTags(VALID_CLASS_TAG.tagName).build();
         Model model = new ModelManager(new AddressBook(), new UserPrefs());
         model.addPerson(validPerson);
         PerformanceNote note = new PerformanceNote(VALID_DATE, VALID_CLASS_TAG, VALID_NOTE);
@@ -95,7 +95,7 @@ public class PerfAddCommandTest {
         // Student missing required class tag
         Person personWithoutTag = new PersonBuilder()
                 .withStudentId(VALID_STUDENT_ID.toString())
-                .withTags("Science") // different tag
+                .withClassTags("Science") // different tag
                 .build();
 
         Model model = new ModelManager(new AddressBook(), new UserPrefs());

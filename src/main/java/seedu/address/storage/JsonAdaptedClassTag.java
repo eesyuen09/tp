@@ -39,6 +39,11 @@ public class JsonAdaptedClassTag {
      * @throws IllegalValueException if there were any data constraints violated in the adapted tag.
      */
     public ClassTag toModelType() throws IllegalValueException {
+
+        if (tagName == null) {
+            throw new IllegalValueException(ClassTag.MESSAGE_CONSTRAINTS);
+        }
+
         if (!ClassTag.isValidTagName(tagName)) {
             throw new IllegalValueException(ClassTag.MESSAGE_CONSTRAINTS);
         }

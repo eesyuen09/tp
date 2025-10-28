@@ -6,7 +6,7 @@
 
 # Tuto User Guide
 
-Tuto is a **desktop app for managing contacts, optimized for use via a  Line Interface** (CLI) while still having the benefits of a Graphical User Interface (GUI). If you can type fast, Tuto can get your contact management tasks done faster than traditional GUI apps.
+Tuto is a **desktop app for managing contacts, optimized for use via a Command Line Interface** (CLI) while still having the benefits of a Graphical User Interface (GUI). If you can type fast, Tuto can get your contact management tasks done faster than traditional GUI apps.
 
 <!-- * Table of Contents -->
 <page-nav-print />
@@ -22,7 +22,7 @@ Tuto is a **desktop app for managing contacts, optimized for use via a  Line Int
 
 1. Copy the file to the folder you want to use as the _home folder_ for your AddressBook.
 
-1. Open a command terminal, `cd` into the folder you put the jar file in, and use the `java -jar addressbook.jar` command to run the application.<br>
+1. Open a command terminal, `cd` into the folder you put the jar file in, and use the `java -jar tuto.jar` command to run the application.<br>
    A GUI similar to the below should appear in a few seconds. Note how the app contains some sample data.<br>
    ![Ui](images/Ui.png)
 
@@ -273,7 +273,7 @@ Expected output:
 
 ---
 
-### Managing students' payment: `fee` Commands
+## Managing students' payment: `fee` Commands
 The `fee` command family allows you to **record, update, and view student payment statuses**.  
 This helps tutors and administrators track monthly tuition fee payments efficiently and keep student records up to date.
 <box type="info" seamless>
@@ -363,7 +363,7 @@ October 2025 : PAID (marked)
 
 ---
 
-### Filter students: `filter`
+## Filter students: `filter`
 
 The `filter` command allows you to quickly find students based on specific criteria such as **payment status** or **class tags**.  
 This is useful for tutors and administrators who want to check which students
@@ -428,7 +428,7 @@ Examples:
 Expected output:
 ![filterByClassTag.jpg](images/filterByClassTag.jpg)
 
-### Managing students' attendance: `att`
+## Managing students' attendance: `att`
 The `att` command family allows you to **record, update, and view student attendance**.
 Each attendance record is tied to both a date and a class tag, allowing tutors to manage students who attend multiple classes efficiently.
 
@@ -508,7 +508,7 @@ Showing attendance records for: Bernice Yu<br>
 
 </box>
 
-### Tracking students' performance: `perf` commands
+## Tracking students' performance: `perf` commands
 The `perf` command family allows you to track students' performance in class.
 This helps you to monitor and manage students' academic progress effectively.
 

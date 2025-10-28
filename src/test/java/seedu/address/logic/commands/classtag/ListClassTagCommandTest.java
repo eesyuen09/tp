@@ -1,4 +1,4 @@
-package seedu.address.logic.commands.classtagcommands;
+package seedu.address.logic.commands.classtag;
 
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 
@@ -27,6 +27,13 @@ public class ListClassTagCommandTest {
     public void execute_noTagsInAddressBook_showsNoTagsMessage() {
         assertCommandSuccess(new ListClassTagCommand(),
                 model, ListClassTagCommand.MESSAGE_NO_TAGS_FOUND, expectedModel);
+    }
+
+    @Test
+    public void execute_listIsEmpty_showsEmptyList() {
+        // Model is initialized with no tags
+        String expectedMessage = ListClassTagCommand.MESSAGE_NO_TAGS_FOUND;
+        assertCommandSuccess(new ListClassTagCommand(), model, expectedMessage, expectedModel);
     }
 
     @Test

@@ -1,4 +1,4 @@
-package seedu.address.logic.commands.classtagcommands;
+package seedu.address.logic.commands.classtag;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -36,6 +36,18 @@ public class AddClassTagCommandTest {
         assertEquals(Arrays.asList(validClassTag), modelStub.classTagsAdded);
     }
 
+    // Test adding a tag that exists but with different casing
+    @Test
+    public void execute_duplicateClassTagDifferentCase_throwsCommandException() {
+        ClassTag existingTag = new ClassTag("Sec4_Maths");
+        ClassTag duplicateTagLower = new ClassTag("sec4_maths");
+        AddClassTagCommand addClassTagCommand = new AddClassTagCommand(duplicateTagLower);
+        ModelStub modelStub = new ModelStubWithClassTag(existingTag);
+
+        assertThrows(CommandException.class, AddClassTagCommand.MESSAGE_DUPLICATE_TAG, () ->
+                addClassTagCommand.execute(modelStub));
+    }
+
     @Test
     public void execute_duplicateClassTag_throwsCommandException() {
         ClassTag validClassTag = new ClassTag("Sec4_Maths");
@@ -45,6 +57,7 @@ public class AddClassTagCommandTest {
         assertThrows(CommandException.class, AddClassTagCommand.MESSAGE_DUPLICATE_TAG, () ->
                 addClassTagCommand.execute(modelStub));
     }
+
 
     @Test
     public void equals() {
@@ -59,6 +72,10 @@ public class AddClassTagCommandTest {
         // same values -> returns true
         AddClassTagCommand addTagACommandCopy = new AddClassTagCommand(tagA);
         assertTrue(addTagACommand.equals(addTagACommandCopy));
+
+        // Same tag name, different case -> returns true (based on ClassTag.equals)
+        AddClassTagCommand addTagALowerCase = new AddClassTagCommand(new ClassTag("taga"));
+        assertTrue(addTagACommand.equals(addTagALowerCase));
 
         // different types -> returns false
         assertFalse(addTagACommand.equals(1));

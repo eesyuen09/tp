@@ -58,7 +58,7 @@ public class PerfEditCommandTest {
     @Test
     public void execute_editPerformanceNote_success() throws Exception {
         Person student = new PersonBuilder().withStudentId(VALID_STUDENT_ID.toString())
-                .withTags(VALID_CLASS_TAG_1.tagName).build();
+                .withClassTags(VALID_CLASS_TAG_1.tagName).build();
 
         PerformanceNote note = new PerformanceNote(VALID_DATE_1, VALID_CLASS_TAG_1, VALID_NOTE_1);
         PerformanceList list = new PerformanceList();
@@ -87,7 +87,7 @@ public class PerfEditCommandTest {
     @Test
     public void execute_editUsingModelStub_success() throws Exception {
         Person student = new PersonBuilder().withStudentId(VALID_STUDENT_ID.toString())
-                .withTags(VALID_CLASS_TAG_1.tagName).build();
+                .withClassTags(VALID_CLASS_TAG_1.tagName).build();
 
         PerformanceNote note = new PerformanceNote(VALID_DATE_1, VALID_CLASS_TAG_1, VALID_NOTE_1);
         PerformanceList list = new PerformanceList();
