@@ -8,7 +8,7 @@ import java.util.stream.Stream;
 
 import seedu.address.logic.commands.Command;
 import seedu.address.logic.commands.FilterCommand;
-import seedu.address.logic.commands.classtagcommands.ClassTagFilterCommand;
+import seedu.address.logic.commands.classtag.ClassTagFilterCommand;
 import seedu.address.logic.commands.fee.FeeFilterPaidCommand;
 import seedu.address.logic.commands.fee.FeeFilterUnpaidCommand;
 import seedu.address.logic.parser.exceptions.ParseException;

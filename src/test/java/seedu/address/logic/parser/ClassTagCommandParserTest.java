@@ -8,10 +8,10 @@ import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSucces
 import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.Messages;
-import seedu.address.logic.commands.classtagcommands.AddClassTagCommand;
-import seedu.address.logic.commands.classtagcommands.ClassTagCommand;
-import seedu.address.logic.commands.classtagcommands.DeleteClassTagCommand;
-import seedu.address.logic.commands.classtagcommands.ListClassTagCommand;
+import seedu.address.logic.commands.classtag.AddClassTagCommand;
+import seedu.address.logic.commands.classtag.ClassTagCommand;
+import seedu.address.logic.commands.classtag.DeleteClassTagCommand;
+import seedu.address.logic.commands.classtag.ListClassTagCommand;
 import seedu.address.model.tag.ClassTag;
 
 public class ClassTagCommandParserTest {
@@ -73,7 +73,6 @@ public class ClassTagCommandParserTest {
     public void parse_listWithArguments_failure() {
         String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, ListClassTagCommand.MESSAGE_USAGE);
 
-
         assertParseFailure(parser, " -l -l", expectedMessage);
 
         assertParseFailure(parser, " -l extra", expectedMessage);
@@ -110,7 +109,7 @@ public class ClassTagCommandParserTest {
 
     @Test
     public void parse_repeatedPrefix_failure() {
-        String expectedMessage = String.format(Messages.MESSAGE_DUPLICATE_FIELDS + "t/");
+        String expectedMessage = String.format(Messages.MESSAGE_DUPLICATE_FIELDS + PREFIX_CLASSTAG);
 
         assertParseFailure(parser, " -a " + PREFIX_CLASSTAG + "Tag1 "
                 + PREFIX_CLASSTAG + "Tag2", expectedMessage);

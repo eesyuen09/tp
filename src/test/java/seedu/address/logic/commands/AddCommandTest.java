@@ -60,7 +60,7 @@ public class AddCommandTest {
 
 
         Person personWithExactCaseTag = new PersonBuilder().withName("Exact Case Test")
-                .withTags("ExactCaseTag")
+                .withClassTags("ExactCaseTag")
                 .build();
 
         AddCommand addCommand = new AddCommand(personWithExactCaseTag);
@@ -84,7 +84,7 @@ public class AddCommandTest {
 
         // Build person with the tag in lowercase
         Person personWithLowercaseTag = new PersonBuilder().withName("Case Test")
-                .withTags("existingtag") // Input with lowercase
+                .withClassTags("existingtag") // Input with lowercase
                 .build();
 
         // Create the AddCommand
@@ -105,7 +105,10 @@ public class AddCommandTest {
     @Test
     public void execute_addPersonWithNonExistentTag_throwsCommandException() {
         ModelStubAcceptingPersonAdded modelStub = new ModelStubAcceptingPersonAdded(); // Use a stub that allows adding
-        Person personWithBadTag = new PersonBuilder().withName("Bad Tag Person").withTags("NonExistentTag").build();
+        Person personWithBadTag = new PersonBuilder()
+                .withName("Bad Tag Person")
+                .withClassTags("NonExistentTag")
+                .build();
         AddCommand addCommand = new AddCommand(personWithBadTag);
 
         assertThrows(CommandException.class,

@@ -30,9 +30,19 @@ public class ClassTagTest {
         String specialCharTagName = "Sec3@Math";
         assertThrows(IllegalArgumentException.class, () -> new ClassTag(specialCharTagName));
 
-        // Test with a name that is too long (over 30 chars)
-        String longTagName = "This_tag_name_is_way_too_long_to_be_valid";
+        // Test with a name that is too long (31 chars)
+        String longTagName = "This_is_invalid_tag_of_31chars_";
         assertThrows(IllegalArgumentException.class, () -> new ClassTag(longTagName));
+
+        // Test with only punctuation
+        String punctuationTagName = "!!!";
+        assertThrows(IllegalArgumentException.class, () -> new ClassTag(punctuationTagName));
+
+        // Test with leading/trailing forbidden characters
+        String leadingForbidden = "-Start";
+        assertThrows(IllegalArgumentException.class, () -> new ClassTag(leadingForbidden));
+        String trailingForbidden = "End-";
+        assertThrows(IllegalArgumentException.class, () -> new ClassTag(trailingForbidden));
     }
 
     @Test
@@ -41,6 +51,19 @@ public class ClassTagTest {
         new ClassTag("ValidTag");
         new ClassTag("Sec3_AMath");
         new ClassTag("  PaddedTag  "); // Should be trimmed and succeed
+
+        // Test boundary length
+        new ClassTag("a");
+
+        // Test boundary length 30
+        new ClassTag("This_is_a_valid_tag_of_30chars"); // 30 chars
+
+        // Test only numbers
+        new ClassTag("12345");
+
+        // Test only underscores
+        new ClassTag("_");
+        new ClassTag("___");
     }
 
     // isValidTagName Tests
@@ -63,7 +86,8 @@ public class ClassTagTest {
         assertFalse(ClassTag.isValidTagName("Sec3-Math")); // contains hyphen
         assertFalse(ClassTag.isValidTagName("Math!")); // contains '!'
         assertFalse(ClassTag.isValidTagName("Physics Group")); // contains space
-
+        assertFalse(ClassTag.isValidTagName("你好数学"));
+        assertFalse(ClassTag.isValidTagName(".,/"));
         // EP: exceeds max length
         assertFalse(ClassTag.isValidTagName("a123456789012345678901234567890")); // 31 chars
     }
@@ -85,6 +109,16 @@ public class ClassTagTest {
 
         // EP: exactly 30 characters (boundary value)
         assertTrue(ClassTag.isValidTagName("a12345678901234567890123456789"));
+
+        // Only number
+        assertTrue(ClassTag.isValidTagName("2025"));
+
+        // Only underscore
+        assertTrue(ClassTag.isValidTagName("_"));
+        assertTrue(ClassTag.isValidTagName("_______")); // Multiple underscores
+
+        // Mix of alphanumeric and underscore
+        assertTrue(ClassTag.isValidTagName("Class_A_1"));
     }
 
     // equals and hashCode Tests
@@ -104,6 +138,10 @@ public class ClassTagTest {
         ClassTag tagLowercase = new ClassTag("sec3_amath");
         assertTrue(tag.equals(tagLowercase));
 
+        // Test with mixed case
+        ClassTag tagMixedCase = new ClassTag("sEc3_AmAtH");
+        assertTrue(tag.equals(tagMixedCase));
+
         // different type -> returns false
         assertFalse(tag.equals(5));
         assertFalse(tag.equals("Sec3_AMath"));
@@ -121,6 +159,7 @@ public class ClassTagTest {
         ClassTag tag1 = new ClassTag("TestTag");
         ClassTag tag2 = new ClassTag("TestTag");
         ClassTag tag3 = new ClassTag("testtag"); // Different case
+        ClassTag tag4 = new ClassTag("tEsTtAg");
 
         // Hashcode should be consistent
         assertEquals(tag1.hashCode(), tag1.hashCode());
@@ -130,6 +169,9 @@ public class ClassTagTest {
 
         // Hashcode for case-insensitively equal objects should be the same
         assertEquals(tag1.hashCode(), tag3.hashCode());
+
+        // Hashcode for mixed case should match
+        assertEquals(tag1.hashCode(), tag4.hashCode());
     }
 
     // toString Test

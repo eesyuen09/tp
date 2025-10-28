@@ -51,7 +51,7 @@ public class PerfDeleteCommandTest {
     @Test
     public void execute_studentWithoutTag_throwsCommandException() {
         Person person = new PersonBuilder().withStudentId(VALID_STUDENT_ID.toString())
-                .withTags("Science") // missing "Math"
+                .withClassTags("Science") // missing "Math"
                 .build();
         Model model = new ModelManager(new AddressBook(), new UserPrefs());
         model.addPerson(person);
@@ -68,7 +68,7 @@ public class PerfDeleteCommandTest {
     public void execute_validDelete_successful() throws Exception {
         Person validPerson = new PersonBuilder()
                 .withStudentId(VALID_STUDENT_ID.toString())
-                .withTags("Math")
+                .withClassTags("Math")
                 .build();
 
         PerformanceNote note = new PerformanceNote(VALID_DATE_1, VALID_TAG_1, VALID_NOTE_1);
@@ -94,7 +94,7 @@ public class PerfDeleteCommandTest {
         // Create a student with the class tag but no performance notes
         Person validPerson = new PersonBuilder()
                 .withStudentId(VALID_STUDENT_ID.toString())
-                .withTags(VALID_TAG_1.tagName) // ensure student has the class tag
+                .withClassTags(VALID_TAG_1.tagName) // ensure student has the class tag
                 .build();
 
         Model model = new ModelManager(new AddressBook(), new UserPrefs());
@@ -111,7 +111,7 @@ public class PerfDeleteCommandTest {
     public void execute_deleteUsingModelStub_success() throws Exception {
         Person validPerson = new PersonBuilder()
                 .withStudentId(VALID_STUDENT_ID.toString())
-                .withTags("Math")
+                .withClassTags("Math")
                 .build();
 
         PerformanceNote note = new PerformanceNote(VALID_DATE_1, VALID_TAG_1 , VALID_NOTE_1);
