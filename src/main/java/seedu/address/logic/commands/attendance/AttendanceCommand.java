@@ -19,20 +19,20 @@ public abstract class AttendanceCommand extends Command {
     public static final String COMMAND_WORD = "att";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD
-            + ": Manages attendance for the students.\n "
+            + ": Manages attendance for the students.\n"
             + "Requires a flag to specify the action.\n"
-            + "Parameters:\n"
-            + "  Mark: -m " + PREFIX_STUDENTID + "STUDENTID " + PREFIX_DATE + "DATE (format: DDMMYYYY) "
+            + "Actions:\n"
+            + "Mark: -m " + PREFIX_STUDENTID + "STUDENTID " + PREFIX_DATE + "DATE (format: DDMMYYYY) "
             + PREFIX_CLASSTAG + "CLASS_TAG\n"
-            + "  Unmark: -u " + PREFIX_STUDENTID + "STUDENTID " + PREFIX_DATE + "DATE (format: DDMMYYYY) "
+            + "Unmark: -u " + PREFIX_STUDENTID + "STUDENTID " + PREFIX_DATE + "DATE (format: DDMMYYYY) "
             + PREFIX_CLASSTAG + "CLASS_TAG\n"
-            + "  View: -v " + PREFIX_STUDENTID + "STUDENTID\n"
+            + "View: -v " + PREFIX_STUDENTID + "STUDENTID\n"
             + "Examples:\n"
-            + "  " + COMMAND_WORD + " -m " + PREFIX_STUDENTID + "0123 " + PREFIX_DATE + "15092025 "
+            + COMMAND_WORD + " -m " + PREFIX_STUDENTID + "0123 " + PREFIX_DATE + "15092025 "
             + PREFIX_CLASSTAG + "Sec3_AMath\n"
-            + "  " + COMMAND_WORD + " -u " + PREFIX_STUDENTID + "0123 " + PREFIX_DATE + "15092025 "
+            + COMMAND_WORD + " -u " + PREFIX_STUDENTID + "0123 " + PREFIX_DATE + "15092025 "
             + PREFIX_CLASSTAG + "Sec3_AMath\n"
-            + "  " + COMMAND_WORD + " -v " + PREFIX_STUDENTID + "0123 ";
+            + COMMAND_WORD + " -v " + PREFIX_STUDENTID + "0123 ";
 
     protected final StudentId studentId;
 

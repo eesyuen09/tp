@@ -1,9 +1,10 @@
-package seedu.address.logic.commands.classtagcommands;
+package seedu.address.logic.commands.classtag;
 
 import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_CLASSTAG;
 
 import java.util.List;
+import java.util.Optional;
 
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
@@ -41,21 +42,25 @@ public class DeleteClassTagCommand extends ClassTagCommand {
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
 
-        if (!model.hasClassTag(toDelete)) {
+        Optional<ClassTag> foundTag = model.findClassTag(toDelete);
+
+        if (foundTag.isEmpty()) {
             throw new CommandException(MESSAGE_TAG_NOT_FOUND);
         }
+
+        ClassTag actualTag = foundTag.get();
 
         // Check if any person in the address book has this tag
         List<Person> personList = model.getAddressBook().getPersonList();
         boolean isTagInUse = personList.stream()
-                .anyMatch(person -> person.getTags().contains(toDelete));
+                .anyMatch(person -> person.getTags().contains(actualTag));
 
         if (isTagInUse) {
-            throw new CommandException(String.format(MESSAGE_TAG_IN_USE, toDelete.tagName));
+            throw new CommandException(String.format(MESSAGE_TAG_IN_USE, actualTag.tagName));
         }
 
         model.deleteClassTag(toDelete);
-        return new CommandResult(String.format(MESSAGE_SUCCESS, toDelete.tagName));
+        return new CommandResult(String.format(MESSAGE_SUCCESS, actualTag.tagName));
     }
 
     @Override

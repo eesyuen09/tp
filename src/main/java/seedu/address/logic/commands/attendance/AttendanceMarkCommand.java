@@ -6,19 +6,19 @@ import seedu.address.logic.Messages;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
-import seedu.address.model.person.Date;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
 import seedu.address.model.tag.ClassTag;
+import seedu.address.model.time.Date;
 
 /**
  * Marks a student as present on a specific date for a specific class.
- * If an attendance record already exists for that date and class, it will be updated to present.
+ * If the attendance is already marked as present for that date and class, an exception is thrown.
  */
 public class AttendanceMarkCommand extends AttendanceCommand {
 
     public static final String MESSAGE_MARK_SUCCESS = "Marked attendance for: %1$s on %2$s for class %3$s";
-    public static final String MESSAGE_ALREADY_MARKED = "Attendance for %1$s on %2$s for class %3$s already exists.";
+    public static final String MESSAGE_ALREADY_MARKED = "Attendance for %1$s on %2$s for class %3$s already marked.";
     public static final String MESSAGE_STUDENT_DOES_NOT_HAVE_TAG = "Student %1$s does not have the class tag: %2$s";
 
     private final Date date;

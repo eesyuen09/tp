@@ -8,12 +8,12 @@ import java.util.function.Predicate;
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.model.fee.FeeState;
-import seedu.address.model.person.Date;
-import seedu.address.model.person.Month;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
 import seedu.address.model.person.performance.PerformanceNote;
 import seedu.address.model.tag.ClassTag;
+import seedu.address.model.time.Date;
+import seedu.address.model.time.Month;
 
 /**
  * The API of the Model component.
@@ -115,6 +115,15 @@ public interface Model {
      * The class tag must exist.
      */
     void deleteClassTag(ClassTag toDelete);
+
+    /**
+     * Finds and returns the existing ClassTag that matches the given tag case-insensitively.
+     *
+     * @param classTag The ClassTag (potentially with user-input casing) to search for.
+     * @return An Optional containing the existing ClassTag with its original casing if found,
+     *         otherwise Optional.empty().
+     */
+    Optional<ClassTag> findClassTag(ClassTag classTag);
 
     /**
      * Returns {@code true} if the address book contains a {@code Person} with the specified {@code StudentId}.

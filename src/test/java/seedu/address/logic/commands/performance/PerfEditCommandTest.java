@@ -17,12 +17,12 @@ import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.UserPrefs;
-import seedu.address.model.person.Date;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
 import seedu.address.model.person.performance.PerformanceList;
 import seedu.address.model.person.performance.PerformanceNote;
 import seedu.address.model.tag.ClassTag;
+import seedu.address.model.time.Date;
 import seedu.address.testutil.ModelStub;
 import seedu.address.testutil.PersonBuilder;
 
@@ -72,7 +72,7 @@ public class PerfEditCommandTest {
     @Test
     public void execute_editPerformanceNote_success() throws Exception {
         Person student = new PersonBuilder().withStudentId(VALID_STUDENT_ID.toString())
-                .withTags(VALID_CLASS_TAG_1.tagName).build();
+                .withClassTags(VALID_CLASS_TAG_1.tagName).build();
 
         PerformanceNote note = new PerformanceNote(VALID_DATE_1, VALID_CLASS_TAG_1, VALID_NOTE_1);
         PerformanceList list = new PerformanceList();
@@ -101,7 +101,7 @@ public class PerfEditCommandTest {
     @Test
     public void execute_editUsingModelStub_success() throws Exception {
         Person student = new PersonBuilder().withStudentId(VALID_STUDENT_ID.toString())
-                .withTags(VALID_CLASS_TAG_1.tagName).build();
+                .withClassTags(VALID_CLASS_TAG_1.tagName).build();
 
         PerformanceNote note = new PerformanceNote(VALID_DATE_1, VALID_CLASS_TAG_1, VALID_NOTE_1);
         PerformanceList list = new PerformanceList();

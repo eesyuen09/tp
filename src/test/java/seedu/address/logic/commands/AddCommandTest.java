@@ -9,6 +9,9 @@ import static seedu.address.testutil.TypicalPersons.ALICE;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
@@ -17,6 +20,7 @@ import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.AddressBook;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.person.Person;
+import seedu.address.model.tag.ClassTag;
 import seedu.address.testutil.ModelStub;
 import seedu.address.testutil.PersonBuilder;
 
@@ -46,6 +50,69 @@ public class AddCommandTest {
         ModelStub modelStub = new ModelStubWithPerson(validPerson);
 
         assertThrows(CommandException.class, AddCommand.MESSAGE_DUPLICATE_PERSON, () -> addCommand.execute(modelStub));
+    }
+
+    @Test
+    public void execute_addPersonWithExactCaseTag_addsWithCorrectCaseTag() throws Exception {
+        ModelStubAcceptingPersonAdded modelStub = new ModelStubAcceptingPersonAdded();
+        ClassTag existingTag = new ClassTag("ExactCaseTag");
+        modelStub.addClassTag(existingTag);
+
+
+        Person personWithExactCaseTag = new PersonBuilder().withName("Exact Case Test")
+                .withClassTags("ExactCaseTag")
+                .build();
+
+        AddCommand addCommand = new AddCommand(personWithExactCaseTag);
+        addCommand.execute(modelStub);
+
+        assertTrue(modelStub.personsAdded.size() == 1);
+        Person addedPerson = modelStub.personsAdded.get(0);
+
+        // Create the expected tag set with the original casing
+        Set<ClassTag> expectedTags = new HashSet<>();
+        expectedTags.add(existingTag);
+
+        assertEquals(expectedTags, addedPerson.getTags());
+    }
+
+    @Test
+    public void execute_addPersonWithDifferentCaseTag_addsWithCorrectCaseTag() throws Exception {
+        ModelStubAcceptingPersonAdded modelStub = new ModelStubAcceptingPersonAdded();
+        ClassTag existingTag = new ClassTag("ExistingTag");
+        modelStub.addClassTag(existingTag);
+
+        // Build person with the tag in lowercase
+        Person personWithLowercaseTag = new PersonBuilder().withName("Case Test")
+                .withClassTags("existingtag") // Input with lowercase
+                .build();
+
+        // Create the AddCommand
+        AddCommand addCommand = new AddCommand(personWithLowercaseTag);
+        addCommand.execute(modelStub);
+
+        // Verify the person added has the tag with the ORIGINAL casing
+        assertTrue(modelStub.personsAdded.size() == 1);
+        Person addedPerson = modelStub.personsAdded.get(0);
+
+        // Create the expected tag set with the original casing
+        Set<ClassTag> expectedTags = new HashSet<>();
+        expectedTags.add(existingTag); // Expect "ExistingTag"
+
+        assertEquals(expectedTags, addedPerson.getTags());
+    }
+
+    @Test
+    public void execute_addPersonWithNonExistentTag_throwsCommandException() {
+        ModelStubAcceptingPersonAdded modelStub = new ModelStubAcceptingPersonAdded(); // Use a stub that allows adding
+        Person personWithBadTag = new PersonBuilder()
+                .withName("Bad Tag Person")
+                .withClassTags("NonExistentTag")
+                .build();
+        AddCommand addCommand = new AddCommand(personWithBadTag);
+
+        assertThrows(CommandException.class,
+                String.format(AddCommand.MESSAGE_TAG_NOT_FOUND, "NonExistentTag"), () -> addCommand.execute(modelStub));
     }
 
     @Test
@@ -103,6 +170,7 @@ public class AddCommandTest {
      */
     private class ModelStubAcceptingPersonAdded extends ModelStub {
         final ArrayList<Person> personsAdded = new ArrayList<>();
+        final ArrayList<ClassTag> classTagsAvailable = new ArrayList<>();
 
         @Override
         public boolean hasPerson(Person person) {
@@ -114,6 +182,28 @@ public class AddCommandTest {
         public void addPerson(Person person) {
             requireNonNull(person);
             personsAdded.add(person);
+        }
+
+        @Override
+        public void addClassTag(ClassTag tag) {
+            requireNonNull(tag);
+            if (!classTagsAvailable.contains(tag)) {
+                classTagsAvailable.add(tag);
+            }
+        }
+
+        @Override
+        public boolean hasClassTag(ClassTag tag) {
+            requireNonNull(tag);
+            return classTagsAvailable.stream().anyMatch(existing -> existing.equals(tag));
+        }
+
+        @Override
+        public Optional<ClassTag> findClassTag(ClassTag userTag) {
+            requireNonNull(userTag);
+            return classTagsAvailable.stream()
+                    .filter(existingTag -> existingTag.equals(userTag))
+                    .findFirst();
         }
 
         @Override

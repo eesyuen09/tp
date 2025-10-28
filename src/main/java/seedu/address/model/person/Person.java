@@ -11,6 +11,7 @@ import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.model.attendance.AttendanceList;
 import seedu.address.model.person.performance.PerformanceList;
 import seedu.address.model.tag.ClassTag;
+import seedu.address.model.time.Month;
 
 /**
  * Represents a Person in the address book.
@@ -142,7 +143,7 @@ public class Person {
     }
 
     /**
-     * Returns an immutable class tag set, which throws {@code UnsupportedOperationException}
+     * Returns an immutable ClassTag set, which throws {@code UnsupportedOperationException}
      * if modification is attempted.
      */
     public Set<ClassTag> getTags() {

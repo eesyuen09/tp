@@ -11,12 +11,12 @@ import seedu.address.model.Model;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.ReadOnlyUserPrefs;
 import seedu.address.model.fee.FeeState;
-import seedu.address.model.person.Date;
-import seedu.address.model.person.Month;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
 import seedu.address.model.person.performance.PerformanceNote;
 import seedu.address.model.tag.ClassTag;
+import seedu.address.model.time.Date;
+import seedu.address.model.time.Month;
 
 /**
  * A default model stub that has all of the methods failing.
@@ -105,6 +105,11 @@ public class ModelStub implements Model {
 
     @Override
     public void deleteClassTag(ClassTag classTag) {
+        throw new AssertionError("This method should not be called.");
+    }
+
+    @Override
+    public Optional<ClassTag> findClassTag(ClassTag classTag) {
         throw new AssertionError("This method should not be called.");
     }
 

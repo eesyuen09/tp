@@ -47,7 +47,10 @@ public class AddCommandIntegrationTest {
 
     @Test
     public void execute_addPersonWithNonExistentTag_throwsCommandException() {
-        Person personWithBadTag = new PersonBuilder().withName("Bad Tag Person").withTags("NonExistentTag").build();
+        Person personWithBadTag = new PersonBuilder()
+                .withName("Bad Tag Person")
+                .withClassTags("NonExistentTag")
+                .build();
         AddCommand addCommand = new AddCommand(personWithBadTag);
 
         assertCommandFailure(addCommand, model,

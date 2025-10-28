@@ -11,19 +11,21 @@ import static seedu.address.testutil.TypicalPersons.BENSON;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.model.fee.FeeState;
-import seedu.address.model.person.Date;
-import seedu.address.model.person.Month;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
 import seedu.address.model.tag.ClassTag;
+import seedu.address.model.tag.exceptions.ClassTagNotFoundException;
 import seedu.address.model.tag.exceptions.DuplicateClassTagException;
+import seedu.address.model.time.Date;
+import seedu.address.model.time.Month;
 import seedu.address.testutil.AddressBookBuilder;
 
 public class ModelManagerTest {
@@ -141,6 +143,74 @@ public class ModelManagerTest {
         ClassTag tag = new ClassTag("Duplicate");
         modelManager.addClassTag(tag);
         assertThrows(DuplicateClassTagException.class, () -> modelManager.addClassTag(tag));
+    }
+
+    @Test
+    public void deleteClassTag_tagExists_removesTag() {
+        ClassTag tag = new ClassTag("ToDelete");
+        modelManager.addClassTag(tag);
+        assertTrue(modelManager.hasClassTag(tag));
+
+        modelManager.deleteClassTag(tag);
+        assertFalse(modelManager.hasClassTag(tag));
+    }
+
+    @Test
+    public void deleteClassTag_tagDoesNotExist_throwsClassTagNotFoundException() {
+        ClassTag tag = new ClassTag("NonExistent");
+        assertThrows(ClassTagNotFoundException.class, () -> modelManager.deleteClassTag(tag));
+    }
+
+    @Test
+    public void deleteClassTag_nullTag_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> modelManager.deleteClassTag(null));
+    }
+
+    @Test
+    public void findClassTag_tagExistsExactCase_returnsTag() {
+        AddressBook addressBook = new AddressBook();
+        ClassTag tag = new ClassTag("Math_Sec3");
+        addressBook.addClassTag(tag);
+        modelManager = new ModelManager(addressBook, new UserPrefs());
+
+        Optional<ClassTag> found = modelManager.findClassTag(new ClassTag("Math_Sec3"));
+        assertTrue(found.isPresent());
+        assertEquals(tag, found.get()); // Should return the original object
+    }
+
+    @Test
+    public void findClassTag_tagExistsDifferentCase_returnsTag() {
+        AddressBook addressBook = new AddressBook();
+        ClassTag tag = new ClassTag("Math_Sec3");
+        addressBook.addClassTag(tag);
+        modelManager = new ModelManager(addressBook, new UserPrefs());
+
+        Optional<ClassTag> found = modelManager.findClassTag(new ClassTag("math_sec3")); // Search lowercase
+        assertTrue(found.isPresent());
+        assertEquals(tag, found.get()); // Should return the original object ("Math_Sec3")
+    }
+
+    @Test
+    public void findClassTag_tagDoesNotExist_returnsEmpty() {
+        AddressBook addressBook = new AddressBook();
+        addressBook.addClassTag(new ClassTag("Math_Sec3"));
+        modelManager = new ModelManager(addressBook, new UserPrefs());
+
+        Optional<ClassTag> found = modelManager.findClassTag(new ClassTag("Physics"));
+        assertTrue(found.isEmpty());
+    }
+
+    @Test
+    public void findClassTag_emptyTagList_returnsEmpty() {
+        // modelManager is already initialized with an empty address book by default setup
+        Optional<ClassTag> found = modelManager.findClassTag(new ClassTag("Anything"));
+        assertTrue(found.isEmpty());
+    }
+
+    @Test
+    public void findClassTag_nullTag_throwsNullPointerException() {
+        // The implementation uses requireNonNull, so this confirms that check
+        assertThrows(NullPointerException.class, () -> modelManager.findClassTag(null));
     }
 
     @Test
@@ -289,7 +359,7 @@ public class ModelManagerTest {
     @Test
     public void markAttendance_validStudentAndDate_success() {
         modelManager.addPerson(ALICE);
-        Date date = new seedu.address.model.person.Date("15012025");
+        Date date = new Date("15012025");
         ClassTag classTag = new ClassTag("Math");
 
         modelManager.markAttendance(ALICE.getStudentId(), date, classTag);
@@ -301,7 +371,7 @@ public class ModelManagerTest {
 
     @Test
     public void markAttendance_nullStudentId_throwsNullPointerException() {
-        Date date = new seedu.address.model.person.Date("15012025");
+        Date date = new Date("15012025");
         ClassTag classTag = new ClassTag("Math");
         assertThrows(NullPointerException.class, () -> modelManager.markAttendance(null, date, classTag));
     }
@@ -317,7 +387,7 @@ public class ModelManagerTest {
     @Test
     public void unmarkAttendance_validStudentAndDate_success() {
         modelManager.addPerson(ALICE);
-        Date date = new seedu.address.model.person.Date("15012025");
+        Date date = new Date("15012025");
         ClassTag classTag = new ClassTag("Math");
 
         // Mark first
@@ -333,7 +403,7 @@ public class ModelManagerTest {
 
     @Test
     public void unmarkAttendance_nullStudentId_throwsNullPointerException() {
-        Date date = new seedu.address.model.person.Date("15012025");
+        Date date = new Date("15012025");
         ClassTag classTag = new ClassTag("Math");
         assertThrows(NullPointerException.class, () -> modelManager.unmarkAttendance(null, date, classTag));
     }
@@ -349,8 +419,8 @@ public class ModelManagerTest {
     @Test
     public void markAndUnmarkAttendance_multipleDates_success() {
         modelManager.addPerson(ALICE);
-        Date date1 = new seedu.address.model.person.Date("15012025");
-        Date date2 = new seedu.address.model.person.Date("16012025");
+        Date date1 = new Date("15012025");
+        Date date2 = new Date("16012025");
         ClassTag classTag = new ClassTag("Math");
 
         // Mark two dates

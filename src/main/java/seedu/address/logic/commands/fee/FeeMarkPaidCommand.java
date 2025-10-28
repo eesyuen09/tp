@@ -10,9 +10,9 @@ import java.util.Optional;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
-import seedu.address.model.person.Month;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
+import seedu.address.model.time.Month;
 
 /**
  * Marks a student's fee as PAID for a given month.

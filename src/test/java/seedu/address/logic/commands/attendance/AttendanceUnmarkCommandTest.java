@@ -12,10 +12,10 @@ import org.junit.jupiter.api.Test;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.attendance.AttendanceList;
-import seedu.address.model.person.Date;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
 import seedu.address.model.tag.ClassTag;
+import seedu.address.model.time.Date;
 import seedu.address.testutil.ModelStub;
 import seedu.address.testutil.PersonBuilder;
 
@@ -46,7 +46,7 @@ public class AttendanceUnmarkCommandTest {
     public void execute_validStudentAndDate_unmarkSuccessful() throws Exception {
         ModelStubWithPerson modelStub = new ModelStubWithPerson();
         Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID_STRING)
-                .withTags("Math").build();
+                .withClassTags("Math").build();
         // Mark attendance first so we can unmark it
         AttendanceList attendanceList = new AttendanceList();
         attendanceList.markAttendance(VALID_DATE, VALID_CLASS_TAG);
@@ -67,7 +67,7 @@ public class AttendanceUnmarkCommandTest {
     public void execute_attendanceNotMarked_marksAsAbsent() throws CommandException {
         ModelStubWithPerson modelStub = new ModelStubWithPerson();
         Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID_STRING)
-                .withTags("Math").build();
+                .withClassTags("Math").build();
         // Don't mark attendance - person has no attendance records
         modelStub.person = validPerson;
 
@@ -87,7 +87,7 @@ public class AttendanceUnmarkCommandTest {
     public void execute_alreadyMarkedAbsent_throwsCommandException() throws Exception {
         ModelStubWithPerson modelStub = new ModelStubWithPerson();
         Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID_STRING)
-                .withTags("Math").build();
+                .withClassTags("Math").build();
 
         // Mark attendance as absent first
         AttendanceList attendanceList = new AttendanceList();
@@ -106,7 +106,7 @@ public class AttendanceUnmarkCommandTest {
     public void execute_studentDoesNotHaveTag_throwsCommandException() {
         ModelStubWithPerson modelStub = new ModelStubWithPerson();
         Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID_STRING)
-                .withTags("Science").build(); // Student has Science tag, not Math
+                .withClassTags("Science").build(); // Student has Science tag, not Math
         modelStub.person = validPerson;
 
         AttendanceUnmarkCommand command = new AttendanceUnmarkCommand(VALID_STUDENT_ID, VALID_DATE, VALID_CLASS_TAG);

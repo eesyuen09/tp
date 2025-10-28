@@ -12,9 +12,9 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import seedu.address.model.person.Date;
 import seedu.address.model.person.performance.exceptions.PerformanceNoteNotFoundException;
 import seedu.address.model.tag.ClassTag;
+import seedu.address.model.time.Date;
 
 public class PerformanceListTest {
 

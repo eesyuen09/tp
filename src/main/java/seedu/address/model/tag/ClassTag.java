@@ -36,6 +36,7 @@ public class ClassTag {
      * A valid tag name must be 1-30 characters long and match the validation regex.
      */
     public static boolean isValidTagName(String test) {
+
         if (test.isEmpty() || test.length() > MAX_LENGTH) {
             return false;
         }

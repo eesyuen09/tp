@@ -6,15 +6,15 @@ import seedu.address.logic.Messages;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
-import seedu.address.model.person.Date;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
 import seedu.address.model.tag.ClassTag;
+import seedu.address.model.time.Date;
 
 /**
  * Marks a student as absent on a specific date for a specific class.
  * If the student was previously marked as present on that date for that class, the record is updated to absent.
- * If no present record exists for that date and class, an exception is thrown.
+ * If the attendance is already unmarked for that date and class, an exception is thrown.
  */
 public class AttendanceUnmarkCommand extends AttendanceCommand {
 

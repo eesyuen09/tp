@@ -5,7 +5,7 @@ import static java.util.Objects.requireNonNull;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.FilterCommand;
 import seedu.address.model.Model;
-import seedu.address.model.person.Month;
+import seedu.address.model.time.Month;
 
 /**
  * Shows only students marked as {@code PAID} for the specified month.
