@@ -232,6 +232,18 @@ The following sequence diagram illustrates the interactions between components w
 
 <puml src="diagrams/AddClassTagSequenceDiagram.puml" alt="AddClassTagSequenceDiagram" />
 
+#### Sequence Diagram: Filtering Students by ClassTag
+
+The following sequence diagram illustrates how the system filters students by a specific ClassTag:
+
+<puml src="diagrams/ClassTagFilterSequenceDiagram.puml" alt="ClassTagFilterSequenceDiagram" />
+
+### Activty Diagram: Editing Student ClassTags
+
+The activity diagram below illustrates the workflow when a tutor edits a student's ClassTag assignments using the `edit` command:
+
+<puml src="diagrams/EditStudentClassTagsActivityDiagram.puml" alt="EditStudentClassTagsActivityDiagram" />
+
 #### Design Considerations
 
 **Aspect: ClassTag Storage Architecture:**
