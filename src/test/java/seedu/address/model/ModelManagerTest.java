@@ -32,6 +32,22 @@ public class ModelManagerTest {
 
     private ModelManager modelManager = new ModelManager();
 
+    /**
+     * Pays all months from the person's enrolled month up to (but not including) the target month.
+     * This is needed now that marking a later month as PAID requires all earlier months to be PAID first.
+     */
+    private void payAllMonthsBefore(ModelManager mm, Person p, Month target) {
+        Month enrolled = p.getEnrolledMonth();
+        if (enrolled == null) {
+            return;
+        }
+        Month cur = enrolled;
+        while (cur.isBefore(target)) {
+            mm.markPaid(p.getStudentId(), cur);
+            cur = cur.plusMonths(1);
+        }
+    }
+
     @Test
     public void constructor() {
         assertEquals(new UserPrefs(), modelManager.getUserPrefs());
@@ -264,6 +280,7 @@ public class ModelManagerTest {
 
         Month current = Month.now();
 
+        payAllMonthsBefore(modelManager, ALICE, current);
         modelManager.markPaid(ALICE.getStudentId(), current);
 
         Predicate<Person> paid = modelManager.paidStudents(current);
@@ -283,10 +300,40 @@ public class ModelManagerTest {
 
         assertEquals(java.util.Optional.of(FeeState.UNPAID), modelManager.getCurrentFeeState(ALICE));
 
+        payAllMonthsBefore(modelManager, ALICE, current);
         modelManager.markPaid(ALICE.getStudentId(), current);
         assertEquals(java.util.Optional.of(FeeState.PAID), modelManager.getCurrentFeeState(ALICE));
     }
 
+
+    @Test
+    public void markPaid_fails_whenEarlierMonthsUnpaid() {
+        modelManager.addPerson(ALICE);
+        Month current = Month.now();
+
+        assertThrows(IllegalStateException.class, () -> modelManager.markPaid(ALICE.getStudentId(), current));
+    }
+
+    @Test
+    public void markPaid_fails_whenAlreadyPaid() {
+        modelManager.addPerson(ALICE);
+        Month current = Month.now();
+
+        payAllMonthsBefore(modelManager, ALICE, current);
+        modelManager.markPaid(ALICE.getStudentId(), current);
+
+        assertThrows(IllegalStateException.class, () -> modelManager.markPaid(ALICE.getStudentId(), current));
+    }
+
+    @Test
+    public void markUnpaid_fails_whenAlreadyUnpaid() {
+        modelManager.addPerson(ALICE);
+        Month current = Month.now();
+
+        // With no explicit record, derived state is UNPAID; explicitly marking UNPAID again should fail
+        assertEquals(java.util.Optional.of(FeeState.UNPAID), modelManager.getCurrentFeeState(ALICE));
+        assertThrows(IllegalStateException.class, () -> modelManager.markUnpaid(ALICE.getStudentId(), current));
+    }
 
     @Test
     public void hasPersonWithId_existingAndNonExistingId_returnsCorrectResult() {

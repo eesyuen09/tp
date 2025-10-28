@@ -58,7 +58,11 @@ public class FeeMarkPaidCommand extends FeeCommand {
             throw new CommandException(String.format(MESSAGE_INVALID_MONTH, name, enrolledMonth.toHumanReadable()));
         }
 
-        model.markPaid(studentId, month);
+        try {
+            model.markPaid(studentId, month);
+        } catch (IllegalStateException e) {
+            throw new CommandException(e.getMessage());
+        }
         return new CommandResult(String.format(MESSAGE_SUCCESS, name, month.toHumanReadable()));
     }
 

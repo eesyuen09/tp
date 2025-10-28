@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
+import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.ALICE;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 
@@ -11,10 +12,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.commands.CommandTestUtil;
+import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
+import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
 import seedu.address.model.time.Month;
 
@@ -33,10 +36,31 @@ public class FeeMarkUnpaidCommandTest {
         expectedModel = new ModelManager(new AddressBook(ab), new UserPrefs());
     }
 
+    /**
+     * Pays all months from the person's enrolled month up to (but not including) the target month.
+     * This is needed now that marking a later month as PAID requires all earlier months to be PAID first.
+     */
+    private void payAllMonthsBefore(Model mm, Person p, Month target) {
+        Month enrolled = p.getEnrolledMonth();
+        if (enrolled == null) {
+            return;
+        }
+        Month cur = enrolled;
+        while (cur.isBefore(target)) {
+            mm.markPaid(p.getStudentId(), cur);
+            cur = cur.plusMonths(1);
+        }
+    }
+
     @Test
     public void execute_markUnpaid_success() {
         StudentId id = ALICE.getStudentId();
         Month month = new Month("0925");
+
+        payAllMonthsBefore(model, ALICE, month);
+        payAllMonthsBefore(expectedModel, ALICE, month);
+        model.markPaid(ALICE.getStudentId(), month);
+        expectedModel.markPaid(ALICE.getStudentId(), month);
 
         FeeMarkUnpaidCommand command = new FeeMarkUnpaidCommand(id, month);
         expectedModel.markUnpaid(id, month);
@@ -63,6 +87,7 @@ public class FeeMarkUnpaidCommandTest {
         assertCommandFailure(command, model, expectedMessage);
     }
 
+    @Test
     public void execute_monthBeforeEnrollment_throwsCommandException() {
         // Assuming ALICE’s enrolled month in TypicalPersons is "0825"
         StudentId id = ALICE.getStudentId();
@@ -73,6 +98,19 @@ public class FeeMarkUnpaidCommandTest {
         String expectedMessage = String.format(FeeCommand.MESSAGE_INVALID_MONTH, name, enrollment.toHumanReadable());
         CommandTestUtil.assertCommandFailure(command, model, expectedMessage);
     }
+
+    @Test
+    public void execute_alreadyUnpaid_throwsCommandException() {
+        StudentId id = ALICE.getStudentId();
+        Month month = ALICE.getEnrolledMonth(); // default UNPAID if not marked
+
+        FeeMarkUnpaidCommand command = new FeeMarkUnpaidCommand(id, month);
+
+        // Should fail because effective state is already UNPAID by default
+        assertThrows(IllegalStateException.class, () -> model.markUnpaid(ALICE.getStudentId(), month));
+        assertThrows(CommandException.class, () -> command.execute(model));
+    }
+
 
     @Test
     public void equals() {

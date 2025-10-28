@@ -173,6 +173,23 @@ public class ModelManager implements Model {
     public void markPaid(StudentId studentId, Month month) {
         requireNonNull(studentId);
         requireNonNull(month);
+        Person person = getPersonById(studentId)
+            .orElseThrow(() -> new IllegalArgumentException("Student ID not found: " + studentId));
+        Month enrolled = person.getEnrolledMonth();
+        FeeState current = feeTracker.getDerivedStatusOfMonth(person, month).orElse(null);
+        if (current == FeeState.PAID) {
+            throw new IllegalStateException(month.toHumanReadable() + " is already marked as Paid.");
+        }
+        Month prevMonth = enrolled;
+        while (prevMonth.isBefore(month)) {
+            FeeState prior = feeTracker.getDerivedStatusOfMonth(person, prevMonth).orElse(FeeState.UNPAID);
+            if (prior != FeeState.PAID) {
+                throw new IllegalStateException(
+                    "Cannot mark " + month.toHumanReadable() + " as Paid.\n"
+                        + prevMonth.toHumanReadable() + " is not Paid yet.");
+            }
+            prevMonth = prevMonth.plusMonths(1);
+        }
         feeTracker.markPaid(studentId, month);
     }
 
@@ -180,6 +197,12 @@ public class ModelManager implements Model {
     public void markUnpaid(StudentId studentId, Month month) {
         requireNonNull(studentId);
         requireNonNull(month);
+        Person person = getPersonById(studentId)
+            .orElseThrow(() -> new IllegalArgumentException("Student ID not found: " + studentId));
+        FeeState current = feeTracker.getDerivedStatusOfMonth(person, month).orElse(FeeState.UNPAID);
+        if (current == FeeState.UNPAID) {
+            throw new IllegalStateException(month.toHumanReadable() + " is already marked as Unpaid.");
+        }
         feeTracker.markUnpaid(studentId, month);
     }
 
@@ -253,13 +276,13 @@ public class ModelManager implements Model {
     @Override
     public Predicate<Person> paidStudents(Month month) {
         requireNonNull(month);
-        return p -> feeTracker.getDerivedStatusofMonth(p, month).orElse(null) == FeeState.PAID;
+        return p -> feeTracker.getDerivedStatusOfMonth(p, month).orElse(null) == FeeState.PAID;
     }
 
     @Override
     public Predicate<Person> unpaidStudents(Month month) {
         requireNonNull(month);
-        return p -> feeTracker.getDerivedStatusofMonth(p, month).orElse(null) == FeeState.UNPAID;
+        return p -> feeTracker.getDerivedStatusOfMonth(p, month).orElse(null) == FeeState.UNPAID;
     }
 
 
@@ -267,7 +290,7 @@ public class ModelManager implements Model {
     public Optional<FeeState> getCurrentFeeState(Person person) {
         requireNonNull(person);
         Month current = Month.now();
-        return feeTracker.getDerivedStatusofMonth(person, current);
+        return feeTracker.getDerivedStatusOfMonth(person, current);
     }
 
     @Override

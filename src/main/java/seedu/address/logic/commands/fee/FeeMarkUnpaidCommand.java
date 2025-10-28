@@ -42,7 +42,6 @@ public class FeeMarkUnpaidCommand extends FeeCommand {
     @Override
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
-
         Optional<Person> personOpt = model.getPersonById(studentId);
         if (personOpt.isEmpty()) {
             throw new CommandException(String.format(MESSAGE_STUDENT_ID_NOT_FOUND, studentId));
@@ -53,7 +52,11 @@ public class FeeMarkUnpaidCommand extends FeeCommand {
         if (month.isBefore(person.getEnrolledMonth())) {
             throw new CommandException(String.format(MESSAGE_INVALID_MONTH, name, enrolledMonth.toHumanReadable()));
         }
-        model.markUnpaid(studentId, month);
+        try {
+            model.markUnpaid(studentId, month);
+        } catch (IllegalStateException e) {
+            throw new CommandException(e.getMessage());
+        }
         return new CommandResult(String.format(MESSAGE_SUCCESS, name, month.toHumanReadable()));
     }
 
