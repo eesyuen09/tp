@@ -16,12 +16,12 @@ import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.UserPrefs;
-import seedu.address.model.person.Date;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
 import seedu.address.model.person.performance.PerformanceList;
 import seedu.address.model.person.performance.PerformanceNote;
 import seedu.address.model.tag.ClassTag;
+import seedu.address.model.time.Date;
 import seedu.address.testutil.ModelStub;
 import seedu.address.testutil.PersonBuilder;
 
@@ -59,7 +59,7 @@ public class PerfAddCommandTest {
     @Test
     public void execute_performanceNoteAcceptedByModel_addSuccessful() throws Exception {
         Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID.toString())
-                .withTags(VALID_CLASS_TAG.tagName).build();
+                .withClassTags(VALID_CLASS_TAG.tagName).build();
         Model model = new ModelManager(new AddressBook(), new UserPrefs());
         model.addPerson(validPerson);
         PerformanceNote note = new PerformanceNote(VALID_DATE, VALID_CLASS_TAG, VALID_NOTE);
@@ -95,7 +95,7 @@ public class PerfAddCommandTest {
         // Student missing required class tag
         Person personWithoutTag = new PersonBuilder()
                 .withStudentId(VALID_STUDENT_ID.toString())
-                .withTags("Science") // different tag
+                .withClassTags("Science") // different tag
                 .build();
 
         Model model = new ModelManager(new AddressBook(), new UserPrefs());

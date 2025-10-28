@@ -12,9 +12,9 @@ import seedu.address.logic.commands.attendance.AttendanceMarkCommand;
 import seedu.address.logic.commands.attendance.AttendanceUnmarkCommand;
 import seedu.address.logic.commands.attendance.AttendanceViewCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
-import seedu.address.model.person.Date;
 import seedu.address.model.person.StudentId;
 import seedu.address.model.tag.ClassTag;
+import seedu.address.model.time.Date;
 
 public class AttendanceCommandParserTest {
 

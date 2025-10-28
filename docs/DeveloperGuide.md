@@ -4,7 +4,7 @@
   pageNav: 3
 ---
 
-# AB-3 Developer Guide
+# Tuto Developer Guide
 
 <!-- * Table of Contents -->
 <page-nav-print />
@@ -124,13 +124,21 @@ How the parsing works:
 The `Model` component,
 
 * stores the address book data i.e., all `Person` objects (which are contained in a `UniquePersonList` object).
+* stores a list of `ClassTag` objects (which are contained in a `UniqueClassTagList` object).
 * stores the currently 'selected' `Person` objects (e.g., results of a search query) as a separate _filtered_ list which is exposed to outsiders as an unmodifiable `ObservableList<Person>` that can be 'observed' e.g. the UI can be bound to this list so that the UI automatically updates when the data in the list change.
 * stores a `UserPref` object that represents the user’s preferences. This is exposed to the outside as a `ReadOnlyUserPref` objects.
 * does not depend on any of the other three components (as the `Model` represents data entities of the domain, they should make sense on their own without depending on other components)
 
+**ClassTag Management:**
+- Each `ClassTag` has a unique name that identifies a class or group
+- `UniqueClassTagList` ensures no duplicate ClassTag names exist
+- Students can be assigned multiple ClassTags via the `classTags` field in `Person`
+- When a ClassTag is deleted, it must not be assigned to any student
+- ClassTags provide a way to filter and organize students by class
+
 <box type="info" seamless>
 
-**Note:** An alternative (arguably, a more OOP) model is given below. It has a `Tag` list in the `AddressBook`, which `Person` references. This allows `AddressBook` to only require one `Tag` object per unique tag, instead of each `Person` needing their own `Tag` objects.<br>
+**Note:** An alternative (arguably, a more OOP) model is given below. It has a `ClassTag` list in the `AddressBook`, which `Person` references. This allows `AddressBook` to only require one `ClassTag` object per unique class tag, instead of each `Person` needing their own `ClassTag` objects.<br>
 
 <puml src="diagrams/BetterModelClassDiagram.puml" width="450" />
 
@@ -147,6 +155,7 @@ The `Storage` component,
 * can save both address book data and user preference data in JSON format, and read them back into corresponding objects.
 * inherits from both `AddressBookStorage` and `UserPrefStorage`, which means it can be treated as either one (if only the functionality of only one is needed).
 * depends on some classes in the `Model` component (because the `Storage` component's job is to save/retrieve objects that belong to the `Model`)
+* handles the `UniqueClassTagList` by saving/loading it as part of the `AddressBook` data. `JSONAdaptedClassTag` is used to convert between the `ClassTag` model type and its JSON-friendly format. `JSONSerializableAddressBook` includes the `classTags` list during serialization and deserialization. 
 
 ### Common classes
 
@@ -157,6 +166,61 @@ Classes used by multiple components are in the `seedu.address.commons` package.
 ## **Implementation**
 
 This section describes some noteworthy details on how certain features are implemented.
+
+### ClassTag Management
+
+#### Overview
+
+The ClassTag feature allows tutors to organize students into classes or groups. Each ClassTag represents a distinct class (e.g., "Sec_3_A_Math", "P5_Science") that can be assigned to multiple students.
+
+#### Implementation
+
+ClassTag management is implemented through several key components:
+
+**Model Component:**
+- `ClassTag`: Represents a class with a unique name
+- `UniqueClassTagList`: Maintains all ClassTags in the system, ensuring no duplicates
+- The `Model` interface provides methods:
+    - `hasClassTag(ClassTag)`: Checks if a ClassTag exists
+    - `addClassTag(ClassTag)`: Adds a new ClassTag
+    - `deleteClassTag(ClassTag)`: Removes a ClassTag
+    - `findClassTag(String)`: Finds and returns a ClassTag by its name
+  
+**Storage Component:**
+- `JsonAdaptedClassTag`: Converts ClassTag objects to/from JSON format
+- ClassTags are persisted as part of the `AddressBook` JSON file
+- The `classTags` list is serialized/deserialized alongside student data
+
+**Logic Component:**
+The following commands handle ClassTag operations:
+- `AddClassTagCommand`: Creates a new ClassTag
+- `DeleteClassTagCommand`: Deletes an existing ClassTag
+- `ListClassTagCommand`: Lists all ClassTags
+- `ClassTagFilterCommand`: Filters students by ClassTag
+
+#### Design Considerations
+
+**Aspect: ClassTag Storage:**
+
+* **Alternative 1 (current choice):** Store ClassTags separately in `UniqueClassTagList`
+    * Pros: Centralized management, enforces uniqueness at system level
+    * Cons: Requires additional data structure maintenance
+
+* **Alternative 2:** Store ClassTags only within each Student object
+    * Pros: Simpler data structure
+    * Cons: No centralized validation, potential for duplicates with different names
+
+
+#### Sequence Diagram Example
+
+#### Error Handling
+
+ClassTag operations include validation for:
+- Duplicate ClassTag names when creating
+- Non-existent ClassTags when deleting or assigning
+- ClassTags still assigned to students when attempting deletion
+- Invalid ClassTag name format
+- Non-existent ClassTags when adding/editing students with class tags
 
 ### \[Proposed\] Undo/redo feature
 
@@ -289,34 +353,34 @@ _{Explain here how the data archiving feature will be implemented}_
 
 Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have) - `*`
 
-| Priority  | As a …​                                    | I want to …​                                             | So that I can…​                                                         |
-|-----------|------------------------------------------- |----------------------------------------------------------|-------------------------------------------------------------------------|
-| `* * * `  | tutor handling lesson fees                 | tag a student as paid for a given month                  | keep track of students who have settled their tuition fees              |
-| `* * *`   | tutor handling lesson fees                 | tag a student as unpaid for a given month                | identify students who still owe lesson fees                             |
-| `* * *`   | tutor handling lesson fees                 | filter students who have paid by month                   | view all students who have completed payment for that month at a glance |
-| `* * *`   | tutor handling lesson fees                 | filter students who have not paid by month               | follow up with students who have outstanding tuition fees               |
-| `* * *`   | tutor handling lesson fees                 | view a student's payment history up to the current month | review their past payment behaviour and identify missed months          |
-| `* * *`   | tutor who teaches multiple classes         | create a class tag                                       | keep track of a new class I am teaching                                 |
-| `* * *`   | tutor who teaches multiple classes         | assign a class tag (eg.Sec_3_A_Math) to a student        | manage all students of the same subject together                        |
-| `* * *`   | tutor who teaches multiple classes         | unassign a class tag to a student                        | remove students not in a particular class                               |
-| `* * *`   | tutor who teaches multiple classes         | filter students by class tag (eg. Sec_3_A_Math)          | I can focus on a precise teaching group                                 |
-| `* * *`   | tutor who teaches multiple classes         | list all the class tags                                  | I can know what classes I am teaching                                   |
-| `* * `    | tutor who teaches multiple classes         | delete a class tag                                       | keep only the classes I am still teaching                               |
-| `* * * `  | tutor     | add a performance note for a student on a given date     | I can record their progress                                             |
-| `* * * `  | tutor     | view all performance notes for a student                 | I can review their progress                                             |
-| `* * * `  | tutor     | edit a specific performance note for a student           | I can correct or update it                                              |
-| `* * * `  | tutor     | delete a specific performance note for a student         | I can remove it if needed                                               |
-| `* * *`   | tutor who teaches multiple classes         | take attendance of each student                          | I can track their attendance record                                     |
-| `* * *`   | tutor who teaches multiple classes         | view students' attendance history                        | I can track if students are consistently attending lessons.             |
-| `* * *`   | tutor who teaches multiple classes         | unmark a student’s attendance                            | correct mistakes or changes if attendance was marked wrongly            |
-| `* *`     | new tutor user                                           | view sample data                                         | understand how the app looks when populated                             |
-| `* *`     | tutor starting fresh                                     | purge sample/old data                                    | start fresh with only my real student info                              |                                                                  |
-| `* * *`   | tutor managing students                                  | add students                                             | quickly add my students into the address book                           |
-| `* * *`   | tutor managing students                                  | view students                                            | see all the students I am teaching and their details at a glance        |
-| `* *`     | tutor managing students                                  | delete students                                          | remove students who are no longer taking lessons                        |
-| `* * *`   | tutor handling many students across classes and subjects | edit student information                                 | update my contact list                                                  |
-| `* *`     | tutor who prioritise efficiency                          | recover recently deleted contact                         | fix accidental deletion                                                 |
-| `* * *`   | tutor handling many students across classes and subjects | search for a student by name                             | quickly locate their information                                        |
+| Priority  | As a …​                                    | I want to …​                                              | So that I can…​                                                         |
+|-----------|------------------------------------------- |-----------------------------------------------------------|-------------------------------------------------------------------------|
+| `* * * `  | tutor handling lesson fees                 | tag a student as paid for a given month                   | keep track of students who have settled their tuition fees              |
+| `* * *`   | tutor handling lesson fees                 | tag a student as unpaid for a given month                 | identify students who still owe lesson fees                             |
+| `* * *`   | tutor handling lesson fees                 | filter students who have paid by month                    | view all students who have completed payment for that month at a glance |
+| `* * *`   | tutor handling lesson fees                 | filter students who have not paid by month                | follow up with students who have outstanding tuition fees               |
+| `* * *`   | tutor handling lesson fees                 | view a student's payment history up to the current month  | review their past payment behaviour and identify missed months          |
+| `* * *`   | tutor who teaches multiple classes         | create a class tag                                        | keep track of a new class I am teaching                                 |
+| `* * *`   | tutor who teaches multiple classes         | assign class tags to a student during creation or editing | manage all students of the same subject together                        |
+| `* * *`   | tutor who teaches multiple classes         | remove class tags from a student through editing          | remove students not in a particular class                               |
+| `* * *`   | tutor who teaches multiple classes         | filter students by class tag (eg. Sec_3_A_Math)           | I can focus on a precise teaching group                                 |
+| `* * *`   | tutor who teaches multiple classes         | list all the class tags                                   | I can know what classes I am teaching                                   |
+| `* * `    | tutor who teaches multiple classes         | delete a class tag                                        | keep only the classes I am still teaching                               |
+| `* * * `  | tutor     | add a performance note for a student on a given date      | I can record their progress                                             |
+| `* * * `  | tutor     | view all performance notes for a student                  | I can review their progress                                             |
+| `* * * `  | tutor     | edit a specific performance note for a student            | I can correct or update it                                              |
+| `* * * `  | tutor     | delete a specific performance note for a student          | I can remove it if needed                                               |
+| `* * *`   | tutor who teaches multiple classes         | take attendance of each student                           | I can track their attendance record                                     |
+| `* * *`   | tutor who teaches multiple classes         | view students' attendance history                         | I can track if students are consistently attending lessons.             |
+| `* * *`   | tutor who teaches multiple classes         | unmark a student’s attendance                             | correct mistakes or changes if attendance was marked wrongly            |
+| `* *`     | new tutor user                                           | view sample data                                          | understand how the app looks when populated                             |
+| `* *`     | tutor starting fresh                                     | purge sample/old data                                     | start fresh with only my real student info                              |                                                                  |
+| `* * *`   | tutor managing students                                  | add students                                              | quickly add my students into the address book                           |
+| `* * *`   | tutor managing students                                  | view students                                             | see all the students I am teaching and their details at a glance        |
+| `* *`     | tutor managing students                                  | delete students                                           | remove students who are no longer taking lessons                        |
+| `* * *`   | tutor handling many students across classes and subjects | edit student information                                  | update my contact list                                                  |
+| `* *`     | tutor who prioritise efficiency                          | recover recently deleted contact                          | fix accidental deletion                                                 |
+| `* * *`   | tutor handling many students across classes and subjects | search for a student by name                              | quickly locate their information                                        |
 
 
 ### Use cases
@@ -708,16 +772,6 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **Extensions**
 * 1a. The command format is invalid.
     * 1a1. Tuto shows an error message with the correct usage format.
-
-      Use case ends.
-
-* 1b. The provided student ID does not match any existing student.
-    * 1b1. Tuto shows an error message.
-
-      Use case ends.
-
-* 1c. The student does not have the specified class tag.
-    * 1c1. Tuto shows an error message.
 
       Use case ends.
 

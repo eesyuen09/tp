@@ -18,8 +18,8 @@ import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
-import seedu.address.model.person.Month;
 import seedu.address.model.person.StudentId;
+import seedu.address.model.time.Month;
 
 public class FeeViewCommandTest {
 

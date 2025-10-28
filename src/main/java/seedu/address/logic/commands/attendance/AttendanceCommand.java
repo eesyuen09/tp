@@ -34,7 +34,9 @@ public abstract class AttendanceCommand extends Command {
             + PREFIX_CLASSTAG + "Sec3_AMath\n"
             + COMMAND_WORD + " -u " + PREFIX_STUDENTID + "0123 " + PREFIX_DATE + "15092025 "
             + PREFIX_CLASSTAG + "Sec3_AMath\n"
-            + COMMAND_WORD + " -v " + PREFIX_STUDENTID + "0123 ";
+            + COMMAND_WORD + " -v " + PREFIX_STUDENTID + "0123 \n"
+            + COMMAND_WORD + " -d " + PREFIX_STUDENTID + "0123 " + PREFIX_DATE + "15092025 "
+            + PREFIX_CLASSTAG + "Sec3_AMath\n";
 
     protected final StudentId studentId;
 

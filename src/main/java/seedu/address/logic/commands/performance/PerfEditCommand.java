@@ -13,13 +13,13 @@ import seedu.address.logic.Messages;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
-import seedu.address.model.person.Date;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
 import seedu.address.model.person.performance.PerformanceList;
 import seedu.address.model.person.performance.PerformanceNote;
 import seedu.address.model.person.performance.exceptions.PerformanceNoteNotFoundException;
 import seedu.address.model.tag.ClassTag;
+import seedu.address.model.time.Date;
 
 /**
  * Edits a performance note of a student.
@@ -67,10 +67,6 @@ public class PerfEditCommand extends PerfCommand {
                 .orElseThrow(() -> new CommandException(
                         String.format(Messages.MESSAGE_STUDENT_ID_NOT_FOUND, studentId)));
 
-        if (!student.getTags().contains(classTag)) {
-            throw new CommandException(String.format(MESSAGE_STUDENT_DOES_NOT_HAVE_TAG,
-                    student.getName(), classTag.tagName));
-        }
 
         List<PerformanceNote> current = student.getPerformanceList().asUnmodifiableList();
         PerformanceList copy = new PerformanceList(new ArrayList<>(current));

@@ -12,10 +12,10 @@ import org.junit.jupiter.api.Test;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.attendance.AttendanceList;
-import seedu.address.model.person.Date;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
 import seedu.address.model.tag.ClassTag;
+import seedu.address.model.time.Date;
 import seedu.address.testutil.ModelStub;
 import seedu.address.testutil.PersonBuilder;
 
@@ -51,7 +51,7 @@ public class AttendanceDeleteCommandTest {
     public void execute_validStudentWithAttendanceRecord_deleteSuccessful() throws Exception {
         ModelStubWithPerson modelStub = new ModelStubWithPerson();
         Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID_STRING)
-                .withTags("Math").build();
+                .withClassTags("Math").build();
 
         // Add an attendance record first
         AttendanceList attendanceList = new AttendanceList();
@@ -82,7 +82,7 @@ public class AttendanceDeleteCommandTest {
     public void execute_noAttendanceRecord_throwsCommandException() {
         ModelStubWithPerson modelStub = new ModelStubWithPerson();
         Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID_STRING)
-                .withTags("Math").build();
+                .withClassTags("Math").build();
         modelStub.person = validPerson;
 
         AttendanceDeleteCommand command = new AttendanceDeleteCommand(VALID_STUDENT_ID,
@@ -95,7 +95,7 @@ public class AttendanceDeleteCommandTest {
     public void execute_studentDoesNotHaveTag_throwsCommandException() {
         ModelStubWithPerson modelStub = new ModelStubWithPerson();
         Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID_STRING)
-                .withTags("Science").build(); // Student has Science tag, not Math
+                .withClassTags("Science").build(); // Student has Science tag, not Math
         modelStub.person = validPerson;
 
         AttendanceDeleteCommand command = new AttendanceDeleteCommand(VALID_STUDENT_ID,

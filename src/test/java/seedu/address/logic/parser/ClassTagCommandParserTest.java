@@ -8,10 +8,10 @@ import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSucces
 import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.Messages;
-import seedu.address.logic.commands.classtagcommands.AddClassTagCommand;
-import seedu.address.logic.commands.classtagcommands.ClassTagCommand;
-import seedu.address.logic.commands.classtagcommands.DeleteClassTagCommand;
-import seedu.address.logic.commands.classtagcommands.ListClassTagCommand;
+import seedu.address.logic.commands.classtag.AddClassTagCommand;
+import seedu.address.logic.commands.classtag.ClassTagCommand;
+import seedu.address.logic.commands.classtag.DeleteClassTagCommand;
+import seedu.address.logic.commands.classtag.ListClassTagCommand;
 import seedu.address.model.tag.ClassTag;
 
 public class ClassTagCommandParserTest {
@@ -73,12 +73,14 @@ public class ClassTagCommandParserTest {
     public void parse_listWithArguments_failure() {
         String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, ListClassTagCommand.MESSAGE_USAGE);
 
-
         assertParseFailure(parser, " -l -l", expectedMessage);
 
         assertParseFailure(parser, " -l extra", expectedMessage);
 
         assertParseFailure(parser, " -l " + PREFIX_CLASSTAG + "someTag", expectedMessage);
+
+        assertParseFailure(parser, " -l -a " + PREFIX_CLASSTAG + "someTag", expectedMessage);
+
     }
 
     @Test
@@ -107,7 +109,7 @@ public class ClassTagCommandParserTest {
 
     @Test
     public void parse_repeatedPrefix_failure() {
-        String expectedMessage = String.format(Messages.MESSAGE_DUPLICATE_FIELDS + "t/");
+        String expectedMessage = String.format(Messages.MESSAGE_DUPLICATE_FIELDS + PREFIX_CLASSTAG);
 
         assertParseFailure(parser, " -a " + PREFIX_CLASSTAG + "Tag1 "
                 + PREFIX_CLASSTAG + "Tag2", expectedMessage);
@@ -118,6 +120,41 @@ public class ClassTagCommandParserTest {
         String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, ClassTagCommand.MESSAGE_USAGE);
         assertParseFailure(parser, "", expectedMessage);
         assertParseFailure(parser, "   ", expectedMessage);
+    }
+
+    @Test
+    public void parse_preambleOnlyWord_failure() {
+        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, ClassTagCommand.MESSAGE_USAGE);
+        // lone word (simulates "tag  " when top-level parser passes args)
+        assertParseFailure(parser, "tag", expectedMessage);
+        assertParseFailure(parser, " tag ", expectedMessage);
+    }
+
+    @Test
+    public void parse_onlyHyphen_failure() {
+        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, ClassTagCommand.MESSAGE_USAGE);
+        // stray hyphen or whitespace around it
+        assertParseFailure(parser, "-", expectedMessage);
+        assertParseFailure(parser, " - ", expectedMessage);
+    }
+
+    @Test
+    public void parse_flagWithoutPrefix_failure() {
+        // flags with no prefix/value should fail with the command-specific usage message
+        assertParseFailure(parser, " -a ", String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                AddClassTagCommand.MESSAGE_USAGE));
+        assertParseFailure(parser, " -d ", String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                DeleteClassTagCommand.MESSAGE_USAGE));
+    }
+
+    @Test
+    public void parse_flagWithEmptyPrefixValue_failure() {
+        String expectedMessage = ClassTag.MESSAGE_CONSTRAINTS;
+        // flag followed by the class tag prefix but no value
+        assertParseFailure(parser, " -a " + PREFIX_CLASSTAG,
+                expectedMessage);
+        assertParseFailure(parser, " -d " + PREFIX_CLASSTAG,
+                expectedMessage);
     }
 
 }

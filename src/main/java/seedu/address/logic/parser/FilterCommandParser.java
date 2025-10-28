@@ -8,12 +8,12 @@ import java.util.stream.Stream;
 
 import seedu.address.logic.commands.Command;
 import seedu.address.logic.commands.FilterCommand;
-import seedu.address.logic.commands.classtagcommands.ClassTagFilterCommand;
+import seedu.address.logic.commands.classtag.ClassTagFilterCommand;
 import seedu.address.logic.commands.fee.FeeFilterPaidCommand;
 import seedu.address.logic.commands.fee.FeeFilterUnpaidCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
-import seedu.address.model.person.Month;
 import seedu.address.model.tag.ClassTag;
+import seedu.address.model.time.Month;
 
 /**
  * Parses input arguments for the {@code filter} command family.

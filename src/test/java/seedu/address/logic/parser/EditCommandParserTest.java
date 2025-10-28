@@ -115,7 +115,7 @@ public class EditCommandParserTest {
 
         EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder().withName(VALID_NAME_AMY)
                 .withPhone(VALID_PHONE_BOB).withEmail(VALID_EMAIL_AMY).withAddress(VALID_ADDRESS_AMY)
-                .withTags(VALID_CLASS_TAG_PHYSICS, VALID_CLASS_TAG_MATHS).build();
+                .withClassTags(VALID_CLASS_TAG_PHYSICS, VALID_CLASS_TAG_MATHS).build();
         EditCommand expectedCommand = new EditCommand(studentId, descriptor);
 
         assertParseSuccess(parser, userInput, expectedCommand);
@@ -163,7 +163,7 @@ public class EditCommandParserTest {
 
         // tags
         userInput = studentIdPrefix + CLASS_TAG_DESC_MATHS;
-        descriptor = new EditPersonDescriptorBuilder().withTags(VALID_CLASS_TAG_MATHS).build();
+        descriptor = new EditPersonDescriptorBuilder().withClassTags(VALID_CLASS_TAG_MATHS).build();
         expectedCommand = new EditCommand(studentId, descriptor);
         assertParseSuccess(parser, userInput, expectedCommand);
     }
@@ -205,7 +205,7 @@ public class EditCommandParserTest {
         StudentId studentId = new StudentId("1234");
         String userInput = studentIdPrefix + TAG_EMPTY;
 
-        EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder().withTags().build();
+        EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder().withClassTags().build();
         EditCommand expectedCommand = new EditCommand(studentId, descriptor);
 
         assertParseSuccess(parser, userInput, expectedCommand);

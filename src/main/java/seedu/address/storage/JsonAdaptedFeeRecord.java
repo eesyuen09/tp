@@ -8,8 +8,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.model.AddressBook;
 import seedu.address.model.fee.FeeState;
-import seedu.address.model.person.Month;
 import seedu.address.model.person.StudentId;
+import seedu.address.model.time.Month;
 
 /**
  * Jackson-friendly serializable entry representing one fee record.

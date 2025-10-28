@@ -10,13 +10,13 @@ import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.StringUtil;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.Address;
-import seedu.address.model.person.Date;
 import seedu.address.model.person.Email;
-import seedu.address.model.person.Month;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Phone;
 import seedu.address.model.person.StudentId;
 import seedu.address.model.tag.ClassTag;
+import seedu.address.model.time.Date;
+import seedu.address.model.time.Month;
 
 /**
  * Contains utility methods used for parsing strings in the various *Parser classes.
@@ -163,8 +163,11 @@ public class ParserUtil {
     public static Date parseDate(String date) throws ParseException {
         requireNonNull(date);
         String trimmedDate = date.trim();
-        if (!Date.isValidDate(trimmedDate)) {
+        if (!Date.isValidFormat(trimmedDate)) {
             throw new ParseException(Date.MESSAGE_CONSTRAINTS);
+        }
+        if (!Date.isValidDate(trimmedDate)) {
+            throw new ParseException(Date.MESSAGE_INVALID_DATE);
         }
         return new Date(trimmedDate);
     }

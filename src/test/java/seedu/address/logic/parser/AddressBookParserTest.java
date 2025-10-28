@@ -28,21 +28,23 @@ import seedu.address.logic.commands.attendance.AttendanceCommand;
 import seedu.address.logic.commands.attendance.AttendanceMarkCommand;
 import seedu.address.logic.commands.attendance.AttendanceUnmarkCommand;
 import seedu.address.logic.commands.attendance.AttendanceViewCommand;
-import seedu.address.logic.commands.classtagcommands.AddClassTagCommand;
-import seedu.address.logic.commands.classtagcommands.ClassTagCommand;
-import seedu.address.logic.commands.classtagcommands.ClassTagFilterCommand;
+import seedu.address.logic.commands.classtag.AddClassTagCommand;
+import seedu.address.logic.commands.classtag.ClassTagCommand;
+import seedu.address.logic.commands.classtag.ClassTagFilterCommand;
+import seedu.address.logic.commands.classtag.DeleteClassTagCommand;
+import seedu.address.logic.commands.classtag.ListClassTagCommand;
 import seedu.address.logic.commands.fee.FeeCommand;
 import seedu.address.logic.commands.fee.FeeFilterPaidCommand;
 import seedu.address.logic.commands.fee.FeeFilterUnpaidCommand;
 import seedu.address.logic.commands.fee.FeeMarkPaidCommand;
 import seedu.address.logic.commands.fee.FeeMarkUnpaidCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
-import seedu.address.model.person.Date;
-import seedu.address.model.person.Month;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
 import seedu.address.model.tag.ClassTag;
+import seedu.address.model.time.Date;
+import seedu.address.model.time.Month;
 import seedu.address.testutil.EditPersonDescriptorBuilder;
 import seedu.address.testutil.PersonBuilder;
 import seedu.address.testutil.PersonUtil;
@@ -122,11 +124,115 @@ public class AddressBookParserTest {
     }
 
     @Test
-    public void parseCommand_addClassTag() throws Exception {
+    public void parseCommand_addClassTag_success() throws Exception {
         ClassTag tag = new ClassTag("MyClass");
         AddClassTagCommand command = (AddClassTagCommand) parser.parseCommand(ClassTagCommand.COMMAND_WORD
                 + " -a " + PREFIX_CLASSTAG + "MyClass");
         assertEquals(new AddClassTagCommand(tag), command);
+    }
+
+    @Test
+    public void parseCommand_addClassTag_missingPrefix() {
+        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddClassTagCommand.MESSAGE_USAGE);
+        String command = ClassTagCommand.COMMAND_WORD + " -a " + TypicalClassTags.SEC3_MATHS.tagName;
+        assertThrows(ParseException.class, expectedMessage, () -> parser.parseCommand(command));
+    }
+
+    @Test
+    public void parseCommand_addClassTag_emptyValue() {
+        String expectedMessage = ClassTag.MESSAGE_CONSTRAINTS;
+        String command = ClassTagCommand.COMMAND_WORD + " -a " + PREFIX_CLASSTAG;
+        assertThrows(ParseException.class, expectedMessage, () -> parser.parseCommand(command));
+    }
+
+    @Test
+    public void parseCommand_addClassTag_duplicateTagPrefix() {
+        String command = ClassTagCommand.COMMAND_WORD + " -a t/Tag1 t/Tag2";
+        assertThrows(ParseException.class,
+                Messages.MESSAGE_DUPLICATE_FIELDS + "t/", () -> parser.parseCommand(command));
+    }
+
+    @Test
+    public void parseCommand_addClassTag_extraPreamble() {
+        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddClassTagCommand.MESSAGE_USAGE);
+
+        // extra text
+        String command = ClassTagCommand.COMMAND_WORD + " -a extra t/" + TypicalClassTags.SEC3_MATHS.tagName;
+        assertThrows(ParseException.class, expectedMessage, () -> parser.parseCommand(command));
+
+        // extra other prefix
+        String command2 = ClassTagCommand.COMMAND_WORD + " -a s/123 t/" + TypicalClassTags.SEC3_MATHS.tagName;
+        assertThrows(ParseException.class, expectedMessage, () -> parser.parseCommand(command2));
+    }
+
+    @Test
+    public void addClassTag_invalidFlag_throwsParseException() {
+        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, ClassTagCommand.MESSAGE_USAGE);
+        String command = ClassTagCommand.COMMAND_WORD + " -x t/" + TypicalClassTags.SEC3_MATHS.tagName;
+        assertThrows(ParseException.class, expectedMessage, () -> parser.parseCommand(command));
+    }
+
+    @Test
+    public void parseCommand_deleteClassTag_success() throws Exception {
+        ClassTag tag = new ClassTag("MyClass");
+        DeleteClassTagCommand command = (DeleteClassTagCommand) parser.parseCommand(
+                ClassTagCommand.COMMAND_WORD + " -d " + PREFIX_CLASSTAG + "MyClass");
+        assertEquals(new DeleteClassTagCommand(tag), command);
+
+        // tolerate extra whitespace
+        assertEquals(new DeleteClassTagCommand(tag),
+                parser.parseCommand("   "
+                        + ClassTagCommand.COMMAND_WORD + "    -d    " + PREFIX_CLASSTAG + "MyClass   "));
+    }
+
+    @Test
+    public void parseCommand_deleteClassTag_missingPrefix() {
+        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteClassTagCommand.MESSAGE_USAGE);
+        String command = ClassTagCommand.COMMAND_WORD + " -d " + TypicalClassTags.SEC3_MATHS.tagName;
+        assertThrows(ParseException.class, expectedMessage, () -> parser.parseCommand(command));
+    }
+
+    @Test
+    public void parseCommand_deleteClassTag_emptyValue() {
+        String expectedMessage = ClassTag.MESSAGE_CONSTRAINTS;
+        String command = ClassTagCommand.COMMAND_WORD + " -d " + PREFIX_CLASSTAG;
+        assertThrows(ParseException.class, expectedMessage, () -> parser.parseCommand(command));
+    }
+
+    @Test
+    public void parseCommand_deleteClassTag_duplicateTagPrefix() {
+        String command = ClassTagCommand.COMMAND_WORD + " -d t/Tag1 t/Tag2";
+        assertThrows(ParseException.class, Messages.MESSAGE_DUPLICATE_FIELDS
+                + "t/", () -> parser.parseCommand(command));
+    }
+
+    @Test
+    public void parseCommand_deleteClassTag_extraPreamble() {
+        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteClassTagCommand.MESSAGE_USAGE);
+
+        // extra text
+        String command = ClassTagCommand.COMMAND_WORD + " -d extra t/" + TypicalClassTags.SEC3_MATHS.tagName;
+        assertThrows(ParseException.class, expectedMessage, () -> parser.parseCommand(command));
+
+        // extra other prefix
+        String command2 = ClassTagCommand.COMMAND_WORD + " -d s/123 t/" + TypicalClassTags.SEC3_MATHS.tagName;
+        assertThrows(ParseException.class, expectedMessage, () -> parser.parseCommand(command2));
+    }
+
+    @Test
+    public void deleteClassTag_invalidFlag_throwsParseException() {
+        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, ClassTagCommand.MESSAGE_USAGE);
+        String command = ClassTagCommand.COMMAND_WORD + " -x t/" + TypicalClassTags.SEC3_MATHS.tagName;
+        assertThrows(ParseException.class, expectedMessage, () -> parser.parseCommand(command));
+    }
+
+    @Test
+    public void parseCommand_listClassTag_success() throws Exception {
+        assertTrue(parser.parseCommand(ClassTagCommand.COMMAND_WORD + " -l") instanceof ListClassTagCommand);
+
+        // tolerate extra whitespace
+        assertTrue(parser.parseCommand("   "
+                + ClassTagCommand.COMMAND_WORD + "    -l   ") instanceof ListClassTagCommand);
     }
 
     @Test

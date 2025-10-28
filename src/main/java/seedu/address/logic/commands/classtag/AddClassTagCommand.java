@@ -1,4 +1,4 @@
-package seedu.address.logic.commands.classtagcommands;
+package seedu.address.logic.commands.classtag;
 
 import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_CLASSTAG;
@@ -9,7 +9,7 @@ import seedu.address.model.Model;
 import seedu.address.model.tag.ClassTag;
 
 /**
- * Adds a class tag to the address book.
+ * Adds a ClassTag to the address book.
  */
 public class AddClassTagCommand extends ClassTagCommand {
 

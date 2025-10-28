@@ -20,10 +20,10 @@ import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.commons.util.JsonUtil;
 import seedu.address.model.AddressBook;
 import seedu.address.model.fee.FeeState;
-import seedu.address.model.person.Month;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
 import seedu.address.model.tag.ClassTag;
+import seedu.address.model.time.Month;
 import seedu.address.testutil.PersonBuilder;
 
 public class JsonSerializableAddressBookTest {
@@ -49,9 +49,9 @@ public class JsonSerializableAddressBookTest {
         AddressBook addressBookFromFile = dataFromFile.toModelType();
 
         AddressBook expectedAddressBook = new AddressBook();
-        Person alice = new PersonBuilder(ALICE).withStudentId("0001").withTags("Sec3_Maths").build();
+        Person alice = new PersonBuilder(ALICE).withStudentId("0001").withClassTags("Sec3_Maths").build();
         Person benson = new PersonBuilder(BENSON).withStudentId("0002")
-                .withTags("JC1_Physics", "Sec3_Maths").build();
+                .withClassTags("JC1_Physics", "Sec3_Maths").build();
         expectedAddressBook.addPerson(alice);
         expectedAddressBook.addPerson(benson);
         expectedAddressBook.addClassTag(new ClassTag("Sec3_Maths"));
@@ -68,10 +68,10 @@ public class JsonSerializableAddressBookTest {
 
         // **FIX:** Construct the expected AddressBook with the exact data from the JSON file.
         AddressBook expectedAddressBook = new AddressBook();
-        expectedAddressBook.addPerson(new PersonBuilder(ALICE).withTags("friends").build());
-        expectedAddressBook.addPerson(new PersonBuilder(BENSON).withTags("owesMoney", "friends").build());
+        expectedAddressBook.addPerson(new PersonBuilder(ALICE).withClassTags("friends").build());
+        expectedAddressBook.addPerson(new PersonBuilder(BENSON).withClassTags("owesMoney", "friends").build());
         expectedAddressBook.addPerson(CARL);
-        expectedAddressBook.addPerson(new PersonBuilder(DANIEL).withTags("friends").build());
+        expectedAddressBook.addPerson(new PersonBuilder(DANIEL).withClassTags("friends").build());
         expectedAddressBook.addPerson(ELLE);
         expectedAddressBook.addPerson(FIONA);
         expectedAddressBook.addPerson(GEORGE);
