@@ -18,7 +18,11 @@ Class Address
 Class Email
 Class Name
 Class Phone
+Class StudentId
 Class ClassTag
+Class AttendanceList
+Class Attendance
+Class Date
 
 Class I #FFFFFF
 }
@@ -37,11 +41,18 @@ UserPrefs .up.|> ReadOnlyUserPrefs
 
 AddressBook *--> "1" UniquePersonList
 UniquePersonList --> "~* all" Person
+Person *--> StudentId
 Person *--> Name
 Person *--> Phone
 Person *--> Email
 Person *--> Address
 Person *--> "*" ClassTag
+Person *--> AttendanceList
+
+AttendanceList --> "*" Attendance
+
+Attendance --> Date
+Attendance --> ClassTag
 
 Person -[hidden]up--> I
 UniquePersonList -[hidden]right-> I

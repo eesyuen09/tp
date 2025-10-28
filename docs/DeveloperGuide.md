@@ -135,7 +135,6 @@ The `Model` component,
 - Students can be assigned multiple ClassTags via the `classTags` field in `Person`
 - When a ClassTag is deleted, it must not be assigned to any student
 - ClassTags provide a way to filter and organize students by class
-
 <box type="info" seamless>
 
 **Note:** An alternative (arguably, a more OOP) model is given below. It has a `ClassTag` list in the `AddressBook`, which `Person` references. This allows `AddressBook` to only require one `ClassTag` object per unique class tag, instead of each `Person` needing their own `ClassTag` objects.<br>
@@ -166,6 +165,54 @@ Classes used by multiple components are in the `seedu.address.commons` package.
 ## **Implementation**
 
 This section describes some noteworthy details on how certain features are implemented.
+
+### Attendance Management
+
+#### Overview
+
+The Attendance feature allows tutors to track student attendance for their classes. Each attendance record captures whether a student was present or absent for a specific class on a particular date.
+
+#### Implementation
+
+Attendance records are stored within each `Person` object in an `AttendanceList`. Each `Attendance` object contains:
+- A `Date` indicating when the class occurred
+- A `ClassTag` indicating which class it was for
+- An attendance status (Present/Absent)
+
+The key design decision is to store attendance within the student's record rather than in a centralized attendance book. This provides natural encapsulation and makes it easy to retrieve all attendance records for a specific student.
+
+#### Marking Attendance
+
+The following sequence diagram shows how marking attendance works when a tutor executes `att -m s/0001 d/10112025 t/Math`:
+
+<puml src="diagrams/AttendanceMarkSequenceDiagram.puml" alt="Attendance Mark Sequence Diagram" />
+
+<box type="info" seamless>
+
+**Note:** The lifeline for `AttendanceCommandParser` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline continues till the end of diagram.
+
+</box>
+
+When the command is executed:
+1. `AttendanceCommandParser` parses the `-m` flag and creates an `AttendanceMarkCommand`
+2. `AttendanceMarkCommand` retrieves the student from the model using `Model#getPersonById()`
+3. The command validates that the student has the specified ClassTag by calling `Person#getTags()`
+4. The command checks if attendance is already marked for that date and class via `Person#getAttendanceList()`
+5. If valid, `Model#markAttendance()` updates the student's attendance record
+
+Similarly, unmarking attendance (marking as absent) follows the same flow but uses the `-u` flag and `AttendanceUnmarkCommand` instead.
+
+#### Design Considerations
+
+**Aspect: Attendance Storage Location**
+
+* **Alternative 1 (current choice):** Store attendance within each `Person` object
+    * Pros: Easy to access all attendance for a student, natural encapsulation
+    * Cons: Harder to query attendance across all students for a specific date
+
+* **Alternative 2:** Store in a centralized `AttendanceBook`
+    * Pros: Easier to query by date/class across all students
+    * Cons: More complex structure, attendance becomes disconnected from student
 
 ### ClassTag Management
 
