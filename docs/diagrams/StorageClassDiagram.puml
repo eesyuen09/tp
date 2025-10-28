@@ -39,6 +39,7 @@ JsonUserPrefsStorage .up.|> UserPrefsStorage
 JsonAddressBookStorage .up.|> AddressBookStorage
 JsonAddressBookStorage ..> JsonSerializableAddressBook
 JsonSerializableAddressBook --> "*" JsonAdaptedPerson
+JsonSerializableAddressBook --> "*" JsonAdaptedClassTag
 JsonAdaptedPerson --> "*" JsonAdaptedClassTag
  JsonAdaptedPerson --> "*" JsonAdaptedAttendance
 

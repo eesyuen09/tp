@@ -440,6 +440,7 @@ Each attendance record is tied to both a date and a class tag, allowing tutors t
 |---------------------------------------------|--------------------------------------------------------------------------------------------|
 | `att -m s/STUDENT_ID d/DDMMYYYY t/TAG_NAME` | Marks a student as **PRESENT** for a given date and class tag                              |
 | `att -u s/STUDENT_ID d/DDMMYYYY t/TAG_NAME` | Marks a student as **ABSENT** for a given date and class tag or undoes a marked attendance |
+| `att -d s/STUDENT_ID d/DDMMYYYY t/TAG_NAME` | Deletes an attendance record for a student on a specific date and class                    |
 | `att -v s/STUDENT_ID`                       | Views a student's **attendance records**                                                   |
 </box>
 
@@ -481,7 +482,26 @@ The student must have the specified class tag. If the student doesn't have the t
 Unmarked attendance for: Bernice Yu on 15/09/2025 for class Math<br>
 Unmarked attendance for: David Li on 20/08/2025 for class Science
 
-### 3. Viewing a student's attendance records:
+### 3. Deleting an attendance record:
+
+Deletes an attendance record for a student on a specific date and class.
+Use this to remove attendance records that were marked by mistake or are no longer needed.
+
+**Format:** `att -d s/STUDENT_ID d/DDMMYYYY t/TAG_NAME`
+
+**Examples:**
+- `att -d s/0001 d/15092025 t/Math` — deletes the attendance record for student `0001`(Bernice Yu) on **15 September 2025** in **Math** class.
+- `att -d s/0003 d/20082025 t/Science` — deletes the attendance record for student `0003`(David Li) on **20 August 2025** in **Science** class.
+
+<box type="tip" seamless>
+The student must have the specified class tag, and an attendance record must exist for the given date and class. If either condition is not met, the command will be rejected with an error message.
+</box>
+
+**Expected output:**<br>
+Deleted attendance for: Bernice Yu on 15/09/2025 for class Math<br>
+Deleted attendance for: David Li on 20/08/2025 for class Science
+
+### 4. Viewing a student's attendance records:
 
 Displays all attendance records for a specific student across all their classes.
 
@@ -632,6 +652,7 @@ Furthermore, certain edits can cause the AddressBook to behave in unexpected way
 | **View payment history**    | `fee -v s/STUDENT_ID [m/MMYY]` <br> e.g., `fee -v s/0001 m/0525`                                                                                                 |
 | **Mark as PRESENT**         | `att -m s/STUDENT_ID d/DDMMYYYY t/TAG_NAME` <br> e.g., `att -m s/0001 d/15092025 t/Math`                                                                         |
 | **Mark as ABSENT**          | `att -u s/STUDENT_ID d/DDMMYYYY t/TAG_NAME` <br> e.g., `att -u s/0001 d/15092025 t/Math`                                                                         |
+| **Delete attendance**       | `att -d s/STUDENT_ID d/DDMMYYYY t/TAG_NAME` <br> e.g., `att -d s/0001 d/15092025 t/Math`                                                                         |
 | **View attendance**         | `att -v s/STUDENT_ID` <br> e.g., `att -v s/0001`                                                                                                                 |
 | **Filter by PAID status**   | `filter -p m/MMYY` <br> e.g., `filter -p m/1025`                                                                                                                 |
 | **Filter by UNPAID status** | `filter -up m/MMYY` <br> e.g., `filter -up m/1025`                                                                                                               |

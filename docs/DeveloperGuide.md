@@ -13,7 +13,7 @@
 
 ## **Acknowledgements**
 
-_{ list here sources of all reused/adapted ideas, code, documentation, and third-party libraries -- include links to the original source as well }_
+We follow the project design and documentation structure of the AddressBook-Level3 project by SE-EDU.
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -134,7 +134,8 @@ The `Model` component,
 - `UniqueClassTagList` ensures no duplicate ClassTag names exist
 - Students can be assigned multiple ClassTags via the `classTags` field in `Person`
 - When a ClassTag is deleted, it must not be assigned to any student
-- ClassTags provide a way to filter and organize students by class
+- ClassTags provide a way to filter and organize students by class tag
+
 <box type="info" seamless>
 
 **Note:** An alternative (arguably, a more OOP) model is given below. It has a `ClassTag` list in the `AddressBook`, which `Person` references. This allows `AddressBook` to only require one `ClassTag` object per unique class tag, instead of each `Person` needing their own `ClassTag` objects.<br>
@@ -166,54 +167,6 @@ Classes used by multiple components are in the `seedu.address.commons` package.
 
 This section describes some noteworthy details on how certain features are implemented.
 
-### Attendance Management
-
-#### Overview
-
-The Attendance feature allows tutors to track student attendance for their classes. Each attendance record captures whether a student was present or absent for a specific class on a particular date.
-
-#### Implementation
-
-Attendance records are stored within each `Person` object in an `AttendanceList`. Each `Attendance` object contains:
-- A `Date` indicating when the class occurred
-- A `ClassTag` indicating which class it was for
-- An attendance status (Present/Absent)
-
-The key design decision is to store attendance within the student's record rather than in a centralized attendance book. This provides natural encapsulation and makes it easy to retrieve all attendance records for a specific student.
-
-#### Marking Attendance
-
-The following sequence diagram shows how marking attendance works when a tutor executes `att -m s/0001 d/10112025 t/Math`:
-
-<puml src="diagrams/AttendanceMarkSequenceDiagram.puml" alt="Attendance Mark Sequence Diagram" />
-
-<box type="info" seamless>
-
-**Note:** The lifeline for `AttendanceCommandParser` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline continues till the end of diagram.
-
-</box>
-
-When the command is executed:
-1. `AttendanceCommandParser` parses the `-m` flag and creates an `AttendanceMarkCommand`
-2. `AttendanceMarkCommand` retrieves the student from the model using `Model#getPersonById()`
-3. The command validates that the student has the specified ClassTag by calling `Person#getTags()`
-4. The command checks if attendance is already marked for that date and class via `Person#getAttendanceList()`
-5. If valid, `Model#markAttendance()` updates the student's attendance record
-
-Similarly, unmarking attendance (marking as absent) follows the same flow but uses the `-u` flag and `AttendanceUnmarkCommand` instead.
-
-#### Design Considerations
-
-**Aspect: Attendance Storage Location**
-
-* **Alternative 1 (current choice):** Store attendance within each `Person` object
-    * Pros: Easy to access all attendance for a student, natural encapsulation
-    * Cons: Harder to query attendance across all students for a specific date
-
-* **Alternative 2:** Store in a centralized `AttendanceBook`
-    * Pros: Easier to query by date/class across all students
-    * Cons: More complex structure, attendance becomes disconnected from student
-
 ### ClassTag Management
 
 #### Overview
@@ -232,42 +185,151 @@ ClassTag management is implemented through several key components:
     - `addClassTag(ClassTag)`: Adds a new ClassTag
     - `deleteClassTag(ClassTag)`: Removes a ClassTag
     - `findClassTag(String)`: Finds and returns a ClassTag by its name
+- `Person` objects maintain a `Set<ClassTag>` field that references ClassTags from the central `UniqueClassTagList`
   
 **Storage Component:**
-- `JsonAdaptedClassTag`: Converts ClassTag objects to/from JSON format
-- ClassTags are persisted as part of the `AddressBook` JSON file
-- The `classTags` list is serialized/deserialized alongside student data
+- `JsonAdaptedClassTag`: Converts ClassTag objects to/from JSON format for persistence
+- `JsonSerializableAddressBook`: Serializes both the central ClassTag list and student-ClassTag associations
+- ClassTags are persisted in two ways:
+    1. As a complete list in the `classTags` field of the address book
+    2. As references within each student's `tags` field
+- During deserialization, ClassTags are loaded first into the system, then students reference them by name
 
 **Logic Component:**
+
 The following commands handle ClassTag operations:
-- `AddClassTagCommand`: Creates a new ClassTag
-- `DeleteClassTagCommand`: Deletes an existing ClassTag
-- `ListClassTagCommand`: Lists all ClassTags
-- `ClassTagFilterCommand`: Filters students by ClassTag
+
+1. **AddClassTagCommand (triggered by `tag -a`)**: Creates a new ClassTag in the system
+    - Validates the ClassTag name format (1-30 alphanumeric characters and underscores)
+    - Checks for duplicates via `Model#hasClassTag()`
+    - Adds to `UniqueClassTagList` via `Model#addClassTag()`
+
+2. **DeleteClassTagCommand (triggered by `tag -d`)**: Deletes an existing ClassTag
+    - Validates the ClassTag exists
+    - Ensures no students are currently assigned to it
+    - Removes from `UniqueClassTagList` via `Model#deleteClassTag()`
+
+3. **ListClassTagCommand (triggered by `tag -l`)**: Lists all ClassTags in the system
+    - Retrieves all ClassTags from the Model
+    - Displays them in a numbered list
+
+4. **ClassTagFilterCommand (triggered by `filter -t`)**: Filters students by ClassTag
+    - Validates the ClassTag exists via `Model#findClassTag()`
+    - Updates the filtered person list to show only students with that ClassTag
+
+5. **AddCommand**: Adds a new student with optional ClassTag assignments
+    - Validates all specified ClassTags exist before creating the student
+    - Links student to ClassTags via references
+
+6. **EditCommand**: Edits student details including ClassTag assignments
+    - Can add, remove, or replace ClassTag assignments
+    - Validates all ClassTags exist before updating
+    - Empty ClassTag list (`t/`) removes all ClassTag assignments
+
+#### Sequence Diagram: Adding a ClassTag
+
+The following sequence diagram illustrates the interactions between components when a tutor creates a new ClassTag using the `tag -a` command:
+
+<puml src="diagrams/AddClassTagSequenceDiagram.puml" alt="AddClassTagSequenceDiagram" />
 
 #### Design Considerations
 
-**Aspect: ClassTag Storage:**
+**Aspect: ClassTag Storage Architecture:**
 
-* **Alternative 1 (current choice):** Store ClassTags separately in `UniqueClassTagList`
-    * Pros: Centralized management, enforces uniqueness at system level
-    * Cons: Requires additional data structure maintenance
+* **Alternative 1 (current choice):** Central storage in `UniqueClassTagList` with student references
+    * Pros:
+        - Single source of truth for all ClassTags
+        - Enforces uniqueness at system level
+        - Prevents orphaned or duplicate ClassTag names
+        - Easy to list all classes in the system
+        - Referential integrity - can prevent deletion of in-use ClassTags
+    * Cons:
+        - Requires additional validation when assigning ClassTags to students
+        - Slightly more complex implementation
 
 * **Alternative 2:** Store ClassTags only within each Student object
-    * Pros: Simpler data structure
-    * Cons: No centralized validation, potential for duplicates with different names
+    * Pros:
+        - Simpler data structure
+        - No need for separate ClassTag list
+        - Automatic cleanup when student is deleted
+    * Cons:
+        - No centralized management or validation
+        - Potential for duplicate ClassTag names with slight variations
+        - Cannot list all classes without scanning all students
+        - Cannot enforce consistent naming
+        - No way to track which classes exist in the system
 
+**Aspect: ClassTag Command Design:**
 
-#### Sequence Diagram Example
+* **Alternative 1 (current choice):** Single `tag` command with flags (`-a`, `-d`, `-l`)
+    * Pros:
+        - Consolidates related operations under one command word
+        - Reduces the number of top-level commands users need to remember
+        - Clear semantic grouping of ClassTag operations
+        - Single ClassTagCommandParser handles all tag operations, reducing parser classes and maintaining consistency
+    * Cons:
+        - More complex parsing logic to handle different flags
+
+* **Alternative 2:** Separate commands (`addtag`, `deletetag`, `listtag`)
+    * Pros:
+        - Simpler individual parsers
+        - No flag parsing needed
+    * Cons:
+        - More top-level commands to remember
+        - Less semantic grouping
+
+**Aspect: ClassTag Assignment Workflow:**
+
+* **Alternative 1 (current choice):** Integrate with Add and Edit commands
+    * Pros:
+        - Fewer commands for users to learn
+        - Natural workflow - assign classes when creating/modifying students
+        - Reduces command clutter
+    * Cons:
+        - Add and Edit commands have more responsibilities
+        - More complex command parsing
+
+* **Alternative 2:** Separate AssignClassTag and UnassignClassTag commands
+    * Pros:
+        - Single responsibility per command
+        - Simpler individual command implementations
+    * Cons:
+        - More commands for users to remember
+        - Extra steps in workflow (create student, then assign classes)
+        - Verbose for bulk operations
 
 #### Error Handling
 
-ClassTag operations include validation for:
-- Duplicate ClassTag names when creating
-- Non-existent ClassTags when deleting or assigning
-- ClassTags still assigned to students when attempting deletion
-- Invalid ClassTag name format
-- Non-existent ClassTags when adding/editing students with class tags
+ClassTag operations include comprehensive validation:
+
+**Creating ClassTags:**
+- Duplicate ClassTag names (case-insensitive)
+- Invalid ClassTag name format (must be 1-30 alphanumeric characters with underscores, no spaces)
+- Empty ClassTag name
+- Missing or invalid flag
+
+**Deleting ClassTags:**
+- Non-existent ClassTag
+- ClassTag still assigned to one or more students
+- Invalid command format
+- Invalid ClassTag format
+
+**Assigning ClassTags to Students:**
+- Non-existent ClassTag name when adding/editing students
+- Invalid ClassTag format in student commands
+- Attempting to assign a ClassTag that doesn't exist
+
+**Filtering by ClassTag:**
+- Non-existent ClassTag name
+- Invalid command format
+- Invalid ClassTag format
+
+**General Validation Rules:**
+- All tag commands enforce **strict parameter checking** — any extra text beyond the expected format is rejected
+- When multiple flags are present, only the **first valid flag** determines the command type; subsequent flags are treated as invalid parameters and cause the command to fail
+- Tag names are trimmed of leading/trailing whitespace before validation
+
+Each validation error provides clear, actionable feedback to help users correct their input.
 
 ### \[Proposed\] Undo/redo feature
 
@@ -804,6 +866,26 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 * 2a. The attendance record for the same student and date already exists with the ***Absent*** status or no prior record exists.
     * 2a1. Tuto informs the user that no change is necessary.
+
+      Use case ends.
+
+**Use case: Delete an attendance record**
+
+**MSS**
+1. User deletes an attendance record for a student on a specific date and class.
+2. Tuto deletes the attendance record.
+3. Tuto confirms that the attendance record has been deleted.
+
+   Use case ends.
+
+**Extensions**
+* 1a. The command format is invalid.
+    * 1a1. Tuto shows an error message with the correct usage format.
+
+      Use case ends.
+
+* 2a. No attendance record exists for the specified date and class.
+    * 2a1. Tuto shows an error message.
 
       Use case ends.
 

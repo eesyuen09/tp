@@ -1,0 +1,56 @@
+@startuml
+!include style.puml
+skinparam ArrowFontStyle plain
+
+box Logic LOGIC_COLOR_T1
+participant ":LogicManager" as LogicManager LOGIC_COLOR
+participant ":AddressBookParser" as AddressBookParser LOGIC_COLOR
+participant ":ClassTagCommandParser" as ClassTagCommandParser LOGIC_COLOR
+participant "c:AddClassTagCommand" as AddClassTagCommand LOGIC_COLOR
+end box
+
+box Model #FFCCCC
+participant ":Model" as Model MODEL_COLOR
+end box
+
+[-> LogicManager : execute("tag -a t/Sec_3_A_Math")
+activate LogicManager
+
+LogicManager -> AddressBookParser : parseCommand("tag -a t/Sec_3_A_Math")
+activate AddressBookParser
+
+AddressBookParser -> ClassTagCommandParser : parse("-a t/Sec_3_A_Math")
+activate ClassTagCommandParser
+
+create AddClassTagCommand
+ClassTagCommandParser -> AddClassTagCommand : new
+activate AddClassTagCommand
+AddClassTagCommand --> ClassTagCommandParser
+deactivate AddClassTagCommand
+
+ClassTagCommandParser --> AddressBookParser : c
+deactivate ClassTagCommandParser
+
+AddressBookParser --> LogicManager : c
+deactivate AddressBookParser
+
+LogicManager -> AddClassTagCommand : execute(model)
+activate AddClassTagCommand
+
+AddClassTagCommand -> Model : hasClassTag(classTag)
+activate Model
+Model --> AddClassTagCommand : false
+deactivate Model
+
+AddClassTagCommand -> Model : addClassTag(classTag)
+activate Model
+Model --> AddClassTagCommand
+deactivate Model
+
+AddClassTagCommand --> LogicManager : result
+deactivate AddClassTagCommand
+
+[<-- LogicManager
+deactivate LogicManager
+
+@enduml

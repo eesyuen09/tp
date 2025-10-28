@@ -71,6 +71,13 @@ public class Date {
     }
 
     /**
+     * Returns this {@code Date} as a {@link LocalDate} for chronological comparisons.
+     */
+    public LocalDate toLocalDate() {
+        return LocalDate.parse(value, FORMATTER);
+    }
+
+    /**
      * Returns true if the given date string represents a future date.
      */
     public static boolean isFutureDate(String dateString) {
