@@ -25,7 +25,7 @@ public class ListClassTagCommand extends ClassTagCommand {
     @Override
     public CommandResult execute(Model model) {
         requireNonNull(model);
-        List<ClassTag> classTagList = model.getAddressBook().getClassTagList();
+        List<ClassTag> classTagList = model.getClassTagList();
 
         if (classTagList.isEmpty()) {
             return new CommandResult(MESSAGE_NO_TAGS_FOUND);

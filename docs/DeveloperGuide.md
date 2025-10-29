@@ -298,6 +298,7 @@ ClassTag management is implemented through several key components:
     - `addClassTag(ClassTag)`: Adds a new ClassTag
     - `deleteClassTag(ClassTag)`: Removes a ClassTag
     - `findClassTag(String)`: Finds and returns a ClassTag by its name
+    - `getClassTagList()`: Returns an unmodifiable list of all ClassTags
 - `Person` objects maintain a `Set<ClassTag>` field that references ClassTags from the central `UniqueClassTagList`
   
 **Storage Component:**
@@ -344,6 +345,18 @@ The following commands handle ClassTag operations:
 The following sequence diagram illustrates the interactions between components when a tutor creates a new ClassTag using the `tag -a` command:
 
 <puml src="diagrams/AddClassTagSequenceDiagram.puml" alt="AddClassTagSequenceDiagram" />
+
+#### Sequence Diagram: Filtering Students by ClassTag
+
+The following sequence diagram illustrates how the system filters students by a specific ClassTag:
+
+<puml src="diagrams/ClassTagFilterSequenceDiagram.puml" alt="ClassTagFilterSequenceDiagram" />
+
+### Activty Diagram: Editing Student ClassTags
+
+The activity diagram below illustrates the workflow when a tutor edits a student's ClassTag assignments using the `edit` command:
+
+<puml src="diagrams/EditStudentClassTagsActivityDiagram.puml" alt="EditStudentClassTagsActivityDiagram" />
 
 #### Design Considerations
 
