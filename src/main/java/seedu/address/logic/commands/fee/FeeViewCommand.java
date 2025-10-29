@@ -41,7 +41,7 @@ public class FeeViewCommand extends FeeCommand {
     private final Optional<Month> startMonthOpt;
 
     /**
-     * Constructor fot FeeViewCommand
+     * Constructor for FeeViewCommand
      */
     public FeeViewCommand(StudentId studentId, Optional<Month> startMonthOpt) {
         requireNonNull(studentId);
