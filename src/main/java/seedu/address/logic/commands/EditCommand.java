@@ -40,8 +40,8 @@ public class EditCommand extends Command {
 
     public static final String COMMAND_WORD = "edit";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Edits the details of the person identified "
-            + "by the index number used in the displayed person list. "
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Edits the details of the student identified "
+            + "by the STUDENT_ID used in the displayed person list. "
             + "Existing values will be overwritten by the input values.\n"
             + "Parameters: "
             + PREFIX_STUDENTID + "STUDENT_ID\n"
@@ -56,9 +56,9 @@ public class EditCommand extends Command {
             + PREFIX_EMAIL + "johndoe@example.com"
             + PREFIX_CLASSTAG + "Sec3_Maths";
 
-    public static final String MESSAGE_EDIT_PERSON_SUCCESS = "Edited Person: %1$s";
+    public static final String MESSAGE_EDIT_PERSON_SUCCESS = "Edited student: %1$s";
     public static final String MESSAGE_NOT_EDITED = "At least one field to edit must be provided.";
-    public static final String MESSAGE_DUPLICATE_PERSON = "This person already exists in the address book.";
+    public static final String MESSAGE_DUPLICATE_PERSON = "This student already exists in the address book.";
     public static final String MESSAGE_TAG_NOT_FOUND = "One or more class tags do not exist: %s. "
             + "Please create them first with the 'tag -a' command.";
 
