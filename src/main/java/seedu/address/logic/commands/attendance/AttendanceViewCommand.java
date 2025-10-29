@@ -15,8 +15,8 @@ import seedu.address.model.person.StudentId;
  */
 public class AttendanceViewCommand extends AttendanceCommand {
 
-    public static final String MESSAGE_VIEW_SUCCESS = "Showing attendance records for: %1$s\n%2$s";
-    public static final String MESSAGE_NO_RECORDS = "No attendance records found for: %1$s";
+    public static final String MESSAGE_VIEW_SUCCESS = "Attendance records for: %1$s\n%2$s";
+    public static final String MESSAGE_NO_RECORDS = "No attendance record found for: %1$s";
 
     /**
      * Creates an AttendanceViewCommand to view attendance history for the specified student.

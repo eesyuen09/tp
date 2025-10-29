@@ -11,6 +11,7 @@ import java.util.Optional;
 import java.util.logging.Logger;
 
 import javafx.beans.property.ReadOnlyIntegerProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.LogsCenter;
@@ -21,6 +22,8 @@ import seedu.address.logic.parser.AddressBookParser;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.Model;
 import seedu.address.model.ReadOnlyAddressBook;
+import seedu.address.model.fee.FeeHistoryEntry;
+import seedu.address.model.fee.FeeHistorySummary;
 import seedu.address.model.fee.FeeState;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.performance.PerformanceNote;
@@ -57,11 +60,18 @@ public class LogicManager implements Logic {
         CommandResult commandResult;
         Command command = addressBookParser.parseCommand(commandText);
         List<PerformanceNote> previousNotes = new ArrayList<>(model.getDisplayedPerformanceNotes());
+        List<FeeHistoryEntry> previousFeeHistory = new ArrayList<>(model.getDisplayedFeeHistory());
+        Optional<FeeHistorySummary> previousSummary = Optional
+                .ofNullable(model.feeHistorySummaryProperty().getValue());
         model.clearDisplayedPerformanceNotes();
+        model.clearDisplayedFeeHistory();
         try {
             commandResult = command.execute(model);
         } catch (CommandException e) {
             model.setDisplayedPerformanceNotes(previousNotes);
+            if (!previousFeeHistory.isEmpty() && previousSummary.isPresent()) {
+                model.setDisplayedFeeHistory(new ArrayList<>(previousFeeHistory), previousSummary.get());
+            }
             throw e;
         }
 
@@ -110,6 +120,16 @@ public class LogicManager implements Logic {
     @Override
     public ObservableList<PerformanceNote> getDisplayedPerformanceNotes() {
         return model.getDisplayedPerformanceNotes();
+    }
+
+    @Override
+    public ObservableList<FeeHistoryEntry> getDisplayedFeeHistory() {
+        return model.getDisplayedFeeHistory();
+    }
+
+    @Override
+    public ReadOnlyObjectProperty<FeeHistorySummary> feeHistorySummaryProperty() {
+        return model.feeHistorySummaryProperty();
     }
 
     @Override

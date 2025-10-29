@@ -10,6 +10,8 @@ import seedu.address.commons.core.GuiSettings;
 import seedu.address.model.Model;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.ReadOnlyUserPrefs;
+import seedu.address.model.fee.FeeHistoryEntry;
+import seedu.address.model.fee.FeeHistorySummary;
 import seedu.address.model.fee.FeeState;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
@@ -173,6 +175,26 @@ public class ModelStub implements Model {
 
     @Override
     public void clearDisplayedPerformanceNotes() {
+        throw new AssertionError("This method should not be called.");
+    }
+
+    @Override
+    public ObservableList<FeeHistoryEntry> getDisplayedFeeHistory() {
+        throw new AssertionError("This method should not be called.");
+    }
+
+    @Override
+    public void setDisplayedFeeHistory(List<FeeHistoryEntry> entries, FeeHistorySummary summary) {
+        throw new AssertionError("This method should not be called.");
+    }
+
+    @Override
+    public void clearDisplayedFeeHistory() {
+        throw new AssertionError("This method should not be called.");
+    }
+
+    @Override
+    public javafx.beans.property.ReadOnlyObjectProperty<FeeHistorySummary> feeHistorySummaryProperty() {
         throw new AssertionError("This method should not be called.");
     }
 
