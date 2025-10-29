@@ -571,8 +571,10 @@ Showing attendance records for: Bernice Yu<br>
 </box>
 
 ## Tracking students' performance: `perf` commands
-The `perf` command family allows you to track students' performance in class.
-This helps you to monitor and manage students' academic progress effectively.
+The `perf` command family allows you to track students' performance in class by **adding performance notes**.
+Each performance note is tied to both a date and a class tag, allowing tutors to document specific achievements or areas for improvement for each student.
+
+<box type="info" seamless>
 
 **Overview of perf commands**
 
@@ -582,6 +584,7 @@ This helps you to monitor and manage students' academic progress effectively.
 | `perf -v s/STUDENT_ID`                                       | View performance data for a student          |
 | `perf -e s/STUDENT_ID d/DATE t/TAG_NAME pn/PERFORMANCE_NOTE` | Edit existing performance data for a student |
 | `perf -d s/STUDENT_ID d/DATE t/TAG_NAME`                     | Delete performance data for a student        |
+</box>
 
 
 ### 1. Adding a performance note for a student:
@@ -592,9 +595,11 @@ Adds a performance note for a student in a specific class on a specific date.
 
 **Examples:**
 - `perf -a s/0001 d/18092025 t/Sec3_Maths pn/Scored 85% on mock test`
+- `perf -a s/0002 d/15092025 t/JC1_Physics pn/Needs improvement in problem-solving skills`
 
 **Expected output:**
 Performance note successfully added for John Tan in Sec3_Maths on 18-09-2025.
+Performance note successfully added for Jane Doe in JC1_Physics on 15-09-2025.
 
 ### 2. Viewing performance notes for a student:
 
@@ -604,10 +609,11 @@ Displays all performance notes for a student.
 
 **Examples:**
 - `perf -v s/0001`
+- `perf -v s/0002`
 
 **Expected output:**
-Performance notes for John Tan:
-- Sec3_Maths on 18-09-2025: Scored 85% on mock test
+Performance notes for John Tan displayed.
+Performance notes for Jane Doe displayed.
 
 ### 3. Editing a performance note for a student:
 
@@ -617,9 +623,11 @@ Edits an existing performance note for a student.
 
 **Examples:**
 - `perf -e s/0001 d/18092025 t/Sec3_Maths pn/Scored 90% on mock test after re-evaluation`
+- `perf -e s/0002 d/15092025 t/JC1_Physics pn/Improved problem-solving skills significantly`
 
 **Expected output:**
-- Performance note for %s in %s on %s successfully edited.
+Performance note for John Tan in Sec3_Maths on 18-09-2025 successfully updated.
+Performance note for Jane Doe in JC1_Physics on 15-09-2025 successfully updated.
 
 ### 4. Deleting a performance note for a student:
 
@@ -629,9 +637,11 @@ Deletes a performance note for a student.
 
 **Examples:**
 - `perf -d s/0001 d/18092025 t/Sec3_Maths`
+- `perf -d s/0002 d/15092025 t/JC1_Physics`
 
 **Expected output:**
-- Performance note for John Tan in Sec3_Maths on 18-09-2025 successfully deleted.
+Performance note for John Tan in Sec3_Maths on 18-09-2025 successfully deleted.
+Performance note for Jane Doe in JC1_Physics on 15-09-2025 successfully deleted.
 
 ---
 
