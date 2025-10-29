@@ -217,7 +217,7 @@ public class Person {
                 .add("phone", phone)
                 .add("email", email)
                 .add("address", address)
-                .add("tags", tags.isEmpty() ? "" : tags)
+                .add("tags", tags.isEmpty() ? " - " : tags)
                 .add("performanceList", performanceList)
                 .toString();
     }
