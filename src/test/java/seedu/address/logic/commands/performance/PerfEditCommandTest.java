@@ -66,6 +66,7 @@ public class PerfEditCommandTest {
         Person studentWithNote = student.withPerformanceList(list);
 
         Model model = new ModelManager(new AddressBook(), new UserPrefs());
+        model.addClassTag(VALID_CLASS_TAG_1);
         model.addPerson(studentWithNote);
 
         // Expected edited performance note
@@ -75,6 +76,7 @@ public class PerfEditCommandTest {
         Person expectedPerson = student.withPerformanceList(expectedList);
 
         Model expectedModel = new ModelManager(new AddressBook(), new UserPrefs());
+        expectedModel.addClassTag(VALID_CLASS_TAG_1);
         expectedModel.addPerson(expectedPerson);
 
         String expectedMessage = String.format(PerfCommand.EDITED,
@@ -101,6 +103,25 @@ public class PerfEditCommandTest {
 
         assertEquals(EDITED_NOTE,
                 modelStub.updatedPerson.getPerformanceList().asUnmodifiableList().get(0).getNote());
+    }
+
+    @Test
+    public void execute_classTagNotInModel_throwsCommandException() {
+        Person student = new PersonBuilder().withStudentId(VALID_STUDENT_ID.toString())
+                .withClassTags(VALID_CLASS_TAG_1.tagName).build();
+
+        PerformanceNote note = new PerformanceNote(VALID_DATE_1, VALID_CLASS_TAG_1, VALID_NOTE_1);
+        PerformanceList list = new PerformanceList();
+        list.add(note);
+        Person studentWithNote = student.withPerformanceList(list);
+
+        Model model = new ModelManager(new AddressBook(), new UserPrefs());
+        model.addPerson(studentWithNote);
+
+        PerfEditCommand command = new PerfEditCommand(VALID_STUDENT_ID, VALID_DATE_1, VALID_CLASS_TAG_1, EDITED_NOTE);
+
+        assertCommandFailure(command, model,
+                String.format(Messages.MESSAGE_TAG_NOT_FOUND, VALID_CLASS_TAG_1.tagName));
     }
 
     @Test
@@ -170,6 +191,11 @@ public class PerfEditCommandTest {
         @Override
         public ReadOnlyAddressBook getAddressBook() {
             return new AddressBook();
+        }
+
+        @Override
+        public boolean hasClassTag(ClassTag classTag) {
+            return person.getTags().contains(classTag);
         }
     }
 }

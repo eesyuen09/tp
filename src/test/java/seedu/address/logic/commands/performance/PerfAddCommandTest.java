@@ -95,12 +95,14 @@ public class PerfAddCommandTest {
                 .withEnrolledMonth("0324")
                 .withClassTags(VALID_CLASS_TAG.tagName).build();
         Model model = new ModelManager(new AddressBook(), new UserPrefs());
+        model.addClassTag(VALID_CLASS_TAG);
         model.addPerson(validPerson);
         PerformanceNote note = new PerformanceNote(VALID_DATE, VALID_CLASS_TAG, VALID_NOTE);
         PerformanceList performanceList = new PerformanceList();
         performanceList.add(note);
 
         Model expectedModel = new ModelManager(new AddressBook(), new UserPrefs());
+        expectedModel.addClassTag(VALID_CLASS_TAG);
         Person personWithNote = validPerson.withPerformanceList(performanceList);
         expectedModel.addPerson(personWithNote);
 
@@ -133,6 +135,7 @@ public class PerfAddCommandTest {
                 .build();
 
         Model model = new ModelManager(new AddressBook(), new UserPrefs());
+        model.addClassTag(VALID_CLASS_TAG);
         model.addPerson(personWithoutTag);
 
         PerfAddCommand command = new PerfAddCommand(VALID_STUDENT_ID, VALID_DATE, VALID_CLASS_TAG, VALID_NOTE);
@@ -144,6 +147,22 @@ public class PerfAddCommandTest {
         );
 
         assertCommandFailure(command, model, expectedMessage);
+    }
+
+    @Test
+    public void execute_classTagNotInModel_throwsCommandException() {
+        Person person = new PersonBuilder()
+                .withStudentId(VALID_STUDENT_ID.toString())
+                .withClassTags(VALID_CLASS_TAG.tagName)
+                .build();
+
+        Model model = new ModelManager(new AddressBook(), new UserPrefs());
+        model.addPerson(person);
+
+        PerfAddCommand command = new PerfAddCommand(VALID_STUDENT_ID, VALID_DATE, VALID_CLASS_TAG, VALID_NOTE);
+
+        assertCommandFailure(command, model,
+                String.format(Messages.MESSAGE_TAG_NOT_FOUND, VALID_CLASS_TAG.tagName));
     }
 
     @Test
@@ -217,6 +236,11 @@ public class PerfAddCommandTest {
         @Override
         public ReadOnlyAddressBook getAddressBook() {
             return new AddressBook();
+        }
+
+        @Override
+        public boolean hasClassTag(ClassTag classTag) {
+            return person.getTags().contains(classTag);
         }
     }
 }
