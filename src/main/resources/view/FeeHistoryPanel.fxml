@@ -19,7 +19,5 @@
                 <TableColumn fx:id="statusColumn" text="Status" prefWidth="200.0" />
             </columns>
         </TableView>
-        <Label text="Legend: Status shows source in brackets — marked = explicitly set, default = inferred"
-               wrapText="true" styleClass="fee-history-legend" />
     </children>
 </VBox>
