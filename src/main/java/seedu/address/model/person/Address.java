@@ -12,8 +12,12 @@ public class Address {
     public static final String MESSAGE_CONSTRAINTS = "Addresses can take any values, and it should not be blank";
 
     /*
-     * The first character of the address must not be a whitespace,
-     * otherwise " " (a blank string) becomes a valid input.
+     * The address must not be blank.
+     * The first character cannot be a whitespace,
+     * to prevent inputs like " " (a single space) from being considered valid.
+     *
+     * Valid characters include letters (a-z, A-Z), digits (0-9), spaces, and the symbols
+     * # , - '
      */
     public static final String VALIDATION_REGEX = "[^\\s][a-zA-Z0-9 #,\\-']*";
 
