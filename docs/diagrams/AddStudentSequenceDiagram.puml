@@ -31,7 +31,7 @@ activate AddCommand
 
 AddCommand --> AddCommandParser
 
-DeleteCommandParser --> AddressBookParser
+AddCommandParser --> AddressBookParser
 deactivate AddCommandParser
 destroy AddCommandParser
 
