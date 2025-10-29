@@ -440,7 +440,7 @@ The following sequence diagram illustrates how the system filters students by a 
 
 <puml src="diagrams/ClassTagFilterSequenceDiagram.puml" alt="ClassTagFilterSequenceDiagram" />
 
-#### Activty Diagram: Editing Student ClassTags
+#### Activity Diagram: Editing Student ClassTags
 
 The activity diagram below illustrates the workflow when a tutor edits a student's ClassTag assignments using the `edit` command:
 
@@ -583,15 +583,168 @@ Each validation error provides clear, actionable feedback to help users correct 
 
 #### Overview
 
-The Fee Management feature allows tutors to manage and track each student's monthly fee status.  
-Key operations include **marking fees as Paid or Unpaid**, **filtering students by payment status**, and **viewing a student's payment history**.
-
-Each student has a derived monthly `FeeState` (**PAID** or **UNPAID**) stored within the `FeeTracker`.  
-By default, months without an explicit record are treated as **UNPAID**.
+The Fee Management feature allows tutors to track, update, and review students’ monthly tuition fee payments.  
+Each student has a corresponding `FeeState` (**PAID** or **UNPAID**) for each month starting from their `enrolledMonth`.  
+This feature is managed by the central `FeeTracker` component within the `Model`.
 
 #### Implementation
 
+Fee Management is implemented through several key components:
 
+**Model Component:**
+
+- `FeeTracker`: Serves as the central manager for all student fee records.
+      - Internally stores data in a nested structure:  
+      `Map<StudentId, Map<Month, FeeState>>`, where each student’s fee history is organized by month.
+    - The tracker only stores months that have been explicitly marked.
+      Any month after enrollment without a record is automatically considered UNPAID by default.
+    - Months **before** the student’s `enrolledMonth` are **not tracked** and return no fee status.
+    - Provides methods to generate **payment history** between two months.
+    - This design avoids redundant data storage and enables on-demand computation of fee states, ensuring efficient lookups and minimal memory use.
+    - The `Model` interacts with the `FeeTracker` when marking payments, undoing payments, filtering Paid/Unpaid students, or retrieving historical fee data.
+
+- `FeeState`: Represents a student’s payment status for a particular month. (either **PAID** or **UNPAID**)
+
+- `Month`: Represents a calendar month in `MMYY` format and provides utilities for date comparison and traversal.
+
+- `Person`: Each student stores an `enrolledMonth`, which defines when fee tracking begins.  
+  Fee states are only derived for months on or after this enrollment month.
+
+- The `Model` interface provides methods:
+    - `markPaid(StudentId, Month)`: Marks a student’s fee as Paid for a given month.
+    - `markUnpaid(StudentId, Month)`: Marks a student’s fee as Unpaid for a given month.
+    - `paidStudents(Month)`: Returns a predicate for filtering students who have Paid for the specified month.
+    - `unpaidStudents(Month)`: Returns a predicate for filtering students who have not Paid for the specified month.
+    - `getCurrentFeeState(Person)`: Returns the student’s fee state for the current month.
+    - `feeStateVersionProperty()`: Returns a read-only observable property that increments whenever fee data changes, allowing the UI to refresh automatically.
+
+---
+
+**Storage Component:**
+
+- `JsonAdaptedFeeRecord`: Converts fee records to and from JSON format for persistence. Each record stores:
+    - `studentId`: the unique identifier of the student,
+    - `monthString`: the month in `MMYY` format,
+    - `feeState`: the payment status (`PAID` or `UNPAID`).
+- `JsonAdaptedPerson`: Serializes each student’s data, including their attendance, performance notes, class tags, and **associated fee records**.
+- `JsonSerializableAddressBook`: Handles serialization and deserialization of the entire address book, including all persons, class tags, and fee records.
+
+- During deserialization:
+    - The list of `feeRecords` is read first and each entry is re-registered into the in-memory `FeeTracker`.
+    - Each person’s `StudentId` is matched to their corresponding fee entries to rebuild accurate payment histories.
+    - Any student without explicit fee entries is assumed to have **no recorded payments**, and their post-enrollment months are treated as **UNPAID** by default.
+
+---
+
+**Logic Component:**
+
+The following commands handle Fee Management operations:
+
+1. **FeeMarkPaidCommand (triggered by `fee -p`)**: Marks a student’s fee as **PAID** for a specific month.
+    - Validates that the student exists via `Model#getPersonById()`.
+    - Ensures all previous months up to the target month are already **PAID**.
+    - Updates the `FeeTracker` via `Model#markPaid()` and refreshes the UI.
+
+2. **FeeMarkUnpaidCommand (triggered by `fee -up`)**: Marks a student’s fee as **UNPAID** for a specific month.
+    - Validates that the student exists via `Model#getPersonById()`.
+    - Updates the `FeeTracker` via `Model#markUnpaid()` and refreshes the UI.
+
+3. **FeeFilterPaidCommand (triggered by `filter -p`)**:  
+   Filters students who have **Paid** for a specified month.
+    - Validates that the input month is valid and not in the future.
+    - Updates the filtered student list to display only students marked as **PAID** for that month.
+
+4. **FeeFilterUnpaidCommand (triggered by `filter -up`)**:  
+   Filters students who have **not Paid** (Unpaid) for a specified month.
+    - Validates that the input month is valid and not in the future.
+    - Updates the filtered student list to display only students marked as **UNPAID** for that month.
+
+5. **FeeViewCommand (triggered by `fee -v`)**:  
+   Displays a student’s **payment history** across a specified range of months.
+    - Validates that the student exists and that the month range is valid.
+    - Retrieves payment data using `FeeTracker#getPaymentHistory()`.
+    - Outputs a chronological list of months with corresponding fee states.
+
+#### Sequence Diagram: Marking a Student as Paid
+
+The following sequence diagram illustrates how the system processes the `fee -p` command to mark a student’s fee as Paid:
+
+<puml src="diagrams/FeeMarkPaidSequenceDiagram.puml" alt="FeeMarkPaidSequenceDiagram" />
+
+#### Sequence Diagram: Filtering Students by Payment Status
+
+The following sequence diagram illustrates how the system filters students by payment status:
+
+<puml src="diagrams/FeeFilterSequenceDiagram.puml" alt="FeeFilterSequenceDiagram" />
+
+#### Activity Diagram: Viewing a Student’s Payment History
+
+The activity diagram below illustrates the workflow for viewing a student’s fee history using the `fee -v` command:
+
+<puml src="diagrams/FeeViewActivityDiagram.puml" alt="FeeViewActivityDiagram" />
+
+#### Design Considerations
+
+**Aspect: Explicit vs Derived Fee States**
+
+* **Alternative 1 (current choice):** Derived default `UNPAID` state for unmarked months
+    * Pros:
+        - Reduces redundant data storage.
+        - Keeps logic simple while ensuring consistency.
+    * Cons:
+        - Requires derived computation each time the state is queried.
+
+* **Alternative 2:** Store every month explicitly
+    * Pros:
+        - Simplifies querying fee data.
+    * Cons:
+        - Higher storage cost and redundancy.
+
+---
+
+**Aspect: Sequential Payment Validation**
+
+* **Alternative 1 (current choice):** Prevent tutors from marking later months as Paid while earlier months remain Unpaid.
+    * Pros:
+        - Maintains consistent chronological payment records.
+    * Cons:
+        - Tutors cannot record out-of-order or advance payments.
+
+---
+
+**Aspect: UI Synchronization**
+
+* **Alternative 1 (current choice):** Use `feeStateVersionProperty()` to trigger automatic UI updates.
+    * Pros:
+        - Keeps displayed student data always up to date.
+        - No manual refresh actions needed.
+    * Cons:
+        - Requires careful listener management to avoid unnecessary refreshes.
+
+---
+
+#### Error Handling
+
+Fee Management includes comprehensive validation across all operations:
+
+**Marking Fees**
+- Invalid or missing `StudentId`
+- Month before enrollment or after the current month
+- Attempting to mark Paid when already Paid
+- Attempting to mark Unpaid when already Unpaid
+- Attempting to mark Paid while an earlier month remains Unpaid
+
+**Filtering Fees**
+- Invalid or future month input
+
+**Viewing Fee History**
+- Invalid `StudentId`
+- Invalid or future start month
+- No payment data available
+
+Each validation error produces clear and descriptive messages to guide user correction.
+
+---
 
 ## **Planned Enhancements**
 

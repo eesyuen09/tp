@@ -1,0 +1,81 @@
+@startuml
+!include style.puml
+skinparam ArrowFontStyle plain
+
+box Logic LOGIC_COLOR_T1
+participant ":LogicManager" as LogicManager LOGIC_COLOR
+participant ":AddressBookParser" as AddressBookParser LOGIC_COLOR
+participant ":FeeCommandParser" as FeeCommandParser LOGIC_COLOR
+participant "c:FeeMarkPaidCommand" as FeeMarkPaidCommand LOGIC_COLOR
+participant ":CommandResult" as CommandResult LOGIC_COLOR
+end box
+
+box Model MODEL_COLOR
+participant ":Model" as Model MODEL_COLOR
+participant ":FeeTracker" as FeeTracker MODEL_COLOR
+end box
+
+[-> LogicManager : execute("fee -p s/0001 m/0925")
+activate LogicManager
+
+LogicManager -> AddressBookParser : parseCommand("fee -p s/0001 m/0925")
+activate AddressBookParser
+
+create FeeCommandParser
+AddressBookParser -> FeeCommandParser
+activate FeeCommandParser
+FeeCommandParser --> AddressBookParser
+deactivate FeeCommandParser
+
+AddressBookParser -> FeeCommandParser : parse("-p s/0001 m/0925")
+activate FeeCommandParser
+
+create FeeMarkPaidCommand
+FeeCommandParser -> FeeMarkPaidCommand : new
+activate FeeMarkPaidCommand
+FeeMarkPaidCommand --> FeeCommandParser
+deactivate FeeMarkPaidCommand
+
+FeeCommandParser --> AddressBookParser : c
+deactivate FeeCommandParser
+destroy FeeCommandParser
+
+AddressBookParser --> LogicManager : c
+deactivate AddressBookParser
+
+LogicManager -> FeeMarkPaidCommand : execute(model)
+activate FeeMarkPaidCommand
+
+FeeMarkPaidCommand -> Model : markPaid(0001, 0925)
+activate Model
+
+Model -> Model : getPersonById(0001)
+note right: Retrieve the student record\nusing StudentId
+
+Model -> Model : validate previous months
+note right: Ensure all months before 0925\nare already PAID
+
+Model -> FeeTracker : markPaid(0001, 0925)
+activate FeeTracker
+note right: Record fee status as PAID\nin Map<StudentId, Map<Month, FeeState>>
+FeeTracker --> Model
+deactivate FeeTracker
+
+Model -> Model : bumpFeeStateVersion()
+note right: Triggers UI auto-refresh binding
+Model --> FeeMarkPaidCommand
+deactivate Model
+
+create CommandResult
+FeeMarkPaidCommand -> CommandResult : new
+activate CommandResult
+CommandResult --> FeeMarkPaidCommand
+deactivate CommandResult
+
+FeeMarkPaidCommand --> LogicManager : result
+deactivate FeeMarkPaidCommand
+
+[<-- LogicManager : result
+deactivate LogicManager
+
+@enduml

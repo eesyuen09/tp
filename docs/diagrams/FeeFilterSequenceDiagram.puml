@@ -1,0 +1,76 @@
+@startuml
+!include style.puml
+skinparam ArrowFontStyle plain
+
+box Logic LOGIC_COLOR_T1
+participant ":LogicManager" as LogicManager LOGIC_COLOR
+participant ":AddressBookParser" as AddressBookParser LOGIC_COLOR
+participant ":FilterCommandParser" as FilterCommandParser LOGIC_COLOR
+participant "c:FeeFilterPaidCommand" as FeeFilterPaidCommand LOGIC_COLOR
+participant ":CommandResult" as CommandResult LOGIC_COLOR
+end box
+
+box Model MODEL_COLOR
+participant ":Model" as Model MODEL_COLOR
+participant ":FeeTracker" as FeeTracker MODEL_COLOR
+end box
+
+[-> LogicManager : execute("filter -p m/0925")
+activate LogicManager
+
+LogicManager -> AddressBookParser : parseCommand("filter -p m/0925")
+activate AddressBookParser
+
+create FilterCommandParser
+AddressBookParser -> FilterCommandParser
+activate FilterCommandParser
+FilterCommandParser --> AddressBookParser
+deactivate FilterCommandParser
+
+AddressBookParser -> FilterCommandParser : parse("-p m/0925")
+activate FilterCommandParser
+
+create FeeFilterPaidCommand
+FilterCommandParser -> FeeFilterPaidCommand : new
+activate FeeFilterPaidCommand
+FeeFilterPaidCommand --> FilterCommandParser
+deactivate FeeFilterPaidCommand
+
+FilterCommandParser --> AddressBookParser : c
+deactivate FilterCommandParser
+destroy FilterCommandParser
+
+AddressBookParser --> LogicManager : c
+deactivate AddressBookParser
+
+LogicManager -> FeeFilterPaidCommand : execute(model)
+activate FeeFilterPaidCommand
+
+FeeFilterPaidCommand -> Model : paidStudents(0925)
+activate Model
+note right
+Returns a Predicate<Person> that evaluates:
+  FeeTracker#getDerivedStatusOfMonth(p, 0925) == PAID
+(used when the filtered list is rendered)
+end note
+Model --> FeeFilterPaidCommand : predicate
+deactivate Model
+
+FeeFilterPaidCommand -> Model : updateFilteredPersonList(predicate)
+activate Model
+Model --> FeeFilterPaidCommand
+deactivate Model
+
+create CommandResult
+FeeFilterPaidCommand -> CommandResult : new
+activate CommandResult
+CommandResult --> FeeFilterPaidCommand
+deactivate CommandResult
+
+FeeFilterPaidCommand --> LogicManager : result
+deactivate FeeFilterPaidCommand
+
+[<-- LogicManager : result
+deactivate LogicManager
+
+@enduml

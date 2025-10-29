@@ -1,0 +1,44 @@
+@startuml
+!include style.puml
+skinparam ArrowFontStyle plain
+
+title FeeViewCommand Activity Diagram
+
+start
+
+:User enters `fee -v s/0001 [m/MMYY]`;
+:LogicManager parses and executes FeeViewCommand;
+
+:Find student by Student ID;
+if (Student found?) then (Yes)
+  :Get student's enrolled month;
+  :Set start month = user input (if any), else enrolled month;
+  :Set end month = current month;
+
+  if (Start month is in the future?) then (Yes)
+    :Show error message: "Month cannot be in the future";
+    stop
+  else (No)
+    :If start month is before enrollment, use enrolled month instead;
+    :Initialize empty payment history list;
+    :Start looping from effective start month to current month;
+
+    while (Within date range?) is (Yes)
+      :Check if payment record exists for this month;
+      if (Record found?) then (Yes)
+        :Use stored status (PAID / UNPAID);
+      else (No)
+        :Mark as UNPAID by default;
+      endif
+      :Add entry to fee history;
+      :Move to next month;
+    endwhile (No)
+
+    :Display compiled fee history to user;
+  endif
+else (No)
+  :Show error message: "Student not found";
+endif
+
+stop
+@enduml
