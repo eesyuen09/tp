@@ -18,3 +18,64 @@
 .tooltip-text {
     -fx-text-fill: white;
 }
+
+.fee-history-panel {
+    -fx-padding: 16;
+    -fx-background-color: transparent;
+}
+
+.fee-history-title {
+    -fx-font-size: 18px;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.fee-history-subtitle {
+    -fx-text-fill: #d0d0d0;
+    -fx-font-size: 14px;
+}
+
+.fee-history-legend {
+    -fx-text-fill: #a0a0a0;
+    -fx-font-size: 11px;
+}
+
+.fee-history-panel .table-view {
+    -fx-border-color: transparent;
+}
+
+.fee-history-panel .column-header-background {
+    -fx-background-color: #2f2f2f;
+}
+
+.fee-history-panel .column-header .label {
+    -fx-font-size: 11px;
+}
+
+.attendance-history-panel {
+    -fx-padding: 16;
+    -fx-background-color: transparent;
+}
+
+.attendance-history-title {
+    -fx-font-size: 18px;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.attendance-history-subtitle {
+    -fx-text-fill: #d0d0d0;
+    -fx-font-size: 14px;
+}
+
+.attendance-history-panel .table-view {
+    -fx-border-color: transparent;
+}
+
+.attendance-history-panel .column-header-background {
+    -fx-background-color: #2f2f2f;
+}
+
+.attendance-history-panel .column-header .label {
+    -fx-font-size: 11px;
+}

@@ -18,12 +18,12 @@ public class DeleteCommand extends Command {
     public static final String COMMAND_WORD = "delete";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD
-            + ": Deletes the person identified by the specified student ID.\n"
+            + ": Deletes the person identified by the specified STUDENT_ID.\n"
             + "Parameters: "
             + PREFIX_STUDENTID + "STUDENT_ID\n"
             + "Example: " + COMMAND_WORD + " " + PREFIX_STUDENTID + "2042";
 
-    public static final String MESSAGE_DELETE_PERSON_SUCCESS = "Deleted Person: %1$s";
+    public static final String MESSAGE_DELETE_PERSON_SUCCESS = "Deleted student: %1$s";
 
     private final StudentId targetId;
 

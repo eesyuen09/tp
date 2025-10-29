@@ -49,7 +49,8 @@ public class PerfViewCommand extends PerfCommand {
         }
 
         StringBuilder sb = new StringBuilder();
-        sb.append("Performance Notes for ").append(student.getName()).append(" displayed.");
+        sb.append("Performance Notes for ").append(student.getName()).append(" (Student ID ").append(
+                student.getStudentId()).append(") displayed.");
         return new CommandResult(sb.toString().trim());
     }
 

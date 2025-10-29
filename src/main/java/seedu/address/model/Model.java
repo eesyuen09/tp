@@ -7,6 +7,10 @@ import java.util.function.Predicate;
 
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
+import seedu.address.model.attendance.AttendanceHistoryEntry;
+import seedu.address.model.attendance.AttendanceHistorySummary;
+import seedu.address.model.fee.FeeHistoryEntry;
+import seedu.address.model.fee.FeeHistorySummary;
 import seedu.address.model.fee.FeeState;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
@@ -197,5 +201,27 @@ public interface Model {
 
     /** Clears all performance notes currently displayed in the UI. */
     void clearDisplayedPerformanceNotes();
+
+    /** Returns an unmodifiable view of the fee history rows currently displayed in the UI. */
+    ObservableList<FeeHistoryEntry> getDisplayedFeeHistory();
+
+    /** Replaces the currently displayed fee history with {@code entries} and {@code summary}. */
+    void setDisplayedFeeHistory(List<FeeHistoryEntry> entries, FeeHistorySummary summary);
+
+    /** Clears all fee history data currently displayed in the UI. */
+    void clearDisplayedFeeHistory();
+
+    javafx.beans.property.ReadOnlyObjectProperty<FeeHistorySummary> feeHistorySummaryProperty();
+
+    /** Returns an unmodifiable view of the attendance history rows currently displayed in the UI. */
+    ObservableList<AttendanceHistoryEntry> getDisplayedAttendanceHistory();
+
+    /** Replaces the currently displayed attendance history with {@code entries} and {@code summary}. */
+    void setDisplayedAttendanceHistory(List<AttendanceHistoryEntry> entries, AttendanceHistorySummary summary);
+
+    /** Clears all attendance history data currently displayed in the UI. */
+    void clearDisplayedAttendanceHistory();
+
+    javafx.beans.property.ReadOnlyObjectProperty<AttendanceHistorySummary> attendanceHistorySummaryProperty();
 
 }
