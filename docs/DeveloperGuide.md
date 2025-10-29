@@ -579,6 +579,8 @@ Each validation error provides clear, actionable feedback to help users correct 
 Given below is a list of enhancements we plan to implement in future versions of Tuto:
 
 1. **Bulk attendance marking for entire class:** Currently, tutors must mark attendance for each student individually using `att -m s/STUDENT_ID d/DATE t/CLASS`. For a class with 20-30 students, this becomes tedious and time-consuming. We plan to add a bulk marking feature that allows tutors to mark attendance for all students in a specific class at once. For example, `att -m d/10112025 t/Math` would mark all students enrolled in the Math ClassTag as present for that date. This would significantly reduce the time needed to take attendance at the beginning of each lesson.
+2. **Individual class tag assignment and unassignment on top of current add/edit:** Currently, when editing a student's class tags using the edit command, all existing tags are replaced with the new list provided (or cleared if t/ is empty). This makes it cumbersome to add or remove a single tag without re-specifying all others. We plan to introduce new commands tag -assign s/STUDENT_ID t/TAG_NAME and tag -unassign s/STUDENT_ID t/TAG_NAME that allow adding or removing individual tags without affecting previously assigned ones. For example, tag -assign s/0001 t/Sec_3_A_Math would add the "Sec_3_A_Math" tag to student 0001 if they don't already have it, leaving other tags intact. Similarly, tag -unassign s/0001 t/Sec_3_A_Math would remove only that tag. Success messages would confirm the action, e.g., "Successfully assigned class tag [Sec_3_A_Math] to student ID 0001." Error messages would handle cases like non-existent students or tags. This enhancement addresses the frequent need for precise, incremental changes to student records, improving tutor workflow efficiency.
+3. **ClassTag renaming:** Currently, once a ClassTag is created, its name cannot be changed. If a tutor wishes to rename a ClassTag (e.g., from "Sec_3_A_Math" to "Sec_3_A_Advanced_Math"), they must delete the existing ClassTag and create a new one. This process is cumbersome and risks losing the association with students if not handled carefully. We plan to implement a `tag -r` command that allows tutors to rename an existing ClassTag while preserving all student associations. For example, `tag -r oldt/Sec_3_A_Math newt/Sec_3_A_Advanced_Math` would rename the ClassTag accordingly. This feature would enhance flexibility in managing class names as course structures evolve.
 
 
 ### \[Proposed\] Undo/redo feature
@@ -1390,3 +1392,62 @@ testers are expected to do more *exploratory* testing.
    1. _{explain how to simulate a missing/corrupted file, and the expected behavior}_
 
 1. _{ more test cases …​ }_
+
+## Instructions for Manual Testing
+
+### Class Tag Management
+
+#### Creating Class Tags
+
+1. Creating a new class tag with a valid name
+
+    1. Prerequisites: None. The tag name must be 1-30 characters, alphanumeric with underscores allowed.
+
+    1. Test case: `tag -a t/Sec_3_A_Math`  
+       **Expected:** New class tag created. Status message confirms creation, tag appears in list.
+
+1. Creating a duplicate class tag
+
+    1. Prerequisites: Class tag `Sec_3_A_Math` already exists (from previous test).
+
+    1. Test case: `tag -a t/Sec_3_A_Math`  
+       **Expected:** Command rejected. Error message indicates tag already exists.
+
+#### Listing Class Tags
+
+1. Listing all class tags
+
+    1. Prerequisites: At least one class tag exists (e.g., `Sec_3_A_Math` from previous test).
+
+    1. Test case: `tag -l`  
+       **Expected:** Displays numbered list of all existing class tags.
+
+#### Filtering Students by Class Tag
+
+1. Filtering students with an existing class tag
+
+    1. Prerequisites: Class tag exists and is assigned to at least one student (e.g., assign `Sec_3_A_Math` to a student via `add` or `edit`).
+
+    1. Test case: `filter -t t/Sec_3_A_Math`  
+       **Expected:** List shows only students with that class tag. Status message indicates number of students listed.
+
+1. Filtering with non-existent class tag
+
+    1. Test case: `filter -t t/NonExistentTag`  
+       **Expected:** Command rejected. Error message indicates tag does not exist.
+
+#### Deleting Class Tags
+
+1. Deleting an unused class tag
+
+    1. Prerequisites: Class tag exists but is not assigned to any students (remove from all students first via `edit`).
+
+    1. Test case: `tag -d t/Sec_3_A_Math`  
+       **Expected:** Class tag deleted. Status message confirms deletion.
+
+1. Deleting a class tag still in use
+
+    1. Prerequisites: Class tag is assigned to at least one student.
+
+    1. Test case: `tag -d t/Sec_3_A_Math`  
+       **Expected:** Command rejected. Error message indicates tag is still in use by students.
