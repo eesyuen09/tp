@@ -1886,26 +1886,6 @@ testers are expected to do more *exploratory* testing.
 
 ---
 
-#### Edge Cases
-
-1. Deleting and re-adding a student
-
-    1. Prerequisites: Student `0001` has payment records (e.g., marked as paid for September 2025).
-
-    1. Action: Delete student `0001` and add them again using the same details.  
-       **Expected:** Payment records are reset. New student entry starts with a clean payment history.
-
-1. Ensuring data consistency across multiple months
-
-    1. Action:
-        - Mark August and September 2025 as **PAID**.
-        - Mark September 2025 as **UNPAID**.
-        - Attempt to mark October 2025 as **PAID**.  
-          **Expected:** Command rejected because September 2025 is unpaid.  
-          Once September 2025 is re-marked as **PAID**, October 2025 can be successfully marked.
-
----
-
 ### Saving data
 
 1. Dealing with missing/corrupted data files
