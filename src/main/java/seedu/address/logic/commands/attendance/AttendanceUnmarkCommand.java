@@ -2,6 +2,8 @@ package seedu.address.logic.commands.attendance;
 
 import static java.util.Objects.requireNonNull;
 
+import java.time.LocalDate;
+
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
@@ -22,6 +24,9 @@ public class AttendanceUnmarkCommand extends AttendanceCommand {
     public static final String MESSAGE_ALREADY_UNMARKED =
             "Attendance for %1$s on %2$s for class %3$s is already unmarked.";
     public static final String MESSAGE_STUDENT_DOES_NOT_HAVE_TAG = "Student %1$s does not have the class tag: %2$s";
+    public static final String MESSAGE_FUTURE_DATE = "Cannot unmark attendance for future date: %1$s";
+    public static final String MESSAGE_BEFORE_ENROLLMENT =
+            "Cannot unmark attendance for %1$s on %2$s. Student enrolled in %3$s.";
 
     private final Date date;
     private final ClassTag classTag;
@@ -44,6 +49,20 @@ public class AttendanceUnmarkCommand extends AttendanceCommand {
         Person personToEdit = model.getPersonById(studentId)
                 .orElseThrow(() -> new CommandException(
                         String.format(Messages.MESSAGE_STUDENT_ID_NOT_FOUND, studentId)));
+
+        // Check if the date is in the future
+        LocalDate attendanceDate = date.toLocalDate();
+        if (attendanceDate.isAfter(LocalDate.now())) {
+            throw new CommandException(String.format(MESSAGE_FUTURE_DATE, date.getFormattedDate()));
+        }
+
+        // Check if the date is before the student's enrollment month
+        LocalDate enrollmentStartDate = personToEdit.getEnrolledMonth().toYearMonth().atDay(1);
+        if (attendanceDate.isBefore(enrollmentStartDate)) {
+            throw new CommandException(String.format(MESSAGE_BEFORE_ENROLLMENT,
+                    personToEdit.getName(), date.getFormattedDate(),
+                    personToEdit.getEnrolledMonth().toHumanReadable()));
+        }
 
         if (!personToEdit.getTags().contains(classTag)) {
             throw new CommandException(String.format(MESSAGE_STUDENT_DOES_NOT_HAVE_TAG,
