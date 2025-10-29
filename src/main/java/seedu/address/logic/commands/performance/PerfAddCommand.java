@@ -27,13 +27,12 @@ import seedu.address.model.time.Date;
  */
 public class PerfAddCommand extends PerfCommand {
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + "-a"
-            + ": Adds a note to the student indicated. "
-            + "Parameters: "
-            + PREFIX_STUDENTID + "STUDENTID "
-            + PREFIX_DATE + "DATE "
+    public static final String MESSAGE_USAGE = COMMAND_WORD + " -a "
+            + PREFIX_STUDENTID + "STUDENT_ID "
+            + PREFIX_DATE + "DDMMYYYY "
             + PREFIX_CLASSTAG + "CLASS_TAG "
-            + PREFIX_NOTE + "PERFORMANCE NOTE ";
+            + PREFIX_NOTE + "PERFORMANCE_NOTE \n"
+            + "Example: perf -a s/0000 d/29102025 t/Sec3_Math pn/Excellent improvement in algebra.";
 
 
     private final StudentId studentId;
@@ -66,6 +65,10 @@ public class PerfAddCommand extends PerfCommand {
         Person student = model.getPersonById(studentId)
                 .orElseThrow(() -> new CommandException(
                         String.format(Messages.MESSAGE_STUDENT_ID_NOT_FOUND, studentId)));
+
+        if (!model.hasClassTag(classTag)) {
+            throw new CommandException(String.format(Messages.MESSAGE_TAG_NOT_FOUND, classTag.tagName));
+        }
 
         if (!student.getTags().contains(classTag)) {
             throw new CommandException(String.format(MESSAGE_STUDENT_DOES_NOT_HAVE_TAG,
