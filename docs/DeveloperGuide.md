@@ -1289,32 +1289,25 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
       Use case ends.
 
-* 1e. The specified class tag is not assigned to the student.
+* 1e. The provided date fails validation.
 
-    * 1e1. Tuto shows an error message indicating class tag not assigned to student.
+    * 1e1. The date does not correspond to a real calendar day (e.g. 30th February).
 
-      Use case ends.
-
-* 1f. The provided date fails validation.
-
-    * 1f1. The date does not correspond to a real calendar day (e.g. 30th February).
-
-        * 1f3a. Tuto shows an error message indicating invalid date.
+        * 1e3a. Tuto shows an error message indicating invalid date.
 
           Use case ends.
 
-* 1g. Performance note exceeds the 200-character limit.
+* 1f. Performance note exceeds the 200-character limit.
 
-    * 1g1. Tuto shows an error message indicating character limit.
-
-      Use case ends.
-
-* 1h. Performance note does not exist for the specified student on the given date for the given class.
-
-    * 1h1. Tuto shows an error message.
+    * 1f1. Tuto shows an error message indicating character limit.
 
       Use case ends.
 
+* 1g. Performance note does not exist for the specified student on the given date for the given class.
+
+    * 1g1. Tuto shows an error message.
+
+      Use case ends.
 
 **Use case: Delete a performance note**
 
@@ -1348,23 +1341,17 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
       Use case ends.
 
-* 1e. The specified class tag is not assigned to the student.
+* 1e. The provided date fails validation.
 
-    * 1e1. Tuto shows an error message indicating class tag not assigned to student.
+    * 1e1. The date does not correspond to a real calendar day (e.g. 30th February).
 
-      Use case ends.
-
-* 1f. The provided date fails validation.
-
-    * 1f1. The date does not correspond to a real calendar day (e.g. 30th February).
-
-        * 1f1a. Tuto shows an error message indicating invalid date.
+        * 1e1a. Tuto shows an error message indicating invalid date.
 
           Use case ends.
 
-* 1g. A performance note does not exist for the same student on the same date for the same class.
+* 1f. A performance note does not exist for the same student on the same date for the same class.
 
-    * 1h1. Tuto shows an error message.
+    * 1f1. Tuto shows an error message.
 
       Use case ends.
 
