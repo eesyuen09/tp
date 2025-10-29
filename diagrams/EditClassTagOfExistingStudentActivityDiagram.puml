@@ -1,0 +1,56 @@
+@startuml
+!include style.puml
+
+skinparam ActivityFontSize 16
+skinparam ActivityDiamondFontSize 16
+skinparam ActivityArrowFontSize 14
+
+|User|
+start
+:Enter edit command
+with class tags;
+
+|System|
+:Validate command format
+and parameters;
+
+if () then ([validation fails])
+    |User|
+    :Receive error message;
+    stop
+endif
+
+|System|
+if () then ([class tags specified?])
+    if () then ([empty t/])
+        :Clear all class tags;
+    else ([tags provided])
+        :Validate and resolve tags;
+        if () then ([tags not found])
+            |User|
+            :Receive error message;
+            stop
+        endif
+    endif
+else ([not specified])
+    |System|
+    :Keep existing class tags;
+endif
+
+|System|
+:Create edited person;
+
+if () then ([duplicate])
+    |User|
+    :Receive error message;
+    stop
+else ([valid])
+    |System|
+    :Update person;
+    |User|
+    :Receive success message;
+    stop
+endif
+
+@enduml
+

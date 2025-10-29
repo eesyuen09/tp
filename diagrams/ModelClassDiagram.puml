@@ -13,13 +13,22 @@ Class ModelManager
 Class UserPrefs
 
 Class UniquePersonList
+Class UniqueClassTagList
 Class Person
 Class Address
 Class Email
 Class Name
 Class Phone
+Class StudentId
 Class ClassTag
-
+Class AttendanceList
+Class Attendance
+Class Date
+Class FeeTracker
+Class FeeState
+Class Month
+Class PerformanceList
+Class PerformanceNote
 Class I #FFFFFF
 }
 
@@ -36,12 +45,32 @@ ModelManager -right-> "1" UserPrefs
 UserPrefs .up.|> ReadOnlyUserPrefs
 
 AddressBook *--> "1" UniquePersonList
+AddressBook *--> "1" UniqueClassTagList
+AddressBook *--> "1" FeeTracker
+
+ModelManager --> FeeTracker
+
 UniquePersonList --> "~* all" Person
+UniqueClassTagList --> "~* all" ClassTag
 Person *--> Name
 Person *--> Phone
 Person *--> Email
 Person *--> Address
+Person *--> StudentId
 Person *--> "*" ClassTag
+Person *--> AttendanceList
+Person --> "1" Month : enrolledMonth
+Person *--> PerformanceList
+
+AttendanceList --> "*" Attendance
+
+Attendance --> Date
+Attendance --> ClassTag
+
+PerformanceList --> "*" PerformanceNote
+
+PerformanceNote --> Date
+PerformanceNote --> ClassTag
 
 Person -[hidden]up--> I
 UniquePersonList -[hidden]right-> I

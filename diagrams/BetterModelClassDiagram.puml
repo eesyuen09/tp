@@ -25,4 +25,5 @@ AttendanceList --> "*" Attendance
 
 Attendance --> Date
 Attendance --> ClassTag
+
 @enduml
