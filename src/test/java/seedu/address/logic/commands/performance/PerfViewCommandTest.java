@@ -103,7 +103,7 @@ public class PerfViewCommandTest {
         String expectedMessage = "Performance Notes for " + studentWithNotes.getName() + " displayed.";
 
         assertCommandSuccess(new PerfViewCommand(VALID_STUDENT_ID), model, expectedMessage, model);
-        assertEquals(List.of(note1, note2), model.getDisplayedPerformanceNotes());
+        assertEquals(List.of(note2, note1), model.getDisplayedPerformanceNotes());
     }
 
     @Test
