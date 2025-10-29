@@ -115,6 +115,12 @@ How the parsing works:
 * When called upon to parse a user command, the `AddressBookParser` class creates an `XYZCommandParser` (`XYZ` is a placeholder for the specific command name e.g., `AddCommandParser`) which uses the other classes shown above to parse the user command and create a `XYZCommand` object (e.g., `AddCommand`) which the `AddressBookParser` returns back as a `Command` object.
 * All `XYZCommandParser` classes (e.g., `AddCommandParser`, `DeleteCommandParser`, ...) inherit from the `Parser` interface so that they can be treated similarly where possible e.g, during testing.
 
+<box type="info" seamless>
+
+**Note on Extra Parameters:** When users provide extra parameters beyond what a command expects, the parser's `ArgumentTokenizer` treats any unrecognized text (including invalid parameter prefixes) as part of the value of the parameter that precedes it. This means that if an invalid or unrecognized parameter is added after a valid parameter, the validation error message will reference the valid parameter that comes immediately before the invalid input, rather than indicating that extra parameters were provided. Developers should be aware of this behavior when designing commands and crafting error messages, as it may affect how validation errors are communicated to users.
+
+</box>
+
 ### Model component
 **API** : [`Model.java`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/model/Model.java)
 
