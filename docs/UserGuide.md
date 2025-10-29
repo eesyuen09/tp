@@ -623,9 +623,9 @@ Command Details and Constraints:
 
 **Examples:**
 - `perf -v s/0001`
-    >**Expected output:** `Performance notes for John Tan displayed.`
+    >**Expected output:** `Performance Notes for John Tan displayed.`
 - `perf -v s/0002`
-    >**Expected output:** `Performance notes for Jane Doe displayed.`
+    >**Expected output:** `Performance Notes for Jane Doe displayed.`
 
 ---
 
@@ -642,9 +642,9 @@ Command Details and Constraints:
 
 **Examples:**
 - `perf -e s/0001 d/18092025 t/Sec3_Maths pn/Scored 90% on mock test after re-evaluation`
-    >**Expected output:** `Performance note for John Tan in Sec3_Maths on 18-09-2025 successfully updated.`
+    >**Expected output:** `Performance note for John Tan in Sec3_Maths on 18-09-2025 successfully edited.`
 - `perf -e s/0002 d/15092025 t/JC1_Physics pn/Improved problem-solving skills significantly`
-    >**Expected output:** `Performance note for Jane Doe in JC1_Physics on 15-09-2025 successfully updated.`
+    >**Expected output:** `Performance note for Jane Doe in JC1_Physics on 15-09-2025 successfully edited.`
 
 ---
 
