@@ -67,6 +67,9 @@ public class PerfEditCommand extends PerfCommand {
                 .orElseThrow(() -> new CommandException(
                         String.format(Messages.MESSAGE_STUDENT_ID_NOT_FOUND, studentId)));
 
+        if (!model.hasClassTag(classTag)) {
+            throw new CommandException(String.format(Messages.MESSAGE_TAG_NOT_FOUND, classTag.tagName));
+        }
 
         List<PerformanceNote> current = student.getPerformanceList().asUnmodifiableList();
         PerformanceList copy = new PerformanceList(new ArrayList<>(current));

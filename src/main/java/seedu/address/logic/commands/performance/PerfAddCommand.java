@@ -67,6 +67,10 @@ public class PerfAddCommand extends PerfCommand {
                 .orElseThrow(() -> new CommandException(
                         String.format(Messages.MESSAGE_STUDENT_ID_NOT_FOUND, studentId)));
 
+        if (!model.hasClassTag(classTag)) {
+            throw new CommandException(String.format(Messages.MESSAGE_TAG_NOT_FOUND, classTag.tagName));
+        }
+
         if (!student.getTags().contains(classTag)) {
             throw new CommandException(String.format(MESSAGE_STUDENT_DOES_NOT_HAVE_TAG,
                     student.getName(), classTag.tagName));
