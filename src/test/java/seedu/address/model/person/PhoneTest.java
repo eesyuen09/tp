@@ -33,8 +33,8 @@ public class PhoneTest {
         assertFalse(Phone.isValidPhone("9312 1534")); // spaces within digits
 
         // valid phone numbers
-        assertTrue(Phone.isValidPhone("91213411")); // exactly 3 numbers
-        assertTrue(Phone.isValidPhone("93121534"));
+        assertTrue(Phone.isValidPhone("91213411")); // exactly 8 numbers
+        assertTrue(Phone.isValidPhone("93121534")); // exactly 8 numbers
     }
 
     @Test
