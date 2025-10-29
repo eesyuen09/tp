@@ -45,7 +45,7 @@ public class ClassTagCommandParser implements Parser<Command> {
 
         logger.info(() -> String.format("Detected command flag: %s", commandFlag));
 
-        switch (commandFlag.toLowerCase()) {
+        switch (commandFlag) {
 
         case AddClassTagCommand.COMMAND_FLAG:
             return parseAddCommand(argMultimap);
