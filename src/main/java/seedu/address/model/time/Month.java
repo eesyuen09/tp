@@ -55,20 +55,6 @@ public final class Month {
         return mm >= 1 && mm <= 12;
     }
 
-    /**
-     * Returns true if the input month (in MMYY format) is before or equal to the current month.
-     * Assumes the input is already a valid month string (MMYY format).
-     */
-    public static boolean isBeforeOrCurrentMonth(String monthYY) {
-        int month = Integer.parseInt(monthYY.substring(0, 2));
-        int year = Integer.parseInt(monthYY.substring(2, 4)) + 2000;
-
-        YearMonth enrolled = YearMonth.of(year, month);
-        YearMonth current = YearMonth.now();
-
-        return !enrolled.isAfter(current); // true if enrolled month <= current month
-    }
-
     /** Returns the canonical storage representation "MMYY". */
     @Override
     public String toString() {

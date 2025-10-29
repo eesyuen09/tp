@@ -152,10 +152,6 @@ public class ParserUtil {
             throw new ParseException(Month.MESSAGE_CONSTRAINTS);
         }
 
-        if(!Month.isBeforeOrCurrentMonth(trimmedMonth)) {
-            throw new ParseException(Month.MESSAGE_INVALID_FUTURE_MONTH);
-        }
-
         return new Month(trimmedMonth);
     }
 
