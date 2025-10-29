@@ -74,3 +74,4 @@ deactivate FeeFilterPaidCommand
 deactivate LogicManager
 
 @enduml
+
