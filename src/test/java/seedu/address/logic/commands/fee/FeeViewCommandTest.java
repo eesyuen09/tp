@@ -96,8 +96,7 @@ public class FeeViewCommandTest {
         CommandResult result = cmd.execute(model);
         String msg = result.getFeedbackToUser();
 
-        String expected = String.format(FeeViewCommand.MESSAGE_NO_HISTORY_IN_RANGE,
-            ALICE.getEnrolledMonth().toHumanReadable());
+        String expected = FeeViewCommand.MESSAGE_NO_HISTORY_IN_RANGE;
         assertTrue(msg.equals(expected),
             "Should print the no-history message when start month is after end (now)");
     }

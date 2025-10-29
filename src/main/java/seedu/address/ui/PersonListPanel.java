@@ -4,6 +4,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.logging.Logger;
 
+import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListCell;
@@ -34,6 +35,19 @@ public class PersonListPanel extends UiPart<Region> {
         personListView.setItems(personList);
         personListView.setCellFactory(listView -> new PersonListViewCell());
         this.currentFeeStateGetter = currentFeeStateGetter;
+    }
+
+    /**
+     * Binds the fee state version property to this panel.
+     * When the fee state version changes (e.g. after marking a student as paid or unpaid),
+     * the person list view is refreshed automatically to show the latest fee status.
+     *
+     * @param feeStateVersion the read-only property that updates whenever fee states change
+     */
+    public void bindFeeStateVersion(ReadOnlyIntegerProperty feeStateVersion) {
+        feeStateVersion.addListener((obs, oldVal, newVal) -> {
+            personListView.refresh();
+        });
     }
 
     /**

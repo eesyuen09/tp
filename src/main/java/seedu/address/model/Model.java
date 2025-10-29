@@ -93,6 +93,8 @@ public interface Model {
      */
     void updateFilteredPersonList(Predicate<Person> predicate);
 
+    public javafx.beans.property.ReadOnlyIntegerProperty feeStateVersionProperty();
+
     /**
      * Retrieves a {@link Person} from the filtered list by their {@link StudentId}.
      *
@@ -124,6 +126,11 @@ public interface Model {
      *         otherwise Optional.empty().
      */
     Optional<ClassTag> findClassTag(ClassTag classTag);
+
+    /**
+     * Returns an unmodifiable view of the class tag list.
+     */
+    List<ClassTag> getClassTagList();
 
     /**
      * Returns {@code true} if the address book contains a {@code Person} with the specified {@code StudentId}.

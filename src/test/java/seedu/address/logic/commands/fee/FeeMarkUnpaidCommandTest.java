@@ -118,7 +118,7 @@ public class FeeMarkUnpaidCommandTest {
         FeeMarkUnpaidCommand command = new FeeMarkUnpaidCommand(id, future);
 
         String expectedMessage = "You can’t mark unpaid for a future month. "
-            + "Please try again when the month has started."; // same message
+            + "Please try again when the month has started.";
 
         CommandTestUtil.assertCommandFailure(command, model, expectedMessage);
     }

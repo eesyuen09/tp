@@ -16,18 +16,15 @@ public abstract class PerfCommand extends Command {
     public static final String COMMAND_WORD = "perf";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD
-            + ": Manages performance notes for students.\n"
-            + "Subcommands:\n"
-            + "  " + COMMAND_WORD + " -a: Adds a performance note. Usage: "
-            + COMMAND_WORD + " -a " + PREFIX_STUDENTID + "STUDENT_ID "
-            + PREFIX_DATE + "DDMMYYYY " + PREFIX_CLASSTAG + "CLASS_TAG " + PREFIX_NOTE + "NOTE\n"
-            + "  " + COMMAND_WORD + " -v: Views performance notes. Usage: "
-            + COMMAND_WORD + " -v " + PREFIX_STUDENTID + "STUDENT_ID\n"
-            + "  " + COMMAND_WORD + " -e: Edits a performance note. Usage: "
-            + COMMAND_WORD + " -e " + PREFIX_STUDENTID + "STUDENT_ID " + PREFIX_DATE + "DDMMYYYY "
+            + ": Manages performance notes for the students.\n"
+            + "Requires a flag to specify the action.\n"
+            + "Actions:\n"
+            + "Add: -a " + PREFIX_STUDENTID + "STUDENT_ID " + PREFIX_DATE + "DDMMYYYY "
             + PREFIX_CLASSTAG + "CLASS_TAG " + PREFIX_NOTE + "NOTE\n"
-            + "  " + COMMAND_WORD + " -d: Deletes a performance note. Usage: "
-            + COMMAND_WORD + " -d " + PREFIX_STUDENTID + "STUDENT_ID " + PREFIX_DATE + "DDMMYYYY "
+            + "View: -v  " + PREFIX_STUDENTID + "STUDENT_ID\n"
+            + "Edit: -e  " + PREFIX_STUDENTID + "STUDENT_ID " + PREFIX_DATE + "DDMMYYYY "
+            + PREFIX_CLASSTAG + "CLASS_TAG " + PREFIX_NOTE + "NOTE\n"
+            + "Delete: -d  " + PREFIX_STUDENTID + "STUDENT_ID " + PREFIX_DATE + "DDMMYYYY "
             + PREFIX_CLASSTAG + "CLASS_TAG";
     public static final String MESSAGE_STUDENT_DOES_NOT_HAVE_TAG = "Student %1$s does not have the class tag: %2$s";
 

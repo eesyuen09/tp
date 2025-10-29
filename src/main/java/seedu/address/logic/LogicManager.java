@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
+import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.LogsCenter;
@@ -109,5 +110,10 @@ public class LogicManager implements Logic {
     @Override
     public ObservableList<PerformanceNote> getDisplayedPerformanceNotes() {
         return model.getDisplayedPerformanceNotes();
+    }
+
+    @Override
+    public ReadOnlyIntegerProperty feeStateVersionProperty() {
+        return model.feeStateVersionProperty();
     }
 }

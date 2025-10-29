@@ -35,6 +35,8 @@ public class ModelManager implements Model {
     private final FilteredList<Person> filteredPersons;
     private final FeeTracker feeTracker;
     private final ObservableList<PerformanceNote> displayedPerformanceNotes;
+    private final javafx.beans.property.IntegerProperty feeStateVersion =
+        new javafx.beans.property.SimpleIntegerProperty(0);
 
     /**
      * Initializes a ModelManager with the given addressBook and userPrefs.
@@ -103,6 +105,15 @@ public class ModelManager implements Model {
     }
 
     @Override
+    public javafx.beans.property.ReadOnlyIntegerProperty feeStateVersionProperty() {
+        return feeStateVersion;
+    }
+
+    private void bumpFeeStateVersion() {
+        feeStateVersion.set(feeStateVersion.get() + 1);
+    }
+
+    @Override
     public boolean hasPerson(Person person) {
         requireNonNull(person);
         return addressBook.hasPerson(person);
@@ -150,6 +161,11 @@ public class ModelManager implements Model {
                 .findFirst();
     }
 
+    @Override
+    public List<ClassTag> getClassTagList() {
+        return addressBook.getClassTagList();
+    }
+
     /**
      * Retrieves a {@link Person} from the filtered list by their {@link StudentId}.
      *
@@ -191,6 +207,8 @@ public class ModelManager implements Model {
             prevMonth = prevMonth.plusMonths(1);
         }
         feeTracker.markPaid(studentId, month);
+        updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
+        bumpFeeStateVersion();
     }
 
     @Override
@@ -204,6 +222,8 @@ public class ModelManager implements Model {
             throw new IllegalStateException(month.toHumanReadable() + " is already unpaid.");
         }
         feeTracker.markUnpaid(studentId, month);
+        updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
+        bumpFeeStateVersion();
     }
 
     @Override

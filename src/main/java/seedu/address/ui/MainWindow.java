@@ -116,6 +116,7 @@ public class MainWindow extends UiPart<Stage> {
      */
     void fillInnerParts() {
         personListPanel = new PersonListPanel(logic.getFilteredPersonList(), p -> logic.getCurrentFeeState(p));
+        personListPanel.bindFeeStateVersion(logic.feeStateVersionProperty());
         performanceListPanel = new PerformanceListPanel(logic.getDisplayedPerformanceNotes());
 
         Node personListRoot = personListPanel.getRoot();
