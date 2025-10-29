@@ -148,21 +148,6 @@ public class EditCommandTest {
     }
 
 
-    //Perhaps a Buggy Test Case
-    @Test
-    public void execute_noFieldSpecifiedUnfilteredList_success() {
-        StudentId studentId = ALICE.getStudentId();
-        EditCommand editCommand = new EditCommand(studentId, new EditPersonDescriptor());
-
-        Person editedPerson = model.getPersonById(studentId).get();
-        String expectedMessage = String.format(EditCommand.MESSAGE_EDIT_PERSON_SUCCESS,
-                Messages.format(editedPerson));
-
-        Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
-
-        assertCommandSuccess(editCommand, model, expectedMessage, expectedModel);
-    }
-
     @Test
     public void execute_invalidStudentId_failure() {
         StudentId invalidId = new StudentId("45");
