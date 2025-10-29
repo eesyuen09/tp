@@ -474,6 +474,7 @@ ClassTag management is implemented through several key components:
     - `deleteClassTag(ClassTag)`: Removes a ClassTag
     - `findClassTag(ClassTag)`: Finds and return the ClassTag saved in UniqueClassTagList that matches the given ClassTag
     - `getClassTagList()`: Returns an unmodifiable list of all ClassTags
+    - `isClassTagInUse(ClassTag)`: Checks if any student is assigned the ClassTag
 - `Person` objects maintain a `Set<ClassTag>` field that references ClassTags from the central `UniqueClassTagList`
   
 **Storage Component:**

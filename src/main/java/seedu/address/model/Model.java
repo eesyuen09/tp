@@ -128,6 +128,11 @@ public interface Model {
     Optional<ClassTag> findClassTag(ClassTag classTag);
 
     /**
+     * Returns true if the given class tag is assigned to any person in the address book.
+     */
+    boolean isClassTagInUse(ClassTag classTag);
+
+    /**
      * Returns an unmodifiable view of the class tag list.
      */
     List<ClassTag> getClassTagList();

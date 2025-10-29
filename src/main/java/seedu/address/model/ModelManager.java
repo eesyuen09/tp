@@ -164,6 +164,12 @@ public class ModelManager implements Model {
         return addressBook.getClassTagList();
     }
 
+    @Override
+    public boolean isClassTagInUse(ClassTag classTag) {
+        return addressBook.getPersonList().stream()
+                .anyMatch(person -> person.getTags().contains(classTag));
+    }
+
     /**
      * Retrieves a {@link Person} from the filtered list by their {@link StudentId}.
      *
