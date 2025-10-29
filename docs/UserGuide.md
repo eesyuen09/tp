@@ -411,7 +411,8 @@ Each filter updates the main student list view to display only matching entries.
 
 ### Filter by PAID status : `filter -p`
 
-Shows all students whose payment status is **PAID** for a given month.
+Shows all students whose payment status is **PAID** for a given month.  
+You can only filter up to the **current month** (future months are not allowed).
 
 **Format:**  
 filter -p m/MMYY
@@ -419,15 +420,23 @@ filter -p m/MMYY
 **Example:**  
 filter -p m/1025
 
+<box type="tip" seamless>
+ 
+If the provided month is **after the current month**, the command will return an error message.
+</box>
+
 **Expected Output:**  
-Showing PAID students for October 2025.
+`Showing PAID students for October 2025.`  
+`3 persons listed!`  
+or  
+`Cannot filter by future months.`  
+`Please select a month up to the current month.`
+
 
 ### Filter by UNPAID status : `filter -up`
 
 Shows all students whose payment status is **UNPAID** for a given month.  
-<box type="info" seamless>
-If a student has never been explicitly marked as PAID, their status is treated as **UNPAID by default**.
-</box>
+You can only filter up to the **current month** (future months are not allowed).
 
 **Format:**  
 filter -up m/MMYY
@@ -435,8 +444,16 @@ filter -up m/MMYY
 **Example:**  
 filter -up m/1025
 
+<box type="info" seamless>
+If a student has never been explicitly marked as PAID, their status is treated as **UNPAID by default**.
+</box>
+
 **Expected Output:**  
-Showing UNPAID students for October 2025.
+`Showing UNPAID students for October 2025.`
+`3 persons listed!`  
+or  
+`Cannot filter by future months.`  
+`Please select a month up to the current month.`
 
 ### Filtering persons by class tag : `filter -t`
 
