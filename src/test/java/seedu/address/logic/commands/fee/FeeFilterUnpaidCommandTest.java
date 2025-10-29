@@ -10,6 +10,7 @@ import static seedu.address.testutil.TypicalPersons.BENSON;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import seedu.address.logic.Messages;
 import seedu.address.logic.commands.CommandTestUtil;
 import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
@@ -66,7 +67,10 @@ public class FeeFilterUnpaidCommandTest {
 
         expectedModel.updateFilteredPersonList(expectedModel.unpaidStudents(month));
 
-        String expectedMessage = String.format("Showing UNPAID students for %s.", month.toHumanReadable());
+        String expectedMessage = String.format(
+            "Showing UNPAID students for %s.\n%s",
+            month.toHumanReadable(),
+            String.format(Messages.MESSAGE_PERSONS_LISTED_OVERVIEW, expectedModel.getFilteredPersonList().size()));
 
         assertCommandSuccess(cmd, model, expectedMessage, expectedModel);
         assertEquals(1, model.getFilteredPersonList().size());
@@ -91,7 +95,10 @@ public class FeeFilterUnpaidCommandTest {
         FeeFilterUnpaidCommand cmd = new FeeFilterUnpaidCommand(month);
 
         expectedModel.updateFilteredPersonList(expectedModel.unpaidStudents(month));
-        String expectedMessage = String.format("Showing UNPAID students for %s.", month.toHumanReadable());
+        String expectedMessage = String.format(
+            "Showing UNPAID students for %s.\n%s",
+            month.toHumanReadable(),
+            String.format(Messages.MESSAGE_PERSONS_LISTED_OVERVIEW, expectedModel.getFilteredPersonList().size()));
 
         assertCommandSuccess(cmd, model, expectedMessage, expectedModel);
 
