@@ -206,12 +206,12 @@ The following commands handle ClassTag operations:
     - Adds to `UniqueClassTagList` via `Model#addClassTag()`
 
 2. **DeleteClassTagCommand (triggered by `tag -d`)**: Deletes an existing ClassTag
-    - Validates the ClassTag exists
+    - Validates the ClassTag exists via `Model#findClassTag()`
     - Ensures no students are currently assigned to it
     - Removes from `UniqueClassTagList` via `Model#deleteClassTag()`
 
 3. **ListClassTagCommand (triggered by `tag -l`)**: Lists all ClassTags in the system
-    - Retrieves all ClassTags from the Model
+    - Retrieves all ClassTags from the Model via `Model#getClassTagList()`
     - Displays them in a numbered list
 
 4. **ClassTagFilterCommand (triggered by `filter -t`)**: Filters students by ClassTag
