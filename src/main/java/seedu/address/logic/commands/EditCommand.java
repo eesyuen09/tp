@@ -32,7 +32,9 @@ import seedu.address.model.tag.ClassTag;
 import seedu.address.model.time.Month;
 
 /**
- * Edits the details of an existing person in the address book.
+ * Edits the details of an existing {@link Person} in the address book.
+ * The target person is identified by their {@link StudentId}, and only the specified fields will be updated.
+ * Existing values remain unchanged if no new value is provided.
  */
 public class EditCommand extends Command {
 
@@ -64,8 +66,10 @@ public class EditCommand extends Command {
     private final EditPersonDescriptor editPersonDescriptor;
 
     /**
-     * @param studentId of the person to edit
-     * @param editPersonDescriptor details to edit the person with
+     * Creates an {@code EditCommand} to modify the details of the person with the given {@link StudentId}.
+     *
+     * @param studentId The ID of the person to edit.
+     * @param editPersonDescriptor A descriptor containing the fields to update.
      */
     public EditCommand(StudentId studentId, EditPersonDescriptor editPersonDescriptor) {
         requireNonNull(studentId);

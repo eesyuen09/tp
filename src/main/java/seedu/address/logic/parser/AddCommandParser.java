@@ -28,9 +28,12 @@ import seedu.address.model.time.Month;
 public class AddCommandParser implements Parser<AddCommand> {
 
     /**
-     * Parses the given {@code String} of arguments in the context of the AddCommand
-     * and returns an AddCommand object for execution.
-     * @throws ParseException if the user input does not conform the expected format
+     * Parses the given {@code String} of user input in the context of an {@link AddCommand}.
+     * Produces an {@link AddCommand} object for execution if the input is valid.
+     *
+     * @param args User input arguments.
+     * @return A corresponding {@link AddCommand} object ready for execution.
+     * @throws ParseException If the input does not follow the expected command format or required fields are missing.
      */
     public AddCommand parse(String args) throws ParseException {
         ArgumentMultimap argMultimap =
