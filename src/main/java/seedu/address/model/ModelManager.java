@@ -168,14 +168,18 @@ public class ModelManager implements Model {
     @Override
     public Optional<ClassTag> findClassTag(ClassTag classTag) {
         requireNonNull(classTag);
-        return addressBook.getClassTagList().stream()
-                .filter(existingTag -> existingTag.equals(classTag))
-                .findFirst();
+        return addressBook.findClassTag(classTag);
     }
 
     @Override
     public List<ClassTag> getClassTagList() {
         return addressBook.getClassTagList();
+    }
+
+    @Override
+    public boolean isClassTagInUse(ClassTag classTag) {
+        return addressBook.getPersonList().stream()
+                .anyMatch(person -> person.getTags().contains(classTag));
     }
 
     /**

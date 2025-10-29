@@ -118,6 +118,11 @@ public class ModelStub implements Model {
     }
 
     @Override
+    public boolean isClassTagInUse(ClassTag classTag) {
+        throw new AssertionError("This method should not be called.");
+    }
+
+    @Override
     public List<ClassTag> getClassTagList() {
         throw new AssertionError("This method should not be called.");
     }

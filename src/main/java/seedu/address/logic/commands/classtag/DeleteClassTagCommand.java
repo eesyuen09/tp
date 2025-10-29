@@ -3,14 +3,12 @@ package seedu.address.logic.commands.classtag;
 import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_CLASSTAG;
 
-import java.util.List;
 import java.util.Optional;
 
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
-import seedu.address.model.person.Person;
 import seedu.address.model.tag.ClassTag;
 
 /**
@@ -51,11 +49,7 @@ public class DeleteClassTagCommand extends ClassTagCommand {
         ClassTag actualTag = foundTag.get();
 
         // Check if any person in the address book has this tag
-        List<Person> personList = model.getAddressBook().getPersonList();
-        boolean isTagInUse = personList.stream()
-                .anyMatch(person -> person.getTags().contains(actualTag));
-
-        if (isTagInUse) {
+        if (model.isClassTagInUse(actualTag)) {
             throw new CommandException(String.format(MESSAGE_TAG_IN_USE, actualTag.tagName));
         }
 

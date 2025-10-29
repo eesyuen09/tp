@@ -214,6 +214,46 @@ public class ModelManagerTest {
     }
 
     @Test
+    public void isClassTagInUse_tagNotUsedByAnyPerson_returnsFalse() {
+        ClassTag unusedTag = new ClassTag("UnusedTag");
+        modelManager.addClassTag(unusedTag);
+        modelManager.addPerson(ALICE);
+        modelManager.addPerson(BENSON);
+        assertFalse(modelManager.isClassTagInUse(unusedTag));
+    }
+
+    @Test
+    public void isClassTagInUse_tagUsedByOnePerson_returnsTrue() {
+        ClassTag mathTag = new ClassTag("Sec3_Maths");
+        modelManager.addClassTag(mathTag);
+        modelManager.addPerson(ALICE);
+        assertTrue(modelManager.isClassTagInUse(mathTag));
+    }
+
+    @Test
+    public void isClassTagInUse_tagUsedByMultiplePersons_returnsTrue() {
+        ClassTag mathTag = new ClassTag("Sec3_Maths");
+        modelManager.addClassTag(mathTag);
+        modelManager.addPerson(ALICE);
+        modelManager.addPerson(BENSON);
+        assertTrue(modelManager.isClassTagInUse(mathTag));
+    }
+
+    @Test
+    public void isClassTagInUse_tagNotInTagList_returnsFalse() {
+        ClassTag nonExistentTag = new ClassTag("NonExistent");
+        modelManager.addPerson(ALICE);
+        assertFalse(modelManager.isClassTagInUse(nonExistentTag));
+    }
+
+    @Test
+    public void isClassTagInUse_emptyPersonList_returnsFalse() {
+        ClassTag tag = new ClassTag("SomeTag");
+        modelManager.addClassTag(tag);
+        assertFalse(modelManager.isClassTagInUse(tag));
+    }
+
+    @Test
     public void equals() {
         AddressBook addressBook = new AddressBookBuilder().withPerson(ALICE).withPerson(BENSON).build();
         AddressBook differentAddressBook = new AddressBook();

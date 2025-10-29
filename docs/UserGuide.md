@@ -788,6 +788,10 @@ AddressBook data are saved in the hard disk automatically after any command that
 
 AddressBook data are saved automatically as a JSON file `[JAR file location]/data/addressbook.json`. Advanced users are welcome to update data directly by editing that data file.
 
+Notes:
+* When editing the class tags, ensure the class tags are in valid format (1-30 characters long and can only contain alphanumeric characters and underscores, no extra spaces before or after the class tag).
+* When editing class tags assigned to a student, ensure that the class tags exist in the system (i.e., in the `classTags` list in the JSON file).
+
 <box type="warning" seamless>
 
 **Caution:**
@@ -795,6 +799,7 @@ If your changes to the data file makes its format invalid, AddressBook will disc
 Furthermore, certain edits can cause the AddressBook to behave in unexpected ways (e.g., if a value entered is outside the acceptable range). Therefore, edit the data file only if you are confident that you can update it correctly.
 
 </box>
+
 
 --------------------------------------------------------------------------------------------------------------------
 

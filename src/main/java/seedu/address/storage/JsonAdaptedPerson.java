@@ -94,10 +94,21 @@ class JsonAdaptedPerson {
      *
      * @throws IllegalValueException if there were any data constraints violated in the adapted person.
      */
-    public Person toModelType() throws IllegalValueException {
+    public Person toModelType(List<ClassTag> validClassTags) throws IllegalValueException {
+
         final List<ClassTag> personTags = new ArrayList<>();
         for (JsonAdaptedClassTag tag : tags) {
-            personTags.add(tag.toModelType());
+            ClassTag modelTag = tag.toModelType();
+
+            // Find the matching ClassTag from the valid list (case-insensitive)
+            ClassTag matchingClassTag = validClassTags.stream()
+                    .filter(ct -> ct.tagName.equalsIgnoreCase(modelTag.tagName))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalValueException(
+                            "Tag '" + modelTag.tagName + "' does not exist in class tags list"));
+
+            // Use the correctly cased tag from the class tags list
+            personTags.add(new ClassTag(matchingClassTag.tagName));
         }
 
         final List<Attendance> personAttendance = new ArrayList<>();
