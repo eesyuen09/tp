@@ -25,8 +25,8 @@ public class AttendanceUnmarkCommandTest {
     private static final StudentId ANOTHER_STUDENT_ID = new StudentId("0752");
     //for personbuilder
     private static final String VALID_STUDENT_ID_STRING = "0123";
-    private static final Date VALID_DATE = new Date("13012025");
-    private static final Date ANOTHER_DATE = new Date("14012025");
+    private static final Date VALID_DATE = new Date("13072025");
+    private static final Date ANOTHER_DATE = new Date("14072025");
     private static final ClassTag VALID_CLASS_TAG = new ClassTag("Math");
     private static final ClassTag ANOTHER_CLASS_TAG = new ClassTag("Science");
 
@@ -110,6 +110,37 @@ public class AttendanceUnmarkCommandTest {
         modelStub.person = validPerson;
 
         AttendanceUnmarkCommand command = new AttendanceUnmarkCommand(VALID_STUDENT_ID, VALID_DATE, VALID_CLASS_TAG);
+
+        assertThrows(CommandException.class, () -> command.execute(modelStub));
+    }
+
+    //unmark attendance for future date
+    @Test
+    public void execute_futureDate_throwsCommandException() {
+        ModelStubWithPerson modelStub = new ModelStubWithPerson();
+        Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID_STRING)
+                .withClassTags("Math").build();
+        modelStub.person = validPerson;
+
+        Date futureDate = new Date("01012099"); // Future date
+        AttendanceUnmarkCommand command = new AttendanceUnmarkCommand(VALID_STUDENT_ID, futureDate, VALID_CLASS_TAG);
+
+        assertThrows(CommandException.class, () -> command.execute(modelStub));
+    }
+
+    //unmark attendance before enrollment month
+    @Test
+    public void execute_beforeEnrollmentMonth_throwsCommandException() {
+        ModelStubWithPerson modelStub = new ModelStubWithPerson();
+        Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID_STRING)
+                .withClassTags("Math")
+                .withEnrolledMonth("0225") // Enrolled in Feb 2025
+                .build();
+        modelStub.person = validPerson;
+
+        Date beforeEnrollmentDate = new Date("15012025"); // Jan 2025, before Feb 2025
+        AttendanceUnmarkCommand command = new AttendanceUnmarkCommand(VALID_STUDENT_ID,
+                beforeEnrollmentDate, VALID_CLASS_TAG);
 
         assertThrows(CommandException.class, () -> command.execute(modelStub));
     }
