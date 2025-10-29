@@ -4,6 +4,7 @@ import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.Messages.MESSAGE_STUDENT_ID_NOT_FOUND;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -81,6 +82,8 @@ public class FeeViewCommand extends FeeCommand {
             boolean isExplicit = tracker.getExplicitStatusOfMonth(studentId, month).isPresent();
             entries.add(new FeeHistoryEntry(month, state, isExplicit));
         }
+
+        Collections.reverse(entries);
 
         FeeHistorySummary summary = new FeeHistorySummary(
                 person.getName().fullName,

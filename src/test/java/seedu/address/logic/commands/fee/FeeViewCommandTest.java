@@ -18,11 +18,11 @@ import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
-import seedu.address.model.fee.FeeHistoryEntry;
-import seedu.address.model.fee.FeeHistorySummary;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
+import seedu.address.model.fee.FeeHistoryEntry;
+import seedu.address.model.fee.FeeHistorySummary;
 import seedu.address.model.fee.FeeState;
 import seedu.address.model.person.StudentId;
 import seedu.address.model.time.Month;
@@ -65,6 +65,13 @@ public class FeeViewCommandTest {
 
         javafx.collections.ObservableList<FeeHistoryEntry> entries = model.getDisplayedFeeHistory();
         assertFalse(entries.isEmpty());
+
+        Month now = Month.now();
+        assertEquals(now, entries.get(0).getMonth());
+        assertEquals(enrolled, entries.get(entries.size() - 1).getMonth());
+        for (int i = 1; i < entries.size(); i++) {
+            assertTrue(entries.get(i - 1).getMonth().isAfter(entries.get(i).getMonth()));
+        }
 
         FeeHistorySummary summary = model.feeHistorySummaryProperty().getValue();
         assertNotNull(summary);
