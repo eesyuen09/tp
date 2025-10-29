@@ -10,33 +10,33 @@ start
 :LogicManager parses and executes FeeViewCommand;
 
 :Find student by Student ID;
-if (Student found?) then (Yes)
+if () then ([Student found])
   :Get student's enrolled month;
   :Set start month = user input (if any), else enrolled month;
   :Set end month = current month;
 
-  if (Start month is in the future?) then (Yes)
+  if () then ([Start month in future])
     :Show error message: "Month cannot be in the future";
     stop
-  else (No)
+  else ([else])
     :If start month is before enrollment, use enrolled month instead;
     :Initialize empty payment history list;
     :Start looping from effective start month to current month;
 
-    while (Within date range?) is (Yes)
+    while () is ([Within date range])
       :Check if payment record exists for this month;
-      if (Record found?) then (Yes)
+      if () then ([Record found])
         :Use stored status (PAID / UNPAID);
-      else (No)
+      else ([else])
         :Mark as UNPAID by default;
       endif
       :Add entry to fee history;
       :Move to next month;
-    endwhile (No)
+    endwhile ([else])
 
     :Display compiled fee history to user;
   endif
-else (No)
+else ([else])
   :Show error message: "Student not found";
 endif
 
