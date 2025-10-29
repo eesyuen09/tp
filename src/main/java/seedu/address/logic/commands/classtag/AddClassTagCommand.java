@@ -18,7 +18,6 @@ public class AddClassTagCommand extends ClassTagCommand {
     public static final String MESSAGE_USAGE = "Adds a class tag to the system. "
             + "Parameters: " + PREFIX_CLASSTAG + "TAG_NAME\n"
             + "Example: " + COMMAND_WORD + " " + COMMAND_FLAG + " " + PREFIX_CLASSTAG + "Sec3_AMath";
-
     public static final String MESSAGE_SUCCESS = "New class tag added: %1$s";
     public static final String MESSAGE_DUPLICATE_TAG = "This class tag already exists.";
 
