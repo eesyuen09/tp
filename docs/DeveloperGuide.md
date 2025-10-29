@@ -436,7 +436,7 @@ The following sequence diagram illustrates how the system filters students by a 
 
 The activity diagram below illustrates the workflow when a tutor edits a student's ClassTag assignments using the `edit` command:
 
-<puml src="diagrams/EditClassTagOfExistingStudentAcitivtyDiagram.puml"/>
+<puml src="diagrams/EditClassTagOfExistingStudentActivityDiagram.puml"/>
 
 #### Design Considerations
 
