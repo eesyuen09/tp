@@ -419,7 +419,7 @@ Marks a student’s payment status as **PAID** for a specific month.
 
 ---
 
-### **2. Marking a student as UNPAID : `fee -up`**
+### 2. Marking a student as UNPAID : `fee -up`
 
 Marks a student’s payment status as **UNPAID** for a specific month.  
 Use this command for corrections or when a payment was mistakenly marked as PAID.
@@ -440,7 +440,7 @@ Use this command for corrections or when a payment was mistakenly marked as PAID
 
 ---
 
-### **3. Viewing a student’s payment history : `fee -v`**
+### 3. Viewing a student’s payment history : `fee -v`
 
 Displays a student’s **payment history** from a specified starting month up to the **current month**.
 
