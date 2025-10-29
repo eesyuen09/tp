@@ -601,11 +601,9 @@ Command Details and Constraints:
 * The `PERFORMANCE_NOTE` can be any text under 200 characters.
 * If a performance note already exists for the same date and class tag, the command will reject the addition and show an error message.
 
-**Examples:**
+**Example:**
 - `perf -a s/0001 d/18092025 t/Sec3_Maths pn/Scored 85% on mock test`
     >**Expected output:** `Performance note successfully added for John Tan in Sec3_Maths on 18-09-2025.`
-- `perf -a s/0002 d/15092025 t/JC1_Physics pn/Needs improvement in problem-solving skills`
-    >**Expected output:** `Performance note successfully added for Jane Doe in JC1_Physics on 15-09-2025.`
 
 ---
 
@@ -621,11 +619,9 @@ Command Details and Constraints:
 * Performance notes are displayed in chronological order based on the date.
 * Each note shows the date, class tag, and the performance note content.
 
-**Examples:**
+**Example:**
 - `perf -v s/0001`
     >**Expected output:** `Performance Notes for John Tan displayed.`
-- `perf -v s/0002`
-    >**Expected output:** `Performance Notes for Jane Doe displayed.`
 
 ---
 
@@ -640,11 +636,9 @@ Command Details and Constraints:
 * The `PERFORMANCE_NOTE` can be any text under 200 characters.
 * If no performance note exists for the specified date and class tag, the command will reject the edit and show an error message.
 
-**Examples:**
+**Example:**
 - `perf -e s/0001 d/18092025 t/Sec3_Maths pn/Scored 90% on mock test after re-evaluation`
     >**Expected output:** `Performance note for John Tan in Sec3_Maths on 18-09-2025 successfully edited.`
-- `perf -e s/0002 d/15092025 t/JC1_Physics pn/Improved problem-solving skills significantly`
-    >**Expected output:** `Performance note for Jane Doe in JC1_Physics on 15-09-2025 successfully edited.`
 
 ---
 
@@ -658,11 +652,9 @@ Command Details and Constraints:
 * Deletes the performance note for the student identified by the given `STUDENT_ID`, `DATE`, and `TAG_NAME`.
 * If no performance note exists for the specified date and class tag, the command will reject the deletion and show an error message.
 
-**Examples:**
+**Example:**
 - `perf -d s/0001 d/18092025 t/Sec3_Maths`
     >**Expected output:** `Performance note for John Tan in Sec3_Maths on 18-09-2025 successfully deleted.`
-- `perf -d s/0002 d/15092025 t/JC1_Physics`
-    >**Expected output:** `Performance note for Jane Doe in JC1_Physics on 15-09-2025 successfully deleted.`
 
 ---
 
