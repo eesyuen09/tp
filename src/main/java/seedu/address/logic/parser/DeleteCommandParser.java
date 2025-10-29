@@ -25,6 +25,9 @@ public class DeleteCommandParser implements Parser<DeleteCommand> {
         requireNonNull(args);
         ArgumentMultimap argMultimap =
                 ArgumentTokenizer.tokenize(args, PREFIX_STUDENTID);
+
+        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_STUDENTID);
+
         if (!argMultimap.getPreamble().trim().isEmpty()
                 || !arePrefixesPresent(argMultimap, PREFIX_STUDENTID)
                 || argMultimap.getValue(PREFIX_STUDENTID).isEmpty()) {
