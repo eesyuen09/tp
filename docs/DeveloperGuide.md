@@ -732,16 +732,17 @@ Restrict marking months that are **beyond the current calendar month**.
 ---
 
 **Alternative 2:**  
-Allow tutors to mark **future months** as PAID if all previous months are already settled.
+Allow tutors to mark **future months** as PAID, provided that all previous months have already been settled.
 
 - **Pros:**
-    - Supports **prepaid tuition** or bulk advance payments.
-    - Gives tutors flexibility for managing long-term payment plans.
+    - Supports **prepaid tuition scenarios**, where students pay several months in advance.
+    - Convenient for tutors managing **long-term payment plans** or scheduling future billing cycles in advance.
+    - Reduces repetitive data entry when tutors want to record multiple future payments at once.
 
 - **Cons:**
-    - Requires additional validation logic to ensure future months are not accidentally marked as PAID.
-    - Increases complexity in **FeeViewCommand** and fee history display logic (since “current month” vs. “future month” behavior diverges).
-    - May confuse users if future months appear as PAID before those periods actually occur.
+    - Increases the risk of **accidental marking of future months**, especially if tutors mistype the month or forget the current date.
+    - Requires additional **validation safeguards** (e.g., confirmation prompts or warning messages) to prevent unintentional future entries.
+    - Adds complexity to the **FeeViewCommand** logic, since it must distinguish between completed months and prepaid future months when displaying fee history.
 
 #### **Aspect: Backdated Correction (Marking an earlier month as UNPAID)**
 
@@ -794,7 +795,6 @@ Fee Management includes comprehensive validation across all operations:
 Each validation error produces clear and descriptive messages to guide user correction.
 
 ---
-
 ## **Planned Enhancements**
 
 **Team size:** 5
@@ -811,7 +811,15 @@ Given below is a list of enhancements we plan to implement in future versions of
     - Improve clarity in fee reports by distinguishing “not billed” months from “unpaid” ones.
 
    This addition will also enhance flexibility in long-term record management and improve real-world applicability for tutoring scenarios involving variable schedules.
+3. **Integrate Fee and Attendance Systems:**  
+   Currently, fee tracking and attendance operate independently.  
+   We plan to introduce light integration between both modules to make payment tracking more context-aware.
 
+    - When viewing a student’s fee history, tutors will also see the **number of lessons held** for each month.
+    - When marking a month as **PAID** with no recorded attendance, the system will show a **confirmation prompt** to avoid mistakes.
+    - When marking a month as **UNPAID** while lessons are recorded, a **reminder** will appear to alert the tutor of possible inconsistencies.
+    - Months **without any recorded attendance** will automatically be assigned a **WAIVED** status instead of UNPAID, ensuring skipped months (e.g., holidays or term breaks) do not block future payments.
+   This enhancement improves **accuracy** and **consistency** between financial and attendance records, while keeping full flexibility for tutors to override when necessary.
 
 ### \[Proposed\] Undo/redo feature
 
