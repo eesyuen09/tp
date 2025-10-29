@@ -95,7 +95,7 @@ public class FeeViewCommand extends FeeCommand {
 
         model.setDisplayedFeeHistory(entries, summary);
 
-        String header = String.format("Payment history for %s (%s) displayed.",
+        String header = String.format("Payment history for %s (Student ID %s) displayed.",
                 person.getName().fullName, studentId);
 
         return new CommandResult(header);

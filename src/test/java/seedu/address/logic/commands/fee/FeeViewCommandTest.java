@@ -59,7 +59,7 @@ public class FeeViewCommandTest {
 
         FeeViewCommand cmd = new FeeViewCommand(aliceId, Optional.empty());
         CommandResult result = cmd.execute(model);
-        String expectedMessage = String.format("Payment history for %s (%s) displayed.",
+        String expectedMessage = String.format("Payment history for %s (Student ID %s) displayed.",
                 ALICE.getName().fullName, aliceId);
         assertEquals(expectedMessage, result.getFeedbackToUser());
 
@@ -95,7 +95,7 @@ public class FeeViewCommandTest {
 
         FeeViewCommand cmd = new FeeViewCommand(bensonId, Optional.of(requestedStart));
         CommandResult result = cmd.execute(model);
-        String expectedMessage = String.format("Payment history for %s (%s) displayed.",
+        String expectedMessage = String.format("Payment history for %s (Student ID %s) displayed.",
                 BENSON.getName().fullName, bensonId);
         assertEquals(expectedMessage, result.getFeedbackToUser());
 

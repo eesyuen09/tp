@@ -66,7 +66,7 @@ public class FeeHistoryPanel extends UiPart<Region> {
             return;
         }
 
-        titleLabel.setText(String.format("Payment history for %s (ID %s)",
+        titleLabel.setText(String.format("Payment history for %s (Student ID %s)",
                 summary.getStudentName(), summary.getStudentId()));
 
         int count = summary.getMonthCount();

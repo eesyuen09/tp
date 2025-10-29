@@ -11,6 +11,8 @@ import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.ReadOnlyAddressBook;
+import seedu.address.model.attendance.AttendanceHistoryEntry;
+import seedu.address.model.attendance.AttendanceHistorySummary;
 import seedu.address.model.fee.FeeHistoryEntry;
 import seedu.address.model.fee.FeeHistorySummary;
 import seedu.address.model.fee.FeeState;
@@ -65,6 +67,12 @@ public interface Logic {
 
     /** Returns metadata describing the current fee history selection. */
     ReadOnlyObjectProperty<FeeHistorySummary> feeHistorySummaryProperty();
+
+    /** Returns an unmodifiable view of the attendance history currently displayed. */
+    ObservableList<AttendanceHistoryEntry> getDisplayedAttendanceHistory();
+
+    /** Returns metadata describing the current attendance history selection. */
+    ReadOnlyObjectProperty<AttendanceHistorySummary> attendanceHistorySummaryProperty();
 
     ReadOnlyIntegerProperty feeStateVersionProperty();
 }
