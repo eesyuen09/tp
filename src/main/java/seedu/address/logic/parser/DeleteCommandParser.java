@@ -33,6 +33,7 @@ public class DeleteCommandParser implements Parser<DeleteCommand> {
                 || argMultimap.getValue(PREFIX_STUDENTID).isEmpty()) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE));
         }
+
         String studentIdArg = argMultimap.getValue(PREFIX_STUDENTID).get();
         StudentId studentId = ParserUtil.parseStudentId(studentIdArg);
         return new DeleteCommand(studentId);
