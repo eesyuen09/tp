@@ -377,7 +377,9 @@ If the provided month is **after the current month**, the command will return an
 `August 2025 : PAID (marked)`  
 `September 2025 : PAID (marked)`  
 `October 2025 : UNPAID (default)`  
-
+or  
+`Cannot display payment history for future months.`  
+`Please select a month up to the current month.`
 <box type="info" seamless>
 
 **Interpreting the results:**
