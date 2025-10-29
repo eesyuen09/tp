@@ -896,19 +896,17 @@ Given below is a list of enhancements we plan to implement in future versions of
     - Accurately reflect months where no tuition fees are due.
     - Allow tutors to “skip” months without breaking the sequential payment validation rule.
     - Improve clarity in fee reports by distinguishing “not billed” months from “unpaid” ones.
-2. **Unified student history view (view s/STUDENT_ID):** Introduce a consolidated view command that shows every performance note, attendance record, and fee transaction for the specified student, allowing tutors to review a learner’s full journey without hopping between modules.
-3. **Targeted performance and attendance filters (perf -v / att -v):** Extend the existing view flags to accept optional m/MMYY or t/CLASS_TAG parameters so tutors can zero in on a specific month or class when analysing historical performance or attendance data.
-
    This addition will also enhance flexibility in long-term record management and improve real-world applicability for tutoring scenarios involving variable schedules.
 3. **Integrate Fee and Attendance Systems:**  
    Currently, fee tracking and attendance operate independently.  
    We plan to introduce light integration between both modules to make payment tracking more context-aware.
-
     - When viewing a student’s fee history, tutors will also see the **number of lessons held** for each month.
     - When marking a month as **PAID** with no recorded attendance, the system will show a **confirmation prompt** to avoid mistakes.
     - When marking a month as **UNPAID** while lessons are recorded, a **reminder** will appear to alert the tutor of possible inconsistencies.
     - Months **without any recorded attendance** will automatically be assigned a **WAIVED** status instead of UNPAID, ensuring skipped months (e.g., holidays or term breaks) do not block future payments.
    This enhancement improves **accuracy** and **consistency** between financial and attendance records, while keeping full flexibility for tutors to override when necessary.
+4. **Unified student history view (view s/STUDENT_ID):** Introduce a consolidated view command that shows every performance note, attendance record, and fee transaction for the specified student, allowing tutors to review a learner’s full journey without hopping between modules.
+5. **Targeted performance and attendance filters (perf -v / att -v):** Extend the existing view flags to accept optional m/MMYY or t/CLASS_TAG parameters so tutors can zero in on a specific month or class when analysing historical performance or attendance data.
 
 ### \[Proposed\] Undo/redo feature
 
@@ -1155,38 +1153,75 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **Use case: Add a performance note**
 
 **MSS**
-1. Tutor requests to add a performance note for a student on a given date.
+1. Tutor requests to add a performance note for a student on a specific date for a specific class.
 2. Tuto adds the performance note for the student.
-3. Tuto shows a success message.
+3. Tuto shows a success message indicating the note has been added.
 
    Use case ends.
 
 **Extensions**
 * 1a. The provided student ID does not match any existing student.
 
-  * 1a1. Tuto shows an error message.
+  * 1a1. Tuto shows an error message indicating student not found.
   
     Use case ends.
   
-* 1b. The command format is invalid.
+* 1b. The command format is invalid (e.g. missing prefixes).
 
   * 1b1. Tuto shows an error message with the correct usage format.
   
     Use case ends.
-  
-* 1c. Performance note exceeds character limit.
 
-  * 1c1. Tuto shows an error message indicating character limit.
-  
-    Use case ends.
-  
-* 1d. A performance note for the student on the given date already exists.
+* 1c. The student ID format is invalid.
 
-  * 1d1. Tuto shows an error message.
+  * 1c1. Tuto shows an error message indicating invalid student ID format.
   
     Use case ends.
 
-    
+* 1d. The specified class tag does not exist.
+
+  * 1d1. Tuto shows an error message indicating class tag not found.
+  
+    Use case ends.
+
+* 1e. The specified class tag is not assigned to the student.
+
+  * 1e1. Tuto shows an error message indicating class tag not assigned to student.
+  
+    Use case ends.
+
+* 1f. The provided date fails validation.
+
+    * 1f1. The date is in the future.
+
+        * 1f1a. Tuto shows an error message indicating date cannot be in the future.
+
+          Use case ends.
+
+    * 1f2. The date format is earlier than the student's enrolment month.
+
+        * 1f2a. Tuto shows an error message indicating date cannot be before enrolment month.
+
+            Use case ends.
+
+    * 1f3. The date does not correspond to a real calendar day (e.g. 30th February).
+
+        * 1f3a. Tuto shows an error message indicating invalid date.
+
+            Use case ends.
+  
+* 1g. Performance note exceeds the 200-character limit.
+
+  * 1g1. Tuto shows an error message indicating character limit.
+  
+    Use case ends.
+  
+* 1h. A performance note already exists for the same student on the same date for the same class.
+
+  * 1h1. Tuto shows an error message.
+  
+    Use case ends.
+ 
 **Use case: View performance notes of a student**
 
 **MSS**
@@ -1198,32 +1233,32 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **Extensions**
 * 1a. The provided student ID does not match any existing student.
 
-    * 1a1. Tuto shows an error message.
-  
+    * 1a1. Tuto shows an error message indicating student not found.
+
       Use case ends.
-* 1b. The command format is invalid.
+
+* 1b. The command format is invalid (e.g. missing prefixes).
 
     * 1b1. Tuto shows an error message with the correct usage format.
-  
-      Use case ends.
-* 1c. The student has no performance notes.
 
-    * 1c1. Tuto shows a message indicating that the student has no performance notes.
-  
-      Use case ends.
-  
-* 1d. Invalid index provided to view a specific performance note.
-
-    * 1d1. Tuto shows an error message.
-  
       Use case ends.
 
+* 1c. The student ID format is invalid.
 
+    * 1c1. Tuto shows an error message indicating invalid student ID format.
+
+      Use case ends.
+
+* 1d. The student has no performance notes.
+
+    * 1d1. Tuto shows a message indicating that the student has no performance notes.
+  
+      Use case ends.
 
 **Use case: Edit a performance note**
 
 **MSS**
-1. Tutor requests to edit a specific performance note of a student by index.
+1. Tutor requests to edit a specific performance note of a student on a specific date for a specific class.
 2. Tuto updates the performance note with the new content.
 3. Tuto shows a success message.
 
@@ -1232,56 +1267,107 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **Extensions**
 * 1a. The provided student ID does not match any existing student.
 
-    * 1a1. Tuto shows an error message.
-  
+    * 1a1. Tuto shows an error message indicating student not found.
+
       Use case ends.
-  
-* 1b. The command format is invalid.
+
+* 1b. The command format is invalid (e.g. missing prefixes).
 
     * 1b1. Tuto shows an error message with the correct usage format.
-  
-      Use case ends.
-  
-* 1c. Performance note exceeds character limit.
 
-    * 1d1. Tuto shows an error message indicating character limit.
-  
       Use case ends.
-  
-* 1d. Invalid index provided to view a specific performance note.
 
-    * 1e1. Tuto shows an error message.
-  
+* 1c. The student ID format is invalid.
+
+    * 1c1. Tuto shows an error message indicating invalid student ID format.
+
+      Use case ends.
+
+* 1d. The specified class tag does not exist.
+
+    * 1d1. Tuto shows an error message indicating class tag not found.
+
+      Use case ends.
+
+* 1e. The specified class tag is not assigned to the student.
+
+    * 1e1. Tuto shows an error message indicating class tag not assigned to student.
+
+      Use case ends.
+
+* 1f. The provided date fails validation.
+
+    * 1f1. The date does not correspond to a real calendar day (e.g. 30th February).
+
+        * 1f3a. Tuto shows an error message indicating invalid date.
+
+          Use case ends.
+
+* 1g. Performance note exceeds the 200-character limit.
+
+    * 1g1. Tuto shows an error message indicating character limit.
+
+      Use case ends.
+
+* 1h. Performance note does not exist for the specified student on the given date for the given class.
+
+    * 1h1. Tuto shows an error message.
+
       Use case ends.
 
 
 **Use case: Delete a performance note**
 
 **MSS**
-1. Tutor requests to delete a specific performance note of a student by index.
+1. Tutor requests to delete a specific performance note of a student on a specific date for a specific class.
 2. Tuto deletes the performance note.
 3. Tuto shows a success message.
 
     Use case ends.
 
 **Extensions**
-* 1a. The provided student ID does not match any existing student.
+* 1a1. Tuto shows an error message indicating student not found.
 
-    * 1a1. Tuto shows an error message.
-  
-      Use case ends.
-  
-* 1b. The command format is invalid.
+  Use case ends.
+
+* 1b. The command format is invalid (e.g. missing prefixes).
 
     * 1b1. Tuto shows an error message with the correct usage format.
-  
-      Use case ends.
-  
-* 1c. Invalid index provided to view a specific performance note.
 
-    * 1c1. Tuto shows an error message.
-  
       Use case ends.
+
+* 1c. The student ID format is invalid.
+
+    * 1c1. Tuto shows an error message indicating invalid student ID format.
+
+      Use case ends.
+
+* 1d. The specified class tag does not exist.
+
+    * 1d1. Tuto shows an error message indicating class tag not found.
+
+      Use case ends.
+
+* 1e. The specified class tag is not assigned to the student.
+
+    * 1e1. Tuto shows an error message indicating class tag not assigned to student.
+
+      Use case ends.
+
+* 1f. The provided date fails validation.
+
+    * 1f1. The date does not correspond to a real calendar day (e.g. 30th February).
+
+        * 1f1a. Tuto shows an error message indicating invalid date.
+
+          Use case ends.
+
+* 1g. A performance note does not exist for the same student on the same date for the same class.
+
+    * 1h1. Tuto shows an error message.
+
+      Use case ends.
+
 
 
 **Use case: Mark Student as Paid**
