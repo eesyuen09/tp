@@ -36,6 +36,8 @@ public class CommandTestUtil {
     public static final String VALID_ADDRESS_BOB = "Block 123, Bobby Street 3";
     public static final String VALID_CLASS_TAG_MATHS = "Sec3_Maths";
     public static final String VALID_CLASS_TAG_PHYSICS = "JC1_Physics";
+    public static final String VALID_MONTH_SEP25 = "0925";
+    public static final String INVALID_MONTH_1325 = "1325";
 
     public static final String NAME_DESC_AMY = " " + PREFIX_NAME + VALID_NAME_AMY;
     public static final String NAME_DESC_BOB = " " + PREFIX_NAME + VALID_NAME_BOB;
@@ -47,12 +49,14 @@ public class CommandTestUtil {
     public static final String ADDRESS_DESC_BOB = " " + PREFIX_ADDRESS + VALID_ADDRESS_BOB;
     public static final String CLASS_TAG_DESC_MATHS = " " + PREFIX_CLASSTAG + VALID_CLASS_TAG_MATHS;
     public static final String CLASS_TAG_DESC_PHYSICS = " " + PREFIX_CLASSTAG + VALID_CLASS_TAG_PHYSICS;
+    public static final String SEP25_MONTH_DESC = " m/" + VALID_MONTH_SEP25;
 
     public static final String INVALID_NAME_DESC = " " + PREFIX_NAME + "James&"; // '&' not allowed in names
     public static final String INVALID_PHONE_DESC = " " + PREFIX_PHONE + "911a"; // 'a' not allowed in phones
     public static final String INVALID_EMAIL_DESC = " " + PREFIX_EMAIL + "bob!yahoo"; // missing '@' symbol
     public static final String INVALID_ADDRESS_DESC = " " + PREFIX_ADDRESS; // empty string not allowed for addresses
     public static final String INVALID_CLASS_TAG_DESC = " " + PREFIX_CLASSTAG + "bad-tag*"; // '*' not allowed
+    public static final String INVALID_MONTH_DESC = " m/" + INVALID_MONTH_1325;
 
     public static final String PREAMBLE_WHITESPACE = "\t  \r  \n";
     public static final String PREAMBLE_NON_EMPTY = "NonEmptyPreamble";
