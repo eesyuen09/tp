@@ -167,6 +167,126 @@ Classes used by multiple components are in the `seedu.address.commons` package.
 
 This section describes some noteworthy details on how certain features are implemented.
 
+### Student Management
+
+#### Overview
+
+The Student Management feature allows tutors to manage student records efficiently.  
+Key operations include **adding, editing, and deleting students**.
+
+Each student is uniquely identified by a **Student ID** and can have associated attributes such as **name, phone, email, address, and ClassTags**.
+
+---
+
+#### Implementation
+
+**Model Component:**
+- `Person`: Represents a student with immutable fields:
+    - Name, Phone, Email, Address, ClassTags, StudentId, AttendanceList, PerformanceList
+- `StudentId`: Ensures uniqueness of students
+- `Model` interface provides methods:
+    - `addPerson(Person)`: Adds a student
+    - `setPerson(Person, Person)`: Updates a student record
+    - `deletePerson(Person)`: Deletes a student
+    - `hasPerson(Person)`: Checks for duplicate student
+    - `hasPersonWithId(StudentId)`: Checks existence of student by ID
+    - `getPersonById(StudentId)`: Retrieves student by ID
+- `AttendanceList` and `PerformanceList` maintain attendance and performance records
+
+**Storage Component:**
+- `JsonAdaptedPerson`: Converts Person objects to/from JSON
+- `JsonSerializableAddressBook`: Serializes the student list along with ClassTag references
+- Deserialization ensures ClassTag references are restored for each student
+
+**Logic Component:**
+
+1. **AddCommand (`add`)**: Adds a new student
+    - Validates all fields (Name, Phone, Email, Address)
+    - Ensures no duplicate students
+    - Checks all ClassTags exist before assignment
+    - Automatically assigns a unique Student ID
+    - Updates the model with the new student
+
+2. **EditCommand (`edit`)**: Modifies existing student details
+    - Identifies student by Student ID
+    - Edits any combination of fields (Name, Phone, Email, Address, ClassTags)
+    - Validates all input fields and ClassTags
+    - Empty ClassTag list (`t/`) removes all ClassTag assignments
+    - Prevents duplicate records after editing
+
+3. **DeleteCommand (`delete`)**: Removes a student
+    - Identifies student by Student ID
+    - Ensures the student exists before deletion
+    - Updates model to remove the student
+
+---
+
+#### Sequence Diagrams
+
+**1. Adding a Student (`add`)**
+<puml src="diagrams/AddStudentSequenceDiagram.puml" alt="AddStudentSequenceDiagram" />
+
+**2. Editing a Student (`edit`)**
+<puml src="diagrams/EditStudentSequenceDiagram.puml" alt="EditStudentSequenceDiagram" />
+
+**3. Deleting a Student (`delete`)**
+<puml src="diagrams/DeleteStudentSequenceDiagram.puml" alt="DeleteStudentSequenceDiagram" />
+
+---
+
+#### Design Considerations
+
+**Aspect: Unique Student Identification**
+- **Choice:** Use `StudentId` as a unique identifier
+    - Pros:
+        - Ensures uniqueness across all students
+        - Simplifies operations like edit and delete
+        - Auto-generation reduces manual errors
+    - Cons:
+        - Requires management of next available ID
+
+**Aspect: Integration with ClassTags**
+- **Choice:** Assign ClassTags during Add/Edit commands
+    - Pros:
+        - Reduces number of steps for tutors
+        - Maintains referential integrity with `UniqueClassTagList`
+    - Cons:
+        - Increases responsibility of Add/Edit commands
+        - Slightly more complex validation
+
+**Aspect: Command Design**
+- **Choice:** Separate commands for Add, Edit, Delete
+    - Pros:
+        - Clear responsibilities
+        - Easy to maintain and extend
+    - Cons:
+        - Tutors need to remember three commands (mitigated by clear usage instructions)
+
+---
+
+#### Error Handling
+
+**Adding Students:**
+- Duplicate student record
+- Invalid or missing field(s)
+- Non-existent ClassTags
+- Maximum number of students exceeded (StudentId > 9999)
+
+**Editing Students:**
+- Student ID not found
+- No fields provided to edit
+- Invalid input fields or ClassTags
+- Resulting record duplicates an existing student
+
+**Deleting Students:**
+- Student ID not found
+- Invalid command format
+
+**General Validation Rules:**
+- Fields are trimmed and validated according to their respective rules
+- Commands reject extra/unrecognized input
+- All validation errors provide **clear, actionable feedback** to the user
+
 ### ClassTag Management
 
 #### Overview
@@ -488,7 +608,6 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | `* * *`   | tutor managing students                                  | view students                                             | see all the students I am teaching and their details at a glance        |
 | `* *`     | tutor managing students                                  | delete students                                           | remove students who are no longer taking lessons                        |
 | `* * *`   | tutor handling many students across classes and subjects | edit student information                                  | update my contact list                                                  |
-| `* *`     | tutor who prioritise efficiency                          | recover recently deleted contact                          | fix accidental deletion                                                 |
 | `* * *`   | tutor handling many students across classes and subjects | search for a student by name                              | quickly locate their information                                        |
 
 
@@ -1067,24 +1186,71 @@ testers are expected to do more *exploratory* testing.
    1. Re-launch the app by double-clicking the jar file.<br>
        Expected: The most recent window size and location is retained.
 
-1. _{ more test cases …​ }_
+### Managing Students
 
-### Deleting a person
+#### Adding a Student
 
-1. Deleting a person while all persons are being shown
+1. Adding a new student with valid fields
 
-   1. Prerequisites: List all persons using the `list` command. Multiple persons in the list.
+    1. Prerequisites: Ensure the ClassTags you intend to assign exist (`tag -l` to list tags). The student does **not** need to exist yet.
 
-   1. Test case: `delete 1`<br>
-      Expected: First contact is deleted from the list. Details of the deleted contact shown in the status message. Timestamp in the status bar is updated.
+    1. Test case: `add n/John Doe p/91234567 e/johndoe@example.com a/123, Clementi Rd t/Sec3_Maths`  
+       **Expected:** New student is added. Status message confirms addition, Student ID auto-generated (e.g., `0001`), student appears in the list.
 
-   1. Test case: `delete 0`<br>
-      Expected: No person is deleted. Error details shown in the status message. Status bar remains the same.
+1. Adding a student with missing required fields
 
-   1. Other incorrect delete commands to try: `delete`, `delete x`, `...` (where x is larger than the list size)<br>
-      Expected: Similar to previous.
+    1. Test case: `add n/ p/91234567`  
+       **Expected:** Command rejected. Error message explains missing Name, Email, or Address.
 
-1. _{ more test cases …​ }_
+1. Adding a student with non-existent ClassTags
+
+    1. Test case: `add n/John Doe p/91234567 e/johndoe@example.com a/123, Clementi Rd t/NonExistentTag`  
+       **Expected:** Command rejected. Error message indicates ClassTag does not exist.
+
+---
+
+#### Editing a Student
+
+1. Editing a student with a valid Student ID
+
+    1. Prerequisites: Student must already exist in the system. For example, Student ID `0001` exists (from previous `add` test). Use `list` to verify.
+
+    1. Test case: `edit s/0001 p/98765432 e/john.doe@newmail.com`  
+       **Expected:** Student’s phone and email updated. Status message confirms edit.
+
+1. Editing with empty ClassTag (`t/`) to remove all tags
+
+    1. Prerequisites: Student must already exist (e.g., Student ID `0001`).
+
+    1. Test case: `edit s/0001 t/`  
+       **Expected:** All ClassTags removed for this student. Status message confirms edit.
+
+1. Editing with invalid Student ID
+
+    1. Test case: `edit s/9999 p/91234567`  
+       **Expected:** Command rejected. Error message indicates Student ID not found.
+
+---
+
+#### Deleting a Student
+
+1. Deleting an existing student
+
+    1. Prerequisites: Student must already exist. For example, Student ID `0001`.
+
+    1. Test case: `delete s/0001`  
+       **Expected:** Student with ID `0001` deleted. Status message confirms deletion. List updates.
+
+1. Deleting a non-existent student
+
+    1. Test case: `delete s/9999`  
+       **Expected:** Command rejected. Error message indicates Student ID not found. List unchanged.
+
+1. Attempting invalid delete commands
+
+    1. Test case: `delete`, `delete abc`, `delete 10000`  
+       **Expected:** Command rejected. Error message explains invalid or missing Student ID.
+
 
 ### Saving data
 
