@@ -186,7 +186,7 @@ Each student is uniquely identified by a **Student ID** and can have associated 
 
 **Model Component:**
 - `Person`: Represents a student with immutable fields:
-    - Name, Phone, Email, Address, ClassTags, StudentId, AttendanceList, PerformanceList
+    - Name, Phone, Email, Address, ClassTags, StudentId, AttendanceList, EnrolledMonth, PerformanceList
 - `StudentId`: Ensures uniqueness of students
 - `Model` interface provides methods:
     - `addPerson(Person)`: Adds a student
@@ -200,12 +200,12 @@ Each student is uniquely identified by a **Student ID** and can have associated 
 **Storage Component:**
 - `JsonAdaptedPerson`: Converts Person objects to/from JSON
 - `JsonSerializableAddressBook`: Serializes the student list along with ClassTag references
-- Deserialization ensures ClassTag references are restored for each student
+- Deserialization restores each student’s data, including personal details, ClassTag references, and fee records.
 
 **Logic Component:**
 
 1. **AddCommand (`add`)**: Adds a new student
-    - Validates all fields (Name, Phone, Email, Address)
+    - Validates all fields (Name, Phone, Email, Address, EnrolledMonth, ClassTags)  
     - Ensures no duplicate students
     - Checks all ClassTags exist before assignment
     - Automatically assigns a unique Student ID
@@ -222,61 +222,151 @@ Each student is uniquely identified by a **Student ID** and can have associated 
     - Identifies student by Student ID
     - Ensures the student exists before deletion
     - Updates model to remove the student
+   
+4. **ListCommand (`list`)**: Displays all students
+    - Clears any active filters from previous `find` commands
+    - Shows the complete list of students stored in the model
+
+5. **FindCommand (`find`)**: Searches for students by keywords
+    - Supports keyword-based matching on Name field
+    - Case-insensitive search
+    - Displays a filtered list of matching students
+
+6. **ClearCommand (`clear`)**: Clears all student records
+    - Removes all students from the model
 
 ---
 
-#### Sequence Diagrams
+#### Diagrams
 
-**1. Adding a Student (`add`)**
+**1. Activity Diagram: Adding a Student (`add`)**
 <puml src="diagrams/AddStudentSequenceDiagram.puml" alt="AddStudentSequenceDiagram" />
 
-**2. Editing a Student (`edit`)**
+**2. Sequence Diagram: Editing a Student (`edit`)**
 <puml src="diagrams/EditStudentSequenceDiagram.puml" alt="EditStudentSequenceDiagram" />
 
-**3. Deleting a Student (`delete`)**
+**3. Sequence Diagram:Deleting a Student (`delete`)**
 <puml src="diagrams/DeleteStudentSequenceDiagram.puml" alt="DeleteStudentSequenceDiagram" />
 
 ---
 
 #### Design Considerations
 
-**Aspect: Unique Student Identification**
-- **Choice:** Use `StudentId` as a unique identifier
-    - Pros:
-        - Ensures uniqueness across all students
-        - Simplifies operations like edit and delete
-        - Auto-generation reduces manual errors
-    - Cons:
-        - Requires management of next available ID
+**Aspect: Phone Number Validation**
 
-**Aspect: Integration with ClassTags**
-- **Choice:** Assign ClassTags during Add/Edit commands
-    - Pros:
-        - Reduces number of steps for tutors
-        - Maintains referential integrity with `UniqueClassTagList`
-    - Cons:
-        - Increases responsibility of Add/Edit commands
-        - Slightly more complex validation
+* **Alternative 1 (current choice):** Limit to Singapore numbers (8 digits, starting with 6, 8, or 9)
+    * Pros: Ensures only valid Singapore phone numbers are accepted, prevents accidental entry of incorrect numbers
+    * Cons: Cannot accept overseas numbers
 
-**Aspect: Command Design**
-- **Choice:** Separate commands for Add, Edit, Delete
-    - Pros:
-        - Clear responsibilities
-        - Easy to maintain and extend
-    - Cons:
-        - Tutors need to remember three commands (mitigated by clear usage instructions)
+* **Alternative 2:** Allow any numeric input of 8–10 digits
+    * Pros: More flexible, supports overseas or mobile numbers with country codes
+    * Cons: Less strict, may allow invalid or mistyped numbers
+
+---
+
+**Aspect: Name Validation**
+
+* **Alternative 1 (current choice):** Only alphabetic characters, spaces, hyphens, and apostrophes; max 200 characters
+    * Pros: Prevents invalid or malicious input, ensures readability and consistent formatting
+    * Cons: Cannot accept names with unusual symbols outside this set
+
+* **Alternative 2:** Allow any Unicode characters, with length limit
+    * Pros: Supports all valid names globally
+    * Cons: May allow emojis or unexpected symbols, harder to validate and may affect GUI display
+
+---
+
+**Aspect: Address Validation**
+
+* **Alternative 1 (current choice):** Accepts alphanumeric characters, `#`, `-`, `,`, `'` and spaces
+    * Pros: Covers most Singapore addresses while keeping input simple and consistent
+    * Cons: Cannot accept exotic symbols or foreign address formats
+
+* **Alternative 2:** Free-text input
+    * Pros: Maximum flexibility
+    * Cons: Harder to validate and maintain consistent formatting and may cause GUI display issues
+
+---
+
+**Aspect: Email Validation**
+
+* **Alternative 1 (current choice):** RFC-like constraints with local-part alphanumeric + `+_.-`, domain labels separated by `.`, final domain ≥2 chars
+    * Pros: Ensures proper email format, prevents invalid entries, aligns with common standards
+    * Cons: Slightly complex regex, may reject rare valid emails
+
+* **Alternative 2:** Simple regex `.+@.+\..+`
+    * Pros: Very permissive, easier to implement
+    * Cons: Allows many invalid emails
+
+---
+
+**Aspect: Enrolled Month Validation**
+
+* **Alternative 1 (current choice):** Format `MMYY`; check valid month and disallow future months
+    * Pros: Prevents impossible enrollments, ensures chronological consistency for attendance/performance/fees tracking
+    * Cons: Cannot pre-enter future planned enrollments
+
+* **Alternative 2:** Only validate `MMYY` format, allow future months
+    * Pros: Can schedule future enrollments, more flexible for planning
+    * Cons: Requires additional logic elsewhere to prevent inconsistencies
+
+* **Alternative 3:** Use full date input (`ddMMyy`) instead of `MMYY`
+    * Pros: More precise, supports partial months or mid-month enrollment
+    * Cons: More cumbersome for users, overkill if month-level granularity is sufficient
+
+---
+
+**Aspect: ClassTag Validation**
+
+* **Alternative 1 (current choice):** Optional, must exist before assignment
+    * Pros: Ensures referential integrity, prevents dangling class references
+    * Cons: Adds step to create tag first
+
+* **Alternative 2:** Auto-create class tag if it does not exist
+    * Pros: Simplifies user workflow
+    * Cons: May create unintended tags, risk of typos creating duplicates
+
+---
+
+**Aspect: Student ID Assignment**
+
+* **Alternative 1 (current choice):** Auto-generate 4-digit IDs after validating all other fields
+    * Pros: Guarantees unique IDs, simple format, avoids hitting maximum limit (9999), no JSON tracking needed
+    * Cons: Recycles the highest deleted ID only if it was the latest one and no other add/delete operations occurred before the next app launch
+
+* **Alternative 2:** Store last assigned ID in JSON and always increment
+    * Pros: Preserves historical uniqueness across launches
+    * Cons: Hits maximum limit faster, extra complexity in JSON handling
+
+* **Alternative 3:** User-specified IDs
+    * Pros: Flexibility, users can follow their own numbering system
+    * Cons: Higher risk of duplicates and input errors, more complex validation
+
+---
+
+**Aspect: Non-Duplication of Students**
+
+* **Alternative 1 (current choice):** Uniqueness checked on phone number and name combination
+    * Pros: Reduces accidental duplicates while allowing students with same name but different contact details
+    * Cons: Cannot detect duplicates with incorrect phone numbers
+
+* **Alternative 2:** Check uniqueness using all fields (name, phone, email, address)
+    * Pros: Stronger duplicate detection
+    * Cons: More restrictive, may prevent legitimate multiple students with similar details
 
 ---
 
 #### Error Handling
 
 **Adding Students:**
+- Invalid command format
 - Duplicate student record
 - Invalid or missing field(s)
 - Non-existent ClassTags
 - Maximum number of students exceeded (StudentId > 9999)
 
 **Editing Students:**
+- Invalid command format
 - Student ID not found
 - No fields provided to edit
 - Invalid input fields or ClassTags
@@ -1033,42 +1123,41 @@ _{Explain here how the data archiving feature will be implemented}_
 * prefers typing to mouse interactions
 * is reasonably comfortable using CLI apps
 
-**Value proposition**: Helps freelance tutors manage students, parents, schedules, and tuition fees in one place, streamlining lesson planning, tracking progress, and simplifying communication, so they can focus on teaching, not admin.
-
+**Value proposition**: Helps freelance tutors organise students, track attendance and performance, and manage tuition fees, all in one platform designed to reduce admin work so they can focus on teaching.
 
 
 ### User stories
 
 Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have) - `*`
 
-| Priority  | As a …​                                    | I want to …​                                              | So that I can…​                                                         |
-|-----------|------------------------------------------- |-----------------------------------------------------------|-------------------------------------------------------------------------|
-| `* * * `  | tutor handling lesson fees                 | tag a student as paid for a given month                   | keep track of students who have settled their tuition fees              |
-| `* * *`   | tutor handling lesson fees                 | tag a student as unpaid for a given month                 | identify students who still owe lesson fees                             |
-| `* * *`   | tutor handling lesson fees                 | filter students who have paid by month                    | view all students who have completed payment for that month at a glance |
-| `* * *`   | tutor handling lesson fees                 | filter students who have not paid by month                | follow up with students who have outstanding tuition fees               |
-| `* * *`   | tutor handling lesson fees                 | view a student's payment history up to the current month  | review their past payment behaviour and identify missed months          |
-| `* * *`   | tutor who teaches multiple classes         | create a class tag                                        | keep track of a new class I am teaching                                 |
-| `* * *`   | tutor who teaches multiple classes         | assign class tags to a student during creation or editing | manage all students of the same subject together                        |
-| `* * *`   | tutor who teaches multiple classes         | remove class tags from a student through editing          | remove students not in a particular class                               |
-| `* * *`   | tutor who teaches multiple classes         | filter students by class tag (eg. Sec_3_A_Math)           | I can focus on a precise teaching group                                 |
-| `* * *`   | tutor who teaches multiple classes         | list all the class tags                                   | I can know what classes I am teaching                                   |
-| `* * `    | tutor who teaches multiple classes         | delete a class tag                                        | keep only the classes I am still teaching                               |
-| `* * * `  | tutor     | add a performance note for a student on a given date      | I can record their progress                                             |
-| `* * * `  | tutor     | view all performance notes for a student                  | I can review their progress                                             |
-| `* * * `  | tutor     | edit a specific performance note for a student            | I can correct or update it                                              |
-| `* * * `  | tutor     | delete a specific performance note for a student          | I can remove it if needed                                               |
-| `* * *`   | tutor who teaches multiple classes         | take attendance of each student                           | I can track their attendance record                                     |
-| `* * *`   | tutor who teaches multiple classes         | view students' attendance history                         | I can track if students are consistently attending lessons              |
-| `* * *`   | tutor who teaches multiple classes         | unmark a student's attendance                             | correct mistakes or changes if attendance was marked wrongly            |
-| `* *`     | tutor who teaches multiple classes         | delete an attendance record                               | remove records for cancelled classes or fix erroneous entries           |
-| `* *`     | new tutor user                                           | view sample data                                          | understand how the app looks when populated                             |
-| `* *`     | tutor starting fresh                                     | purge sample/old data                                     | start fresh with only my real student info                              |                                                                  |
-| `* * *`   | tutor managing students                                  | add students                                              | quickly add my students into the address book                           |
-| `* * *`   | tutor managing students                                  | view students                                             | see all the students I am teaching and their details at a glance        |
-| `* *`     | tutor managing students                                  | delete students                                           | remove students who are no longer taking lessons                        |
-| `* * *`   | tutor handling many students across classes and subjects | edit student information                                  | update my contact list                                                  |
-| `* * *`   | tutor handling many students across classes and subjects | search for a student by name                              | quickly locate their information                                        |
+| Priority | As a …​                                                  | I want to …​                                              | So that I can…​                                                         |
+|----------|----------------------------------------------------------|-----------------------------------------------------------|-------------------------------------------------------------------------|
+| `* * * ` | tutor handling lesson fees                               | tag a student as paid for a given month                   | keep track of students who have settled their tuition fees              |
+| `* * *`  | tutor handling lesson fees                               | tag a student as unpaid for a given month                 | identify students who still owe lesson fees                             |
+| `* * *`  | tutor handling lesson fees                               | filter students who have paid by month                    | view all students who have completed payment for that month at a glance |
+| `* * *`  | tutor handling lesson fees                               | filter students who have not paid by month                | follow up with students who have outstanding tuition fees               |
+| `* * *`  | tutor handling lesson fees                               | view a student's payment history up to the current month  | review their past payment behaviour and identify missed months          |
+| `* * *`  | tutor who teaches multiple classes                       | create a class tag                                        | keep track of a new class I am teaching                                 |
+| `* * *`  | tutor who teaches multiple classes                       | assign class tags to a student during creation or editing | manage all students of the same subject together                        |
+| `* * *`  | tutor who teaches multiple classes                       | remove class tags from a student through editing          | remove students not in a particular class                               |
+| `* * *`  | tutor who teaches multiple classes                       | filter students by class tag (eg. Sec_3_A_Math)           | I can focus on a precise teaching group                                 |
+| `* * *`  | tutor who teaches multiple classes                       | list all the class tags                                   | I can know what classes I am teaching                                   |
+| `* * `   | tutor who teaches multiple classes                       | delete a class tag                                        | keep only the classes I am still teaching                               |
+| `* * * ` | tutor                                                    | add a performance note for a student on a given date      | I can record their progress                                             |
+| `* * * ` | tutor                                                    | view all performance notes for a student                  | I can review their progress                                             |
+| `* * * ` | tutor                                                    | edit a specific performance note for a student            | I can correct or update it                                              |
+| `* * * ` | tutor                                                    | delete a specific performance note for a student          | I can remove it if needed                                               |
+| `* * *`  | tutor who teaches multiple classes                       | take attendance of each student                           | I can track their attendance record                                     |
+| `* * *`  | tutor who teaches multiple classes                       | view students' attendance history                         | I can track if students are consistently attending lessons              |
+| `* * *`  | tutor who teaches multiple classes                       | unmark a student's attendance                             | correct mistakes or changes if attendance was marked wrongly            |
+| `* *`    | tutor who teaches multiple classes                       | delete an attendance record                               | remove records for cancelled classes or fix erroneous entries           |
+| `* *`    | new tutor user                                           | view sample data                                          | understand how the app looks when populated                             |
+| `* *`    | tutor starting fresh                                     | purge sample/old data                                     | start fresh with only my real student info                              |                                                                  |
+| `* * *`  | tutor managing students                                  | add students                                              | quickly add my students into the address book                           |
+| `* * *`  | tutor managing students                                  | view students                                             | see all the students I am teaching and their details at a glance        |
+| `* *`    | tutor managing students                                  | delete students                                           | remove students who are no longer taking lessons                        |
+| `* * *`  | tutor handling many students across classes and subjects | edit student information                                  | update my contact list                                                  |
+| `* * *`  | tutor handling many students across classes and subjects | search for a student by name                              | quickly locate their information                                        |
 
 
 ### Use cases
@@ -1495,7 +1584,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 1. Tutor requests to create a new student, providing all required details and one or more optional class tags.
 2. Tuto adds student to records.
-3. Tuto confirms the student has been added.
+3. The new student record is successfully created.
 
    Use case ends.
 

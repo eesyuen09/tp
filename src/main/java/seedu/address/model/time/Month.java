@@ -20,6 +20,8 @@ public final class Month {
     public static final String MESSAGE_CONSTRAINTS =
             "Month must be in MMYY format where MM range from 01 to 12 (e.g., 0925 for September 2025).";
 
+    public static final String MESSAGE_INVALID_FUTURE_MONTH = "Month cannot be in the future.";
+
     // Human-readable formatter, e.g., "September 2025"
     private static final DateTimeFormatter HUMAN = DateTimeFormatter.ofPattern("MMMM yyyy");
 
@@ -51,6 +53,20 @@ public final class Month {
         int mm = Integer.parseInt(test.substring(0, 2));
         // 01–12 are valid months
         return mm >= 1 && mm <= 12;
+    }
+
+    /**
+     * Returns true if the input month (in MMYY format) is before or equal to the current month.
+     * Assumes the input is already a valid month string (MMYY format).
+     */
+    public static boolean isBeforeOrCurrentMonth(String monthYY) {
+        int month = Integer.parseInt(monthYY.substring(0, 2));
+        int year = Integer.parseInt(monthYY.substring(2, 4)) + 2000;
+
+        YearMonth enrolled = YearMonth.of(year, month);
+        YearMonth current = YearMonth.now();
+
+        return !enrolled.isAfter(current); // true if enrolled month <= current month
     }
 
     /** Returns the canonical storage representation "MMYY". */
