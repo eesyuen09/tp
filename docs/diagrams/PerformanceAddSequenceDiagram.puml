@@ -1,0 +1,90 @@
+@startuml
+!include style.puml
+skinparam ArrowFontStyle plain
+
+box Logic LOGIC_COLOR_T1
+participant ":LogicManager" as LogicManager LOGIC_COLOR
+participant ":AddressBookParser" as AddressBookParser LOGIC_COLOR
+participant ":PerfCommandParser" as PerfCommandParser LOGIC_COLOR
+participant "command:PerfAddCommand" as PerfAddCommand LOGIC_COLOR
+participant "commandResult :CommandResult" as CommandResult LOGIC_COLOR
+end box
+
+box Model MODEL_COLOR_T1
+participant ":Model" as Model MODEL_COLOR
+participant ":Person" as Person MODEL_COLOR
+end box
+
+[-> LogicManager : execute("perf -a s/0001 d/18092025 t/Sec3_Maths pn/Scored 85%")
+activate LogicManager
+
+LogicManager -> AddressBookParser : parseCommand("perf -a s/0001 d/18092025 t/Sec3_Maths pn/Scored 85%")
+activate AddressBookParser
+
+create PerfCommandParser
+AddressBookParser -> PerfCommandParser
+activate PerfCommandParser
+
+PerfCommandParser --> AddressBookParser
+deactivate PerfCommandParser
+
+AddressBookParser -> PerfCommandParser : parse("-a s/0001 d/18092025 t/Sec3_Maths pn/Scored 85%")
+activate PerfCommandParser
+
+create PerfAddCommand
+PerfCommandParser -> PerfAddCommand
+activate PerfAddCommand
+
+PerfAddCommand --> PerfCommandParser
+deactivate PerfAddCommand
+
+PerfCommandParser --> AddressBookParser : command
+deactivate PerfCommandParser
+'Hidden arrow to position the destroy marker below the end of the activation bar.
+PerfCommandParser -[hidden]-> AddressBookParser
+destroy PerfCommandParser
+
+AddressBookParser --> LogicManager : command
+deactivate AddressBookParser
+
+LogicManager -> PerfAddCommand : execute(model)
+activate PerfAddCommand
+
+PerfAddCommand -> Model : getPersonById(studentId)
+activate Model
+Model --> PerfAddCommand : person
+deactivate Model
+
+PerfAddCommand -> Person : getTags()
+activate Person
+Person --> PerfAddCommand : classTags
+deactivate Person
+
+PerfAddCommand -> Person : getEnrolledMonth()
+activate Person
+Person --> PerfAddCommand : enrolledMonth
+deactivate Person
+
+PerfAddCommand -> Person : getPerformanceList()
+activate Person
+Person --> PerfAddCommand : performanceList
+deactivate Person
+
+PerfAddCommand -> Model : setPerson(student, updatedStudent)
+activate Model
+Model --> PerfAddCommand
+deactivate Model
+
+create CommandResult
+PerfAddCommand -> CommandResult
+activate CommandResult
+
+CommandResult --> PerfAddCommand
+deactivate CommandResult
+
+PerfAddCommand --> LogicManager : commandResult
+deactivate PerfAddCommand
+
+[<--LogicManager
+deactivate LogicManager
+@enduml

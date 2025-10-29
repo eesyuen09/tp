@@ -35,6 +35,10 @@ public class PerformanceNote {
     }
 
     private static String validateNote(String n) {
+        if (n.trim().isEmpty()) {
+            throw new IllegalArgumentException(MESSAGE_CONSTRAINTS);
+        }
+
         if (n.length() > MAX_NOTE_LEN) {
             throw new IllegalArgumentException(MESSAGE_CONSTRAINTS);
         }
