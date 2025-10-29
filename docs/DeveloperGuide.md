@@ -685,41 +685,90 @@ The activity diagram below illustrates the workflow for viewing a student’s fe
 
 #### Design Considerations
 
-**Aspect: Explicit vs Derived Fee States**
+#### **Aspect: Sequential Payment Enforcement (Marking later months as PAID)**
 
-* **Alternative 1 (current choice):** Derived default `UNPAID` state for unmarked months
-    * Pros:
-        - Reduces redundant data storage.
-        - Keeps logic simple while ensuring consistency.
-    * Cons:
-        - Requires derived computation each time the state is queried.
+**Alternative 1 (current choice):**  
+Require all previous months to be **PAID** before a tutor can mark a later month as **PAID**.
 
-* **Alternative 2:** Store every month explicitly
-    * Pros:
-        - Simplifies querying fee data.
-    * Cons:
-        - Higher storage cost and redundancy.
+- **Pros:**
+    - Reflects **real-world payment flow** — students should settle earlier dues before paying for upcoming lessons.
+    - Prevents **skipped or inconsistent payment sequences**, such as marking August as PAID while July remains UNPAID.
+    - Ensures **data integrity** — once a month is marked PAID, all earlier months are guaranteed to be cleared.
+    - Simplifies **validation and reporting**, since the payment timeline always progresses forward without gaps.
+    - Makes it easy to determine a student’s **most recent paid month** at a glance.
 
----
-
-**Aspect: Sequential Payment Validation**
-
-* **Alternative 1 (current choice):** Prevent tutors from marking later months as Paid while earlier months remain Unpaid.
-    * Pros:
-        - Maintains consistent chronological payment records.
-    * Cons:
-        - Tutors cannot record out-of-order or advance payments.
+- **Cons:**
+    - Tutors cannot record payments **out of sequence** (e.g., skipping July and paying for August directly).
+    - Adds a small validation step when marking multiple months.
 
 ---
 
-**Aspect: UI Synchronization**
+**Alternative 2:**  
+Allow tutors to mark any month as **PAID**, regardless of whether earlier months are still UNPAID.
 
-* **Alternative 1 (current choice):** Use `feeStateVersionProperty()` to trigger automatic UI updates.
-    * Pros:
-        - Keeps displayed student data always up to date.
-        - No manual refresh actions needed.
-    * Cons:
-        - Requires careful listener management to avoid unnecessary refreshes.
+- **Pros:**
+    - Provides **maximum flexibility** for unusual or irregular payment situations.
+    - Allows quick entry for multiple months without enforcing chronological checks.
+
+- **Cons:**
+    - Can result in **gaps or inconsistencies** in the payment timeline — e.g., later months marked PAID while earlier ones remain UNPAID.
+    - Makes it **easier for tutors to overlook unpaid months**, leading to incomplete financial records.
+    - Reduces **data reliability**, since it becomes unclear whether all payments up to a given point have been fully settled.
+---
+#### **Aspect: Future Month Restriction (Advance Payments)**
+
+**Alternative 1 (current choice):**  
+Restrict marking months that are **beyond the current calendar month**.
+
+- **Pros:**
+    - Prevents **premature or speculative payments**, maintaining realistic, time-based validation.
+    - Keeps the system aligned with **actual payment periods** and avoids confusion with future billing.
+    - Simplifies error handling and prevents data entry mistakes.
+
+- **Cons:**
+    - Tutors cannot record **advance payments** for future months, even if a student has pre-paid.
+    - May require future system updates to support legitimate early payments.
+
+---
+
+**Alternative 2:**  
+Allow tutors to mark **future months** as PAID if all previous months are already settled.
+
+- **Pros:**
+    - Supports **prepaid tuition** or bulk advance payments.
+    - Gives tutors flexibility for managing long-term payment plans.
+
+- **Cons:**
+    - Requires additional validation logic to ensure future months are not accidentally marked as PAID.
+    - Increases complexity in **FeeViewCommand** and fee history display logic (since “current month” vs. “future month” behavior diverges).
+    - May confuse users if future months appear as PAID before those periods actually occur.
+
+#### **Aspect: Backdated Correction (Marking an earlier month as UNPAID)**
+
+**Alternative 1 (current choice):**  
+Allow tutors to mark an earlier month as **UNPAID**, even if later months are already **PAID**.
+
+- **Pros:**
+    - Supports **real-world correction scenarios** — e.g., the tutor realizes a payment was incorrectly recorded.
+    - Allows quick edits without needing to unmark all subsequent months first.
+    - Keeps flexibility: once corrected, the tutor must still settle earlier UNPAID months before new payments are accepted.
+
+- **Cons:**
+    - May cause a **temporary inconsistency** (e.g., later months PAID while an earlier one is UNPAID) until resolved.
+    - Might confuse tutors reviewing the timeline during the correction phase.
+
+---
+
+**Alternative 2:**  
+Block marking an earlier month as **UNPAID** if any later month is already **PAID**.
+
+- **Pros:**
+    - Maintains a **strictly chronological** payment timeline with no anomalies.
+    - Simplifies record validation and summary generation.
+
+- **Cons:**
+    - Restrictive — tutors cannot fix genuine mis-entries without first unmarking all later months.
+
 
 ---
 
@@ -753,6 +802,15 @@ Each validation error produces clear and descriptive messages to guide user corr
 Given below is a list of enhancements we plan to implement in future versions of Tuto:
 
 1. **Bulk attendance marking for entire class:** Currently, tutors must mark attendance for each student individually using `att -m s/STUDENT_ID d/DATE t/CLASS`. For a class with 20-30 students, this becomes tedious and time-consuming. We plan to add a bulk marking feature that allows tutors to mark attendance for all students in a specific class at once. For example, `att -m d/10112025 t/Math` would mark all students enrolled in the Math ClassTag as present for that date. This would significantly reduce the time needed to take attendance at the beginning of each lesson.
+2. **Introduce third fee state — WAIVED/SKIPPED:**  
+   At present, fee tracking uses only two states: **PAID** and **UNPAID**.  
+   In future releases, we plan to introduce a third state, **WAIVED** (or **SKIPPED**), to handle non-billable months such as holidays, term breaks, or periods without lessons.  
+   This enhancement will:
+    - Accurately reflect months where no tuition fees are due.
+    - Allow tutors to “skip” months without breaking the sequential payment validation rule.
+    - Improve clarity in fee reports by distinguishing “not billed” months from “unpaid” ones.
+
+   This addition will also enhance flexibility in long-term record management and improve real-world applicability for tutoring scenarios involving variable schedules.
 
 
 ### \[Proposed\] Undo/redo feature
