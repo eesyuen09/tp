@@ -11,7 +11,7 @@ import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
 
 /**
- * Deletes a person identified using it's displayed index from the address book.
+ * Deletes a person identified by their {@link StudentId} from the address book.
  */
 public class DeleteCommand extends Command {
 
@@ -27,6 +27,11 @@ public class DeleteCommand extends Command {
 
     private final StudentId targetId;
 
+    /**
+     * Creates a {@code DeleteCommand} to remove the person with the specified {@code StudentId}.
+     *
+     * @param targetId The unique ID of the person to be deleted.
+     */
     public DeleteCommand(StudentId targetId) {
         this.targetId = targetId;
     }

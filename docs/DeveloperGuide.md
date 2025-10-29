@@ -129,22 +129,6 @@ The `Model` component,
 * stores a `UserPref` object that represents the user’s preferences. This is exposed to the outside as a `ReadOnlyUserPref` objects.
 * does not depend on any of the other three components (as the `Model` represents data entities of the domain, they should make sense on their own without depending on other components)
 
-**ClassTag Management:**
-- Each `ClassTag` has a unique name that identifies a class or group
-- `UniqueClassTagList` ensures no duplicate ClassTag names exist
-- Students can be assigned multiple ClassTags via the `classTags` field in `Person`
-- When a ClassTag is deleted, it must not be assigned to any student
-- ClassTags provide a way to filter and organize students by class tag
-
-<box type="info" seamless>
-
-**Note:** An alternative (arguably, a more OOP) model is given below. It has a `ClassTag` list in the `AddressBook`, which `Person` references. This allows `AddressBook` to only require one `ClassTag` object per unique class tag, instead of each `Person` needing their own `ClassTag` objects.<br>
-
-<puml src="diagrams/BetterModelClassDiagram.puml" width="450" />
-
-</box>
-
-
 ### Storage component
 
 **API** : [`Storage.java`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/storage/Storage.java)
@@ -439,12 +423,12 @@ The following commands handle ClassTag operations:
     - Adds to `UniqueClassTagList` via `Model#addClassTag()`
 
 2. **DeleteClassTagCommand (triggered by `tag -d`)**: Deletes an existing ClassTag
-    - Validates the ClassTag exists
+    - Validates the ClassTag exists via `Model#findClassTag()`
     - Ensures no students are currently assigned to it
     - Removes from `UniqueClassTagList` via `Model#deleteClassTag()`
 
 3. **ListClassTagCommand (triggered by `tag -l`)**: Lists all ClassTags in the system
-    - Retrieves all ClassTags from the Model
+    - Retrieves all ClassTags from the Model via `Model#getClassTagList()`
     - Displays them in a numbered list
 
 4. **ClassTagFilterCommand (triggered by `filter -t`)**: Filters students by ClassTag
@@ -476,7 +460,7 @@ The following sequence diagram illustrates how the system filters students by a 
 
 The activity diagram below illustrates the workflow when a tutor edits a student's ClassTag assignments using the `edit` command:
 
-<puml src="diagrams/EditStudentClassTagsActivityDiagram.puml" alt="EditStudentClassTagsActivityDiagram" />
+<puml src="diagrams/EditClassTagOfExistingStudentActivityDiagram.puml" alt="EditStudentClassTagsActivityDiagram" />
 
 #### Design Considerations
 
@@ -543,6 +527,39 @@ The activity diagram below illustrates the workflow when a tutor edits a student
         - More commands for users to remember
         - Extra steps in workflow (create student, then assign classes)
         - Verbose for bulk operations
+      
+**Aspect: Case Sensitivity for ClassTag Comparison:**
+
+* **Alternative 1 (current choice):** Case-insensitive comparison while preserving user input casing
+    * Pros:
+        - Prevents duplicate tags with different cases (e.g., "Math", "math", "MATH" are treated as the same tag)
+        - More user-friendly - users don't need to remember exact casing when filtering or assigning tags
+        - Preserves the tutor's preferred formatting/casing when they first create the tag (e.g., "Sec_3_A_Math" remains visible as entered)
+        - Matches real-world expectations - class names are typically case-insensitive identifiers
+    * Cons:
+        - Slightly more complex implementation (need to override both `equals()` and `hashCode()` consistently)
+        - Users cannot create tags that differ only in case (e.g., cannot have both "Math" and "MATH" as separate tags)
+
+* **Alternative 2:** Normalize all ClassTag names to a single case (e.g., lowercase)
+    * Pros:
+        - Simpler implementation - no need for special `equals()` and `hashCode()` overrides
+        - Completely eliminates case ambiguity
+        - Consistent display format across the system
+    * Cons:
+        - Less flexible - tutors cannot use their preferred casing/formatting
+        - May look less professional (e.g., "sec_3_a_math" vs "Sec_3_A_Math")
+        - Loses semantic information conveyed through capitalization
+
+* **Alternative 3:** Case-sensitive comparison (exact match required)
+    * Pros:
+        - Simplest implementation - use default String comparison
+        - Allows maximum flexibility for different naming schemes
+    * Cons:
+        - User-unfriendly - requires remembering exact casing
+        - Prone to duplicate tags with slight case variations
+        - Could confuse users when "Math" and "math" are treated as different classes
+        - More error-prone during filtering and assignment
+
 
 #### Error Handling
 
