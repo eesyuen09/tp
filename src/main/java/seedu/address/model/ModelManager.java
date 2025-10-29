@@ -35,6 +35,8 @@ public class ModelManager implements Model {
     private final FilteredList<Person> filteredPersons;
     private final FeeTracker feeTracker;
     private final ObservableList<PerformanceNote> displayedPerformanceNotes;
+    private final javafx.beans.property.IntegerProperty feeStateVersion =
+        new javafx.beans.property.SimpleIntegerProperty(0);
 
     /**
      * Initializes a ModelManager with the given addressBook and userPrefs.
@@ -100,6 +102,15 @@ public class ModelManager implements Model {
     @Override
     public ReadOnlyAddressBook getAddressBook() {
         return addressBook;
+    }
+
+    @Override
+    public javafx.beans.property.ReadOnlyIntegerProperty feeStateVersionProperty() {
+        return feeStateVersion;
+    }
+
+    private void bumpFeeStateVersion() {
+        feeStateVersion.set(feeStateVersion.get() + 1);
     }
 
     @Override
@@ -191,6 +202,8 @@ public class ModelManager implements Model {
             prevMonth = prevMonth.plusMonths(1);
         }
         feeTracker.markPaid(studentId, month);
+        updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
+        bumpFeeStateVersion();
     }
 
     @Override
@@ -204,6 +217,8 @@ public class ModelManager implements Model {
             throw new IllegalStateException(month.toHumanReadable() + " is already unpaid.");
         }
         feeTracker.markUnpaid(studentId, month);
+        updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
+        bumpFeeStateVersion();
     }
 
     @Override
