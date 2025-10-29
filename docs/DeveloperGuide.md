@@ -360,6 +360,87 @@ The following sequence diagram illustrates the interactions when a tutor marks a
   * Pros: Self-documenting commands, very clear semantics, easily extensible (could add `status/late` or `status/excused` in future)
   * Cons: More verbose, longer command syntax, requires typing "status/" every time
 
+### Performance Notes Management
+
+#### Overview
+
+The Performance Notes Management feature lets tutors capture qualitative feedback about a student's progress for specific
+classes on particular dates. Each note records the class context, the date of the observation, and a short free-form remark
+highlighting achievements or areas for improvement.
+
+#### Implementation
+
+Performance note management is implemented through the following components:
+
+**Model Component:**
+- `PerformanceNote`: Represents a single performance entry consisting of a `Date`, `ClassTag`, and note body capped at 200 characters
+- `PerformanceList`: Maintains all performance notes for a student, automatically sorting entries by date (ascending) then by class tag name, and preventing duplicate (date, class) pairs
+- Each `Person` object embeds a `PerformanceList`, keeping performance history alongside other student attributes
+- The `Model` interface exposes helpers to retrieve students, replace updated `Person` instances, and manage the list of performance notes currently shown in the UI (`setDisplayedPerformanceNotes`, `clearDisplayedPerformanceNotes`)
+
+**Storage Component:**
+- `JsonAdaptedPerformanceNote`: Serialises/deserialises `PerformanceNote` objects to and from JSON, validating date, class tag, and note length constraints during conversion
+- Performance notes are persisted as part of each student's JSON record via `JsonAdaptedPerson`, ensuring notes stay in sync with the owning student
+- During deserialisation, class tags referenced in performance notes are re-validated against the student's tag set so that orphaned notes cannot be reconstructed
+
+**Logic Component:**
+
+The `perf` command word is a namespace for the following operations:
+
+1. **PerfAddCommand (triggered by `perf -a`)**: Adds a new performance note
+    - Validates the student exists and that the specified `ClassTag` belongs to the student
+    - Rejects notes dated before the student's enrolment month or in the future
+    - Prevents duplicate entries for the same date and class combination
+    - Creates a new `PerformanceList` copy, appends the note, re-sorts it, and replaces the student in the model
+
+2. **PerfEditCommand (triggered by `perf -e`)**: Edits an existing performance note's text
+    - Validates the student and class tag as per the add command
+    - Ensures the targeted note exists before applying the new content and re-validating constraints
+    - Persists changes by replacing the student's `PerformanceList` with an updated copy
+
+3. **PerfDeleteCommand (triggered by `perf -d`)**: Removes a performance note entirely
+    - Validates the student and class tag and ensures the note exists for the given date/class pair
+    - Updates the student's `PerformanceList` without mutating the original list instance
+
+4. **PerfViewCommand (triggered by `perf -v`)**: Displays a student's performance history
+    - Retrieves all performance notes for the student and exposes them through `Model#setDisplayedPerformanceNotes`
+    - Returns a contextual message indicating whether notes were found, and allows the UI to render the sorted list
+
+#### Sequence Diagram: Adding a Performance Note
+
+The sequence diagram below illustrates the interactions when a tutor adds a performance note using the `perf -a` command:
+
+<puml src="diagrams/PerformanceAddSequenceDiagram.puml" alt="Performance Add Sequence Diagram" />
+
+<box type="info" seamless>
+
+**Note:** The lifeline for `PerfCommandParser` should end at the destroy marker (X) but due to a limitation of PlantUML, the
+lifeline continues till the end of diagram.
+
+</box>
+
+#### Design Considerations
+
+**Aspect: Where performance notes are stored:**
+
+* **Alternative 1 (current choice):** Embed performance notes within each `Person`
+    * Pros: Keeps academic history co-located with the student profile, simplifies cloning and persistence, and makes student deletion automatically clean up notes
+    * Cons: Less efficient for queries that aggregate performance across classes or cohorts, requires iterating through every student for global analytics
+
+* **Alternative 2:** Maintain a central `PerformanceBook`
+    * Pros: Facilitates global reporting (e.g. all notes for a class), makes it easier to enforce cross-student constraints
+    * Cons: Complicates referential integrity, adds risk of orphaned notes if students are removed, and scatters student-related data
+
+**Aspect: Command structure for performance operations:**
+
+* **Alternative 1 (current choice):** Sub-command flags under `perf` (`-a`, `-e`, `-d`, `-v`)
+    * Pros: Keeps related operations grouped, mirrors other feature families (`att`, `fee`), and reduces the number of top-level commands to memorise
+    * Cons: Requires tutors to remember what each flag stands for and to supply the correct combination of prefixes
+
+* **Alternative 2:** Dedicated verbs per action (`perfadd`, `perfedit`, etc.)
+    * Pros: Self-descriptive command words, reduces reliance on flags
+    * Cons: Bloats the command set and deviates from the app's namespace-based command organisation
+
 ### ClassTag Management
 
 #### Overview
