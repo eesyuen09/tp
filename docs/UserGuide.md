@@ -29,11 +29,9 @@ Tuto is a **desktop app for managing contacts, optimized for use via a Command L
 1. Type the command in the command box and press Enter to execute it. e.g. typing **`help`** and pressing Enter will open the help window.<br>
    Some example commands you can try:
 
-   * `list` : Lists all contacts.
+   * `list` : Lists all students.
 
-   * `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01` : Adds a contact named `John Doe` to the Address Book.
-
-   * `delete 3` : Deletes the 3rd contact shown in the current list.
+   * `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01` : Adds a student named `John Doe` to Tuto.
 
    * `clear` : Deletes all contacts.
 
@@ -56,15 +54,15 @@ Tuto is a **desktop app for managing contacts, optimized for use via a Command L
   e.g. `0020`, `2413`
 
 * Items in square brackets are optional.<br>
-  e.g `n/NAME [t/TAG]` can be used as `n/John Doe t/friend` or as `n/John Doe`.
+  e.g `n/NAME [t/CLASS_TAG]` can be used as `n/John Doe t/Math` or as `n/John Doe`.
 
 * Items with `…`​ after them can be used multiple times including zero times.<br>
-  e.g. `[t/TAG]…​` can be used as ` ` (i.e. 0 times), `t/friend`, `t/friend t/family` etc.
+  e.g. `[t/CLASS_TAG]…​` can be used as ` ` (i.e. 0 times), `t/Math`, `t/Math t/Science` etc.
 
 * Parameters can be in any order.<br>
   e.g. if the command specifies `n/NAME p/PHONE_NUMBER`, `p/PHONE_NUMBER n/NAME` is also acceptable.
 
-* Extraneous parameters for commands that do not take in parameters (such as `help`, `list`, `exit` and `clear`) will be ignored.<br>
+* Extraneous parameters for commands that do not take in parameters and flags (such as `help`, `list`, `exit` and `clear`) will be ignored.<br>
   e.g. if the command specifies `help 123`, it will be interpreted as `help`.
 
 * If you are using a PDF version of this document, be careful when copying and pasting commands that span multiple lines as space characters surrounding line-breaks may be omitted when copied over to the application.
@@ -190,12 +188,13 @@ Examples:
 Clears all entries from the address book.
 
 Format: `clear`
+
 ---
 
 ## Class Tag Management
 
-The Class Tag Management commands allow you to **create, delete, and list class tags** in the system.  
-Class tags are useful for organizing students by their class groups (e.g. `Sec3_Maths`, `JC1_Physics`).
+The Class Tag commands allow you to **create, delete, and list class tags** in the system.  
+Class tags are useful for organizing students by the classes they attend (e.g. `Sec3_Maths`, `JC1_Physics`).
 
 <box type="info" seamless>
 
@@ -215,42 +214,42 @@ Adds a new class tag to the system. This allows you to categorize students by th
 
 Format: `tag -a t/TAG_NAME`
 
-Notes:
-- Tag names must be 1\-30 characters long and can only contain alphanumeric characters and underscores (`_`). Spaces or other special characters are not allowed.
-- Tag names are case\-insensitive when checking for duplicates, but the original casing is preserved when added.
+Command Details and Constraints:
+* This command creates a new class tag with the specified `TAG_NAME`.
+* If a tag with the same name (case-insensitive) already exists, the command will not create a duplicate and will inform the user.
+* Tag names must be 1\-30 characters long and can only contain alphanumeric characters and underscores (`_`). Spaces or other special characters are not allowed.
+* Tag names are case\-insensitive when checking for duplicates, but the original casing is preserved when added.
 
 Examples:
 - `tag -a t/Sec3_Maths` — Adds a class tag named `Sec3_Maths`.
+  >**Expected output:** `New class tag added: Sec3_Maths`
 - `tag -a t/JC1_Physics` — Adds a class tag named `JC1_Physics`.
-
-Expected output:
-- `New class tag added: Sec3_Maths`  
-  or  
-  `This class tag already exists.`
-
+  >**Expected output:** `New class tag added: JC1_Physics`
+  
 ---
 
 ### 2. Deleting a class tag : `tag -d`
 
 Deletes an existing class tag from the system.
 
-⚠️ Important: You can only delete a class tag if it is not currently assigned to any person in the address book. Remove the tag from all students first before deleting.
-
 Format: `tag -d t/TAG_NAME`
 
-Notes:
-- Tag name matching is case\-insensitive.
+<box type="warning" seamless>
+<b>Warning:</b>
+You can only delete a class tag if it is not currently assigned to any student in the address book. Remove the tag from all students first before deleting.
+</box>
+
+Command Details and Constraints:
+* This command removes the class tag with the specified `TAG_NAME` from the system.
+* If the specified tag does not exist, the command will inform the user.
+* If the tag is currently assigned to one or more students, the command will not delete the tag and will inform the user to first remove the tag from all students.
+* Tag name matching is case\-insensitive.
 
 Examples:
 - `tag -d t/Sec3_Maths` — Deletes the class tag named `Sec3_Maths`.
-- `tag -d t/jc1_physics` — Deletes the class tag named `JC1_Physics`.
-
-Expected output:
-- `Tag deleted: Sec3_Maths`  
-  or  
-  `This class tag does not exist.`  
-  or  
-  `Cannot delete tag 'Sec3_Maths' because it is still assigned to one or more students. Please remove the tag from all students first.`
+>**Expected output:** `Tag deleted: Sec3_Maths`
+- `tag -d t/jc1_physics` — Deletes the class tag named `JC1_Physics`, regardless of case.
+>**Expected output:** `Tag deleted: JC1_Physics`
 
 ---
 
@@ -261,20 +260,19 @@ Shows a list of all class tags currently created in the address book.
 Format: `tag -l`
 
 Examples:
-- `tag -l`
-
-Expected output:
-- If tags exist:  
+- `tag -l`: If class tags `JC1_Physics` and `Sec3_Maths` exist in the system.
+>**Expected output:**  
   `Listed all class tags:`  
   `1. JC1_Physics`  
   `2. Sec3_Maths`
-- If no tags exist:  
+- `tag -l`: If no class tags exist in the system.
+>**Expected output:**  
   `No class tags found. You can add one using the 'tag -a' command.`
 
 ---
 
-## Managing students' payment: `fee` Commands
-The `fee` command family allows you to **record, update, and view student payment statuses**.  
+## Payment Management
+The Payment Management Commands allows you to **record, update, and view student payment statuses**.  
 This helps tutors and administrators track monthly tuition fee payments efficiently and keep student records up to date.
 <box type="info" seamless>
 
@@ -287,8 +285,28 @@ This helps tutors and administrators track monthly tuition fee payments efficien
 | `fee -v s/STUDENT_ID [m/MMYY]` | Views a student’s **payment history**               |
 </box>
 
+#### Payment Rules
 
-### 1. Marking a student as PAID:
+When marking a student’s fee as **Paid** or **Unpaid**, the following rules apply:
+
+1. **Valid month range**  
+   You can only mark payments for months **between the student’s enrollment month and the current month (inclusive)**.
+    - Payments **before enrollment** are invalid and will be rejected.
+    - **Future payments** (months after the current month) are not allowed and will result in an error message.
+
+2. **Sequential payment requirement**  
+   Payments must be made **in chronological order**.
+    - If there are **unpaid months before** the selected month, you **cannot** mark the later month as paid.
+    - For example, if September 2025 remains unpaid, you must pay for September before marking October 2025 as paid.
+
+3. **Duplicate payment prevention**  
+   If a month has **already been marked as Paid**, the system will reject duplicate payment attempts and display an error message indicating that the month is already paid.
+
+<div class="tip">
+💡 These rules ensure that payment records remain consistent, logical, and accurately reflect each student’s fee history.
+</div>
+
+### 1. Marking a student as PAID: `fee -p`
 
 Marks a student’s payment status as **PAID** for a specific month.
 
@@ -298,15 +316,20 @@ Marks a student’s payment status as **PAID** for a specific month.
 - `fee -p s/0001 m/0925` — marks student `0001`(Bernice Yu) as **paid** for **September 2025**.
 - `fee -p s/0003 m/0825` — marks student `0003`(David Li) as **paid** for **August 2025**.
 
-<box type="tip" seamless>
-If the month precedes the student’s enrollment month, the command will be rejected with an error message.
-</box>
-
 **Expected output:**  
-Bernice Yu has been successfully marked as Paid for September 2025.  
-David Li has been successfully marked as Paid for August 2025.
+`Bernice Yu has been successfully marked as Paid for September 2025.`  
+or  
+`October 2025 is already marked as Paid.`  
+or  
+`Cannot mark October 2025 as Paid.
+June 2025 is not Paid yet.`  
+or  
+`You can’t mark paid for a future month. Please try again when the month has started.`  
+or  
+`Cannot mark payment: Alex Yeoh's enrolment started in August 2025.
+Earlier months cannot be marked.`
 
-### 2. Marking a student as UNPAID:
+### 2. Marking a student as UNPAID: `fee -up`
 
 Marks a student’s payment status as **UNPAID** for one specific month.  
 Use this for corrections or when a payment was previously marked as paid but has not been settled.
@@ -317,18 +340,20 @@ Use this for corrections or when a payment was previously marked as paid but has
 - `fee -up s/0001 m/0925` — marks student `0001`(Bernice Yu) as **unpaid** for **September 2025**.
 - `fee -up s/0003 m/0825` — marks student `0003`(David Li) as **unpaid** for **August 2025**.
 
-<box type="tip" seamless>
-If the month precedes the student’s enrollment month, the command will be rejected with an error message.
-</box>
-
 **Expected output:**  
-Bernice Yu has been successfully marked as Unpaid for September 2025.   
-David Li has been successfully marked as Unpaid for August 2025.
+`Bernice Yu has been successfully marked as Unpaid for September 2025.`  
+or  
+`October 2025 is already unpaid.`  
+or  
+`Cannot mark payment: Alex Yeoh's enrolment started in August 2025.
+Earlier months cannot be marked.`  
+or  
+`You can’t mark unpaid for a future month. Please try again when the month has started.`
+
 
 ### 3. Viewing a student’s payment history:
 
 Displays a student’s payment history from a starting month up to the current month.
-
 
 **Format:** fee -v s/STUDENT_ID [m/MMYY]
 
@@ -340,19 +365,19 @@ Displays a student’s payment history from a starting month up to the current m
 <box type="tip" seamless>
 
 If the starting month is not provided or the starting month provided precedes the
-student's enrollment month, the history will start from the student's enrollment month.
-
+student's enrollment month, the history will start from the student's enrollment month.   
+If the provided month is **after the current month**, the command will return an error message.
 </box>
 
 **Expected Output:**  
-Payment history for Bernice Yu from June 2025 to October 2025 (5 months)  
-Enrolled Month: June 2025  
-June 2025 : UNPAID (default)  
-July 2025 : UNPAID (default)  
-August 2025 : UNPAID (default)  
-September 2025 : PAID (marked)  
-October 2025 : PAID (marked)
-
+`Payment history for Alex Yeoh from August 2025 to October 2025 (3 months)`  
+`Enrolled Month: August 2025`  
+`August 2025 : PAID (marked)`  
+`September 2025 : PAID (marked)`  
+`October 2025 : UNPAID (default)`  
+or  
+`Cannot display payment history for future months.`  
+`Please select a month up to the current month.`
 <box type="info" seamless>
 
 **Interpreting the results:**
@@ -384,7 +409,8 @@ Each filter updates the main student list view to display only matching entries.
 
 ### Filter by PAID status : `filter -p`
 
-Shows all students whose payment status is **PAID** for a given month.
+Shows all students whose payment status is **PAID** for a given month.  
+You can only filter up to the **current month** (future months are not allowed).
 
 **Format:**  
 filter -p m/MMYY
@@ -392,15 +418,23 @@ filter -p m/MMYY
 **Example:**  
 filter -p m/1025
 
+<box type="tip" seamless>
+ 
+If the provided month is **after the current month**, the command will return an error message.
+</box>
+
 **Expected Output:**  
-Showing PAID students for October 2025.
+`Showing PAID students for October 2025.`  
+`3 persons listed!`  
+or  
+`Cannot filter by future months.`  
+`Please select a month up to the current month.`
+
 
 ### Filter by UNPAID status : `filter -up`
 
 Shows all students whose payment status is **UNPAID** for a given month.  
-<box type="info" seamless>
-If a student has never been explicitly marked as PAID, their status is treated as **UNPAID by default**.
-</box>
+You can only filter up to the **current month** (future months are not allowed).
 
 **Format:**  
 filter -up m/MMYY
@@ -408,8 +442,16 @@ filter -up m/MMYY
 **Example:**  
 filter -up m/1025
 
+<box type="info" seamless>
+If a student has never been explicitly marked as PAID, their status is treated as **UNPAID by default**.
+</box>
+
 **Expected Output:**  
-Showing UNPAID students for October 2025.
+`Showing UNPAID students for October 2025.`
+`3 persons listed!`  
+or  
+`Cannot filter by future months.`  
+`Please select a month up to the current month.`
 
 ### Filtering persons by class tag : `filter -t`
 
@@ -417,9 +459,9 @@ Filters the main list to show only persons who are assigned the specified class 
 
 Format: filter -t t/TAG_NAME
 
-Notes:
-- The class tag must already exist in the system.
-- Tag name matching is case\-insensitive.
+Command Details and Constraints:
+* The class tag must already exist in the system. 
+* Tag name matching is case\-insensitive.
 
 Examples:
 - filter -t t/Sec3_Maths — Shows only students who have the Sec3_Maths tag.
@@ -644,9 +686,9 @@ Furthermore, certain edits can cause the AddressBook to behave in unexpected way
 | **Find**                    | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`                                                                                                       |
 | **List**                    | `list`                                                                                                                                                           |
 | **Help**                    | `help`                                                                                                                                                           |
-| **Class Tag (add)**         | `tag -a t/TAG_NAME`<br> e.g., `tag -a t/Sec3_Maths`                                                                                                              |
-| **Class Tag (delete)**      | `tag -d t/TAG_NAME`<br> e.g., `tag -d t/Sec3_Maths`                                                                                                              |
-| **Class Tag (list)**        | `tag -l`<br> e.g., `tag -l`                                                                                                                                      |
+| **Class Tag (ADD)**         | `tag -a t/TAG_NAME`<br> e.g., `tag -a t/Sec3_Maths`                                                                                                              |
+| **Class Tag (DELETE)**      | `tag -d t/TAG_NAME`<br> e.g., `tag -d t/Sec3_Maths`                                                                                                              |
+| **Class Tag (LIST)**        | `tag -l`<br> e.g., `tag -l`                                                                                                                                      |
 | **Mark as PAID**            | `fee -p s/STUDENT_ID m/MMYY` <br> e.g., `fee -p s/0001 m/0925`                                                                                                   |
 | **Mark as UNPAID**          | `fee -up s/STUDENT_ID m/MMYY` <br> e.g., `fee -up s/0001 m/0925`                                                                                                 |
 | **View payment history**    | `fee -v s/STUDENT_ID [m/MMYY]` <br> e.g., `fee -v s/0001 m/0525`                                                                                                 |

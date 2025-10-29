@@ -1,0 +1,71 @@
+@startuml
+!include style.puml
+skinparam ArrowFontStyle plain
+
+box Logic LOGIC_COLOR_T1
+participant ":LogicManager" as LogicManager LOGIC_COLOR
+participant ":AddressBookParser" as AddressBookParser LOGIC_COLOR
+participant ":FilterCommandParser" as FilterCommandParser LOGIC_COLOR
+participant "c:ClassTagFilterCommand" as ClassTagFilterCommand LOGIC_COLOR
+participant ":CommandResult" as CommandResult LOGIC_COLOR
+end box
+
+box Model MODEL_COLOR
+participant ":Model" as Model MODEL_COLOR
+end box
+
+[-> LogicManager : execute("filter -t t/Sec_3_A_Math")
+activate LogicManager
+
+LogicManager -> AddressBookParser : parseCommand("filter -t t/Sec_3_A_Math")
+activate AddressBookParser
+
+create FilterCommandParser
+AddressBookParser -> FilterCommandParser
+activate FilterCommandParser
+FilterCommandParser --> AddressBookParser
+deactivate FilterCommandParser
+
+AddressBookParser -> FilterCommandParser : parse("-t t/Sec_3_A_Math")
+activate FilterCommandParser
+
+create ClassTagFilterCommand
+FilterCommandParser -> ClassTagFilterCommand : new
+activate ClassTagFilterCommand
+ClassTagFilterCommand --> FilterCommandParser
+deactivate ClassTagFilterCommand
+
+FilterCommandParser --> AddressBookParser : c
+deactivate FilterCommandParser
+destroy FilterCommandParser
+
+AddressBookParser --> LogicManager : c
+deactivate AddressBookParser
+
+LogicManager -> ClassTagFilterCommand : execute(model)
+activate ClassTagFilterCommand
+
+ClassTagFilterCommand -> Model : findClassTag(classTag)
+activate Model
+Model --> ClassTagFilterCommand : Optional<ClassTag>
+deactivate Model
+
+ClassTagFilterCommand -> Model : updateFilteredPersonList(predicate)
+activate Model
+Model --> ClassTagFilterCommand
+deactivate Model
+
+create CommandResult
+ClassTagFilterCommand -> CommandResult : new
+activate CommandResult
+CommandResult --> ClassTagFilterCommand
+deactivate CommandResult
+
+ClassTagFilterCommand --> LogicManager : result
+deactivate ClassTagFilterCommand
+
+[<-- LogicManager : result
+deactivate LogicManager
+
+@enduml
+

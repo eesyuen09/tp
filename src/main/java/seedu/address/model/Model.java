@@ -126,6 +126,11 @@ public interface Model {
     Optional<ClassTag> findClassTag(ClassTag classTag);
 
     /**
+     * Returns an unmodifiable view of the class tag list.
+     */
+    List<ClassTag> getClassTagList();
+
+    /**
      * Returns {@code true} if the address book contains a {@code Person} with the specified {@code StudentId}.
      */
     boolean hasPersonWithId(StudentId studentId);

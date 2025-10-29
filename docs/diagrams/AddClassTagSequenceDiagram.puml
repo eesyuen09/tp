@@ -7,9 +7,10 @@ participant ":LogicManager" as LogicManager LOGIC_COLOR
 participant ":AddressBookParser" as AddressBookParser LOGIC_COLOR
 participant ":ClassTagCommandParser" as ClassTagCommandParser LOGIC_COLOR
 participant "c:AddClassTagCommand" as AddClassTagCommand LOGIC_COLOR
+participant ":CommandResult" as CommandResult LOGIC_COLOR
 end box
 
-box Model #FFCCCC
+box Model MODEL_COLOR
 participant ":Model" as Model MODEL_COLOR
 end box
 
@@ -18,6 +19,12 @@ activate LogicManager
 
 LogicManager -> AddressBookParser : parseCommand("tag -a t/Sec_3_A_Math")
 activate AddressBookParser
+
+create ClassTagCommandParser
+AddressBookParser -> ClassTagCommandParser
+activate ClassTagCommandParser
+ClassTagCommandParser --> AddressBookParser
+deactivate ClassTagCommandParser
 
 AddressBookParser -> ClassTagCommandParser : parse("-a t/Sec_3_A_Math")
 activate ClassTagCommandParser
@@ -30,6 +37,7 @@ deactivate AddClassTagCommand
 
 ClassTagCommandParser --> AddressBookParser : c
 deactivate ClassTagCommandParser
+destroy ClassTagCommandParser
 
 AddressBookParser --> LogicManager : c
 deactivate AddressBookParser
@@ -47,10 +55,16 @@ activate Model
 Model --> AddClassTagCommand
 deactivate Model
 
+create CommandResult
+AddClassTagCommand -> CommandResult : new
+activate CommandResult
+CommandResult --> AddClassTagCommand
+deactivate CommandResult
+
 AddClassTagCommand --> LogicManager : result
 deactivate AddClassTagCommand
 
-[<-- LogicManager
+[<-- LogicManager : result
 deactivate LogicManager
 
 @enduml

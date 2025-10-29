@@ -114,6 +114,11 @@ public class ModelStub implements Model {
     }
 
     @Override
+    public List<ClassTag> getClassTagList() {
+        throw new AssertionError("This method should not be called.");
+    }
+
+    @Override
     public Optional<Person> getPersonById(StudentId studentId) {
         throw new AssertionError("This method should not be called.");
     }
