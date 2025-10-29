@@ -1,61 +1,56 @@
 @startuml
 !include style.puml
 
+skinparam ActivityFontSize 16
+skinparam ActivityDiamondFontSize 16
+skinparam ActivityArrowFontSize 14
+
 |User|
 start
-:Enter edit command with class tags;
+:Enter edit command
+with class tags;
 
 |System|
-if () then ([invalid command format])
+:Validate command format
+and parameters;
+
+if () then ([validation fails])
     |User|
     :Receive error message;
-else ([valid command format])
-    |System|
-    :Parse command parameters;
-
-    if () then ([no fields to edit])
-        |User|
-        :Receive error message;
-    else ([at least one field to edit])
-        |System|
-        if () then ([student ID not found])
-            |User|
-            :Receive student not found message;
-        else ([student ID exists])
-            |System|
-            if () then ([class tags specified])
-                if () then ([empty t/ provided])
-                    :Clear all class tags;
-                else ([class tags provided])
-
-                    if () then ([one or more tags not found])
-                        |User|
-                        :Receive tag not found error message;
-                    else ([all tags exist])
-                        |System|
-                        :Resolve to correctly cased tags;
-                    endif
-                endif
-            else ([class tags not specified])
-                |System|
-                :Keep existing class tags;
-            endif
-
-            :Create edited person;
-            if () then ([duplicate person])
-                |User|
-                :Receive duplicate person error;
-            else ([unique person])
-                |System|
-                :Update person in address book;
-                |User|
-                :Receive success message;
-            endif
-        endif
-    endif
+    stop
 endif
 
-stop
+|System|
+if () then ([class tags specified?])
+    if () then ([empty t/])
+        :Clear all class tags;
+    else ([tags provided])
+        :Validate and resolve tags;
+        if () then ([tags not found])
+            |User|
+            :Receive error message;
+            stop
+        endif
+    endif
+else ([not specified])
+    |System|
+    :Keep existing class tags;
+endif
+
+|System|
+:Create edited person;
+
+if () then ([duplicate])
+    |User|
+    :Receive error message;
+    stop
+else ([valid])
+    |System|
+    :Update person;
+    |User|
+    :Receive success message;
+    stop
+endif
 
 @enduml
 
