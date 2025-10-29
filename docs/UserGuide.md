@@ -273,8 +273,8 @@ Expected output:
 
 ---
 
-## Managing students' payment: `fee` Commands
-The `fee` command family allows you to **record, update, and view student payment statuses**.  
+## Payment Management
+The Payment Management Commands allows you to **record, update, and view student payment statuses**.  
 This helps tutors and administrators track monthly tuition fee payments efficiently and keep student records up to date.
 <box type="info" seamless>
 
@@ -287,8 +287,28 @@ This helps tutors and administrators track monthly tuition fee payments efficien
 | `fee -v s/STUDENT_ID [m/MMYY]` | Views a student’s **payment history**               |
 </box>
 
+#### Payment Rules
 
-### 1. Marking a student as PAID:
+When marking a student’s fee as **Paid** or **Unpaid**, the following rules apply:
+
+1. **Valid month range**  
+   You can only mark payments for months **between the student’s enrollment month and the current month (inclusive)**.
+    - Payments **before enrollment** are invalid and will be rejected.
+    - **Future payments** (months after the current month) are not allowed and will result in an error message.
+
+2. **Sequential payment requirement**  
+   Payments must be made **in chronological order**.
+    - If there are **unpaid months before** the selected month, you **cannot** mark the later month as paid.
+    - For example, if September 2025 remains unpaid, you must pay for September before marking October 2025 as paid.
+
+3. **Duplicate payment prevention**  
+   If a month has **already been marked as Paid**, the system will reject duplicate payment attempts and display an error message indicating that the month is already paid.
+
+<div class="tip">
+💡 These rules ensure that payment records remain consistent, logical, and accurately reflect each student’s fee history.
+</div>
+
+### 1. Marking a student as PAID: `fee -p`
 
 Marks a student’s payment status as **PAID** for a specific month.
 
@@ -298,15 +318,20 @@ Marks a student’s payment status as **PAID** for a specific month.
 - `fee -p s/0001 m/0925` — marks student `0001`(Bernice Yu) as **paid** for **September 2025**.
 - `fee -p s/0003 m/0825` — marks student `0003`(David Li) as **paid** for **August 2025**.
 
-<box type="tip" seamless>
-If the month precedes the student’s enrollment month, the command will be rejected with an error message.
-</box>
-
 **Expected output:**  
-Bernice Yu has been successfully marked as Paid for September 2025.  
-David Li has been successfully marked as Paid for August 2025.
+`Bernice Yu has been successfully marked as Paid for September 2025.`  
+or  
+`October 2025 is already marked as Paid.`  
+or  
+`Cannot mark October 2025 as Paid.
+June 2025 is not Paid yet.`  
+or  
+`You can’t mark paid for a future month. Please try again when the month has started.`  
+or  
+`Cannot mark payment: Alex Yeoh's enrolment started in August 2025.
+Earlier months cannot be marked.`
 
-### 2. Marking a student as UNPAID:
+### 2. Marking a student as UNPAID: `fee -up`
 
 Marks a student’s payment status as **UNPAID** for one specific month.  
 Use this for corrections or when a payment was previously marked as paid but has not been settled.
@@ -317,18 +342,20 @@ Use this for corrections or when a payment was previously marked as paid but has
 - `fee -up s/0001 m/0925` — marks student `0001`(Bernice Yu) as **unpaid** for **September 2025**.
 - `fee -up s/0003 m/0825` — marks student `0003`(David Li) as **unpaid** for **August 2025**.
 
-<box type="tip" seamless>
-If the month precedes the student’s enrollment month, the command will be rejected with an error message.
-</box>
-
 **Expected output:**  
-Bernice Yu has been successfully marked as Unpaid for September 2025.   
-David Li has been successfully marked as Unpaid for August 2025.
+`Bernice Yu has been successfully marked as Unpaid for September 2025.`  
+or  
+`October 2025 is already unpaid.`  
+or  
+`Cannot mark payment: Alex Yeoh's enrolment started in August 2025.
+Earlier months cannot be marked.`  
+or  
+`You can’t mark unpaid for a future month. Please try again when the month has started.`
+
 
 ### 3. Viewing a student’s payment history:
 
 Displays a student’s payment history from a starting month up to the current month.
-
 
 **Format:** fee -v s/STUDENT_ID [m/MMYY]
 
@@ -340,18 +367,16 @@ Displays a student’s payment history from a starting month up to the current m
 <box type="tip" seamless>
 
 If the starting month is not provided or the starting month provided precedes the
-student's enrollment month, the history will start from the student's enrollment month.
-
+student's enrollment month, the history will start from the student's enrollment month.   
+If the provided month is **after the current month**, the command will return an error message.
 </box>
 
 **Expected Output:**  
-Payment history for Bernice Yu from June 2025 to October 2025 (5 months)  
-Enrolled Month: June 2025  
-June 2025 : UNPAID (default)  
-July 2025 : UNPAID (default)  
-August 2025 : UNPAID (default)  
-September 2025 : PAID (marked)  
-October 2025 : PAID (marked)
+`Payment history for Alex Yeoh from August 2025 to October 2025 (3 months)`  
+`Enrolled Month: August 2025`  
+`August 2025 : PAID (marked)`  
+`September 2025 : PAID (marked)`  
+`October 2025 : UNPAID (default)`  
 
 <box type="info" seamless>
 
