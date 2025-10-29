@@ -33,7 +33,8 @@ public class FeeViewCommand extends FeeCommand {
         + "  " + COMMAND_WORD + " " + COMMAND_FLAG + " s/0001 m/0525";
 
     public static final String MESSAGE_NO_HISTORY_IN_RANGE =
-        "No payment history available in the requested range. Student enrolled in %s.";
+        "Cannot display payment history for future months."
+            + "\nPlease select a month up to the current month.";
 
     private final StudentId studentId;
 
@@ -69,7 +70,7 @@ public class FeeViewCommand extends FeeCommand {
         Map<Month, FeeState> history = tracker.getPaymentHistory(person, effectiveStart, endMonth);
 
         if (history.isEmpty()) {
-            return new CommandResult(String.format(MESSAGE_NO_HISTORY_IN_RANGE, enrolled.toHumanReadable()));
+            return new CommandResult(MESSAGE_NO_HISTORY_IN_RANGE);
         }
         List<String> rows = new ArrayList<>();
         for (Map.Entry<Month, FeeState> entry : history.entrySet()) {
