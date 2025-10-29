@@ -50,7 +50,7 @@ The bulk of the app's work is done by the following four components:
 
 **How the architecture components interact with each other**
 
-The *Sequence Diagram* below shows how the components interact with each other for the scenario where the user issues the command `delete 1`.
+The *Sequence Diagram* below shows how the components interact with each other for the scenario where the user issues the command `delete s/0000`.
 
 <puml src="diagrams/ArchitectureSequenceDiagram.puml" width="574" />
 
@@ -92,7 +92,7 @@ Here's a (partial) class diagram of the `Logic` component:
 
 The sequence diagram below illustrates the interactions within the `Logic` component, taking `execute("delete s/0002")` API call as an example.
 
-<puml src="diagrams/DeleteStudentSequenceDiagram.puml" alt="Interactions Inside the Logic Component for the `delete 1` Command" />
+<puml src="diagrams/DeleteStudentSequenceDiagram.puml" alt="Interactions Inside the Logic Component for the `delete s/0002` Command" />
 
 <box type="info" seamless>
 
@@ -881,10 +881,12 @@ Given below is a list of enhancements we plan to implement in future versions of
     - Accurately reflect months where no tuition fees are due.
     - Allow tutors to “skip” months without breaking the sequential payment validation rule.
     - Improve clarity in fee reports by distinguishing “not billed” months from “unpaid” ones.
+
    This addition will also enhance flexibility in long-term record management and improve real-world applicability for tutoring scenarios involving variable schedules.
 5. **Integrate Fee and Attendance Systems:**  
    Currently, fee tracking and attendance operate independently.  
    We plan to introduce light integration between both modules to make payment tracking more context-aware.
+
     - When viewing a student’s fee history, tutors will also see the **number of lessons held** for each month.
     - When marking a month as **PAID** with no recorded attendance, the system will show a **confirmation prompt** to avoid mistakes.
     - When marking a month as **UNPAID** while lessons are recorded, a **reminder** will appear to alert the tutor of possible inconsistencies.
@@ -1026,8 +1028,8 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 | Priority  | As a …​                                    | I want to …​                                              | So that I can…​                                                         |
 |-----------|------------------------------------------- |-----------------------------------------------------------|-------------------------------------------------------------------------|
-| `* * * `  | tutor handling lesson fees                 | tag a student as paid for a given month                   | keep track of students who have settled their tuition fees              |
-| `* * *`   | tutor handling lesson fees                 | tag a student as unpaid for a given month                 | identify students who still owe lesson fees                             |
+| `* * * `  | tutor handling lesson fees                 | mark a student as paid for a given month                  | keep track of students who have settled their tuition fees              |
+| `* * *`   | tutor handling lesson fees                 | mark a student as unpaid for a given month                | fix mistakes and keep payment records accurate                          |
 | `* * *`   | tutor handling lesson fees                 | filter students who have paid by month                    | view all students who have completed payment for that month at a glance |
 | `* * *`   | tutor handling lesson fees                 | filter students who have not paid by month                | follow up with students who have outstanding tuition fees               |
 | `* * *`   | tutor handling lesson fees                 | view a student's payment history up to the current month  | review their past payment behaviour and identify missed months          |
@@ -1342,128 +1344,146 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 
 
-**Use case: Mark Student as Paid**
-
-**Guarantees**
-1. A Paid status for the particular month is recorded for the given student only if the inputs are valid and the student is not already marked Paid for that month.
+### Use case: Mark Student as Paid
 
 **MSS**
-1. Tutor requests to mark a student as paid for a specific month.
-2. Tuto records the Paid status for that student at that specific month.
-3. Tuto shows an success message.
+1. Tutor requests to mark a student as **PAID** for a specific month.
+2. Tuto validates the request: student exists, command format is valid, and the month is **between the enrolled month and the current month (inclusive)**.
+3. Tuto verifies that **all earlier months** (from enrolment up to the previous month) are already **PAID**.
+4. Tuto records the **PAID** status for the month and displays a success message.
 
    Use case ends.
 
 **Extensions**
-* 1a. The provided student ID does not match any existing student.
-    * 1a1. Tuto shows an error message.
-
-      Use case ends.
-- 1b. The command format is invalid.
-    - 1b1. Tuto shows an error message with the correct usage format.
-
-      Use case ends.
-- 2a. The student is already marked *Paid* for that month.
-    - 2a1. Tuto shows an error message.
-
+* 2a. Command format is invalid.
+    * 2a1. Tuto shows the correct usage format.  
       Use case ends.
 
+* 2b. Student ID does not exist.
+    * 2b1. Tuto shows an error that the student cannot be found.  
+      Use case ends.
 
-**Use case: Mark Student as Unpaid**
+* 2c. The selected month is **before enrolment** or **after the current month**.
+    * 2c1. Tuto shows an error that the month is invalid.  
+      Use case ends.
 
-**Guarantees**
-1. An Unpaid status for the particular month is recorded for the given student only if the inputs are valid and the student is not already marked Unpaid for that month.
+* 2d. The selected month is **already marked as PAID**.
+    * 2d1. Tuto indicates that the payment has already been recorded.  
+      Use case ends.
+
+* 3a. An **earlier month** is **UNPAID**.
+    * 3a1. Tuto shows an error indicating the earliest unpaid month that blocks the operation.  
+      Use case ends.
+
+
+---
+
+### Use case: Mark Student as Unpaid
 
 **MSS**
-1. Tutor requests to mark a student as Unpaid for a specific month.
-2. Tuto records the Unpaid status for that student at that specific month.
-3. Tuto shows an success message.
+1. Tutor requests to mark a student as **UNPAID** for a specific month.
+2. Tuto validates the request: student exists, command format is valid, and the month is **between the enrolled month and the current month (inclusive)**.
+3. Tuto records the **UNPAID** status and displays a success message.
 
    Use case ends.
 
 **Extensions**
-* 1a. The provided student ID does not match any existing student.
-    * 1a1. Tuto shows an error message.
-
-      Use case ends.
-* 1b. The command format is invalid.
-    * 1b1. Tuto shows an error message with the correct usage format.
-
-      Use case ends.
-* 2a. The student is already marked Unpaid for that month.
-    * 2a1. Tuto shows an error message.
-
+* 2a. Command format is invalid.
+    * 2a1. Tuto shows the correct usage format.  
       Use case ends.
 
+* 2b. Student ID does not exist.
+    * 2b1. Tuto shows an error that the student cannot be found.  
+      Use case ends.
 
-**Use case: Filter Paid Students by Month**
+* 2c. The selected month is **before enrolment** or **after the current month**.
+    * 2c1. Tuto shows an error that the month is invalid.  
+      Use case ends.
 
-**Guarantees**
-1. Displays a list of students that are marked as Paid for the given month.
+* 2d. The selected month is **already marked as UNPAID**.
+    * 2d1. Tuto indicates that the month is already unpaid.  
+      Use case ends.
+
+
+---
+
+### Use case: Filter Paid Students by Month
 
 **MSS**
-1. Tutor requests to filter students that are marked as Paid for a specific month.
-2. Tuto displays a list of students that are marked as Paid for that month.
+1. Tutor requests to filter students marked **PAID** for a specific month.
+2. Tuto validates the request: command format is valid and the month is **not in the future**.
+3. Tuto applies the predicate to the model to filter students by **PAID** status for that month.
+4. Tuto displays the filtered list.
 
    Use case ends.
 
 **Extensions**
-* 1a. The command format is invalid.
-    * 1a1. Tuto shows an error message with the correct usage format.
-
+* 2a. Command format is invalid.
+    * 2a1. Tuto shows the correct usage format.  
       Use case ends.
-  
-* 2a. No Paid students found for that month.
-    * 2a1. Tuto displays a message indicating no records found.
 
+* 2b. The month is **in the future**.
+    * 2b1. Tuto shows an error that future months cannot be filtered.  
       Use case ends.
 
 
-**Use case: Filter Unpaid Students by Month**
+---
 
-**Guarantees**
-1. Displays a list of students that are marked as Unpaid for the given month.
+### Use case: Filter Unpaid Students by Month
 
 **MSS**
-1. Tutor requests to filter students that are marked as Unpaid for a specific month.
-2. System displays a list of students that are marked as Unpaid for that month.
+1. Tutor requests to filter students marked **UNPAID** for a specific month.
+2. Tuto validates the request: command format is valid and the month is **not in the future**.
+3. Tuto applies the predicate to the model to filter students by **UNPAID** status for that month.
+4. Tuto displays the filtered list.
 
    Use case ends.
 
 **Extensions**
-* 1a. The command format is invalid.
-    * 1a1. Tuto shows an error message with the correct usage format.
-
+* 2a. Command format is invalid.
+    * 2a1. Tuto shows the correct usage format.  
       Use case ends.
-  
-* 2a. No Unpaid students found for that month.
-    * 2a1. Tuto displays a message indicating no records found.
 
+* 2b. The month is **in the future**.
+    * 2b1. Tuto shows an error that future months cannot be filtered.  
       Use case ends.
 
 
-**Use case: View Payment History of a Student**
+---
 
-**Guarantees**
-1.	Displays the payment history of the student for up to six months prior to the current month.
+### Use case: View Payment History of a Student
 
 **MSS**
-1. Tutor requests to view the payment history of a student.
-2. System retrieves and the student’s month-by-month payment status for the past six months, up to the current month.
+1. Tutor requests to view a student’s payment history (optionally with a start month).
+2. Tuto validates the request: command format is valid, the student exists, and the provided start month (if any) is **not in the future**.
+3. Tuto determines the effective start month:
+    * If a start month is provided, the range starts from the **later** of the provided month and the **enrolled month**.
+    * Otherwise, the range starts from the **enrolled month**.
+4. Tuto retrieves the month-by-month history from the effective start to the current month.
+5. Tuto displays the chronological history, indicating whether each month is an **explicit** mark or a **default** (unmarked → UNPAID).
 
    Use case ends.
 
 **Extensions**
-* 1a. The student ID is invalid or missing.
-    * 1a1. Tuto shows an error message.
-
-      Use case ends.
-  
-* 2a. The student has no payment records yet.
-    * 2a1. Tuto displays a message indicating no records found.
-
+* 2a. Command format is invalid.
+    * 2a1. Tuto shows the correct usage format.  
       Use case ends.
 
+* 2b. Student ID does not exist.
+    * 2b1. Tuto shows an error that the student cannot be found.  
+      Use case ends.
+
+* 2c. The provided start month is **after the current month**.
+    * 2c1. Tuto shows an error that future months cannot be displayed.  
+      Use case ends.
+
+* 3a. The provided start month is **before enrolment**.
+    * 3a1. Tuto automatically adjusts the start to the enrolment month.  
+      Use case continues at Step 4.
+
+* 4a. There are no months to display within the computed range.
+    * 4a1. Tuto indicates that no records are available for that range.  
+      Use case ends.
 
 **Use case: Mark attendance for a student**
 
@@ -1671,7 +1691,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 * **Mainstream OS**: Windows, Linux, Unix, MacOS
 * **Private contact detail**: A contact detail that is not meant to be shared with others
 * **Student ID**: A 4-digit unique numeric identifier (0000–9999) assigned to each student when added to the system.
-* **Payment History**: A record that shows a student’s Paid or Unpaid fee status for each month, covering up to the six most recent months before the current month.
+* **Payment History**: A chronological record of a student's PAID/UNPAID fee status from a **start month** (either the student’s enrolment month or an explicitly provided `m/MMYY`) **up to the current month** (inclusive). Months after enrolment with no explicit record are derived as **UNPAID** by default.
 * **Performance note**: A short textual record of a student's performance on a given date
 * **Attendance History**: A record that shows a student's attendance history, covering up to the six most recent months before the current month.
 * **Executable JAR**: A Java Archive file that contains all compiled classes and resources, which can be run directly without installation.
@@ -1832,6 +1852,114 @@ testers are expected to do more *exploratory* testing.
 
     1. Test case: `tag -d t/Sec_3_A_Math`  
        **Expected:** Command rejected. Error message indicates tag is still in use by students.
+
+---
+### Managing Fees
+
+#### Marking a Student as Paid
+
+1. Marking a student as PAID for a valid month
+
+    1. Prerequisites: The student exists and has an enrolled month earlier than the target month (e.g., enrolled in August 2025).
+
+    1. Test case: `fee -p s/0001 m/0925`  
+       **Expected:** The student's payment status for September 2025 is marked as **PAID**.  
+       A success message appears confirming the update.
+
+1. Attempting to mark a month **before the student’s enrolled month**
+
+    1. Test case: `fee -p s/0001 m/0725`  
+       **Expected:** Command rejected. Error message states that months before the student’s enrolment cannot be marked.
+
+1. Attempting to mark a **future month**
+
+    1. Test case: `fee -p s/0001 m/1225` (if the current month is October 2025)  
+       **Expected:** Command rejected. Error message states that future months cannot be marked as paid.
+
+1. Attempting to skip an unpaid month
+
+    1. Prerequisites: Ensure the student has an unpaid month before the target month (e.g., September 2025 is unpaid).
+
+    1. Test case: `fee -p s/0001 m/1025`  
+       **Expected:** Command rejected. Error message indicates that earlier unpaid months must be marked first.
+
+---
+
+#### Marking a Student as Unpaid
+
+1. Marking a previously paid month as **UNPAID**
+
+    1. Prerequisites: The student has been marked as paid for a month (e.g., September 2025).
+
+    1. Test case: `fee -up s/0001 m/0925`  
+       **Expected:** The payment status for September 2025 changes to **UNPAID**.  
+       A success message confirms the correction.
+
+1. Attempting to mark a **future month** as unpaid
+
+    1. Test case: `fee -up s/0001 m/1225` (if the current month is October 2025)  
+       **Expected:** Command rejected. Error message states that future months cannot be marked.
+
+1. Attempting to mark a month **before enrolment**
+
+    1. Test case: `fee -up s/0001 m/0725`  
+       **Expected:** Command rejected. Error message indicates that months before enrolment cannot be marked.
+
+1. Attempting to mark an already **UNPAID** month
+
+    1. Test case: `fee -up s/0001 m/0925` (if it is already unpaid)  
+       **Expected:** Command rejected. Error message indicates that the month is already unpaid.
+
+---
+
+#### Viewing a Student’s Payment History
+
+1. Viewing complete payment history from enrolment
+
+    1. Test case: `fee -v s/0001`  
+       **Expected:** Displays a list of all months from the enrolment month to the current month, showing each month’s status (e.g., PAID or UNPAID).
+
+1. Viewing payment history with a **custom start month**
+
+    1. Test case: `fee -v s/0001 m/0525`  
+       **Expected:** Displays payment history starting from the given month (or enrolment month if the given month is before enrolment).  
+       The system automatically adjusts the start month.
+
+1. Attempting to view **future month history**
+
+    1. Test case: `fee -v s/0001 m/1225` (if the current month is October 2025)  
+       **Expected:** Command rejected. Error message states that future months cannot be displayed.
+
+1. Attempting to view payment history of a **non-existent student**
+
+    1. Test case: `fee -v s/9999`  
+       **Expected:** Command rejected. Error message indicates that the student ID was not found.
+
+---
+
+#### Filtering Students by Payment Status
+
+1. Filtering students who have **Paid**
+
+    1. Test case: `filter -p m/0925`  
+       **Expected:** Displays only students who have been marked as **PAID** for September 2025.  
+       Status message confirms the number of students listed.
+
+1. Filtering students who are **Unpaid**
+
+    1. Test case: `filter -up m/0925`  
+       **Expected:** Displays only students who are **UNPAID** for September 2025.  
+       Status message confirms the number of students listed.
+
+1. Attempting to filter using a **future month**
+
+    1. Test case: `filter -p m/1225` (if the current month is October 2025)  
+       **Expected:** Command rejected. Error message states that future months cannot be filtered.
+
+1. Filtering with **no matching students**
+
+    1. Test case: `filter -p m/0925` (when no students are paid for that month)  
+       **Expected:** Displays message: “No matching students found.”
 
 ---
 ---
