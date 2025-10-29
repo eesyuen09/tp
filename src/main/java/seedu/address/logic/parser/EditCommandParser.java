@@ -26,9 +26,12 @@ import seedu.address.model.tag.ClassTag;
 public class EditCommandParser implements Parser<EditCommand> {
 
     /**
-     * Parses the given {@code String} of arguments in the context of the EditCommand
-     * and returns an EditCommand object for execution.
-     * @throws ParseException if the user input does not conform the expected format
+     * Parses the given {@code String} of user input in the context of an {@link EditCommand}.
+     * Returns an {@link EditCommand} object for execution if the input is valid.
+     *
+     * @param args User input arguments.
+     * @return A corresponding {@link EditCommand} object ready for execution.
+     * @throws ParseException If the input does not conform to the expected format or contains invalid values.
      */
     public EditCommand parse(String args) throws ParseException {
         requireNonNull(args);

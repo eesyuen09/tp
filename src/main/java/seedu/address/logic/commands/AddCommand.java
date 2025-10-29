@@ -50,7 +50,9 @@ public class AddCommand extends Command {
     private final Person toAdd;
 
     /**
-     * Creates an AddCommand to add the specified {@code Person}
+     * Constructs an {@code AddCommand} that adds the specified {@link Person} to the address book.
+     *
+     * @param person The person to be added. Must not be {@code null}.
      */
     public AddCommand(Person person) {
         requireNonNull(person);

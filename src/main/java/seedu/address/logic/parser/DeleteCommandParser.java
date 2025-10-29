@@ -15,10 +15,10 @@ public class DeleteCommandParser implements Parser<DeleteCommand> {
 
     /**
      * Parses the given {@code String} of arguments in the context of the {@link DeleteCommand}
-     * and returns a {@link DeleteCommand} object for execution.
+     * and returns a {@link DeleteCommand} object for execution if the input is valid.
      *
      * @param args user input arguments
-     * @return a {@link DeleteCommand} to execute the delete operation
+     * @return A corresponding {@link DeleteCommand} object ready for execution.
      * @throws ParseException if the user input does not conform to the expected format
      */
     public DeleteCommand parse(String args) throws ParseException {

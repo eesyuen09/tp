@@ -4,7 +4,9 @@ import seedu.address.model.person.exceptions.ExceedMaxStudentsException;
 
 /**
  * Represents a Student ID in the address book.
- * Guarantees: immutable; is valid as declared in {@link #isValidStudentId(String)}.
+ * Guarantees:
+ *  - Immutable
+ *  - Valid according to {@link #isValidStudentId(String)}
  */
 public class StudentId {
 
@@ -26,10 +28,7 @@ public class StudentId {
     /**
      * Constructs a new {@code StudentId} with an auto-generated 4-digit number.
      * <p>
-     * Each time this constructor is called, {@code LAST_ID} is incremented by 1.
-     * If the maximum number of student IDs (9999) is exceeded, an
-     * {@link ExceedMaxStudentsException} is thrown.
-     *
+     * The {@code nextId} is incremented automatically.
      * @throws ExceedMaxStudentsException if the number of students exceeds {@code MAX}.
      */
     public StudentId() {
@@ -56,12 +55,11 @@ public class StudentId {
         }
     }
 
-    public static void rollbackId() {
-        nextId = nextId - 1;
-    }
-
     /**
-     * Returns true if a given string is a valid student id.
+     * Returns true if the given string is a valid student ID (4-digit number).
+     *
+     * @param test the string to test
+     * @return true if {@code test} matches {@link #VALIDATION_REGEX}
      */
     public static boolean isValidStudentId(String test) {
         return test.matches(VALIDATION_REGEX);
