@@ -16,7 +16,7 @@ import seedu.address.model.time.Date;
  */
 public class PerformanceList {
     private static final Comparator<PerformanceNote> NOTE_COMPARATOR =
-            Comparator.comparing((PerformanceNote note) -> note.getDate().toLocalDate())
+            Comparator.comparing((PerformanceNote note) -> note.getDate().toLocalDate(), Comparator.reverseOrder())
                     .thenComparing(note -> note.getClassTag().tagName, String.CASE_INSENSITIVE_ORDER);
     private final List<PerformanceNote> notes = new ArrayList<>();
 
