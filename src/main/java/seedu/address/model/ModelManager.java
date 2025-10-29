@@ -14,7 +14,11 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.LogsCenter;
+import seedu.address.model.attendance.AttendanceHistoryEntry;
+import seedu.address.model.attendance.AttendanceHistorySummary;
 import seedu.address.model.attendance.AttendanceList;
+import seedu.address.model.fee.FeeHistoryEntry;
+import seedu.address.model.fee.FeeHistorySummary;
 import seedu.address.model.fee.FeeState;
 import seedu.address.model.fee.FeeTracker;
 import seedu.address.model.person.Person;
@@ -35,6 +39,12 @@ public class ModelManager implements Model {
     private final FilteredList<Person> filteredPersons;
     private final FeeTracker feeTracker;
     private final ObservableList<PerformanceNote> displayedPerformanceNotes;
+    private final ObservableList<FeeHistoryEntry> displayedFeeHistory;
+    private final ObservableList<AttendanceHistoryEntry> displayedAttendanceHistory;
+    private final javafx.beans.property.ObjectProperty<FeeHistorySummary> feeHistorySummary =
+            new javafx.beans.property.SimpleObjectProperty<>();
+    private final javafx.beans.property.ObjectProperty<AttendanceHistorySummary> attendanceHistorySummary =
+            new javafx.beans.property.SimpleObjectProperty<>();
     private final javafx.beans.property.IntegerProperty feeStateVersion =
         new javafx.beans.property.SimpleIntegerProperty(0);
 
@@ -51,6 +61,8 @@ public class ModelManager implements Model {
         filteredPersons = new FilteredList<>(this.addressBook.getPersonList());
         this.feeTracker = this.addressBook.getFeeTracker();
         this.displayedPerformanceNotes = FXCollections.observableArrayList();
+        this.displayedFeeHistory = FXCollections.observableArrayList();
+        this.displayedAttendanceHistory = FXCollections.observableArrayList();
     }
 
     public ModelManager() {
@@ -306,7 +318,12 @@ public class ModelManager implements Model {
         return addressBook.equals(otherModelManager.addressBook)
                 && userPrefs.equals(otherModelManager.userPrefs)
                 && filteredPersons.equals(otherModelManager.filteredPersons)
-                && displayedPerformanceNotes.equals(otherModelManager.displayedPerformanceNotes);
+                && displayedPerformanceNotes.equals(otherModelManager.displayedPerformanceNotes)
+                && displayedFeeHistory.equals(otherModelManager.displayedFeeHistory)
+                && displayedAttendanceHistory.equals(otherModelManager.displayedAttendanceHistory)
+                && java.util.Objects.equals(feeHistorySummary.get(), otherModelManager.feeHistorySummary.get())
+                && java.util.Objects.equals(attendanceHistorySummary.get(),
+                otherModelManager.attendanceHistorySummary.get());
     }
 
     @Override
@@ -343,5 +360,54 @@ public class ModelManager implements Model {
     @Override
     public void clearDisplayedPerformanceNotes() {
         displayedPerformanceNotes.clear();
+    }
+
+    @Override
+    public ObservableList<FeeHistoryEntry> getDisplayedFeeHistory() {
+        return FXCollections.unmodifiableObservableList(displayedFeeHistory);
+    }
+
+    @Override
+    public void setDisplayedFeeHistory(List<FeeHistoryEntry> entries, FeeHistorySummary summary) {
+        requireNonNull(entries);
+        requireNonNull(summary);
+        displayedFeeHistory.setAll(entries);
+        feeHistorySummary.set(summary);
+    }
+
+    @Override
+    public void clearDisplayedFeeHistory() {
+        displayedFeeHistory.clear();
+        feeHistorySummary.set(null);
+    }
+
+    @Override
+    public javafx.beans.property.ReadOnlyObjectProperty<FeeHistorySummary> feeHistorySummaryProperty() {
+        return feeHistorySummary;
+    }
+
+    @Override
+    public ObservableList<AttendanceHistoryEntry> getDisplayedAttendanceHistory() {
+        return FXCollections.unmodifiableObservableList(displayedAttendanceHistory);
+    }
+
+    @Override
+    public void setDisplayedAttendanceHistory(List<AttendanceHistoryEntry> entries,
+                                              AttendanceHistorySummary summary) {
+        requireNonNull(entries);
+        requireNonNull(summary);
+        displayedAttendanceHistory.setAll(entries);
+        attendanceHistorySummary.set(summary);
+    }
+
+    @Override
+    public void clearDisplayedAttendanceHistory() {
+        displayedAttendanceHistory.clear();
+        attendanceHistorySummary.set(null);
+    }
+
+    @Override
+    public javafx.beans.property.ReadOnlyObjectProperty<AttendanceHistorySummary> attendanceHistorySummaryProperty() {
+        return attendanceHistorySummary;
     }
 }

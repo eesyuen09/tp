@@ -4,6 +4,7 @@ import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.Messages.MESSAGE_STUDENT_ID_NOT_FOUND;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -11,6 +12,8 @@ import java.util.Optional;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
+import seedu.address.model.fee.FeeHistoryEntry;
+import seedu.address.model.fee.FeeHistorySummary;
 import seedu.address.model.fee.FeeState;
 import seedu.address.model.fee.FeeTracker;
 import seedu.address.model.person.Person;
@@ -72,23 +75,30 @@ public class FeeViewCommand extends FeeCommand {
         if (history.isEmpty()) {
             return new CommandResult(MESSAGE_NO_HISTORY_IN_RANGE);
         }
-        List<String> rows = new ArrayList<>();
+        List<FeeHistoryEntry> entries = new ArrayList<>();
         for (Map.Entry<Month, FeeState> entry : history.entrySet()) {
             Month month = entry.getKey();
             FeeState state = entry.getValue();
-            // to check if the payment status is unpaid in default or explicitly set to unpaid
             boolean isExplicit = tracker.getExplicitStatusOfMonth(studentId, month).isPresent();
-            rows.add(String.format("%s : %s (%s)", month.toHumanReadable(), state.name(),
-                isExplicit ? "marked" : "default"));
+            entries.add(new FeeHistoryEntry(month, state, isExplicit));
         }
 
+        Collections.reverse(entries);
 
-        String header = String.format(
-            "Payment history for %s from %s to %s (%d months) \nEnrolled Month: %s",
-            person.getName().fullName, effectiveStart.toHumanReadable(), endMonth.toHumanReadable(),
-            history.size(), enrolled.toHumanReadable());
+        FeeHistorySummary summary = new FeeHistorySummary(
+                person.getName().fullName,
+                studentId,
+                effectiveStart,
+                endMonth,
+                enrolled,
+                entries.size());
 
-        return new CommandResult(header + "\n" + String.join("\n", rows));
+        model.setDisplayedFeeHistory(entries, summary);
+
+        String header = String.format("Payment history for %s (Student ID %s) displayed.",
+                person.getName().fullName, studentId);
+
+        return new CommandResult(header);
     }
 
     @Override

@@ -1,6 +1,9 @@
 package seedu.address.logic.commands.fee;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.Messages.MESSAGE_STUDENT_ID_NOT_FOUND;
@@ -18,6 +21,9 @@ import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
+import seedu.address.model.fee.FeeHistoryEntry;
+import seedu.address.model.fee.FeeHistorySummary;
+import seedu.address.model.fee.FeeState;
 import seedu.address.model.person.StudentId;
 import seedu.address.model.time.Month;
 
@@ -53,21 +59,32 @@ public class FeeViewCommandTest {
 
         FeeViewCommand cmd = new FeeViewCommand(aliceId, Optional.empty());
         CommandResult result = cmd.execute(model);
-        String msg = result.getFeedbackToUser();
+        String expectedMessage = String.format("Payment history for %s (Student ID %s) displayed.",
+                ALICE.getName().fullName, aliceId);
+        assertEquals(expectedMessage, result.getFeedbackToUser());
 
-        // Header information
-        assertTrue(msg.contains("Payment history for " + ALICE.getName().fullName),
-            "Should include student's name");
-        assertTrue(msg.contains("from " + enrolled.toHumanReadable() + " to "),
-            "Should start from enrolled month when no start month provided");
-        assertTrue(msg.contains("Enrolled Month: " + enrolled.toHumanReadable()),
-            "Should echo enrolled month");
+        javafx.collections.ObservableList<FeeHistoryEntry> entries = model.getDisplayedFeeHistory();
+        assertFalse(entries.isEmpty());
 
-        // Rows: explicitly marked PAID and explicitly marked UNPAID
-        assertTrue(msg.contains(paidMonth.toHumanReadable() + " : PAID (marked)"),
-            "Should contain explicitly marked PAID row");
-        assertTrue(msg.contains(explicitUnpaidMonth.toHumanReadable() + " : UNPAID (marked)"),
-            "Should contain explicitly marked UNPAID row");
+        Month now = Month.now();
+        assertEquals(now, entries.get(0).getMonth());
+        assertEquals(enrolled, entries.get(entries.size() - 1).getMonth());
+        for (int i = 1; i < entries.size(); i++) {
+            assertTrue(entries.get(i - 1).getMonth().isAfter(entries.get(i).getMonth()));
+        }
+
+        FeeHistorySummary summary = model.feeHistorySummaryProperty().getValue();
+        assertNotNull(summary);
+        assertEquals(ALICE.getName().fullName, summary.getStudentName());
+        assertEquals(aliceId, summary.getStudentId());
+        assertEquals(enrolled, summary.getStartMonth());
+        assertEquals(Month.now(), summary.getEndMonth());
+        assertEquals(entries.size(), summary.getMonthCount());
+
+        assertTrue(entries.stream().anyMatch(entry -> entry.getMonth().equals(paidMonth)
+                && entry.getState() == FeeState.PAID && entry.isExplicit()));
+        assertTrue(entries.stream().anyMatch(entry -> entry.getMonth().equals(explicitUnpaidMonth)
+                && entry.getState() == FeeState.UNPAID && entry.isExplicit()));
     }
 
     @Test
@@ -78,13 +95,13 @@ public class FeeViewCommandTest {
 
         FeeViewCommand cmd = new FeeViewCommand(bensonId, Optional.of(requestedStart));
         CommandResult result = cmd.execute(model);
-        String msg = result.getFeedbackToUser();
+        String expectedMessage = String.format("Payment history for %s (Student ID %s) displayed.",
+                BENSON.getName().fullName, bensonId);
+        assertEquals(expectedMessage, result.getFeedbackToUser());
 
-        // Effective start should be clamped to enrolled month in the header
-        assertTrue(msg.contains("Payment history for " + BENSON.getName().fullName));
-        assertTrue(msg.contains("from " + enrolled.toHumanReadable() + " to "),
-            "Effective start should be the enrolled month");
-        assertTrue(msg.contains("Enrolled Month: " + enrolled.toHumanReadable()));
+        FeeHistorySummary summary = model.feeHistorySummaryProperty().getValue();
+        assertNotNull(summary);
+        assertEquals(enrolled, summary.getStartMonth());
     }
 
     @Test
@@ -99,6 +116,9 @@ public class FeeViewCommandTest {
         String expected = FeeViewCommand.MESSAGE_NO_HISTORY_IN_RANGE;
         assertTrue(msg.equals(expected),
             "Should print the no-history message when start month is after end (now)");
+
+        assertTrue(model.getDisplayedFeeHistory().isEmpty());
+        assertNull(model.feeHistorySummaryProperty().getValue());
     }
 
     @Test

@@ -54,7 +54,7 @@ public class AddCommandParser implements Parser<AddCommand> {
         Set<ClassTag> classTagList = ParserUtil.parseClassTags(argMultimap.getAllValues(PREFIX_CLASSTAG));
         String monthString = argMultimap.getValue(PREFIX_MONTH).orElse("");
         Month enrolledMonth = monthString.isEmpty()
-                ? Month.now() : ParserUtil.parseMonth(monthString);
+                ? Month.now() : ParserUtil.parseEnrolledMonth(monthString);
         PerformanceList performanceList = new PerformanceList();
 
         Person person = new Person(name, phone, email, address, classTagList, enrolledMonth, new AttendanceList(),

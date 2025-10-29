@@ -3,6 +3,7 @@ package seedu.address.ui;
 import java.util.logging.Logger;
 
 import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -19,6 +20,8 @@ import seedu.address.logic.Logic;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.model.attendance.AttendanceHistoryEntry;
+import seedu.address.model.fee.FeeHistoryEntry;
 import seedu.address.model.person.performance.PerformanceNote;
 
 /**
@@ -39,6 +42,8 @@ public class MainWindow extends UiPart<Stage> {
     private ResultDisplay resultDisplay;
     private HelpWindow helpWindow;
     private PerformanceListPanel performanceListPanel;
+    private FeeHistoryPanel feeHistoryPanel;
+    private AttendanceHistoryPanel attendanceHistoryPanel;
 
     @FXML
     private StackPane commandBoxPlaceholder;
@@ -118,19 +123,40 @@ public class MainWindow extends UiPart<Stage> {
         personListPanel = new PersonListPanel(logic.getFilteredPersonList(), p -> logic.getCurrentFeeState(p));
         personListPanel.bindFeeStateVersion(logic.feeStateVersionProperty());
         performanceListPanel = new PerformanceListPanel(logic.getDisplayedPerformanceNotes());
+        feeHistoryPanel = new FeeHistoryPanel(logic.getDisplayedFeeHistory(), logic.feeHistorySummaryProperty());
+        attendanceHistoryPanel = new AttendanceHistoryPanel(logic.getDisplayedAttendanceHistory(),
+                logic.attendanceHistorySummaryProperty());
 
         Node personListRoot = personListPanel.getRoot();
         Node performanceListRoot = performanceListPanel.getRoot();
+        Node feeHistoryRoot = feeHistoryPanel.getRoot();
+        Node attendanceHistoryRoot = attendanceHistoryPanel.getRoot();
 
         ObservableList<PerformanceNote> displayedNotes = logic.getDisplayedPerformanceNotes();
+        ObservableList<FeeHistoryEntry> displayedFeeHistory = logic.getDisplayedFeeHistory();
+        ObservableList<AttendanceHistoryEntry> displayedAttendanceHistory = logic.getDisplayedAttendanceHistory();
 
-        performanceListRoot.visibleProperty().bind(Bindings.isNotEmpty(displayedNotes));
+        BooleanBinding hasFeeHistory = Bindings.isNotEmpty(displayedFeeHistory);
+        BooleanBinding hasPerformanceNotes = Bindings.isNotEmpty(displayedNotes);
+        BooleanBinding hasAttendanceHistory = Bindings.isNotEmpty(displayedAttendanceHistory);
+
+        attendanceHistoryRoot.visibleProperty().bind(hasAttendanceHistory);
+        attendanceHistoryRoot.managedProperty().bind(attendanceHistoryRoot.visibleProperty());
+
+        feeHistoryRoot.visibleProperty().bind(hasFeeHistory.and(hasAttendanceHistory.not()));
+        feeHistoryRoot.managedProperty().bind(feeHistoryRoot.visibleProperty());
+
+        performanceListRoot.visibleProperty().bind(hasPerformanceNotes.and(hasFeeHistory.not()).and(
+                hasAttendanceHistory.not()));
         performanceListRoot.managedProperty().bind(performanceListRoot.visibleProperty());
 
-        personListRoot.visibleProperty().bind(Bindings.isEmpty(displayedNotes));
+        personListRoot.visibleProperty().bind(hasPerformanceNotes.not()
+                .and(hasFeeHistory.not())
+                .and(hasAttendanceHistory.not()));
         personListRoot.managedProperty().bind(personListRoot.visibleProperty());
 
-        personListPanelPlaceholder.getChildren().addAll(personListRoot, performanceListRoot);
+        personListPanelPlaceholder.getChildren().addAll(personListRoot, performanceListRoot,
+                feeHistoryRoot, attendanceHistoryRoot);
 
         resultDisplay = new ResultDisplay();
         resultDisplayPlaceholder.getChildren().add(resultDisplay.getRoot());

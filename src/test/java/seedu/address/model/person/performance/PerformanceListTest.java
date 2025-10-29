@@ -43,7 +43,7 @@ public class PerformanceListTest {
 
         PerformanceList list = new PerformanceList(initial);
         assertEquals(2, list.size());
-        assertEquals(NOTE_1, list.asUnmodifiableList().get(0).getNote());
+        assertEquals(NOTE_2, list.asUnmodifiableList().get(0).getNote());
     }
 
     @Test
@@ -82,7 +82,7 @@ public class PerformanceListTest {
         list.add(earliest);
         list.add(middle);
 
-        assertEquals(List.of(earliest, middle, latest), list.asUnmodifiableList());
+        assertEquals(List.of(latest, middle, earliest), list.asUnmodifiableList());
     }
 
     @Test
