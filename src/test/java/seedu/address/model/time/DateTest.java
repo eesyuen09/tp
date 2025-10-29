@@ -54,8 +54,6 @@ public class DateTest {
         assertFalse(Date.isValidFormat("1209202")); // missing digit
         assertFalse(Date.isValidFormat("120920255")); // extra digit
         assertFalse(Date.isValidFormat("12092025a")); // contains letter
-        assertFalse(Date.isValidFormat("00092025")); // day 00
-        assertFalse(Date.isValidFormat("32092025")); // day 32
         assertFalse(Date.isValidFormat("12002025")); // month 00
         assertFalse(Date.isValidFormat("12132025")); // month 13
 

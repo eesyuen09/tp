@@ -31,7 +31,7 @@ public class FeeCommandParser implements Parser<FeeCommand> {
         }
         String flag = preamble.split("\\s+")[0];
 
-        switch (flag.toLowerCase()) {
+        switch (flag) {
         case FeeMarkPaidCommand.COMMAND_FLAG:
             return parseMarkPaid(argMultimap);
         case FeeMarkUnpaidCommand.COMMAND_FLAG:

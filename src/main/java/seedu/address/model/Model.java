@@ -93,6 +93,8 @@ public interface Model {
      */
     void updateFilteredPersonList(Predicate<Person> predicate);
 
+    public javafx.beans.property.ReadOnlyIntegerProperty feeStateVersionProperty();
+
     /**
      * Retrieves a {@link Person} from the filtered list by their {@link StudentId}.
      *

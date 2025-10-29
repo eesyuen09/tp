@@ -151,6 +151,12 @@ Classes used by multiple components are in the `seedu.address.commons` package.
 
 This section describes some noteworthy details on how certain features are implemented.
 
+<box type= "info" seamless>
+
+Please note that certain aspects, such as UML classes, may have been simplified to fit within the diagram's constraints and maintain readability.
+
+</box>
+
 ### Student Management
 
 #### Overview
@@ -277,83 +283,53 @@ Each student is uniquely identified by a **Student ID** and can have associated 
 
 The Attendance Management feature enables tutors to track student attendance across different classes and dates. Each attendance record captures whether a student was present or absent for a specific class on a particular date.
 
-The feature is implemented through an `AttendanceList` stored within each `Person` object. This list contains `Attendance` objects, each holding:
-- A `Date` indicating when the class occurred
-- A `ClassTag` indicating which class it was for
-- An attendance status (Present/Absent)
+#### Implementation
 
-The key design decision is to store attendance within each student's record rather than in a centralized attendance repository. This provides natural encapsulation and efficient retrieval of a student's complete attendance history.
+Attendance management is implemented through several key components:
 
-#### Marking and Unmarking Attendance
+**Model Component:**
+- `Attendance`: Represents a single attendance record with a date, ClassTag reference, and status (Present/Absent)
+- `AttendanceList`: Maintains all attendance records for a student
+- Each `Person` object contains an `AttendanceList` field that stores their attendance history
+- The `Model` interface provides methods to retrieve students and validate ClassTags
 
-Given below is an example usage scenario showing how the attendance marking mechanism works.
+**Storage Component:**
+- `JsonAdaptedAttendance`: Converts Attendance objects to/from JSON format for persistence
+- Attendance records are stored within each student's record in the JSON file
+- During deserialization, ClassTag references in attendance records are validated against the system's ClassTag list
 
-Step 1. The tutor launches the application. Each `Person` object in the `AddressBook` contains an `AttendanceList`, initially populated with any previously recorded attendance from storage.
+**Logic Component:**
 
-Step 2. The tutor executes `att -m s/0001 d/10112025 t/Math` to mark student 0001 as present for Math class on 10 November 2025. The command is parsed by `AttendanceCommandParser`, which detects the `-m` flag and creates an `AttendanceMarkCommand`.
+The following commands handle attendance operations:
 
-Step 3. `AttendanceMarkCommand` is executed. It first validates that:
-   - Student with ID 0001 exists (via `Model#getPersonById()`)
-   - The ClassTag "Math" exists in the system (via `Model#findClassTag()`)
-   - The student is assigned to the Math class (via `Person#hasClassTag()`)
+1. **AttendanceMarkCommand (triggered by `att -m`)**: Marks a student as present for a class on a specific date
+    - Validates student exists and ClassTag exists
+    - Prevents duplicate "Present" records (throws error if already marked present)
+    - Replaces any existing "Absent" record for the same date and class with a "Present" record
 
-Step 4. The command checks for duplicate attendance records by examining the student's `AttendanceList`:
-   - Searches for an existing attendance record with the same date (10/11/2025) and class (Math)
-   - If a "Present" record already exists, the command returns a message indicating no change is needed
-   - If an "Absent" record exists, it will be removed before adding the new "Present" record
+2. **AttendanceUnmarkCommand (triggered by `att -u`)**: Marks a student as absent for a class on a specific date
+    - Validates student exists and ClassTag exists
+    - Prevents duplicate "Absent" records (throws error if already marked absent)
+    - Replaces any existing "Present" record for the same date and class with an "Absent" record
 
-Step 5. A new `Attendance` object is created with status "Present" and added to the student's `AttendanceList`. The model updates the filtered person list to reflect the changes.
+3. **AttendanceDeleteCommand (triggered by `att -d`)**: Completely removes an attendance record
+    - Validates the attendance record exists
+    - Removes the record from the student's AttendanceList
+    - Useful for correcting mistakes or handling cancelled classes
 
-Step 6. A `CommandResult` is returned with a success message: "Marked attendance for Student ID: 0001 on 10/11/2025 for Math"
+4. **AttendanceViewCommand (triggered by `att -v`)**: Displays a student's attendance history
+    - Retrieves all attendance records for a specific student
+    - Records are sorted by date, then by ClassTag name alphabetically
 
-The following sequence diagram shows how the marking attendance operation goes through the `Logic` component:
+#### Sequence Diagram: Marking Attendance
+
+The following sequence diagram illustrates the interactions when a tutor marks a student as present using the `att -m` command:
 
 <puml src="diagrams/AttendanceMarkSequenceDiagram.puml" alt="Attendance Mark Sequence Diagram" />
 
 <box type="info" seamless>
 
 **Note:** The lifeline for `AttendanceCommandParser` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline continues till the end of diagram.
-
-</box>
-
-**Unmarking attendance** (`att -u`) follows an identical execution flow, with the key difference being that `AttendanceCommandParser` creates an `AttendanceUnmarkCommand` and sets the attendance status to "Absent" instead of "Present".
-
-#### Deleting Attendance Records
-
-The `att -d` command allows tutors to completely remove an attendance record, useful for correcting mistakes or cancelled classes.
-
-Step 1. The tutor executes `att -d s/0001 d/10112025 t/Math` to delete the attendance record.
-
-Step 2. `AttendanceCommandParser` creates an `AttendanceDeleteCommand`.
-
-Step 3. The command validates that an attendance record exists for the specified student, date, and class.
-
-Step 4. If found, the attendance record is removed from the student's `AttendanceList`. If not found, a `CommandException` is thrown indicating no record exists.
-
-<box type="info" seamless>
-
-**Note:** Unlike mark/unmark which create or update records, delete completely removes the record. After deletion, the system has no record that attendance was ever taken for that date and class.
-
-</box>
-
-#### Viewing Attendance History
-
-The `att -v` command displays a student's attendance records, optionally filtered by class.
-
-Step 1. The tutor executes `att -v s/0001` to view all attendance records for student 0001, or `att -v s/0001 t/Math` to view only Math class attendance.
-
-Step 2. `AttendanceCommandParser` creates an `AttendanceViewCommand`.
-
-Step 3. The command retrieves the student's `AttendanceList` and filters the records:
-   - If a ClassTag is specified, only records matching that class are included
-   - Records from the last 6 months are shown
-   - Records are sorted chronologically with the most recent first
-
-Step 4. The filtered attendance records are formatted and displayed to the tutor, showing the date, class, and status (Present/Absent) for each record.
-
-<box type="info" seamless>
-
-**Note:** If the student has no attendance records, or no records matching the filter criteria, the system displays a message indicating no records are available.
 
 </box>
 
@@ -456,11 +432,11 @@ The following sequence diagram illustrates how the system filters students by a 
 
 <puml src="diagrams/ClassTagFilterSequenceDiagram.puml" alt="ClassTagFilterSequenceDiagram" />
 
-### Activty Diagram: Editing Student ClassTags
+#### Activty Diagram: Editing Student ClassTags
 
 The activity diagram below illustrates the workflow when a tutor edits a student's ClassTag assignments using the `edit` command:
 
-<puml src="diagrams/EditClassTagOfExistingStudentActivityDiagram.puml" alt="EditStudentClassTagsActivityDiagram" />
+<puml src="diagrams/EditClassTagOfExistingStudentAcitivtyDiagram.puml"/>
 
 #### Design Considerations
 
@@ -593,6 +569,17 @@ ClassTag operations include comprehensive validation:
 - Tag names are trimmed of leading/trailing whitespace before validation
 
 Each validation error provides clear, actionable feedback to help users correct their input.
+
+---
+
+## **Planned Enhancements**
+
+**Team size:** 5
+
+Given below is a list of enhancements we plan to implement in future versions of Tuto:
+
+1. **Bulk attendance marking for entire class:** Currently, tutors must mark attendance for each student individually using `att -m s/STUDENT_ID d/DATE t/CLASS`. For a class with 20-30 students, this becomes tedious and time-consuming. We plan to add a bulk marking feature that allows tutors to mark attendance for all students in a specific class at once. For example, `att -m d/10112025 t/Math` would mark all students enrolled in the Math ClassTag as present for that date. This would significantly reduce the time needed to take attendance at the beginning of each lesson.
+
 
 ### \[Proposed\] Undo/redo feature
 
