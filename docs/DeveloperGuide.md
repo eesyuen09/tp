@@ -1384,24 +1384,14 @@ testers are expected to do more *exploratory* testing.
     1. Test case: `delete`, `delete abc`, `delete 10000`  
        **Expected:** Command rejected. Error message explains invalid or missing Student ID.
 
-
-### Saving data
-
-1. Dealing with missing/corrupted data files
-
-   1. _{explain how to simulate a missing/corrupted file, and the expected behavior}_
-
-1. _{ more test cases …​ }_
-
-## Instructions for Manual Testing
-
-### Class Tag Management
+---
+### Managing Class Tags
 
 #### Creating Class Tags
 
 1. Creating a new class tag with a valid name
 
-    1. Prerequisites: None. The tag name must be 1-30 characters, alphanumeric with underscores allowed.
+    1. Prerequisites: The tag name must be 1-30 characters, alphanumeric with underscores allowed.
 
     1. Test case: `tag -a t/Sec_3_A_Math`  
        **Expected:** New class tag created. Status message confirms creation, tag appears in list.
@@ -1413,6 +1403,8 @@ testers are expected to do more *exploratory* testing.
     1. Test case: `tag -a t/Sec_3_A_Math`  
        **Expected:** Command rejected. Error message indicates tag already exists.
 
+---
+
 #### Listing Class Tags
 
 1. Listing all class tags
@@ -1421,6 +1413,8 @@ testers are expected to do more *exploratory* testing.
 
     1. Test case: `tag -l`  
        **Expected:** Displays numbered list of all existing class tags.
+
+--- 
 
 #### Filtering Students by Class Tag
 
@@ -1435,6 +1429,8 @@ testers are expected to do more *exploratory* testing.
 
     1. Test case: `filter -t t/NonExistentTag`  
        **Expected:** Command rejected. Error message indicates tag does not exist.
+
+---
 
 #### Deleting Class Tags
 
@@ -1451,3 +1447,13 @@ testers are expected to do more *exploratory* testing.
 
     1. Test case: `tag -d t/Sec_3_A_Math`  
        **Expected:** Command rejected. Error message indicates tag is still in use by students.
+
+---
+
+### Saving data
+
+1. Dealing with missing/corrupted data files
+
+    1. _{explain how to simulate a missing/corrupted file, and the expected behavior}_
+
+1. _{ more test cases …​ }_
