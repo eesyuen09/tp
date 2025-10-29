@@ -35,7 +35,7 @@ public class PerformanceNote {
     }
 
     private static String validateNote(String n) {
-        if (n.isEmpty()) {
+        if (n.trim().isEmpty()) {
             throw new IllegalArgumentException(MESSAGE_CONSTRAINTS);
         }
 
