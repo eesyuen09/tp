@@ -306,7 +306,8 @@ When marking a student’s fee as **Paid** or **Unpaid**, the following rules ap
 
 <div class="tip">
 💡 These rules ensure that payment records remain consistent, logical, and accurately reflect each student’s fee history.
-</div>
+</div>  
+
 
 ### 1. Marking a student as PAID: `fee -p`
 
@@ -331,6 +332,8 @@ or
 `Cannot mark payment: Alex Yeoh's enrolment started in August 2025.
 Earlier months cannot be marked.`
 
+---
+
 ### 2. Marking a student as UNPAID: `fee -up`
 
 Marks a student’s payment status as **UNPAID** for one specific month.  
@@ -352,6 +355,7 @@ Earlier months cannot be marked.`
 or  
 `You can’t mark unpaid for a future month. Please try again when the month has started.`
 
+---
 
 ### 3. Viewing a student’s payment history:
 
@@ -432,6 +436,7 @@ or
 `Cannot filter by future months.`  
 `Please select a month up to the current month.`
 
+---
 
 ### Filter by UNPAID status : `filter -up`
 
@@ -454,6 +459,8 @@ If a student has never been explicitly marked as PAID, their status is treated a
 or  
 `Cannot filter by future months.`  
 `Please select a month up to the current month.`
+
+---
 
 ### Filtering persons by class tag : `filter -t`
 
