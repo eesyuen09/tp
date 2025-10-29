@@ -9,6 +9,7 @@ import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import seedu.address.logic.Messages;
 import seedu.address.logic.commands.CommandTestUtil;
 import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
@@ -58,7 +59,10 @@ public class FeeFilterPaidCommandTest {
         expectedModel.updateFilteredPersonList(expectedModel.paidStudents(month));
 
         FeeFilterPaidCommand command = new FeeFilterPaidCommand(month);
-        String expectedMessage = String.format("Showing PAID students for %s.", month.toHumanReadable());
+        String expectedMessage = String.format(
+            "Showing PAID students for %s.\n%s",
+            month.toHumanReadable(),
+            String.format(Messages.MESSAGE_PERSONS_LISTED_OVERVIEW, expectedModel.getFilteredPersonList().size()));
 
         assertCommandSuccess(command, model, expectedMessage, expectedModel);
     }
@@ -69,7 +73,10 @@ public class FeeFilterPaidCommandTest {
         expectedModel.updateFilteredPersonList(expectedModel.paidStudents(month));
 
         FeeFilterPaidCommand command = new FeeFilterPaidCommand(month);
-        String expectedMessage = String.format("Showing PAID students for %s.", month.toHumanReadable());
+        String expectedMessage = String.format(
+            "Showing PAID students for %s.\n%s",
+            month.toHumanReadable(),
+            String.format(Messages.MESSAGE_PERSONS_LISTED_OVERVIEW, expectedModel.getFilteredPersonList().size()));
 
         assertCommandSuccess(command, model, expectedMessage, expectedModel);
         assertTrue(expectedModel.getFilteredPersonList().isEmpty());

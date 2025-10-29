@@ -27,10 +27,11 @@
         </Label>
         <Label fx:id="name" text="\$first" styleClass="cell_big_label" />
       </HBox>
-      <FlowPane fx:id="tags" />
-        <Label fx:id="feeStatusBox" alignment="CENTER"
-               prefWidth="70"
-               style="-fx-text-fill: white; -fx-font-weight: bold;" />
+        <VBox spacing="3" alignment="CENTER_LEFT">
+      <FlowPane fx:id="tags" hgap="8" vgap="3" />
+        <Label fx:id="feeStatusBox" alignment="CENTER" prefWidth="50"
+               style="-fx-text-fill: white; -fx-font-weight: bold;-fx-margin: 3 8 3 8;"/>
+        </VBox>
       <Label fx:id="studentId" styleClass="cell_small_label" text="\$studentId" />
       <Label fx:id="phone" styleClass="cell_small_label" text="\$phone" />
       <Label fx:id="address" styleClass="cell_small_label" text="\$address" />

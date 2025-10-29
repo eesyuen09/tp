@@ -3,6 +3,7 @@ package seedu.address.logic;
 import java.nio.file.Path;
 import java.util.Optional;
 
+import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.logic.commands.CommandResult;
@@ -55,4 +56,6 @@ public interface Logic {
 
     /** Returns an unmodifiable view of the performance notes currently displayed. */
     ObservableList<PerformanceNote> getDisplayedPerformanceNotes();
+
+    ReadOnlyIntegerProperty feeStateVersionProperty();
 }

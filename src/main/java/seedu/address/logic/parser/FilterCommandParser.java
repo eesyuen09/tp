@@ -37,7 +37,7 @@ public class FilterCommandParser implements Parser<Command> {
 
         String commandFlag = preamble.split("\\s+")[0];
 
-        switch (commandFlag.toLowerCase()) {
+        switch (commandFlag) {
 
         case FeeFilterPaidCommand.COMMAND_FLAG: // "-p"
             return parseFeeFilter(argMultimap, true);
