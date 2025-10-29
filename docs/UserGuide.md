@@ -578,8 +578,11 @@ Showing attendance records for: Bernice Yu<br>
 </box>
 
 ## Tracking students' performance: `perf` commands
-The `perf` command family allows you to track students' performance in class.
-This helps you to monitor and manage students' academic progress effectively.
+
+The `perf` command family allows you to track students' performance in class by **adding performance notes**.
+Each performance note is tied to both a date and a class tag, allowing tutors to document specific achievements or areas for improvement for each student.
+
+<box type="info" seamless>
 
 **Overview of perf commands**
 
@@ -589,6 +592,7 @@ This helps you to monitor and manage students' academic progress effectively.
 | `perf -v s/STUDENT_ID`                                       | View performance data for a student          |
 | `perf -e s/STUDENT_ID d/DATE t/TAG_NAME pn/PERFORMANCE_NOTE` | Edit existing performance data for a student |
 | `perf -d s/STUDENT_ID d/DATE t/TAG_NAME`                     | Delete performance data for a student        |
+</box>
 
 
 ### 1. Adding a performance note for a student:
@@ -597,11 +601,18 @@ Adds a performance note for a student in a specific class on a specific date.
 
 **Format**: `perf -a s/STUDENT_ID d/DATE t/TAG_NAME pn/PERFORMANCE_NOTE`
 
-**Examples:**
-- `perf -a s/0001 d/18092025 t/Sec3_Maths pn/Scored 85% on mock test`
+Command Details and Constraints:
+* Adds a performance note for the student identified by the given `STUDENT_ID`.
+* The `DATE` must not be before the student's enrollment date and cannot be a future date.
+* The `TAG_NAME` must correspond to an existing class tag assigned to the student.
+* The `PERFORMANCE_NOTE` can be any text under 200 characters.
+* If a performance note already exists for the same date and class tag, the command will reject the addition and show an error message.
 
-**Expected output:**
-Performance note successfully added for John Tan in Sec3_Maths on 18-09-2025.
+**Example:**
+- `perf -a s/0001 d/18092025 t/Sec3_Maths pn/Scored 85% on mock test`
+    >**Expected output:** `Performance note successfully added for John Tan in Sec3_Maths on 18-09-2025.`
+
+---
 
 ### 2. Viewing performance notes for a student:
 
@@ -609,12 +620,17 @@ Displays all performance notes for a student.
 
 **Format**: `perf -v s/STUDENT_ID`
 
-**Examples:**
-- `perf -v s/0001`
+Command Details and Constraints:
+* Displays all performance notes for the student identified by the given `STUDENT_ID`.
+* If no performance notes exist for the student, a message will be displayed indicating no notes were found.
+* Performance notes are displayed in chronological order based on the date.
+* Each note shows the date, class tag, and the performance note content.
 
-**Expected output:**
-Performance notes for John Tan:
-- Sec3_Maths on 18-09-2025: Scored 85% on mock test
+**Example:**
+- `perf -v s/0001`
+    >**Expected output:** `Performance Notes for John Tan displayed.`
+
+---
 
 ### 3. Editing a performance note for a student:
 
@@ -622,11 +638,16 @@ Edits an existing performance note for a student.
 
 **Format**: `perf -e s/STUDENT_ID d/DATE t/TAG_NAME pn/PERFORMANCE_NOTE`
 
-**Examples:**
-- `perf -e s/0001 d/18092025 t/Sec3_Maths pn/Scored 90% on mock test after re-evaluation`
+Command Details and Constraints:
+* Edits the performance note for the student identified by the given `STUDENT_ID`, `DATE`, and `TAG_NAME`.
+* The `PERFORMANCE_NOTE` can be any text under 200 characters.
+* If no performance note exists for the specified date and class tag, the command will reject the edit and show an error message.
 
-**Expected output:**
-- Performance note for %s in %s on %s successfully edited.
+**Example:**
+- `perf -e s/0001 d/18092025 t/Sec3_Maths pn/Scored 90% on mock test after re-evaluation`
+    >**Expected output:** `Performance note for John Tan in Sec3_Maths on 18-09-2025 successfully edited.`
+
+---
 
 ### 4. Deleting a performance note for a student:
 
@@ -634,11 +655,13 @@ Deletes a performance note for a student.
 
 **Format**: `perf -d s/STUDENT_ID d/DATE t/TAG_NAME`
 
-**Examples:**
-- `perf -d s/0001 d/18092025 t/Sec3_Maths`
+Command Details and Constraints:
+* Deletes the performance note for the student identified by the given `STUDENT_ID`, `DATE`, and `TAG_NAME`.
+* If no performance note exists for the specified date and class tag, the command will reject the deletion and show an error message.
 
-**Expected output:**
-- Performance note for John Tan in Sec3_Maths on 18-09-2025 successfully deleted.
+**Example:**
+- `perf -d s/0001 d/18092025 t/Sec3_Maths`
+    >**Expected output:** `Performance note for John Tan in Sec3_Maths on 18-09-2025 successfully deleted.`
 
 ---
 
