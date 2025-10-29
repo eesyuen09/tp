@@ -360,7 +360,7 @@ The following sequence diagram illustrates the interactions when a tutor marks a
   * Pros: Self-documenting commands, very clear semantics, easily extensible (could add `status/late` or `status/excused` in future)
   * Cons: More verbose, longer command syntax, requires typing "status/" every time
 
-### Performance Notes Management
+### Performance Management
 
 #### Overview
 
@@ -660,6 +660,8 @@ Each validation error provides clear, actionable feedback to help users correct 
 Given below is a list of enhancements we plan to implement in future versions of Tuto:
 
 1. **Bulk attendance marking for entire class:** Currently, tutors must mark attendance for each student individually using `att -m s/STUDENT_ID d/DATE t/CLASS`. For a class with 20-30 students, this becomes tedious and time-consuming. We plan to add a bulk marking feature that allows tutors to mark attendance for all students in a specific class at once. For example, `att -m d/10112025 t/Math` would mark all students enrolled in the Math ClassTag as present for that date. This would significantly reduce the time needed to take attendance at the beginning of each lesson.
+2. **Unified student history view (view s/STUDENT_ID):** Introduce a consolidated view command that shows every performance note, attendance record, and fee transaction for the specified student, allowing tutors to review a learner’s full journey without hopping between modules.
+3. **Targeted performance and attendance filters (perf -v / att -v):** Extend the existing view flags to accept optional m/MMYY or t/CLASS_TAG parameters so tutors can zero in on a specific month or class when analysing historical performance or attendance data.
 
 
 ### \[Proposed\] Undo/redo feature
