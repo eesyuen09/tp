@@ -156,9 +156,7 @@ public class ModelManager implements Model {
     @Override
     public Optional<ClassTag> findClassTag(ClassTag classTag) {
         requireNonNull(classTag);
-        return addressBook.getClassTagList().stream()
-                .filter(existingTag -> existingTag.equals(classTag))
-                .findFirst();
+        return addressBook.findClassTag(classTag);
     }
 
     @Override

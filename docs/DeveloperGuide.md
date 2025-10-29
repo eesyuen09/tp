@@ -472,7 +472,7 @@ ClassTag management is implemented through several key components:
     - `hasClassTag(ClassTag)`: Checks if a ClassTag exists
     - `addClassTag(ClassTag)`: Adds a new ClassTag
     - `deleteClassTag(ClassTag)`: Removes a ClassTag
-    - `findClassTag(String)`: Finds and returns a ClassTag by its name
+    - `findClassTag(ClassTag)`: Finds and return the ClassTag saved in UniqueClassTagList that matches the given ClassTag
     - `getClassTagList()`: Returns an unmodifiable list of all ClassTags
 - `Person` objects maintain a `Set<ClassTag>` field that references ClassTags from the central `UniqueClassTagList`
   
@@ -501,6 +501,7 @@ The following commands handle ClassTag operations:
 3. **ListClassTagCommand (triggered by `tag -l`)**: Lists all ClassTags in the system
     - Retrieves all ClassTags from the Model via `Model#getClassTagList()`
     - Displays them in a numbered list
+    - If no tags exist, displays "No class tags found."
 
 4. **ClassTagFilterCommand (triggered by `filter -t`)**: Filters students by ClassTag
     - Validates the ClassTag exists via `Model#findClassTag()`
@@ -1041,34 +1042,34 @@ _{Explain here how the data archiving feature will be implemented}_
 
 Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have) - `*`
 
-| Priority  | As a …​                                    | I want to …​                                              | So that I can…​                                                         |
-|-----------|------------------------------------------- |-----------------------------------------------------------|-------------------------------------------------------------------------|
-| `* * * `  | tutor handling lesson fees                 | tag a student as paid for a given month                   | keep track of students who have settled their tuition fees              |
-| `* * *`   | tutor handling lesson fees                 | tag a student as unpaid for a given month                 | identify students who still owe lesson fees                             |
-| `* * *`   | tutor handling lesson fees                 | filter students who have paid by month                    | view all students who have completed payment for that month at a glance |
-| `* * *`   | tutor handling lesson fees                 | filter students who have not paid by month                | follow up with students who have outstanding tuition fees               |
-| `* * *`   | tutor handling lesson fees                 | view a student's payment history up to the current month  | review their past payment behaviour and identify missed months          |
-| `* * *`   | tutor who teaches multiple classes         | create a class tag                                        | keep track of a new class I am teaching                                 |
-| `* * *`   | tutor who teaches multiple classes         | assign class tags to a student during creation or editing | manage all students of the same subject together                        |
-| `* * *`   | tutor who teaches multiple classes         | remove class tags from a student through editing          | remove students not in a particular class                               |
-| `* * *`   | tutor who teaches multiple classes         | filter students by class tag (eg. Sec_3_A_Math)           | I can focus on a precise teaching group                                 |
-| `* * *`   | tutor who teaches multiple classes         | list all the class tags                                   | I can know what classes I am teaching                                   |
-| `* * `    | tutor who teaches multiple classes         | delete a class tag                                        | keep only the classes I am still teaching                               |
-| `* * * `  | tutor     | add a performance note for a student on a given date      | I can record their progress                                             |
-| `* * * `  | tutor     | view all performance notes for a student                  | I can review their progress                                             |
-| `* * * `  | tutor     | edit a specific performance note for a student            | I can correct or update it                                              |
-| `* * * `  | tutor     | delete a specific performance note for a student          | I can remove it if needed                                               |
-| `* * *`   | tutor who teaches multiple classes         | take attendance of each student                           | I can track their attendance record                                     |
-| `* * *`   | tutor who teaches multiple classes         | view students' attendance history                         | I can track if students are consistently attending lessons              |
-| `* * *`   | tutor who teaches multiple classes         | unmark a student's attendance                             | correct mistakes or changes if attendance was marked wrongly            |
-| `* *`     | tutor who teaches multiple classes         | delete an attendance record                               | remove records for cancelled classes or fix erroneous entries           |
-| `* *`     | new tutor user                                           | view sample data                                          | understand how the app looks when populated                             |
-| `* *`     | tutor starting fresh                                     | purge sample/old data                                     | start fresh with only my real student info                              |                                                                  |
-| `* * *`   | tutor managing students                                  | add students                                              | quickly add my students into the address book                           |
-| `* * *`   | tutor managing students                                  | view students                                             | see all the students I am teaching and their details at a glance        |
-| `* *`     | tutor managing students                                  | delete students                                           | remove students who are no longer taking lessons                        |
-| `* * *`   | tutor handling many students across classes and subjects | edit student information                                  | update my contact list                                                  |
-| `* * *`   | tutor handling many students across classes and subjects | search for a student by name                              | quickly locate their information                                        |
+| Priority | As a …​                                    | I want to …​                                              | So that I can…​                                                         |
+|----------|------------------------------------------- |-----------------------------------------------------------|-------------------------------------------------------------------------|
+| `* * * ` | tutor handling lesson fees                 | tag a student as paid for a given month                   | keep track of students who have settled their tuition fees              |
+| `* * *`  | tutor handling lesson fees                 | tag a student as unpaid for a given month                 | identify students who still owe lesson fees                             |
+| `* * *`  | tutor handling lesson fees                 | filter students who have paid by month                    | view all students who have completed payment for that month at a glance |
+| `* * *`  | tutor handling lesson fees                 | filter students who have not paid by month                | follow up with students who have outstanding tuition fees               |
+| `* * *`  | tutor handling lesson fees                 | view a student's payment history up to the current month  | review their past payment behaviour and identify missed months          |
+| `* * *`  | tutor who teaches multiple classes         | create a class tag                                        | keep track of a new class I am teaching                                 |
+| `* * *`  | tutor who teaches multiple classes         | assign class tags to a student during creation or editing | manage all students of the same subject together                        |
+| `* * *`  | tutor who teaches multiple classes         | remove class tags from a student through editing          | remove students not in a particular class                               |
+| `* * *`  | tutor who teaches multiple classes         | filter students by class tag (eg. Sec_3_A_Math)           | I can focus on a precise teaching group                                 |
+| `* * *`  | tutor who teaches multiple classes         | list all the class tags                                   | I can know what classes I am teaching                                   |
+| `* * `   | tutor who teaches multiple classes         | delete a class tag                                        | keep only the classes I am still teaching                               |
+| `* * * ` | tutor     | add a performance note for a student on a given date      | I can record their progress                                             |
+| `* * * ` | tutor     | view all performance notes for a student                  | I can review their progress                                             |
+| `* * * ` | tutor     | edit a specific performance note for a student            | I can correct or update it                                              |
+| `* * * ` | tutor     | delete a specific performance note for a student          | I can remove it if needed                                               |
+| `* * *`  | tutor who teaches multiple classes         | take attendance of each student                           | I can track their attendance record                                     |
+| `* * *`  | tutor who teaches multiple classes         | view students' attendance history                         | I can track if students are consistently attending lessons              |
+| `* * *`  | tutor who teaches multiple classes         | unmark a student's attendance                             | correct mistakes or changes if attendance was marked wrongly            |
+| `* * *`  | tutor who teaches multiple classes         | delete an attendance record                               | remove records for cancelled classes or fix erroneous entries           |
+| `* *`    | new tutor user                                           | view sample data                                          | understand how the app looks when populated                             |
+| `* *`    | tutor starting fresh                                     | purge sample/old data                                     | start fresh with only my real student info                              |                                                                  |
+| `* * *`  | tutor managing students                                  | add students                                              | quickly add my students into the address book                           |
+| `* * *`  | tutor managing students                                  | view students                                             | see all the students I am teaching and their details at a glance        |
+| `* *`    | tutor managing students                                  | delete students                                           | remove students who are no longer taking lessons                        |
+| `* * *`  | tutor handling many students across classes and subjects | edit student information                                  | update my contact list                                                  |
+| `* * *`  | tutor handling many students across classes and subjects | search for a student by name                              | quickly locate their information                                        |
 
 
 ### Use cases

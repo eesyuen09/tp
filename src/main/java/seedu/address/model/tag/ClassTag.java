@@ -37,6 +37,8 @@ public class ClassTag {
      */
     public static boolean isValidTagName(String test) {
 
+        requireNonNull(test);
+
         if (test.isEmpty() || test.length() > MAX_LENGTH) {
             return false;
         }
