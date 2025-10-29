@@ -6,6 +6,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_CLASSTAG;
 import java.util.List;
 import java.util.Optional;
 
+import seedu.address.logic.Messages;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
@@ -24,7 +25,6 @@ public class DeleteClassTagCommand extends ClassTagCommand {
             + "Example: " + COMMAND_WORD + " " + COMMAND_FLAG + " " + PREFIX_CLASSTAG + "Sec3_AMath";
 
     public static final String MESSAGE_SUCCESS = "Tag deleted: %1$s";
-    public static final String MESSAGE_TAG_NOT_FOUND = "This class tag does not exist.";
     public static final String MESSAGE_TAG_IN_USE = "Cannot delete tag '%1$s' because it is still assigned to one "
             + "or more students. Please remove the tag from all students first.";
 
@@ -45,7 +45,7 @@ public class DeleteClassTagCommand extends ClassTagCommand {
         Optional<ClassTag> foundTag = model.findClassTag(toDelete);
 
         if (foundTag.isEmpty()) {
-            throw new CommandException(MESSAGE_TAG_NOT_FOUND);
+            throw new CommandException(Messages.MESSAGE_TAG_NOT_FOUND);
         }
 
         ClassTag actualTag = foundTag.get();

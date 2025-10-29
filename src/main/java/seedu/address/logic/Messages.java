@@ -18,6 +18,7 @@ public class Messages {
     public static final String MESSAGE_DUPLICATE_FIELDS =
                 "Multiple values specified for the following single-valued field(s): ";
     public static final String MESSAGE_STUDENT_ID_NOT_FOUND = "Student ID not found: %1$s";
+    public static final String MESSAGE_TAG_NOT_FOUND = "This class tag does not exist.";
 
     /**
      * Returns an error message indicating the duplicate prefixes.
