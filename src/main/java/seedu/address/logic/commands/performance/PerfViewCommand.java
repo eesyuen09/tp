@@ -18,10 +18,9 @@ import seedu.address.model.person.performance.PerformanceNote;
  */
 public class PerfViewCommand extends PerfCommand {
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + "-v"
-            + ": Views all notes of a student. "
-            + "Parameters: "
-            + PREFIX_STUDENTID + "STUDENTID ";
+    public static final String MESSAGE_USAGE = COMMAND_WORD + " -v "
+            + PREFIX_STUDENTID + "STUDENT_ID \n"
+            + "Example: perf -v s/0000";
 
     private final StudentId studentId;
 

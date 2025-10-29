@@ -76,28 +76,28 @@ public class PerfCommandParserTest {
     public void parse_addCommandMissingStudentId_throwsParseException() {
         assertThrows(ParseException.class,
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                        PerfCommand.MESSAGE_USAGE), () -> parser.parse("-a d/15032024 t/CS2103T pn/note"));
+                        PerfAddCommand.MESSAGE_USAGE), () -> parser.parse("-a d/15032024 t/CS2103T pn/note"));
     }
 
     @Test
     public void parse_addCommandMissingDate_throwsParseException() {
         assertThrows(ParseException.class,
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                        PerfCommand.MESSAGE_USAGE), () -> parser.parse("-a s/0123 t/CS2103T pn/note"));
+                        PerfAddCommand.MESSAGE_USAGE), () -> parser.parse("-a s/0123 t/CS2103T pn/note"));
     }
 
     @Test
     public void parse_addCommandMissingClassTag_throwsParseException() {
         assertThrows(ParseException.class,
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                        PerfCommand.MESSAGE_USAGE), () -> parser.parse("-a s/0123 d/15032024 pn/note"));
+                        PerfAddCommand.MESSAGE_USAGE), () -> parser.parse("-a s/0123 d/15032024 pn/note"));
     }
 
     @Test
     public void parse_addCommandMissingNote_throwsParseException() {
         assertThrows(ParseException.class,
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                        PerfCommand.MESSAGE_USAGE), () -> parser.parse("-a s/0123 d/15032024 t/CS2103T"));
+                        PerfAddCommand.MESSAGE_USAGE), () -> parser.parse("-a s/0123 d/15032024 t/CS2103T"));
     }
 
     @Test
@@ -126,7 +126,7 @@ public class PerfCommandParserTest {
         String command = "-a extra s/0123 d/15032024 t/CS2103T pn/note";
         assertThrows(ParseException.class,
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                        PerfCommand.MESSAGE_USAGE), () -> parser.parse(command));
+                        PerfAddCommand.MESSAGE_USAGE), () -> parser.parse(command));
     }
 
     @Test
@@ -147,7 +147,7 @@ public class PerfCommandParserTest {
     public void parse_viewCommandMissingStudentId_throwsParseException() {
         assertThrows(ParseException.class,
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                        PerfCommand.MESSAGE_USAGE), () -> parser.parse("-v"));
+                        PerfViewCommand.MESSAGE_USAGE), () -> parser.parse("-v"));
     }
 
     @Test
@@ -159,7 +159,7 @@ public class PerfCommandParserTest {
     public void parse_viewCommandWithPreamble_throwsParseException() {
         assertThrows(ParseException.class,
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                        PerfCommand.MESSAGE_USAGE), () -> parser.parse("-v extra s/0123"));
+                        PerfViewCommand.MESSAGE_USAGE), () -> parser.parse("-v extra s/0123"));
     }
 
     // ==================== PerfEditCommand Tests ====================
@@ -178,28 +178,28 @@ public class PerfCommandParserTest {
     public void parse_editCommandMissingStudentId_throwsParseException() {
         assertThrows(ParseException.class,
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                        PerfCommand.MESSAGE_USAGE), () -> parser.parse("-e d/15032024 t/CS2103T pn/note"));
+                        PerfEditCommand.MESSAGE_USAGE), () -> parser.parse("-e d/15032024 t/CS2103T pn/note"));
     }
 
     @Test
     public void parse_editCommandMissingDate_throwsParseException() {
         assertThrows(ParseException.class,
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                        PerfCommand.MESSAGE_USAGE), () -> parser.parse("-e s/0123 t/CS2103T pn/note"));
+                        PerfEditCommand.MESSAGE_USAGE), () -> parser.parse("-e s/0123 t/CS2103T pn/note"));
     }
 
     @Test
     public void parse_editCommandMissingClassTag_throwsParseException() {
         assertThrows(ParseException.class,
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                        PerfCommand.MESSAGE_USAGE), () -> parser.parse("-e s/0123 d/15032024 pn/note"));
+                        PerfEditCommand.MESSAGE_USAGE), () -> parser.parse("-e s/0123 d/15032024 pn/note"));
     }
 
     @Test
     public void parse_editCommandMissingNote_throwsParseException() {
         assertThrows(ParseException.class,
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                        PerfCommand.MESSAGE_USAGE), () -> parser.parse("-e s/0123 d/15032024 t/CS2103T"));
+                        PerfEditCommand.MESSAGE_USAGE), () -> parser.parse("-e s/0123 d/15032024 t/CS2103T"));
     }
 
     // ==================== PerfDeleteCommand Tests ====================
@@ -217,27 +217,27 @@ public class PerfCommandParserTest {
     public void parse_deleteCommandMissingStudentId_throwsParseException() {
         assertThrows(ParseException.class,
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                        PerfCommand.MESSAGE_USAGE), () -> parser.parse("-d d/15032024 t/CS2103T"));
+                        PerfDeleteCommand.MESSAGE_USAGE), () -> parser.parse("-d d/15032024 t/CS2103T"));
     }
 
     @Test
     public void parse_deleteCommandMissingDate_throwsParseException() {
         assertThrows(ParseException.class,
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                        PerfCommand.MESSAGE_USAGE), () -> parser.parse("-d s/0123 t/CS2103T"));
+                        PerfDeleteCommand.MESSAGE_USAGE), () -> parser.parse("-d s/0123 t/CS2103T"));
     }
 
     @Test
     public void parse_deleteCommandMissingClassTag_throwsParseException() {
         assertThrows(ParseException.class,
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                        PerfCommand.MESSAGE_USAGE), () -> parser.parse("-d s/0123 d/15032024"));
+                        PerfDeleteCommand.MESSAGE_USAGE), () -> parser.parse("-d s/0123 d/15032024"));
     }
 
     @Test
     public void parse_deleteCommandWithPreamble_throwsParseException() {
         assertThrows(ParseException.class,
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                        PerfCommand.MESSAGE_USAGE), () -> parser.parse("-d preamble s/0123 d/15032024 t/CS2103T"));
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, PerfDeleteCommand.MESSAGE_USAGE), () ->
+                        parser.parse("-d preamble s/0123 d/15032024 t/CS2103T"));
     }
 }

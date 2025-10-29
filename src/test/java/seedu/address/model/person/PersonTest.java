@@ -32,24 +32,40 @@ public class PersonTest {
         // null -> returns false
         assertFalse(ALICE.isSamePerson(null));
 
-        // same name, all other attributes different -> returns true
-        Person editedAlice = new PersonBuilder(ALICE).withPhone(VALID_PHONE_BOB).withEmail(VALID_EMAIL_BOB)
-                .withAddress(VALID_ADDRESS_BOB).withClassTags(VALID_CLASS_TAG_PHYSICS).build();
+        // same name and same phone, other attributes different -> returns true
+        Person editedAlice = new PersonBuilder(ALICE)
+                .withEmail(VALID_EMAIL_BOB)
+                .withAddress(VALID_ADDRESS_BOB)
+                .withClassTags(VALID_CLASS_TAG_PHYSICS)
+                .build();
         assertTrue(ALICE.isSamePerson(editedAlice));
 
-        // different name, all other attributes same -> returns false
-        editedAlice = new PersonBuilder(ALICE).withName(VALID_NAME_BOB).build();
+        // same name but different phone -> returns false
+        editedAlice = new PersonBuilder(ALICE)
+                .withPhone(VALID_PHONE_BOB)
+                .build();
         assertFalse(ALICE.isSamePerson(editedAlice));
 
-        // name differs in case, all other attributes same -> returns false
-        Person editedBob = new PersonBuilder(BOB).withName(VALID_NAME_BOB.toLowerCase()).build();
+        // different name, same phone -> returns false
+        editedAlice = new PersonBuilder(ALICE)
+                .withName(VALID_NAME_BOB)
+                .build();
+        assertFalse(ALICE.isSamePerson(editedAlice));
+
+        // name differs in case, same phone -> returns false
+        Person editedBob = new PersonBuilder(BOB)
+                .withName(VALID_NAME_BOB.toLowerCase())
+                .build();
         assertFalse(BOB.isSamePerson(editedBob));
 
-        // name has trailing spaces, all other attributes same -> returns false
+        // name has trailing spaces, same phone -> returns false
         String nameWithTrailingSpaces = VALID_NAME_BOB + " ";
-        editedBob = new PersonBuilder(BOB).withName(nameWithTrailingSpaces).build();
+        editedBob = new PersonBuilder(BOB)
+                .withName(nameWithTrailingSpaces)
+                .build();
         assertFalse(BOB.isSamePerson(editedBob));
     }
+
 
     @Test
     public void equals() {

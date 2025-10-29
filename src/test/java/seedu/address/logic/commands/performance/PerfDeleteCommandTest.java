@@ -61,9 +61,11 @@ public class PerfDeleteCommandTest {
         Person personWithNote = validPerson.withPerformanceList(performanceList);
 
         Model model = new ModelManager(new AddressBook(), new UserPrefs());
+        model.addClassTag(VALID_TAG_1);
         model.addPerson(personWithNote);
 
         Model expectedModel = new ModelManager(new AddressBook(), new UserPrefs());
+        expectedModel.addClassTag(VALID_TAG_1);
         expectedModel.addPerson(validPerson.withPerformanceList(new PerformanceList()));
 
         String expectedMessage = String.format(PerfCommand.DELETED,
@@ -82,6 +84,7 @@ public class PerfDeleteCommandTest {
                 .build();
 
         Model model = new ModelManager(new AddressBook(), new UserPrefs());
+        model.addClassTag(VALID_TAG_1);
         model.addPerson(validPerson);
 
         // Attempt to delete a performance note for a date where none exists
@@ -109,6 +112,27 @@ public class PerfDeleteCommandTest {
         new PerfDeleteCommand(VALID_STUDENT_ID, VALID_DATE_1, VALID_TAG_1).execute(modelStub);
 
         assertTrue(modelStub.updatedPerson.getPerformanceList().asUnmodifiableList().isEmpty());
+    }
+
+    @Test
+    public void execute_classTagNotInModel_throwsCommandException() {
+        Person validPerson = new PersonBuilder()
+                .withStudentId(VALID_STUDENT_ID.toString())
+                .withClassTags(VALID_TAG_1.tagName)
+                .build();
+
+        PerformanceNote note = new PerformanceNote(VALID_DATE_1, VALID_TAG_1, VALID_NOTE_1);
+        PerformanceList list = new PerformanceList();
+        list.add(note);
+        Person personWithNote = validPerson.withPerformanceList(list);
+
+        Model model = new ModelManager(new AddressBook(), new UserPrefs());
+        model.addPerson(personWithNote);
+
+        PerfDeleteCommand command = new PerfDeleteCommand(VALID_STUDENT_ID, VALID_DATE_1, VALID_TAG_1);
+
+        assertCommandFailure(command, model,
+                String.format(Messages.MESSAGE_TAG_NOT_FOUND, VALID_TAG_1.tagName));
     }
 
     @Test
@@ -176,6 +200,11 @@ public class PerfDeleteCommandTest {
         @Override
         public ReadOnlyAddressBook getAddressBook() {
             return new AddressBook();
+        }
+
+        @Override
+        public boolean hasClassTag(ClassTag classTag) {
+            return person.getTags().contains(classTag);
         }
     }
 }

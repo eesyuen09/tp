@@ -23,6 +23,7 @@ public class AttendanceUnmarkCommand extends AttendanceCommand {
     public static final String MESSAGE_UNMARK_SUCCESS = "Unmarked attendance for: %1$s on %2$s for class %3$s";
     public static final String MESSAGE_ALREADY_UNMARKED =
             "Attendance for %1$s on %2$s for class %3$s is already unmarked.";
+    public static final String MESSAGE_CLASS_TAG_NOT_FOUND = "Class tag does not exist: %1$s";
     public static final String MESSAGE_STUDENT_DOES_NOT_HAVE_TAG = "Student %1$s does not have the class tag: %2$s";
     public static final String MESSAGE_FUTURE_DATE = "Cannot unmark attendance for future date: %1$s";
     public static final String MESSAGE_BEFORE_ENROLLMENT =
@@ -62,6 +63,11 @@ public class AttendanceUnmarkCommand extends AttendanceCommand {
             throw new CommandException(String.format(MESSAGE_BEFORE_ENROLLMENT,
                     personToEdit.getName(), date.getFormattedDate(),
                     personToEdit.getEnrolledMonth().toHumanReadable()));
+        }
+
+        // Check if the class tag exists in the address book
+        if (!model.hasClassTag(classTag)) {
+            throw new CommandException(String.format(MESSAGE_CLASS_TAG_NOT_FOUND, classTag.tagName));
         }
 
         if (!personToEdit.getTags().contains(classTag)) {

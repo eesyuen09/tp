@@ -15,8 +15,17 @@ public class NameTest {
 
     @Test
     public void constructor_invalidName_throwsIllegalArgumentException() {
-        String invalidName = "";
-        assertThrows(IllegalArgumentException.class, () -> new Name(invalidName));
+        // empty string
+        assertThrows(IllegalArgumentException.class, () -> new Name(""));
+        // starts with non-letter
+        assertThrows(IllegalArgumentException.class, () -> new Name("  LeadingSpace"));
+        assertThrows(IllegalArgumentException.class, () -> new Name("1NumberStart"));
+        // exceeds 200 characters
+        String longName = "A".repeat(201);
+        assertThrows(IllegalArgumentException.class, () -> new Name(longName));
+        // invalid symbols
+        assertThrows(IllegalArgumentException.class, () -> new Name("Peter*"));
+        assertThrows(IllegalArgumentException.class, () -> new Name("^Invalid"));
     }
 
     @Test
@@ -24,18 +33,21 @@ public class NameTest {
         // null name
         assertThrows(NullPointerException.class, () -> Name.isValidName(null));
 
-        // invalid name
+        // invalid names
         assertFalse(Name.isValidName("")); // empty string
         assertFalse(Name.isValidName(" ")); // spaces only
-        assertFalse(Name.isValidName("^")); // only non-alphanumeric characters
-        assertFalse(Name.isValidName("peter*")); // contains non-alphanumeric characters
+        assertFalse(Name.isValidName("^")); // only non-allowed symbol
+        assertFalse(Name.isValidName("peter*")); // contains invalid symbol
+        assertFalse(Name.isValidName("1StartWithNumber")); // starts with non-letter
+        assertFalse(Name.isValidName("  LeadingSpace")); // starts with whitespace
+        assertFalse(Name.isValidName("A".repeat(201))); // exceeds 200 characters
 
-        // valid name
-        assertTrue(Name.isValidName("peter jack")); // alphabets only
-        assertTrue(Name.isValidName("12345")); // numbers only
-        assertTrue(Name.isValidName("peter the 2nd")); // alphanumeric characters
-        assertTrue(Name.isValidName("Capital Tan")); // with capital letters
-        assertTrue(Name.isValidName("David Roger Jackson Ray Jr 2nd")); // long names
+        // valid names
+        assertTrue(Name.isValidName("O'Connor")); // apostrophe
+        assertTrue(Name.isValidName("Mary-Jane")); // hyphen
+        assertTrue(Name.isValidName("Capital Tan")); // spaces and capital letters
+        assertTrue(Name.isValidName("David Roger Jackson Ray Jr")); // long but <200 chars
+        assertTrue(Name.isValidName("A")); // minimum valid length
     }
 
     @Test
