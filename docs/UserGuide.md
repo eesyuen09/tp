@@ -609,7 +609,7 @@ Command Details and Constraints:
 * If a performance note already exists for the same date and class tag, the command will reject the addition and show an error message.
 
 **Example:**
-- `perf -a s/0001 d/18092025 t/Sec3_Maths pn/Scored 85% on mock test`
+- `perf -a s/0001 d/18092025 t/Sec3_Maths pn/Scored 85% on mock test` — Adds a performance note for student `0001` (John Tan) on 18 September 2025 in Sec3_Maths class.
     >**Expected output:** `Performance note successfully added for John Tan in Sec3_Maths on 18-09-2025.`
 
 ---
@@ -627,7 +627,7 @@ Command Details and Constraints:
 * Each note shows the date, class tag, and the performance note content.
 
 **Example:**
-- `perf -v s/0001`
+- `perf -v s/0001` — Displays all performance notes for student `0001` (John Tan).
     >**Expected output:** `Performance Notes for John Tan displayed.`
 
 ---
@@ -644,7 +644,7 @@ Command Details and Constraints:
 * If no performance note exists for the specified date and class tag, the command will reject the edit and show an error message.
 
 **Example:**
-- `perf -e s/0001 d/18092025 t/Sec3_Maths pn/Scored 90% on mock test after re-evaluation`
+- `perf -e s/0001 d/18092025 t/Sec3_Maths pn/Scored 90% on mock test after re-evaluation` — Edits the performance note for student `0001` (John Tan) on 18 September 2025 in Sec3_Maths class.
     >**Expected output:** `Performance note for John Tan in Sec3_Maths on 18-09-2025 successfully edited.`
 
 ---
@@ -660,7 +660,7 @@ Command Details and Constraints:
 * If no performance note exists for the specified date and class tag, the command will reject the deletion and show an error message.
 
 **Example:**
-- `perf -d s/0001 d/18092025 t/Sec3_Maths`
+- `perf -d s/0001 d/18092025 t/Sec3_Maths` — Deletes the performance note for student `0001` (John Tan) on 18 September 2025 in Sec3_Maths class.
     >**Expected output:** `Performance note for John Tan in Sec3_Maths on 18-09-2025 successfully deleted.`
 
 ---
