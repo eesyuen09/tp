@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      spacing="8.0" styleClass="fee-history-panel">
+    <children>
+        <Label fx:id="titleLabel" wrapText="true" styleClass="fee-history-title" />
+        <Label fx:id="subtitleLabel" wrapText="true" styleClass="fee-history-subtitle" />
+        <TableView fx:id="historyTable" VBox.vgrow="ALWAYS">
+            <columnResizePolicy>
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+            </columnResizePolicy>
+            <columns>
+                <TableColumn fx:id="monthColumn" text="Month" prefWidth="160.0" />
+                <TableColumn fx:id="statusColumn" text="Status" prefWidth="200.0" />
+            </columns>
+        </TableView>
+        <Label text="Legend: Status shows source in brackets — marked = explicitly set, default = inferred"
+               wrapText="true" styleClass="fee-history-legend" />
+    </children>
+</VBox>
