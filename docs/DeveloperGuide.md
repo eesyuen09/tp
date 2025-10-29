@@ -681,14 +681,13 @@ Fee Management is implemented through several key components:
 **Model Component:**
 
 - `FeeTracker`: Serves as the central manager for all student fee records.
-      - Internally stores data in a nested structure:  
-      `Map<StudentId, Map<Month, FeeState>>`, where each student’s fee history is organized by month.
+    - Internally stores data in a nested structure: `Map<StudentId, Map<Month, FeeState>>`, where each student’s fee history is organized by month.
     - The tracker only stores months that have been explicitly marked.
       Any month after enrollment without a record is automatically considered UNPAID by default.
-    - Months **before** the student’s `enrolledMonth` are **not tracked** and return no fee status.
-    - Provides methods to generate **payment history** between two months.
-    - This design avoids redundant data storage and enables on-demand computation of fee states, ensuring efficient lookups and minimal memory use.
-    - The `Model` interacts with the `FeeTracker` when marking payments, undoing payments, filtering Paid/Unpaid students, or retrieving historical fee data.
+      - Months before a student’s enrolledMonth are excluded from fee tracking, as no payment records exist prior to enrollment.
+      - Provides methods to generate **payment history** between two months.
+      - This design avoids redundant data storage and enables on-demand computation of fee states, ensuring efficient lookups and minimal memory use.
+      - The `Model` interacts with the `FeeTracker` when marking payments, undoing payments, filtering Paid/Unpaid students, or retrieving historical fee data.
 
 - `FeeState`: Represents a student’s payment status for a particular month. (either **PAID** or **UNPAID**)
 
@@ -729,25 +728,26 @@ The following commands handle Fee Management operations:
 
 1. **FeeMarkPaidCommand (triggered by `fee -p`)**: Marks a student’s fee as **PAID** for a specific month.
     - Validates that the student exists via `Model#getPersonById()`.
-    - Ensures all previous months up to the target month are already **PAID**.
+    - Validates that the target month falls **between the student’s enrolled month and the current month (inclusive)**.
+    - Ensures all previous months up to the target month are already **PAID**. 
+    - Attempts to mark **future months** or **months before enrollment** will be rejected.
     - Updates the `FeeTracker` via `Model#markPaid()` and refreshes the UI.
 
 2. **FeeMarkUnpaidCommand (triggered by `fee -up`)**: Marks a student’s fee as **UNPAID** for a specific month.
     - Validates that the student exists via `Model#getPersonById()`.
+    - Validates that the target month falls **between the student’s enrolled month and the current month (inclusive)**.
+    - Tutors cannot mark **future months** or **pre-enrollment months** as Unpaid.
     - Updates the `FeeTracker` via `Model#markUnpaid()` and refreshes the UI.
 
-3. **FeeFilterPaidCommand (triggered by `filter -p`)**:  
-   Filters students who have **Paid** for a specified month.
+3. **FeeFilterPaidCommand (triggered by `filter -p`)**: Filters students who have **Paid** for a specified month.
     - Validates that the input month is valid and not in the future.
     - Updates the filtered student list to display only students marked as **PAID** for that month.
 
-4. **FeeFilterUnpaidCommand (triggered by `filter -up`)**:  
-   Filters students who have **not Paid** (Unpaid) for a specified month.
+4. **FeeFilterUnpaidCommand (triggered by `filter -up`)**: Filters students who have **not Paid** (Unpaid) for a specified month.
     - Validates that the input month is valid and not in the future.
     - Updates the filtered student list to display only students marked as **UNPAID** for that month.
 
-5. **FeeViewCommand (triggered by `fee -v`)**:  
-   Displays a student’s **payment history** across a specified range of months.
+5. **FeeViewCommand (triggered by `fee -v`)**: Displays a student’s **payment history** across a specified range of months.
     - Validates that the student exists and that the month range is valid.
     - Retrieves payment data using `FeeTracker#getPaymentHistory()`.
     - Outputs a chronological list of months with corresponding fee states.
@@ -758,12 +758,6 @@ The following sequence diagram illustrates how the system processes the `fee -p`
 
 <puml src="diagrams/FeeMarkPaidSequenceDiagram.puml" alt="FeeMarkPaidSequenceDiagram" />
 
-#### Sequence Diagram: Filtering Students by Payment Status
-
-The following sequence diagram illustrates how the system filters students by payment status:
-
-<puml src="diagrams/FeeFilterSequenceDiagram.puml" alt="FeeFilterSequenceDiagram" />
-
 #### Activity Diagram: Viewing a Student’s Payment History
 
 The activity diagram below illustrates the workflow for viewing a student’s fee history using the `fee -v` command:
@@ -772,90 +766,79 @@ The activity diagram below illustrates the workflow for viewing a student’s fe
 
 #### Design Considerations
 
-#### **Aspect: Sequential Payment Enforcement (Marking later months as PAID)**
+**Aspect: Sequential Payment Enforcement (Marking later months as PAID)**
 
-**Alternative 1 (current choice):**  
-Require all previous months to be **PAID** before a tutor can mark a later month as **PAID**.
+* **Alternative 1 (current choice):** Require all previous months to be **PAID** before a tutor can mark a later month as **PAID**.
+    * Pros:
+      - Reflects **real-world payment flow** — students should settle earlier dues before paying for upcoming lessons.
+      - Prevents **skipped or inconsistent payment sequences**, such as marking August as PAID while July remains UNPAID.
+      - Ensures **data integrity** — once a month is marked PAID, all earlier months are guaranteed to be cleared.
+      - Simplifies **validation and reporting**, since the payment timeline always progresses forward without gaps.
+      - Makes it easy to determine a student’s **most recent paid month** at a glance.
 
-- **Pros:**
-    - Reflects **real-world payment flow** — students should settle earlier dues before paying for upcoming lessons.
-    - Prevents **skipped or inconsistent payment sequences**, such as marking August as PAID while July remains UNPAID.
-    - Ensures **data integrity** — once a month is marked PAID, all earlier months are guaranteed to be cleared.
-    - Simplifies **validation and reporting**, since the payment timeline always progresses forward without gaps.
-    - Makes it easy to determine a student’s **most recent paid month** at a glance.
-
-- **Cons:**
-    - Tutors cannot record payments **out of sequence** (e.g., skipping July and paying for August directly).
-    - Adds a small validation step when marking multiple months.
+    * Cons:
+      - Tutors cannot record payments **out of sequence** (e.g., skipping July and paying for August directly).
+      - Adds a small validation step when marking multiple months.
 
 ---
 
-**Alternative 2:**  
-Allow tutors to mark any month as **PAID**, regardless of whether earlier months are still UNPAID.
+* **Alternative 2:** Allow tutors to mark any month as **PAID**, regardless of whether earlier months are still UNPAID.
+    * Pros:
+        - Provides **maximum flexibility** for unusual or irregular payment situations.
+        - Allows quick entry for multiple months without enforcing chronological checks.
 
-- **Pros:**
-    - Provides **maximum flexibility** for unusual or irregular payment situations.
-    - Allows quick entry for multiple months without enforcing chronological checks.
-
-- **Cons:**
-    - Can result in **gaps or inconsistencies** in the payment timeline — e.g., later months marked PAID while earlier ones remain UNPAID.
-    - Makes it **easier for tutors to overlook unpaid months**, leading to incomplete financial records.
-    - Reduces **data reliability**, since it becomes unclear whether all payments up to a given point have been fully settled.
+    * Cons:
+      - Can result in **gaps or inconsistencies** in the payment timeline — e.g., later months marked PAID while earlier ones remain UNPAID.
+      - Makes it **easier for tutors to overlook unpaid months**, leading to incomplete financial records.
+      - Reduces **data reliability**, since it becomes unclear whether all payments up to a given point have been fully settled.
 ---
-#### **Aspect: Future Month Restriction (Advance Payments)**
 
-**Alternative 1 (current choice):**  
-Restrict marking months that are **beyond the current calendar month**.
+**Aspect: Future Month Restriction (Advance Payments)**
 
-- **Pros:**
-    - Prevents **premature or speculative payments**, maintaining realistic, time-based validation.
-    - Keeps the system aligned with **actual payment periods** and avoids confusion with future billing.
-    - Simplifies error handling and prevents data entry mistakes.
+* **Alternative 1 (current choice):** Restrict marking months that are **beyond the current calendar month**.
+    * Pros:
+      - Prevents **premature or speculative payments**, maintaining realistic, time-based validation.
+      - Keeps the system aligned with **actual payment periods** and avoids confusion with future billing.
+      - Simplifies error handling and prevents data entry mistakes.
 
-- **Cons:**
-    - Tutors cannot record **advance payments** for future months, even if a student has pre-paid.
-    - May require future system updates to support legitimate early payments.
+    * Cons:
+      - Tutors cannot record **advance payments** for future months, even if a student has pre-paid.
+      - May require future system updates to support legitimate early payments.
 
 ---
 
-**Alternative 2:**  
-Allow tutors to mark **future months** as PAID, provided that all previous months have already been settled.
+* **Alternative 2:** Allow tutors to mark **future months** as PAID, provided that all previous months have already been settled.
+    * Pros:
+      - Supports **prepaid tuition scenarios**, where students pay several months in advance.
+      - Convenient for tutors managing **long-term payment plans** or scheduling future billing cycles in advance.
+      - Reduces repetitive data entry when tutors want to record multiple future payments at once.
 
-- **Pros:**
-    - Supports **prepaid tuition scenarios**, where students pay several months in advance.
-    - Convenient for tutors managing **long-term payment plans** or scheduling future billing cycles in advance.
-    - Reduces repetitive data entry when tutors want to record multiple future payments at once.
+    * Cons:
+      - Increases the risk of **accidental marking of future months**, especially if tutors mistype the month or forget the current date.
+      - Requires additional **validation safeguards** (e.g., confirmation prompts or warning messages) to prevent unintentional future entries.
+      - Adds complexity to the **FeeViewCommand** logic, since it must distinguish between completed months and prepaid future months when displaying fee history.
 
-- **Cons:**
-    - Increases the risk of **accidental marking of future months**, especially if tutors mistype the month or forget the current date.
-    - Requires additional **validation safeguards** (e.g., confirmation prompts or warning messages) to prevent unintentional future entries.
-    - Adds complexity to the **FeeViewCommand** logic, since it must distinguish between completed months and prepaid future months when displaying fee history.
+**Aspect: Backdated Correction (Marking an earlier month as UNPAID)**
 
-#### **Aspect: Backdated Correction (Marking an earlier month as UNPAID)**
+* **Alternative 1 (current choice):** Allow tutors to mark an earlier month as **UNPAID**, even if later months are already **PAID**.
+    * Pros:
+      - Supports **real-world correction scenarios** — e.g., the tutor realizes a payment was incorrectly recorded.
+      - Allows quick edits without needing to unmark all subsequent months first.
+      - Keeps flexibility: once corrected, the tutor must still settle earlier UNPAID months before new payments are accepted.
 
-**Alternative 1 (current choice):**  
-Allow tutors to mark an earlier month as **UNPAID**, even if later months are already **PAID**.
-
-- **Pros:**
-    - Supports **real-world correction scenarios** — e.g., the tutor realizes a payment was incorrectly recorded.
-    - Allows quick edits without needing to unmark all subsequent months first.
-    - Keeps flexibility: once corrected, the tutor must still settle earlier UNPAID months before new payments are accepted.
-
-- **Cons:**
-    - May cause a **temporary inconsistency** (e.g., later months PAID while an earlier one is UNPAID) until resolved.
-    - Might confuse tutors reviewing the timeline during the correction phase.
+    * Cons:
+      - May cause a **temporary inconsistency** (e.g., later months PAID while an earlier one is UNPAID) until resolved.
+      - Might confuse tutors reviewing the timeline during the correction phase.
 
 ---
 
-**Alternative 2:**  
-Block marking an earlier month as **UNPAID** if any later month is already **PAID**.
+* **Alternative 2:** Block marking an earlier month as **UNPAID** if any later month is already **PAID**.
+    * Pros:
+      - Maintains a **strictly chronological** payment timeline with no anomalies.
+      - Simplifies record validation and summary generation.
 
-- **Pros:**
-    - Maintains a **strictly chronological** payment timeline with no anomalies.
-    - Simplifies record validation and summary generation.
-
-- **Cons:**
-    - Restrictive — tutors cannot fix genuine mis-entries without first unmarking all later months.
+    * Cons:
+      - Restrictive — tutors cannot fix genuine mis-entries without first unmarking all later months.
 
 
 ---
@@ -866,7 +849,7 @@ Fee Management includes comprehensive validation across all operations:
 
 **Marking Fees**
 - Invalid or missing `StudentId`
-- Month before enrollment or after the current month
+- Month before enrollment or after the current month is invalid
 - Attempting to mark Paid when already Paid
 - Attempting to mark Unpaid when already Unpaid
 - Attempting to mark Paid while an earlier month remains Unpaid
