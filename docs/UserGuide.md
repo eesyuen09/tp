@@ -248,7 +248,7 @@ Command Details and Constraints:
 Examples:
 - `tag -d t/Sec3_Maths` — Deletes the class tag named `Sec3_Maths`.
 >**Expected output:** `Tag deleted: Sec3_Maths`
-- `tag -d t/jc1_physics` — Deletes the class tag named `JC1_Physics`, regardless of case.
+- `tag -d t/jc1_physics` — Deletes the class tag named `JC1_Physics`, regardless of case (if JC1_Physics exists in this casing).
 >**Expected output:** `Tag deleted: JC1_Physics`
 
 ---
