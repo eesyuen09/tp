@@ -593,6 +593,13 @@ Adds a performance note for a student in a specific class on a specific date.
 
 **Format**: `perf -a s/STUDENT_ID d/DATE t/TAG_NAME pn/PERFORMANCE_NOTE`
 
+Command Details and Constraints:
+* Adds a performance note for the student identified by the given `STUDENT_ID`.
+* The `DATE` must not be before the student's enrollment date and cannot be a future date.
+* The `TAG_NAME` must correspond to an existing class tag assigned to the student.
+* The `PERFORMANCE_NOTE` can be any text under 200 characters.
+* If a performance note already exists for the same date and class tag, the command will reject the addition and show an error message.
+
 **Examples:**
 - `perf -a s/0001 d/18092025 t/Sec3_Maths pn/Scored 85% on mock test`
 - `perf -a s/0002 d/15092025 t/JC1_Physics pn/Needs improvement in problem-solving skills`
@@ -606,6 +613,12 @@ Performance note successfully added for Jane Doe in JC1_Physics on 15-09-2025.
 Displays all performance notes for a student.
 
 **Format**: `perf -v s/STUDENT_ID`
+
+Command Details and Constraints:
+* Displays all performance notes for the student identified by the given `STUDENT_ID`.
+* If no performance notes exist for the student, a message will be displayed indicating no notes were found.
+* Performance notes are displayed in chronological order based on the date.
+* Each note shows the date, class tag, and the performance note content.
 
 **Examples:**
 - `perf -v s/0001`
@@ -621,6 +634,11 @@ Edits an existing performance note for a student.
 
 **Format**: `perf -e s/STUDENT_ID d/DATE t/TAG_NAME pn/PERFORMANCE_NOTE`
 
+Command Details and Constraints:
+* Edits the performance note for the student identified by the given `STUDENT_ID`, `DATE`, and `TAG_NAME`.
+* The `PERFORMANCE_NOTE` can be any text under 200 characters.
+* If no performance note exists for the specified date and class tag, the command will reject the edit and show an error message.
+
 **Examples:**
 - `perf -e s/0001 d/18092025 t/Sec3_Maths pn/Scored 90% on mock test after re-evaluation`
 - `perf -e s/0002 d/15092025 t/JC1_Physics pn/Improved problem-solving skills significantly`
@@ -634,6 +652,10 @@ Performance note for Jane Doe in JC1_Physics on 15-09-2025 successfully updated.
 Deletes a performance note for a student.
 
 **Format**: `perf -d s/STUDENT_ID d/DATE t/TAG_NAME`
+
+Command Details and Constraints:
+* Deletes the performance note for the student identified by the given `STUDENT_ID`, `DATE`, and `TAG_NAME`.
+* If no performance note exists for the specified date and class tag, the command will reject the deletion and show an error message.
 
 **Examples:**
 - `perf -d s/0001 d/18092025 t/Sec3_Maths`
