@@ -150,6 +150,11 @@ public class ModelManager implements Model {
                 .findFirst();
     }
 
+    @Override
+    public List<ClassTag> getClassTagList() {
+        return addressBook.getClassTagList();
+    }
+
     /**
      * Retrieves a {@link Person} from the filtered list by their {@link StudentId}.
      *
