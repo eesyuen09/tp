@@ -230,8 +230,81 @@ Clears all student records from the address book.
 
 ---
 
+## Filter students: `filter`
+
+The `filter` command allows you to quickly find students based on specific criteria such as **payment status** or **class tags**.  
+This is useful for tutors and administrators who want to check which students
+have paid or are unpaid for a given month, or to focus on a specific class group.
+
+### Overview
+
+Filtering supports three main types of criteria:
+
+| Flag  | Meaning                                               | Example                  |
+|-------|-------------------------------------------------------|--------------------------|
+| `-p`  | Show students marked as **PAID** for a specific month | `filter -p m/1025`       |
+| `-up` | Show students marked (or defaulted) as **UNPAID**     | `filter -up m/1125`      |
+| `-t`  | Show students belonging to a particular **class tag** | `filter -t t/Sec3_Maths` |
+
+You can only use **one flag** per command.  
+Each filter updates the main student list view to display only matching entries.
+
+### Filter by PAID status : `filter -p`
+
+Shows all students whose payment status is **PAID** for a given month.  
+You can only filter up to the **current month** (future months are not allowed).
+
+**Format:**  
+filter -p m/MMYY
+
+**Example:**  
+- filter -p m/1025
+    > **Expected Output:**
+    `Showing PAID students for October 2025.`  
+    `3 persons listed!`
+
+<box type="tip" seamless>
+If the provided month is **after the current month**, the command will return an error message.
+</box>
 
 ---
+
+### Filter by UNPAID status : `filter -up`
+
+Shows all students whose payment status is **UNPAID** for a given month.  
+You can only filter up to the **current month** (future months are not allowed).
+
+**Format:**  
+filter -up m/MMYY
+
+**Example:**  
+- filter -up m/1025
+    > **Expected Output:**  
+    `Showing UNPAID students for October 2025.`
+    `3 persons listed!`
+
+<box type="info" seamless>
+If a student has never been explicitly marked as PAID, their status is treated as **UNPAID by default**.
+</box>
+
+---
+
+### Filtering persons by class tag : `filter -t`
+
+Filters the main list to show only persons who are assigned the specified class tag.
+
+Format: filter -t t/TAG_NAME
+
+Command Details and Constraints:
+* The class tag must already exist in the system.
+* Tag name matching is case\-insensitive.
+
+Examples:
+- filter -t t/Sec3_Maths — Shows only students who have the Sec3_Maths tag.
+- filter -t t/jc1_physics — Shows only students who have the JC1_Physics tag.
+
+Expected output:
+![filterByClassTag.jpg](images/filterByClassTag.jpg)
 
 ## Class Tag Management
 
@@ -327,27 +400,6 @@ This helps tutors and administrators track monthly tuition fee payments efficien
 | `fee -v s/STUDENT_ID [m/MMYY]` | Views a student’s **payment history**               |
 </box>
 
-#### Payment Rules
-
-When marking a student’s fee as **Paid** or **Unpaid**, the following rules apply:
-
-1. **Valid month range**  
-   You can only mark payments for months **between the student’s enrollment month and the current month (inclusive)**.
-    - Payments **before enrollment** are invalid and will be rejected.
-    - **Future payments** (months after the current month) are not allowed and will result in an error message.
-
-2. **Sequential payment requirement**  
-   Payments must be made **in chronological order**.
-    - If there are **unpaid months before** the selected month, you **cannot** mark the later month as paid.
-    - For example, if September 2025 remains unpaid, you must pay for September before marking October 2025 as paid.
-
-3. **Duplicate payment prevention**  
-   If a month has **already been marked as Paid**, the system will reject duplicate payment attempts and display an error message indicating that the month is already paid.
-
-<div class="tip">
-💡 These rules ensure that payment records remain consistent, logical, and accurately reflect each student’s fee history.
-</div>  
-
 
 ### 1. Marking a student as PAID: `fee -p`
 
@@ -355,173 +407,80 @@ Marks a student’s payment status as **PAID** for a specific month.
 
 **Format:** fee -p s/STUDENT_ID m/MMYY
 
-**Examples:**
-- `fee -p s/0001 m/0925` — marks student `0001`(Bernice Yu) as **paid** for **September 2025**.
-- `fee -p s/0003 m/0825` — marks student `0003`(David Li) as **paid** for **August 2025**.
+**Command Details and Constraints:**
+* Tutors can only mark payments for months **between the student’s enrollment month and the current month (inclusive)**.
+* Payments must follow **chronological order** — earlier months must be settled before marking later ones.
+* Payments **before enrollment** or **in future months** are not allowed.
+* If a month is already marked as **PAID**, duplicate payment attempts will be rejected.
 
-**Expected output:**  
-`Bernice Yu has been successfully marked as Paid for September 2025.`  
-or  
-`October 2025 is already marked as Paid.`  
-or  
-`Cannot mark October 2025 as Paid.
-June 2025 is not Paid yet.`  
-or  
-`You can’t mark paid for a future month. Please try again when the month has started.`  
-or  
-`Cannot mark payment: Alex Yeoh's enrolment started in August 2025.
-Earlier months cannot be marked.`
+**Examples:**
+- `fee -p s/0001 m/0925` — marks student `0001` (Bernice Yu) as **PAID** for **September 2025**.
+  > **Expected output:** `Bernice Yu has been successfully marked as Paid for September 2025.`
 
 ---
 
 ### 2. Marking a student as UNPAID: `fee -up`
 
-Marks a student’s payment status as **UNPAID** for one specific month.  
-Use this for corrections or when a payment was previously marked as paid but has not been settled.
+Marks a student’s payment status as **UNPAID** for a specific month.  
+Use this command for corrections or when a payment was mistakenly marked as PAID.
 
-**Format:** fee -up s/STUDENT_ID m/MMYY
+**Format:**  
+`fee -up s/STUDENT_ID m/MMYY`
+
+**Command Details and Constraints:**
+* Tutors can only mark payments for months **between the student’s enrollment month and the current month (inclusive)**.
+* Tutors may mark a previous month as **UNPAID**, even if later months are already paid — this allows for **real-world correction** of payment records.
+* You cannot mark future months as UNPAID.
+* If the month is already marked as UNPAID, the command will be rejected.
+* Once corrected, the tutor must re-mark earlier unpaid months before recording new payments for later months.
 
 **Examples:**
-- `fee -up s/0001 m/0925` — marks student `0001`(Bernice Yu) as **unpaid** for **September 2025**.
-- `fee -up s/0003 m/0825` — marks student `0003`(David Li) as **unpaid** for **August 2025**.
-
-**Expected output:**  
-`Bernice Yu has been successfully marked as Unpaid for September 2025.`  
-or  
-`October 2025 is already unpaid.`  
-or  
-`Cannot mark payment: Alex Yeoh's enrolment started in August 2025.
-Earlier months cannot be marked.`  
-or  
-`You can’t mark unpaid for a future month. Please try again when the month has started.`
+- `fee -up s/0001 m/0925` — marks student `0001` (Bernice Yu) as **UNPAID** for **September 2025**.
+  > **Expected output:** `Bernice Yu has been successfully marked as Unpaid for September 2025.`
 
 ---
 
-### 3. Viewing a student’s payment history:
+### 3. Viewing a student’s payment history: `fee -v`
 
-Displays a student’s payment history from a starting month up to the current month.
+Displays a student’s **payment history** from a specified starting month up to the **current month**.
 
-**Format:** fee -v s/STUDENT_ID [m/MMYY]
+**Format:**  
+`fee -v s/STUDENT_ID [m/MMYY]`
+
+**Command Details and Constraints:**
+* Tutors can view payment history **starting from any valid month** between the student’s enrollment month and the current month (inclusive).
+* If the starting month is not provided, or it precedes the student’s enrollment month, the history will automatically start from the **enrollment month**.
+* If the starting month is **after the current month**, the command will return an error message.
+* The displayed history includes both **explicitly marked** months (via `fee -p` or `fee -up`) and **default UNPAID** months that were not manually recorded.
 
 **Examples:**
 - `fee -v s/0001` — shows payment history for student `0001` from their enrollment month to the current month.
+  > **Expected Output:**  
+  `Payment history for Alex Yeoh from August 2025 to October 2025 (3 months)`  
+  `Enrolled Month: August 2025`  
+  `August 2025 : PAID (marked)`  
+  `September 2025 : PAID (marked)`  
+  `October 2025 : UNPAID (default)`
 - `fee -v s/0001 m/0525` — shows payment history starting **May 2025** to the current month.
+    > **Expected Output:**  
+  `Payment history for Alex Yeoh from August 2025 to October 2025 (3 months)`  
+  `Enrolled Month: August 2025`  
+  `August 2025 : PAID (marked)`  
+  `September 2025 : PAID (marked)`  
+  `October 2025 : UNPAID (default)`
 
-
-<box type="tip" seamless>
-
-If the starting month is not provided or the starting month provided precedes the
-student's enrollment month, the history will start from the student's enrollment month.   
-If the provided month is **after the current month**, the command will return an error message.
-</box>
-
-**Expected Output:**  
-`Payment history for Alex Yeoh from August 2025 to October 2025 (3 months)`  
-`Enrolled Month: August 2025`  
-`August 2025 : PAID (marked)`  
-`September 2025 : PAID (marked)`  
-`October 2025 : UNPAID (default)`  
-or  
-`Cannot display payment history for future months.`  
-`Please select a month up to the current month.`
 <box type="info" seamless>
 
 **Interpreting the results:**
-- `marked` — the payment was explicitly set (via `fee -p` or `fee -up`).
+- `marked` — the payment was explicitly set via `fee -p` or `fee -up`.
 - `default` — the month had no explicit record and is assumed **UNPAID**.
 
 </box>
 
 ---
 
-## Filter students: `filter`
-
-The `filter` command allows you to quickly find students based on specific criteria such as **payment status** or **class tags**.  
-This is useful for tutors and administrators who want to check which students
-have paid or are unpaid for a given month, or to focus on a specific class group.
-
-### Overview
-
-Filtering supports three main types of criteria:
-
-| Flag  | Meaning                                               | Example                  |
-|-------|-------------------------------------------------------|--------------------------|
-| `-p`  | Show students marked as **PAID** for a specific month | `filter -p m/1025`       |
-| `-up` | Show students marked (or defaulted) as **UNPAID**     | `filter -up m/1125`      |
-| `-t`  | Show students belonging to a particular **class tag** | `filter -t t/Sec3_Maths` |
-
-You can only use **one flag** per command.  
-Each filter updates the main student list view to display only matching entries.
-
-### Filter by PAID status : `filter -p`
-
-Shows all students whose payment status is **PAID** for a given month.  
-You can only filter up to the **current month** (future months are not allowed).
-
-**Format:**  
-filter -p m/MMYY
-
-**Example:**  
-filter -p m/1025
-
-<box type="tip" seamless>
- 
-If the provided month is **after the current month**, the command will return an error message.
-</box>
-
-**Expected Output:**  
-`Showing PAID students for October 2025.`  
-`3 persons listed!`  
-or  
-`Cannot filter by future months.`  
-`Please select a month up to the current month.`
-
----
-
-### Filter by UNPAID status : `filter -up`
-
-Shows all students whose payment status is **UNPAID** for a given month.  
-You can only filter up to the **current month** (future months are not allowed).
-
-**Format:**  
-filter -up m/MMYY
-
-**Example:**  
-filter -up m/1025
-
-<box type="info" seamless>
-If a student has never been explicitly marked as PAID, their status is treated as **UNPAID by default**.
-</box>
-
-**Expected Output:**  
-`Showing UNPAID students for October 2025.`
-`3 persons listed!`  
-or  
-`Cannot filter by future months.`  
-`Please select a month up to the current month.`
-
----
-
-### Filtering persons by class tag : `filter -t`
-
-Filters the main list to show only persons who are assigned the specified class tag.
-
-Format: filter -t t/TAG_NAME
-
-Command Details and Constraints:
-* The class tag must already exist in the system. 
-* Tag name matching is case\-insensitive.
-
-Examples:
-- filter -t t/Sec3_Maths — Shows only students who have the Sec3_Maths tag.
-- filter -t t/jc1_physics — Shows only students who have the JC1_Physics tag.
-
-Expected output:
-![filterByClassTag.jpg](images/filterByClassTag.jpg)
-
-## Attendance Management
-
-The Attendance Management commands allow you to **record, update, view and delete** student attendance.
+## Managing students' attendance: `att`
+The `att` command family allows you to **record, update, and view student attendance**.
 Each attendance record is tied to both a date and a class tag, allowing tutors to manage students who attend multiple classes efficiently.
 
 <box type="info" seamless>
