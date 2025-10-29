@@ -50,7 +50,7 @@ The bulk of the app's work is done by the following four components:
 
 **How the architecture components interact with each other**
 
-The *Sequence Diagram* below shows how the components interact with each other for the scenario where the user issues the command `delete 1`.
+The *Sequence Diagram* below shows how the components interact with each other for the scenario where the user issues the command `delete s/0000`.
 
 <puml src="diagrams/ArchitectureSequenceDiagram.puml" width="574" />
 
@@ -92,7 +92,7 @@ Here's a (partial) class diagram of the `Logic` component:
 
 The sequence diagram below illustrates the interactions within the `Logic` component, taking `execute("delete s/0002")` API call as an example.
 
-<puml src="diagrams/DeleteStudentSequenceDiagram.puml" alt="Interactions Inside the Logic Component for the `delete 1` Command" />
+<puml src="diagrams/DeleteStudentSequenceDiagram.puml" alt="Interactions Inside the Logic Component for the `delete s/0002` Command" />
 
 <box type="info" seamless>
 
@@ -1026,8 +1026,8 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 | Priority  | As a …​                                    | I want to …​                                              | So that I can…​                                                         |
 |-----------|------------------------------------------- |-----------------------------------------------------------|-------------------------------------------------------------------------|
-| `* * * `  | tutor handling lesson fees                 | tag a student as paid for a given month                   | keep track of students who have settled their tuition fees              |
-| `* * *`   | tutor handling lesson fees                 | tag a student as unpaid for a given month                 | identify students who still owe lesson fees                             |
+| `* * * `  | tutor handling lesson fees                 | mark a student as paid for a given month                  | keep track of students who have settled their tuition fees              |
+| `* * *`   | tutor handling lesson fees                 | mark a student as unpaid for a given month                | fix mistakes and keep payment records accurate                          |
 | `* * *`   | tutor handling lesson fees                 | filter students who have paid by month                    | view all students who have completed payment for that month at a glance |
 | `* * *`   | tutor handling lesson fees                 | filter students who have not paid by month                | follow up with students who have outstanding tuition fees               |
 | `* * *`   | tutor handling lesson fees                 | view a student's payment history up to the current month  | review their past payment behaviour and identify missed months          |
@@ -1775,6 +1775,134 @@ testers are expected to do more *exploratory* testing.
 
     1. Test case: `tag -d t/Sec_3_A_Math`  
        **Expected:** Command rejected. Error message indicates tag is still in use by students.
+
+---
+### Managing Fees
+
+#### Marking a Student as Paid
+
+1. Marking a student as PAID for a valid month
+
+    1. Prerequisites: The student exists and has an enrolled month earlier than the target month (e.g., enrolled in August 2025).
+
+    1. Test case: `fee -p s/0001 m/0925`  
+       **Expected:** The student's payment status for September 2025 is marked as **PAID**.  
+       A success message appears confirming the update.
+
+1. Attempting to mark a month **before the student’s enrolled month**
+
+    1. Test case: `fee -p s/0001 m/0725`  
+       **Expected:** Command rejected. Error message states that months before the student’s enrolment cannot be marked.
+
+1. Attempting to mark a **future month**
+
+    1. Test case: `fee -p s/0001 m/1225` (if the current month is October 2025)  
+       **Expected:** Command rejected. Error message states that future months cannot be marked as paid.
+
+1. Attempting to skip an unpaid month
+
+    1. Prerequisites: Ensure the student has an unpaid month before the target month (e.g., September 2025 is unpaid).
+
+    1. Test case: `fee -p s/0001 m/1025`  
+       **Expected:** Command rejected. Error message indicates that earlier unpaid months must be marked first.
+
+---
+
+#### Marking a Student as Unpaid
+
+1. Marking a previously paid month as **UNPAID**
+
+    1. Prerequisites: The student has been marked as paid for a month (e.g., September 2025).
+
+    1. Test case: `fee -up s/0001 m/0925`  
+       **Expected:** The payment status for September 2025 changes to **UNPAID**.  
+       A success message confirms the correction.
+
+1. Attempting to mark a **future month** as unpaid
+
+    1. Test case: `fee -up s/0001 m/1225` (if the current month is October 2025)  
+       **Expected:** Command rejected. Error message states that future months cannot be marked.
+
+1. Attempting to mark a month **before enrolment**
+
+    1. Test case: `fee -up s/0001 m/0725`  
+       **Expected:** Command rejected. Error message indicates that months before enrolment cannot be marked.
+
+1. Attempting to mark an already **UNPAID** month
+
+    1. Test case: `fee -up s/0001 m/0925` (if it is already unpaid)  
+       **Expected:** Command rejected. Error message indicates that the month is already unpaid.
+
+---
+
+#### Viewing a Student’s Payment History
+
+1. Viewing complete payment history from enrolment
+
+    1. Test case: `fee -v s/0001`  
+       **Expected:** Displays a list of all months from the enrolment month to the current month, showing each month’s status (e.g., PAID or UNPAID).
+
+1. Viewing payment history with a **custom start month**
+
+    1. Test case: `fee -v s/0001 m/0525`  
+       **Expected:** Displays payment history starting from the given month (or enrolment month if the given month is before enrolment).  
+       The system automatically adjusts the start month.
+
+1. Attempting to view **future month history**
+
+    1. Test case: `fee -v s/0001 m/1225` (if the current month is October 2025)  
+       **Expected:** Command rejected. Error message states that future months cannot be displayed.
+
+1. Attempting to view payment history of a **non-existent student**
+
+    1. Test case: `fee -v s/9999`  
+       **Expected:** Command rejected. Error message indicates that the student ID was not found.
+
+---
+
+#### Filtering Students by Payment Status
+
+1. Filtering students who have **Paid**
+
+    1. Test case: `filter -p m/0925`  
+       **Expected:** Displays only students who have been marked as **PAID** for September 2025.  
+       Status message confirms the number of students listed.
+
+1. Filtering students who are **Unpaid**
+
+    1. Test case: `filter -up m/0925`  
+       **Expected:** Displays only students who are **UNPAID** for September 2025.  
+       Status message confirms the number of students listed.
+
+1. Attempting to filter using a **future month**
+
+    1. Test case: `filter -p m/1225` (if the current month is October 2025)  
+       **Expected:** Command rejected. Error message states that future months cannot be filtered.
+
+1. Filtering with **no matching students**
+
+    1. Test case: `filter -p m/0925` (when no students are paid for that month)  
+       **Expected:** Displays message: “No matching students found.”
+
+---
+
+#### Edge Cases
+
+1. Deleting and re-adding a student
+
+    1. Prerequisites: Student `0001` has payment records (e.g., marked as paid for September 2025).
+
+    1. Action: Delete student `0001` and add them again using the same details.  
+       **Expected:** Payment records are reset. New student entry starts with a clean payment history.
+
+1. Ensuring data consistency across multiple months
+
+    1. Action:
+        - Mark August and September 2025 as **PAID**.
+        - Mark September 2025 as **UNPAID**.
+        - Attempt to mark October 2025 as **PAID**.  
+          **Expected:** Command rejected because September 2025 is unpaid.  
+          Once September 2025 is re-marked as **PAID**, October 2025 can be successfully marked.
 
 ---
 
