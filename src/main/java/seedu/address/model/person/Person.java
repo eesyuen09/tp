@@ -168,7 +168,8 @@ public class Person {
         }
 
         return otherPerson != null
-                && otherPerson.getName().equals(getName());
+                && otherPerson.getName().equals(getName())
+                && otherPerson.getPhone().equals(getPhone());
     }
 
     /**
@@ -217,7 +218,7 @@ public class Person {
                 .add("phone", phone)
                 .add("email", email)
                 .add("address", address)
-                .add("tags", tags.isEmpty() ? "" : tags)
+                .add("tags", tags.isEmpty() ? " - " : tags)
                 .add("performanceList", performanceList)
                 .toString();
     }

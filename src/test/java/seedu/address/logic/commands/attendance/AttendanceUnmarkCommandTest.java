@@ -101,6 +101,19 @@ public class AttendanceUnmarkCommandTest {
         assertThrows(CommandException.class, () -> command.execute(modelStub));
     }
 
+    //class tag does not exist in address book
+    @Test
+    public void execute_classTagNotFound_throwsCommandException() {
+        ModelStubWithoutClassTag modelStub = new ModelStubWithoutClassTag();
+        Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID_STRING)
+                .withClassTags("Math").build();
+        modelStub.person = validPerson;
+
+        AttendanceUnmarkCommand command = new AttendanceUnmarkCommand(VALID_STUDENT_ID, VALID_DATE, VALID_CLASS_TAG);
+
+        assertThrows(CommandException.class, () -> command.execute(modelStub));
+    }
+
     //student does not have the specified class tag
     @Test
     public void execute_studentDoesNotHaveTag_throwsCommandException() {
@@ -202,6 +215,11 @@ public class AttendanceUnmarkCommandTest {
         }
 
         @Override
+        public boolean hasClassTag(ClassTag classTag) {
+            return true; // Assume class tag exists
+        }
+
+        @Override
         public void unmarkAttendance(StudentId studentId, Date date, ClassTag classTag) {
             unmarkAttendanceCalled = true;
             AttendanceList updatedAttendance = new AttendanceList(person.getAttendanceList().asUnmodifiableList());
@@ -217,6 +235,23 @@ public class AttendanceUnmarkCommandTest {
         @Override
         public Optional<Person> getPersonById(StudentId studentId) {
             return Optional.empty();
+        }
+    }
+
+    /**
+     * A Model stub that contains a person but the class tag does not exist in the address book.
+     */
+    private class ModelStubWithoutClassTag extends ModelStub {
+        private Person person;
+
+        @Override
+        public Optional<Person> getPersonById(StudentId studentId) {
+            return Optional.of(person);
+        }
+
+        @Override
+        public boolean hasClassTag(ClassTag classTag) {
+            return false; // Class tag does not exist
         }
     }
 }

@@ -9,14 +9,21 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
  */
 public class Name {
 
-    public static final String MESSAGE_CONSTRAINTS =
-            "Names should only contain alphanumeric characters and spaces, and it should not be blank";
-
-    /*
-     * The first character of the address must not be a whitespace,
-     * otherwise " " (a blank string) becomes a valid input.
+    /**
+     * Message to be shown when a name fails validation.
      */
-    public static final String VALIDATION_REGEX = "[\\p{Alnum}][\\p{Alnum} ]*";
+    public static final String MESSAGE_CONSTRAINTS =
+            "Names should only contain letters, apostrophes ('), hyphens (-), and spaces, "
+                    + "must start with a letter, and be at most 200 characters long.";
+
+    /**
+     * The first character of the name must be a letter.
+     * The rest of the name can contain letters, apostrophes ('), hyphens (-), or spaces,
+     * up to a total length of 200 characters.
+     * This ensures names like "O'Connor" or "Mary-Jane" are valid,
+     * while preventing the name from being blank or starting with whitespace.
+     */
+    public static final String VALIDATION_REGEX = "[A-Za-z][A-Za-z'\\- ]{0,199}";
 
     public final String fullName;
 

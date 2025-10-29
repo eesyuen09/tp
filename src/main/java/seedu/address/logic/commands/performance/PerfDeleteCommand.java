@@ -26,12 +26,11 @@ import seedu.address.model.time.Date;
  */
 public class PerfDeleteCommand extends PerfCommand {
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + "-d"
-            + ": Deletes a note of the student and date indicated. "
-            + "Parameters: "
-            + PREFIX_STUDENTID + "STUDENTID "
-            + PREFIX_DATE + "DATE "
-            + PREFIX_CLASSTAG + "CLASS_TAG ";
+    public static final String MESSAGE_USAGE = COMMAND_WORD + " -d "
+            + PREFIX_STUDENTID + "STUDENT_ID "
+            + PREFIX_DATE + "DDMMYYYY "
+            + PREFIX_CLASSTAG + "CLASS_TAG \n"
+            + "Example: perf -d s/0000 d/29102025 t/Sec3_Math";
 
     private final StudentId studentId;
     private final Date date;
@@ -60,6 +59,10 @@ public class PerfDeleteCommand extends PerfCommand {
         Person student = model.getPersonById(studentId)
                 .orElseThrow(() -> new CommandException(
                         String.format(Messages.MESSAGE_STUDENT_ID_NOT_FOUND, studentId)));
+
+        if (!model.hasClassTag(classTag)) {
+            throw new CommandException(String.format(Messages.MESSAGE_TAG_NOT_FOUND, classTag.tagName));
+        }
 
         List<PerformanceNote> current = student.getPerformanceList().asUnmodifiableList();
         PerformanceList copy = new PerformanceList(new ArrayList<>(current));

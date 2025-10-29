@@ -66,7 +66,7 @@ public class PerfCommandParser implements Parser<Command> {
         if (!arePrefixesPresent(argMultimap, PREFIX_STUDENTID, PREFIX_DATE, PREFIX_CLASSTAG, PREFIX_NOTE)
                 || !argMultimap.getPreamble().trim().isEmpty()) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                    PerfCommand.MESSAGE_USAGE));
+                    PerfAddCommand.MESSAGE_USAGE));
         }
 
         String studentIdString = argMultimap.getValue(PREFIX_STUDENTID).get();
@@ -94,7 +94,7 @@ public class PerfCommandParser implements Parser<Command> {
         if (!arePrefixesPresent(argMultimap, PREFIX_STUDENTID)
                 || !argMultimap.getPreamble().trim().isEmpty()) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                    PerfCommand.MESSAGE_USAGE));
+                    PerfViewCommand.MESSAGE_USAGE));
         }
 
         String studentIdString = argMultimap.getValue(PREFIX_STUDENTID).get();
@@ -116,7 +116,7 @@ public class PerfCommandParser implements Parser<Command> {
         if (!arePrefixesPresent(argMultimap, PREFIX_STUDENTID, PREFIX_DATE, PREFIX_CLASSTAG, PREFIX_NOTE)
                 || !argMultimap.getPreamble().trim().isEmpty()) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                    PerfCommand.MESSAGE_USAGE));
+                    PerfEditCommand.MESSAGE_USAGE));
         }
 
         String studentIdString = argMultimap.getValue(PREFIX_STUDENTID).get();
@@ -144,7 +144,7 @@ public class PerfCommandParser implements Parser<Command> {
         if (!arePrefixesPresent(argMultimap, PREFIX_STUDENTID, PREFIX_DATE, PREFIX_CLASSTAG)
                 || !argMultimap.getPreamble().trim().isEmpty()) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                    PerfCommand.MESSAGE_USAGE));
+                    PerfDeleteCommand.MESSAGE_USAGE));
         }
 
         String studentIdString = argMultimap.getValue(PREFIX_STUDENTID).get();
