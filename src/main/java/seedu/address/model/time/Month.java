@@ -20,7 +20,7 @@ public final class Month {
     public static final String MESSAGE_CONSTRAINTS =
             "Month must be in MMYY format where MM range from 01 to 12 (e.g., 0925 for September 2025).";
 
-    public static final String MESSAGE_INVALID_FUTURE_MONTH = "Month cannot be in the future.";
+    public static final String MESSAGE_INVALID_FUTURE_ENROLLED_MONTH = "Enrolled month cannot be in the future.";
 
     // Human-readable formatter, e.g., "September 2025"
     private static final DateTimeFormatter HUMAN = DateTimeFormatter.ofPattern("MMMM yyyy");

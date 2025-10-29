@@ -166,7 +166,7 @@ public class ParserUtil {
         if (parsedMonth.isBefore(Month.now()) || parsedMonth.equals(Month.now())) {
             return parsedMonth;
         } else {
-            throw new ParseException(Month.MESSAGE_INVALID_FUTURE_MONTH);
+            throw new ParseException(Month.MESSAGE_INVALID_FUTURE_ENROLLED_MONTH);
         }
     }
 
