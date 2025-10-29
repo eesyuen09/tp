@@ -26,13 +26,12 @@ import seedu.address.model.time.Date;
  */
 public class PerfEditCommand extends PerfCommand {
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + "-e"
-            + ": Edits a note of a student on indicated date. "
-            + "Parameters: "
-            + PREFIX_STUDENTID + "STUDENTID "
-            + PREFIX_DATE + "DATE "
+    public static final String MESSAGE_USAGE = COMMAND_WORD + " -e "
+            + PREFIX_STUDENTID + "STUDENT_ID "
+            + PREFIX_DATE + "DDMMYYYY "
             + PREFIX_CLASSTAG + "CLASS_TAG "
-            + PREFIX_NOTE + "PERFORMANCE NOTE ";
+            + PREFIX_NOTE + "PERFORMANCE_NOTE \n"
+            + "Example: perf -e s/0000 d/29102025 t/Sec3_Math pn/Shows consistent improvement.";
 
     private final StudentId studentId;
     private final Date date;
