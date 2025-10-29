@@ -7,6 +7,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_DATE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NOTE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_STUDENTID;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,6 +70,19 @@ public class PerfAddCommand extends PerfCommand {
         if (!student.getTags().contains(classTag)) {
             throw new CommandException(String.format(MESSAGE_STUDENT_DOES_NOT_HAVE_TAG,
                     student.getName(), classTag.tagName));
+        }
+
+        LocalDate performanceNoteMonth = date.toLocalDate();
+        LocalDate enrolStart = student.getEnrolledMonth().toYearMonth().atDay(1);
+
+        if (performanceNoteMonth.isBefore(enrolStart)) {
+            throw new CommandException(String.format(
+                    "Performance note cannot be added earlier than %s's enrolment month (%s).",
+                    student.getName(), student.getEnrolledMonth().toHumanReadable()));
+        }
+
+        if (performanceNoteMonth.isAfter(LocalDate.now())) {
+            throw new CommandException("Performance note cannot be added for future date.");
         }
 
         List<PerformanceNote> current = student.getPerformanceList().asUnmodifiableList();
