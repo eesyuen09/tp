@@ -1851,6 +1851,98 @@ testers are expected to do more *exploratory* testing.
        **Expected:** Command rejected. Error message indicates tag is still in use by students.
 
 ---
+---
+
+### Managing Performance Notes
+
+#### Adding a Performance Note
+
+1. Adding a new performance note for an existing student
+
+    1. Prerequisites: Student exists with the specified Student ID (e.g., `0001`) and is assigned the relevant class tag (e.g., `Sec3_Maths`).<br>
+       Use `add`/`edit` commands beforehand to set up the student and class tag if necessary.
+
+    1. Test case: `perf -a s/0001 d/18092025 t/Sec3_Maths pn/Scored 85% on mock test`
+       **Expected:** Performance note added. Status message confirms success and the note appears in the performance panel.
+
+1. Adding a duplicate performance note
+
+    1. Prerequisites: Performance note already exists for the same student, date, and class tag as above.
+
+    1. Test case: `perf -a s/0001 d/18092025 t/Sec3_Maths pn/Scored 85% on mock test`
+       **Expected:** Command rejected. Error message indicates a note already exists for that date and class tag.
+
+1. Adding a performance note that exceeds the note length limit
+
+    1. Test case: `perf -a s/0001 d/18092025 t/Sec3_Maths pn/` followed by a note longer than 200 characters
+       **Expected:** Command rejected. Error message indicates the performance note exceeds the maximum length.
+
+---
+
+#### Viewing Performance Notes
+
+1. Viewing performance notes for a student with existing notes
+
+    1. Prerequisites: Student `0001` has at least one performance note.
+
+    1. Test case: `perf -v s/0001`
+       **Expected:** Performance panel updates to show all notes for the student in chronological order. Status message confirms number of notes shown.
+
+1. Viewing performance notes for a student without notes
+
+    1. Prerequisites: Student `0002` exists but has no performance notes.
+
+    1. Test case: `perf -v s/0002`
+       **Expected:** Command succeeds. Status message indicates no performance notes found, and the performance panel is empty.
+
+1. Viewing performance notes for a non-existent student
+
+    1. Test case: `perf -v s/9999`
+       **Expected:** Command rejected. Error message indicates the student cannot be found.
+
+---
+
+#### Editing a Performance Note
+
+1. Editing an existing performance note
+
+    1. Prerequisites: Student `0001` has a performance note on `18092025` for `Sec3_Maths` with any content.
+
+    1. Test case: `perf -e s/0001 d/18092025 t/Sec3_Maths pn/Improved to 90% after review`
+       **Expected:** Performance note updated. Status message confirms edit and performance panel reflects new note text.
+
+1. Editing a non-existent performance note
+
+    1. Test case: `perf -e s/0001 d/19092025 t/Sec3_Maths pn/Test`
+       **Expected:** Command rejected. Error message indicates no matching performance note exists for the given date and class tag.
+
+1. Editing with a note exceeding the length limit
+
+    1. Test case: `perf -e s/0001 d/18092025 t/Sec3_Maths pn/` followed by a note longer than 200 characters
+       **Expected:** Command rejected. Error message indicates the performance note exceeds the maximum length.
+
+---
+
+#### Deleting a Performance Note
+
+1. Deleting an existing performance note
+
+    1. Prerequisites: Student `0001` has a performance note on `18092025` for `Sec3_Maths`.
+
+    1. Test case: `perf -d s/0001 d/18092025 t/Sec3_Maths`
+       **Expected:** Performance note removed. Status message confirms deletion and the note disappears from the performance panel.
+
+1. Deleting a non-existent performance note
+
+    1. Test case: `perf -d s/0001 d/19092025 t/Sec3_Maths`
+       **Expected:** Command rejected. Error message indicates no matching performance note exists.
+
+1. Deleting a performance note for a non-existent student
+
+    1. Test case: `perf -d s/9999 d/18092025 t/Sec3_Maths`
+       **Expected:** Command rejected. Error message indicates the student cannot be found.
+
+---
 
 ### Saving data
 
