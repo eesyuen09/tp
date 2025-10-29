@@ -20,7 +20,7 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 
 * Role: Team Lead
 * Responsibilities: Integration
-* 
+
 ### Chong Yi Jie
 
 <img src="images/yijiechong13.png" width="200px">
