@@ -19,7 +19,11 @@ Class Address
 Class Email
 Class Name
 Class Phone
+Class StudentId
 Class ClassTag
+Class AttendanceList
+Class Attendance
+Class Date
 
 Class I #FFFFFF
 }
@@ -44,7 +48,14 @@ Person *--> Name
 Person *--> Phone
 Person *--> Email
 Person *--> Address
+Person *--> StudentId
 Person *--> "*" ClassTag
+Person *--> AttendanceList
+
+AttendanceList --> "*" Attendance
+
+Attendance --> Date
+Attendance --> ClassTag
 
 Person -[hidden]up--> I
 UniquePersonList -[hidden]right-> I

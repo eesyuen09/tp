@@ -22,6 +22,8 @@ public class PerformanceNoteCard extends UiPart<Region> {
     @FXML
     private Label date;
     @FXML
+    private Label classTag;
+    @FXML
     private Label content;
 
     /**
@@ -32,6 +34,7 @@ public class PerformanceNoteCard extends UiPart<Region> {
         this.note = note;
         id.setText(displayedIndex + ".");
         date.setText(note.getDate().getFormattedDate());
+        classTag.setText(note.getClassTag().toString());
         content.setText(note.getNote());
     }
 }

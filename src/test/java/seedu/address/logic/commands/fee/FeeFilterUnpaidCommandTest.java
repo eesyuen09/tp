@@ -10,6 +10,7 @@ import static seedu.address.testutil.TypicalPersons.BENSON;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import seedu.address.logic.commands.CommandTestUtil;
 import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
@@ -95,6 +96,17 @@ public class FeeFilterUnpaidCommandTest {
         assertCommandSuccess(cmd, model, expectedMessage, expectedModel);
 
         assertEquals(0, model.getFilteredPersonList().size());
+    }
+
+    @Test
+    public void execute_futureMonth_throwsCommandException() {
+        Month future = Month.now().plusMonths(1);
+        FeeFilterUnpaidCommand command = new FeeFilterUnpaidCommand(future);
+
+        String expectedMessage = "Cannot filter by future months. "
+            + "\nPlease select a month up to the current month.";
+
+        CommandTestUtil.assertCommandFailure(command, model, expectedMessage);
     }
 
     @Test

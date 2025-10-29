@@ -1,0 +1,86 @@
+@startuml
+!include style.puml
+skinparam ArrowFontStyle plain
+
+box Logic LOGIC_COLOR_T1
+participant ":LogicManager" as LogicManager LOGIC_COLOR
+participant ":AddressBookParser" as AddressBookParser LOGIC_COLOR
+participant ":AttendanceCommandParser" as AttendanceCommandParser LOGIC_COLOR
+participant "command:AttendanceMarkCommand" as AttendanceMarkCommand LOGIC_COLOR
+participant "commandResult :CommandResult" as CommandResult LOGIC_COLOR
+end box
+
+box Model MODEL_COLOR_T1
+participant ":Model" as Model MODEL_COLOR
+participant ":Person" as Person MODEL_COLOR
+end box
+
+[-> LogicManager : execute("att -m s/0001 d/10112025 t/Math")
+activate LogicManager
+
+LogicManager -> AddressBookParser : parseCommand("att -m s/0001 d/10112025 t/Math")
+activate AddressBookParser
+
+create AttendanceCommandParser
+AddressBookParser -> AttendanceCommandParser
+activate AttendanceCommandParser
+
+AttendanceCommandParser --> AddressBookParser
+deactivate AttendanceCommandParser
+
+AddressBookParser -> AttendanceCommandParser : parse("-m s/0001 d/10112025 t/Math")
+activate AttendanceCommandParser
+
+create AttendanceMarkCommand
+AttendanceCommandParser -> AttendanceMarkCommand
+activate AttendanceMarkCommand
+
+AttendanceMarkCommand --> AttendanceCommandParser
+deactivate AttendanceMarkCommand
+
+AttendanceCommandParser --> AddressBookParser : command
+deactivate AttendanceCommandParser
+'Hidden arrow to position the destroy marker below the end of the activation bar.
+AttendanceCommandParser -[hidden]-> AddressBookParser
+destroy AttendanceCommandParser
+
+AddressBookParser --> LogicManager : command
+deactivate AddressBookParser
+
+LogicManager -> AttendanceMarkCommand : execute(model)
+activate AttendanceMarkCommand
+
+AttendanceMarkCommand -> Model : getPersonById(studentId)
+activate Model
+
+Model --> AttendanceMarkCommand : person
+deactivate Model
+
+AttendanceMarkCommand -> Person : getTags()
+activate Person
+Person --> AttendanceMarkCommand : classTags
+deactivate Person
+
+AttendanceMarkCommand -> Person : getAttendanceList()
+activate Person
+Person --> AttendanceMarkCommand : attendanceList
+deactivate Person
+
+AttendanceMarkCommand -> Model : markAttendance(studentId, date, classTag)
+activate Model
+Model --> AttendanceMarkCommand
+deactivate Model
+
+create CommandResult
+AttendanceMarkCommand -> CommandResult
+activate CommandResult
+
+CommandResult --> AttendanceMarkCommand
+deactivate CommandResult
+
+AttendanceMarkCommand --> LogicManager : commandResult
+deactivate AttendanceMarkCommand
+
+[<--LogicManager
+deactivate LogicManager
+@enduml

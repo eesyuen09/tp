@@ -103,6 +103,14 @@ public final class Month {
     }
 
     /**
+     * Returns a boolean to check if the other month is after this month.
+     */
+    public boolean isAfter(Month other) {
+        requireNonNull(other);
+        return this.yearMonth.isAfter(other.yearMonth);
+    }
+
+    /**
      * Factory methods for constructing {@code Month} objects.
      */
     public static Month of(String monthYear) {

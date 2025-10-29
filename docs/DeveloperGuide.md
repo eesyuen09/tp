@@ -167,6 +167,119 @@ Classes used by multiple components are in the `seedu.address.commons` package.
 
 This section describes some noteworthy details on how certain features are implemented.
 
+### Attendance Management
+
+#### Overview
+
+The Attendance Management feature enables tutors to track student attendance across different classes and dates. Each attendance record captures whether a student was present or absent for a specific class on a particular date.
+
+The feature is implemented through an `AttendanceList` stored within each `Person` object. This list contains `Attendance` objects, each holding:
+- A `Date` indicating when the class occurred
+- A `ClassTag` indicating which class it was for
+- An attendance status (Present/Absent)
+
+The key design decision is to store attendance within each student's record rather than in a centralized attendance repository. This provides natural encapsulation and efficient retrieval of a student's complete attendance history.
+
+#### Marking and Unmarking Attendance
+
+Given below is an example usage scenario showing how the attendance marking mechanism works.
+
+Step 1. The tutor launches the application. Each `Person` object in the `AddressBook` contains an `AttendanceList`, initially populated with any previously recorded attendance from storage.
+
+Step 2. The tutor executes `att -m s/0001 d/10112025 t/Math` to mark student 0001 as present for Math class on 10 November 2025. The command is parsed by `AttendanceCommandParser`, which detects the `-m` flag and creates an `AttendanceMarkCommand`.
+
+Step 3. `AttendanceMarkCommand` is executed. It first validates that:
+   - Student with ID 0001 exists (via `Model#getPersonById()`)
+   - The ClassTag "Math" exists in the system (via `Model#findClassTag()`)
+   - The student is assigned to the Math class (via `Person#hasClassTag()`)
+
+Step 4. The command checks for duplicate attendance records by examining the student's `AttendanceList`:
+   - Searches for an existing attendance record with the same date (10/11/2025) and class (Math)
+   - If a "Present" record already exists, the command returns a message indicating no change is needed
+   - If an "Absent" record exists, it will be removed before adding the new "Present" record
+
+Step 5. A new `Attendance` object is created with status "Present" and added to the student's `AttendanceList`. The model updates the filtered person list to reflect the changes.
+
+Step 6. A `CommandResult` is returned with a success message: "Marked attendance for Student ID: 0001 on 10/11/2025 for Math"
+
+The following sequence diagram shows how the marking attendance operation goes through the `Logic` component:
+
+<puml src="diagrams/AttendanceMarkSequenceDiagram.puml" alt="Attendance Mark Sequence Diagram" />
+
+<box type="info" seamless>
+
+**Note:** The lifeline for `AttendanceCommandParser` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline continues till the end of diagram.
+
+</box>
+
+**Unmarking attendance** (`att -u`) follows an identical execution flow, with the key difference being that `AttendanceCommandParser` creates an `AttendanceUnmarkCommand` and sets the attendance status to "Absent" instead of "Present".
+
+#### Deleting Attendance Records
+
+The `att -d` command allows tutors to completely remove an attendance record, useful for correcting mistakes or cancelled classes.
+
+Step 1. The tutor executes `att -d s/0001 d/10112025 t/Math` to delete the attendance record.
+
+Step 2. `AttendanceCommandParser` creates an `AttendanceDeleteCommand`.
+
+Step 3. The command validates that an attendance record exists for the specified student, date, and class.
+
+Step 4. If found, the attendance record is removed from the student's `AttendanceList`. If not found, a `CommandException` is thrown indicating no record exists.
+
+<box type="info" seamless>
+
+**Note:** Unlike mark/unmark which create or update records, delete completely removes the record. After deletion, the system has no record that attendance was ever taken for that date and class.
+
+</box>
+
+#### Viewing Attendance History
+
+The `att -v` command displays a student's attendance records, optionally filtered by class.
+
+Step 1. The tutor executes `att -v s/0001` to view all attendance records for student 0001, or `att -v s/0001 t/Math` to view only Math class attendance.
+
+Step 2. `AttendanceCommandParser` creates an `AttendanceViewCommand`.
+
+Step 3. The command retrieves the student's `AttendanceList` and filters the records:
+   - If a ClassTag is specified, only records matching that class are included
+   - Records from the last 6 months are shown
+   - Records are sorted chronologically with the most recent first
+
+Step 4. The filtered attendance records are formatted and displayed to the tutor, showing the date, class, and status (Present/Absent) for each record.
+
+<box type="info" seamless>
+
+**Note:** If the student has no attendance records, or no records matching the filter criteria, the system displays a message indicating no records are available.
+
+</box>
+
+
+#### Design Considerations
+
+**Aspect: How attendance data is stored:**
+
+* **Alternative 1 (current choice):** Store attendance within each `Person` object
+  * Pros: Natural encapsulation, easy to retrieve all attendance for a specific student, simpler deletion logic (student deletion automatically removes attendance)
+  * Cons: Harder to query attendance across all students for a specific date/class, less efficient for class-centric reports
+
+* **Alternative 2:** Store attendance in a centralized `AttendanceBook`
+  * Pros: Easier to query by date/class across all students, better for class-level reports
+  * Cons: More complex referential integrity, risk of orphaned records, attendance disconnected from student profiles
+
+**Aspect: How to represent "absent" status:**
+
+* **Alternative 1 (current choice):** Flag-based commands - `att -m` for present, `att -u` for absent
+  * Pros: Consolidated under single `att` command word, fewer top-level commands to remember, consistent with payment feature's flag-based design (`fee -p`, `fee -up`)
+  * Cons: Potentially confusing terminology ("unmark" suggests deletion rather than marking absent), requires users to remember flag meanings
+
+* **Alternative 2:** Separate command words - `present s/0001 d/10112025 t/Math` and `absent s/0001 d/10112025 t/Math`
+  * Pros: Crystal clear intent from command word itself, highly intuitive (command literally describes the action), no ambiguity about what each command does
+  * Cons: Increases top-level command count (now users need to remember `present`, `absent`, instead of just `att`), breaks the feature grouping pattern used throughout the app (attendance: `att`, performance: `perf`, fees: `fee`), inconsistent with the design goal of organizing related commands under a single namespace
+
+* **Alternative 3:** Explicit status parameter - `att s/0001 d/10112025 t/Math status/present` or `att s/0001 d/10112025 t/Math status/absent`
+  * Pros: Self-documenting commands, very clear semantics, easily extensible (could add `status/late` or `status/excused` in future)
+  * Cons: More verbose, longer command syntax, requires typing "status/" every time
+
 ### ClassTag Management
 
 #### Overview
@@ -493,8 +606,9 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | `* * * `  | tutor     | edit a specific performance note for a student            | I can correct or update it                                              |
 | `* * * `  | tutor     | delete a specific performance note for a student          | I can remove it if needed                                               |
 | `* * *`   | tutor who teaches multiple classes         | take attendance of each student                           | I can track their attendance record                                     |
-| `* * *`   | tutor who teaches multiple classes         | view students' attendance history                         | I can track if students are consistently attending lessons.             |
-| `* * *`   | tutor who teaches multiple classes         | unmark a student’s attendance                             | correct mistakes or changes if attendance was marked wrongly            |
+| `* * *`   | tutor who teaches multiple classes         | view students' attendance history                         | I can track if students are consistently attending lessons              |
+| `* * *`   | tutor who teaches multiple classes         | unmark a student's attendance                             | correct mistakes or changes if attendance was marked wrongly            |
+| `* *`     | tutor who teaches multiple classes         | delete an attendance record                               | remove records for cancelled classes or fix erroneous entries           |
 | `* *`     | new tutor user                                           | view sample data                                          | understand how the app looks when populated                             |
 | `* *`     | tutor starting fresh                                     | purge sample/old data                                     | start fresh with only my real student info                              |                                                                  |
 | `* * *`   | tutor managing students                                  | add students                                              | quickly add my students into the address book                           |

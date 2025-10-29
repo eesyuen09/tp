@@ -206,7 +206,7 @@ public class ModelManager implements Model {
             .orElseThrow(() -> new IllegalArgumentException("Student ID not found: " + studentId));
         FeeState current = feeTracker.getDerivedStatusOfMonth(person, month).orElse(FeeState.UNPAID);
         if (current == FeeState.UNPAID) {
-            throw new IllegalStateException(month.toHumanReadable() + " is already marked as Unpaid.");
+            throw new IllegalStateException(month.toHumanReadable() + " is already unpaid.");
         }
         feeTracker.markUnpaid(studentId, month);
     }

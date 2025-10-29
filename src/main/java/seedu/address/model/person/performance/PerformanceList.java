@@ -4,6 +4,7 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import seedu.address.model.person.performance.exceptions.PerformanceNoteNotFoundException;
@@ -14,6 +15,9 @@ import seedu.address.model.time.Date;
  * A list of performance notes.
  */
 public class PerformanceList {
+    private static final Comparator<PerformanceNote> NOTE_COMPARATOR =
+            Comparator.comparing((PerformanceNote note) -> note.getDate().toLocalDate())
+                    .thenComparing(note -> note.getClassTag().tagName, String.CASE_INSENSITIVE_ORDER);
     private final List<PerformanceNote> notes = new ArrayList<>();
 
     /**
@@ -44,6 +48,7 @@ public class PerformanceList {
             throw new IllegalArgumentException("A performance note already exists for this date and class tag.");
         }
         notes.add(note);
+        notes.sort(NOTE_COMPARATOR);
     }
 
     /**

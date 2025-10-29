@@ -72,6 +72,20 @@ public class PerformanceListTest {
     }
 
     @Test
+    public void add_notesStoredChronologically() {
+        PerformanceList list = new PerformanceList();
+        PerformanceNote latest = new PerformanceNote(DATE_3, CLASS_1, NOTE_1);
+        PerformanceNote earliest = new PerformanceNote(DATE_1, CLASS_2, NOTE_2);
+        PerformanceNote middle = new PerformanceNote(DATE_2, CLASS_3, NOTE_3);
+
+        list.add(latest);
+        list.add(earliest);
+        list.add(middle);
+
+        assertEquals(List.of(earliest, middle, latest), list.asUnmodifiableList());
+    }
+
+    @Test
     public void editPerformanceNote_valid_success() {
         PerformanceList list = new PerformanceList();
         list.add(new PerformanceNote(DATE_1, CLASS_1, NOTE_1));
