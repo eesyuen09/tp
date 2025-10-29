@@ -750,7 +750,7 @@ The following commands handle Fee Management operations:
 5. **FeeViewCommand (triggered by `fee -v`)**: Displays a student’s **payment history** across a specified range of months.
     - Validates that the student exists and that the month range is valid.
     - Retrieves payment data using `FeeTracker#getPaymentHistory()`.
-    - Outputs a chronological list of months with corresponding fee states.
+    - Outputs a reverse-chronological list of months (latest month first), with corresponding fee states.
 
 #### Sequence Diagram: Marking a Student as Paid
 
@@ -840,6 +840,30 @@ The activity diagram below illustrates the workflow for viewing a student’s fe
     * Cons:
       - Restrictive — tutors cannot fix genuine mis-entries without first unmarking all later months.
 
+**Aspect: Display Order of Payment History**
+
+* **Alternative 1 (current choice):** Display payment history in **reverse-chronological order** (newest-first).  
+  The computed range still spans from the **effective start month** (typically the enrolment month) up to the **current month**.
+
+    * Pros:
+        - Places the **most relevant and recent months** at the top, matching tutor workflows.
+        - Reduces scrolling effort for checking recent payments or following up on unpaid students.
+        - Maintains **consistency across panels** (e.g., performance notes), which also prioritize recent data.
+
+    * Cons:
+        - Tutors reviewing long-term records need to scroll to the bottom to reach the **earliest (enrolment) months**.
+
+---
+
+* **Alternative 2:** Display payment history in **chronological order** (oldest-first).  
+  The earliest month (enrolment) appears first, progressing toward the current month.
+
+    * Pros:
+        - Provides a **narratively intuitive timeline**, helping tutors review payment history from the student’s start date.
+
+    * Cons:
+        - **Recent months**, which tutors most often need, appear at the bottom — requiring extra scrolling.
+        - Inconsistent with other panels that already emphasize **newest-first ordering**.
 
 ---
 
@@ -1460,7 +1484,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
     * If a start month is provided, the range starts from the **later** of the provided month and the **enrolled month**.
     * Otherwise, the range starts from the **enrolled month**.
 4. Tuto retrieves the month-by-month history from the effective start to the current month.
-5. Tuto displays the chronological history, indicating whether each month is an **explicit** mark or a **default** (unmarked → UNPAID).
+5. Tuto displays the history in reverse-chronological order (current month at the top, effective start at the bottom), indicating whether each month is an **explicit** mark or a **default** (unmarked → UNPAID).
 
    Use case ends.
 
@@ -1481,9 +1505,6 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
     * 3a1. Tuto automatically adjusts the start to the enrolment month.  
       Use case continues at Step 4.
 
-* 4a. There are no months to display within the computed range.
-    * 4a1. Tuto indicates that no records are available for that range.  
-      Use case ends.
 
 **Use case: Mark attendance for a student**
 
@@ -1691,7 +1712,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 * **Mainstream OS**: Windows, Linux, Unix, MacOS
 * **Private contact detail**: A contact detail that is not meant to be shared with others
 * **Student ID**: A 4-digit unique numeric identifier (0000–9999) assigned to each student when added to the system.
-* **Payment History**: A chronological record of a student's PAID/UNPAID fee status from a **start month** (either the student’s enrolment month or an explicitly provided `m/MMYY`) **up to the current month** (inclusive). Months after enrolment with no explicit record are derived as **UNPAID** by default.
+* **Payment History**: A record covering a range from a start month (either the student’s enrolment month or an explicitly provided m/MMYY) up to the current month (inclusive). The UI displays this range in reverse-chronological order (newest month first). Months after enrolment with no explicit record are derived as UNPAID by default.
 * **Performance note**: A short textual record of a student's performance on a given date
 * **Attendance History**: A record that shows a student's attendance history, covering up to the six most recent months before the current month.
 * **Executable JAR**: A Java Archive file that contains all compiled classes and resources, which can be run directly without installation.
@@ -1917,12 +1938,12 @@ testers are expected to do more *exploratory* testing.
 1. Viewing complete payment history from enrolment
 
     1. Test case: `fee -v s/0001`  
-       **Expected:** Displays a list of all months from the enrolment month to the current month, showing each month’s status (e.g., PAID or UNPAID).
-
+       **Expected:** Displays all months from the enrolment month up to the current month, ordered from newest to oldest (current month first, enrolment month last). Each row shows the payment status (e.g., PAID or UNPAID) and whether it was **explicitly marked** or **set by default**.
+   
 1. Viewing payment history with a **custom start month**
 
     1. Test case: `fee -v s/0001 m/0525`  
-       **Expected:** Displays payment history starting from the given month (or enrolment month if the given month is before enrolment).  
+       **Expected:** Displays payment history starting from the given month (or enrolment month if the given month is before enrolment),  ordered newest to oldest.   
        The system automatically adjusts the start month.
 
 1. Attempting to view **future month history**
