@@ -12,7 +12,6 @@ import static seedu.address.testutil.TypicalPersons.GEORGE;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
 
@@ -66,16 +65,20 @@ public class JsonSerializableAddressBookTest {
                 JsonSerializableAddressBook.class).get();
         AddressBook addressBookFromFile = dataFromFile.toModelType();
 
-        // **FIX:** Construct the expected AddressBook with the exact data from the JSON file.
+        // Construct the expected AddressBook with the exact data from the JSON file.
         AddressBook expectedAddressBook = new AddressBook();
-        expectedAddressBook.addPerson(new PersonBuilder(ALICE).withClassTags("friends").build());
-        expectedAddressBook.addPerson(new PersonBuilder(BENSON).withClassTags("owesMoney", "friends").build());
+        // Add class tags first
+        expectedAddressBook.addClassTag(new ClassTag("friends"));
+        expectedAddressBook.addClassTag(new ClassTag("owesMoney"));
+        // Add persons with correct student IDs from JSON file
+        expectedAddressBook.addPerson(new PersonBuilder(ALICE).withStudentId("0000").withClassTags("friends").build());
+        expectedAddressBook.addPerson(new PersonBuilder(BENSON).withStudentId("0001")
+                .withClassTags("owesMoney", "friends").build());
         expectedAddressBook.addPerson(CARL);
         expectedAddressBook.addPerson(new PersonBuilder(DANIEL).withClassTags("friends").build());
         expectedAddressBook.addPerson(ELLE);
         expectedAddressBook.addPerson(FIONA);
         expectedAddressBook.addPerson(GEORGE);
-        expectedAddressBook.setClassTags(Collections.emptyList());
 
         assertEquals(expectedAddressBook, addressBookFromFile);
     }
