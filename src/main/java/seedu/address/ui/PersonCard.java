@@ -45,6 +45,8 @@ public class PersonCard extends UiPart<Region> {
     @FXML
     private Label studentId;
     @FXML
+    private Label enrolledMonth;
+    @FXML
     private FlowPane tags;
     @FXML
     private Label feeStatus;
@@ -61,9 +63,10 @@ public class PersonCard extends UiPart<Region> {
         id.setText(displayedIndex + ". ");
         studentId.setText("ID: " + person.getStudentId().toString());
         name.setText(person.getName().fullName);
-        phone.setText(person.getPhone().value);
-        address.setText(person.getAddress().value);
-        email.setText(person.getEmail().value);
+        phone.setText("Phone: " + person.getPhone().value);
+        address.setText("Address: " + person.getAddress().value);
+        email.setText("Email: " + person.getEmail().value);
+        enrolledMonth.setText("Enrolled Month: " + person.getEnrolledMonth().toHumanReadable());
         person.getTags().stream()
             .sorted(Comparator.comparing(tag -> tag.tagName))
             .forEach(tag -> tags.getChildren().add(new Label(tag.tagName)));

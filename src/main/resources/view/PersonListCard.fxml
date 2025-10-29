@@ -33,6 +33,7 @@
                style="-fx-text-fill: white; -fx-font-weight: bold;-fx-margin: 3 8 3 8;"/>
         </VBox>
       <Label fx:id="studentId" styleClass="cell_small_label" text="\$studentId" />
+      <Label fx:id="enrolledMonth" styleClass="cell_small_label" text="\$enrolledMonth" />
       <Label fx:id="phone" styleClass="cell_small_label" text="\$phone" />
       <Label fx:id="address" styleClass="cell_small_label" text="\$address" />
       <Label fx:id="email" styleClass="cell_small_label" text="\$email" />

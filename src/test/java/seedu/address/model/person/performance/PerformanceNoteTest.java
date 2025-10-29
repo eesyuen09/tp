@@ -43,6 +43,14 @@ public class PerformanceNoteTest {
     }
 
     @Test
+    public void constructor_emptyNote_throwsIllegalArgumentException() {
+        String emptyNote = "";
+        assertThrows(IllegalArgumentException.class,
+                PerformanceNote.MESSAGE_CONSTRAINTS, () -> new PerformanceNote(VALID_DATE_1,
+                        VALID_TAG_1, emptyNote));
+    }
+
+    @Test
     public void constructor_validInputs_success() {
         PerformanceNote note = new PerformanceNote(VALID_DATE_1, VALID_TAG_1, VALID_NOTE);
         assertEquals(VALID_DATE_1, note.getDate());

@@ -27,8 +27,8 @@ Class Date
 Class FeeTracker
 Class FeeState
 Class Month
-
-
+Class PerformanceList
+Class PerformanceNote
 Class I #FFFFFF
 }
 
@@ -60,11 +60,17 @@ Person *--> StudentId
 Person *--> "*" ClassTag
 Person *--> AttendanceList
 Person --> "1" Month : enrolledMonth
+Person *--> PerformanceList
 
 AttendanceList --> "*" Attendance
 
 Attendance --> Date
 Attendance --> ClassTag
+
+PerformanceList --> "*" PerformanceNote
+
+PerformanceNote --> Date
+PerformanceNote --> ClassTag
 
 Person -[hidden]up--> I
 UniquePersonList -[hidden]right-> I
