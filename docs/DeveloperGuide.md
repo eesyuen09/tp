@@ -13,7 +13,7 @@
 
 ## **Acknowledgements**
 
-_{ list here sources of all reused/adapted ideas, code, documentation, and third-party libraries -- include links to the original source as well }_
+We follow the project design and documentation structure of the AddressBook-Level3 project by SE-EDU.
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -134,7 +134,7 @@ The `Model` component,
 - `UniqueClassTagList` ensures no duplicate ClassTag names exist
 - Students can be assigned multiple ClassTags via the `classTags` field in `Person`
 - When a ClassTag is deleted, it must not be assigned to any student
-- ClassTags provide a way to filter and organize students by class
+- ClassTags provide a way to filter and organize students by class tag
 
 <box type="info" seamless>
 
@@ -167,6 +167,119 @@ Classes used by multiple components are in the `seedu.address.commons` package.
 
 This section describes some noteworthy details on how certain features are implemented.
 
+### Attendance Management
+
+#### Overview
+
+The Attendance Management feature enables tutors to track student attendance across different classes and dates. Each attendance record captures whether a student was present or absent for a specific class on a particular date.
+
+The feature is implemented through an `AttendanceList` stored within each `Person` object. This list contains `Attendance` objects, each holding:
+- A `Date` indicating when the class occurred
+- A `ClassTag` indicating which class it was for
+- An attendance status (Present/Absent)
+
+The key design decision is to store attendance within each student's record rather than in a centralized attendance repository. This provides natural encapsulation and efficient retrieval of a student's complete attendance history.
+
+#### Marking and Unmarking Attendance
+
+Given below is an example usage scenario showing how the attendance marking mechanism works.
+
+Step 1. The tutor launches the application. Each `Person` object in the `AddressBook` contains an `AttendanceList`, initially populated with any previously recorded attendance from storage.
+
+Step 2. The tutor executes `att -m s/0001 d/10112025 t/Math` to mark student 0001 as present for Math class on 10 November 2025. The command is parsed by `AttendanceCommandParser`, which detects the `-m` flag and creates an `AttendanceMarkCommand`.
+
+Step 3. `AttendanceMarkCommand` is executed. It first validates that:
+   - Student with ID 0001 exists (via `Model#getPersonById()`)
+   - The ClassTag "Math" exists in the system (via `Model#findClassTag()`)
+   - The student is assigned to the Math class (via `Person#hasClassTag()`)
+
+Step 4. The command checks for duplicate attendance records by examining the student's `AttendanceList`:
+   - Searches for an existing attendance record with the same date (10/11/2025) and class (Math)
+   - If a "Present" record already exists, the command returns a message indicating no change is needed
+   - If an "Absent" record exists, it will be removed before adding the new "Present" record
+
+Step 5. A new `Attendance` object is created with status "Present" and added to the student's `AttendanceList`. The model updates the filtered person list to reflect the changes.
+
+Step 6. A `CommandResult` is returned with a success message: "Marked attendance for Student ID: 0001 on 10/11/2025 for Math"
+
+The following sequence diagram shows how the marking attendance operation goes through the `Logic` component:
+
+<puml src="diagrams/AttendanceMarkSequenceDiagram.puml" alt="Attendance Mark Sequence Diagram" />
+
+<box type="info" seamless>
+
+**Note:** The lifeline for `AttendanceCommandParser` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline continues till the end of diagram.
+
+</box>
+
+**Unmarking attendance** (`att -u`) follows an identical execution flow, with the key difference being that `AttendanceCommandParser` creates an `AttendanceUnmarkCommand` and sets the attendance status to "Absent" instead of "Present".
+
+#### Deleting Attendance Records
+
+The `att -d` command allows tutors to completely remove an attendance record, useful for correcting mistakes or cancelled classes.
+
+Step 1. The tutor executes `att -d s/0001 d/10112025 t/Math` to delete the attendance record.
+
+Step 2. `AttendanceCommandParser` creates an `AttendanceDeleteCommand`.
+
+Step 3. The command validates that an attendance record exists for the specified student, date, and class.
+
+Step 4. If found, the attendance record is removed from the student's `AttendanceList`. If not found, a `CommandException` is thrown indicating no record exists.
+
+<box type="info" seamless>
+
+**Note:** Unlike mark/unmark which create or update records, delete completely removes the record. After deletion, the system has no record that attendance was ever taken for that date and class.
+
+</box>
+
+#### Viewing Attendance History
+
+The `att -v` command displays a student's attendance records, optionally filtered by class.
+
+Step 1. The tutor executes `att -v s/0001` to view all attendance records for student 0001, or `att -v s/0001 t/Math` to view only Math class attendance.
+
+Step 2. `AttendanceCommandParser` creates an `AttendanceViewCommand`.
+
+Step 3. The command retrieves the student's `AttendanceList` and filters the records:
+   - If a ClassTag is specified, only records matching that class are included
+   - Records from the last 6 months are shown
+   - Records are sorted chronologically with the most recent first
+
+Step 4. The filtered attendance records are formatted and displayed to the tutor, showing the date, class, and status (Present/Absent) for each record.
+
+<box type="info" seamless>
+
+**Note:** If the student has no attendance records, or no records matching the filter criteria, the system displays a message indicating no records are available.
+
+</box>
+
+
+#### Design Considerations
+
+**Aspect: How attendance data is stored:**
+
+* **Alternative 1 (current choice):** Store attendance within each `Person` object
+  * Pros: Natural encapsulation, easy to retrieve all attendance for a specific student, simpler deletion logic (student deletion automatically removes attendance)
+  * Cons: Harder to query attendance across all students for a specific date/class, less efficient for class-centric reports
+
+* **Alternative 2:** Store attendance in a centralized `AttendanceBook`
+  * Pros: Easier to query by date/class across all students, better for class-level reports
+  * Cons: More complex referential integrity, risk of orphaned records, attendance disconnected from student profiles
+
+**Aspect: How to represent "absent" status:**
+
+* **Alternative 1 (current choice):** Flag-based commands - `att -m` for present, `att -u` for absent
+  * Pros: Consolidated under single `att` command word, fewer top-level commands to remember, consistent with payment feature's flag-based design (`fee -p`, `fee -up`)
+  * Cons: Potentially confusing terminology ("unmark" suggests deletion rather than marking absent), requires users to remember flag meanings
+
+* **Alternative 2:** Separate command words - `present s/0001 d/10112025 t/Math` and `absent s/0001 d/10112025 t/Math`
+  * Pros: Crystal clear intent from command word itself, highly intuitive (command literally describes the action), no ambiguity about what each command does
+  * Cons: Increases top-level command count (now users need to remember `present`, `absent`, instead of just `att`), breaks the feature grouping pattern used throughout the app (attendance: `att`, performance: `perf`, fees: `fee`), inconsistent with the design goal of organizing related commands under a single namespace
+
+* **Alternative 3:** Explicit status parameter - `att s/0001 d/10112025 t/Math status/present` or `att s/0001 d/10112025 t/Math status/absent`
+  * Pros: Self-documenting commands, very clear semantics, easily extensible (could add `status/late` or `status/excused` in future)
+  * Cons: More verbose, longer command syntax, requires typing "status/" every time
+
 ### ClassTag Management
 
 #### Overview
@@ -185,42 +298,151 @@ ClassTag management is implemented through several key components:
     - `addClassTag(ClassTag)`: Adds a new ClassTag
     - `deleteClassTag(ClassTag)`: Removes a ClassTag
     - `findClassTag(String)`: Finds and returns a ClassTag by its name
+- `Person` objects maintain a `Set<ClassTag>` field that references ClassTags from the central `UniqueClassTagList`
   
 **Storage Component:**
-- `JsonAdaptedClassTag`: Converts ClassTag objects to/from JSON format
-- ClassTags are persisted as part of the `AddressBook` JSON file
-- The `classTags` list is serialized/deserialized alongside student data
+- `JsonAdaptedClassTag`: Converts ClassTag objects to/from JSON format for persistence
+- `JsonSerializableAddressBook`: Serializes both the central ClassTag list and student-ClassTag associations
+- ClassTags are persisted in two ways:
+    1. As a complete list in the `classTags` field of the address book
+    2. As references within each student's `tags` field
+- During deserialization, ClassTags are loaded first into the system, then students reference them by name
 
 **Logic Component:**
+
 The following commands handle ClassTag operations:
-- `AddClassTagCommand`: Creates a new ClassTag
-- `DeleteClassTagCommand`: Deletes an existing ClassTag
-- `ListClassTagCommand`: Lists all ClassTags
-- `ClassTagFilterCommand`: Filters students by ClassTag
+
+1. **AddClassTagCommand (triggered by `tag -a`)**: Creates a new ClassTag in the system
+    - Validates the ClassTag name format (1-30 alphanumeric characters and underscores)
+    - Checks for duplicates via `Model#hasClassTag()`
+    - Adds to `UniqueClassTagList` via `Model#addClassTag()`
+
+2. **DeleteClassTagCommand (triggered by `tag -d`)**: Deletes an existing ClassTag
+    - Validates the ClassTag exists
+    - Ensures no students are currently assigned to it
+    - Removes from `UniqueClassTagList` via `Model#deleteClassTag()`
+
+3. **ListClassTagCommand (triggered by `tag -l`)**: Lists all ClassTags in the system
+    - Retrieves all ClassTags from the Model
+    - Displays them in a numbered list
+
+4. **ClassTagFilterCommand (triggered by `filter -t`)**: Filters students by ClassTag
+    - Validates the ClassTag exists via `Model#findClassTag()`
+    - Updates the filtered person list to show only students with that ClassTag
+
+5. **AddCommand**: Adds a new student with optional ClassTag assignments
+    - Validates all specified ClassTags exist before creating the student
+    - Links student to ClassTags via references
+
+6. **EditCommand**: Edits student details including ClassTag assignments
+    - Can add, remove, or replace ClassTag assignments
+    - Validates all ClassTags exist before updating
+    - Empty ClassTag list (`t/`) removes all ClassTag assignments
+
+#### Sequence Diagram: Adding a ClassTag
+
+The following sequence diagram illustrates the interactions between components when a tutor creates a new ClassTag using the `tag -a` command:
+
+<puml src="diagrams/AddClassTagSequenceDiagram.puml" alt="AddClassTagSequenceDiagram" />
 
 #### Design Considerations
 
-**Aspect: ClassTag Storage:**
+**Aspect: ClassTag Storage Architecture:**
 
-* **Alternative 1 (current choice):** Store ClassTags separately in `UniqueClassTagList`
-    * Pros: Centralized management, enforces uniqueness at system level
-    * Cons: Requires additional data structure maintenance
+* **Alternative 1 (current choice):** Central storage in `UniqueClassTagList` with student references
+    * Pros:
+        - Single source of truth for all ClassTags
+        - Enforces uniqueness at system level
+        - Prevents orphaned or duplicate ClassTag names
+        - Easy to list all classes in the system
+        - Referential integrity - can prevent deletion of in-use ClassTags
+    * Cons:
+        - Requires additional validation when assigning ClassTags to students
+        - Slightly more complex implementation
 
 * **Alternative 2:** Store ClassTags only within each Student object
-    * Pros: Simpler data structure
-    * Cons: No centralized validation, potential for duplicates with different names
+    * Pros:
+        - Simpler data structure
+        - No need for separate ClassTag list
+        - Automatic cleanup when student is deleted
+    * Cons:
+        - No centralized management or validation
+        - Potential for duplicate ClassTag names with slight variations
+        - Cannot list all classes without scanning all students
+        - Cannot enforce consistent naming
+        - No way to track which classes exist in the system
 
+**Aspect: ClassTag Command Design:**
 
-#### Sequence Diagram Example
+* **Alternative 1 (current choice):** Single `tag` command with flags (`-a`, `-d`, `-l`)
+    * Pros:
+        - Consolidates related operations under one command word
+        - Reduces the number of top-level commands users need to remember
+        - Clear semantic grouping of ClassTag operations
+        - Single ClassTagCommandParser handles all tag operations, reducing parser classes and maintaining consistency
+    * Cons:
+        - More complex parsing logic to handle different flags
+
+* **Alternative 2:** Separate commands (`addtag`, `deletetag`, `listtag`)
+    * Pros:
+        - Simpler individual parsers
+        - No flag parsing needed
+    * Cons:
+        - More top-level commands to remember
+        - Less semantic grouping
+
+**Aspect: ClassTag Assignment Workflow:**
+
+* **Alternative 1 (current choice):** Integrate with Add and Edit commands
+    * Pros:
+        - Fewer commands for users to learn
+        - Natural workflow - assign classes when creating/modifying students
+        - Reduces command clutter
+    * Cons:
+        - Add and Edit commands have more responsibilities
+        - More complex command parsing
+
+* **Alternative 2:** Separate AssignClassTag and UnassignClassTag commands
+    * Pros:
+        - Single responsibility per command
+        - Simpler individual command implementations
+    * Cons:
+        - More commands for users to remember
+        - Extra steps in workflow (create student, then assign classes)
+        - Verbose for bulk operations
 
 #### Error Handling
 
-ClassTag operations include validation for:
-- Duplicate ClassTag names when creating
-- Non-existent ClassTags when deleting or assigning
-- ClassTags still assigned to students when attempting deletion
-- Invalid ClassTag name format
-- Non-existent ClassTags when adding/editing students with class tags
+ClassTag operations include comprehensive validation:
+
+**Creating ClassTags:**
+- Duplicate ClassTag names (case-insensitive)
+- Invalid ClassTag name format (must be 1-30 alphanumeric characters with underscores, no spaces)
+- Empty ClassTag name
+- Missing or invalid flag
+
+**Deleting ClassTags:**
+- Non-existent ClassTag
+- ClassTag still assigned to one or more students
+- Invalid command format
+- Invalid ClassTag format
+
+**Assigning ClassTags to Students:**
+- Non-existent ClassTag name when adding/editing students
+- Invalid ClassTag format in student commands
+- Attempting to assign a ClassTag that doesn't exist
+
+**Filtering by ClassTag:**
+- Non-existent ClassTag name
+- Invalid command format
+- Invalid ClassTag format
+
+**General Validation Rules:**
+- All tag commands enforce **strict parameter checking** — any extra text beyond the expected format is rejected
+- When multiple flags are present, only the **first valid flag** determines the command type; subsequent flags are treated as invalid parameters and cause the command to fail
+- Tag names are trimmed of leading/trailing whitespace before validation
+
+Each validation error provides clear, actionable feedback to help users correct their input.
 
 ### \[Proposed\] Undo/redo feature
 
@@ -371,8 +593,9 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | `* * * `  | tutor     | edit a specific performance note for a student            | I can correct or update it                                              |
 | `* * * `  | tutor     | delete a specific performance note for a student          | I can remove it if needed                                               |
 | `* * *`   | tutor who teaches multiple classes         | take attendance of each student                           | I can track their attendance record                                     |
-| `* * *`   | tutor who teaches multiple classes         | view students' attendance history                         | I can track if students are consistently attending lessons.             |
-| `* * *`   | tutor who teaches multiple classes         | unmark a student’s attendance                             | correct mistakes or changes if attendance was marked wrongly            |
+| `* * *`   | tutor who teaches multiple classes         | view students' attendance history                         | I can track if students are consistently attending lessons              |
+| `* * *`   | tutor who teaches multiple classes         | unmark a student's attendance                             | correct mistakes or changes if attendance was marked wrongly            |
+| `* *`     | tutor who teaches multiple classes         | delete an attendance record                               | remove records for cancelled classes or fix erroneous entries           |
 | `* *`     | new tutor user                                           | view sample data                                          | understand how the app looks when populated                             |
 | `* *`     | tutor starting fresh                                     | purge sample/old data                                     | start fresh with only my real student info                              |                                                                  |
 | `* * *`   | tutor managing students                                  | add students                                              | quickly add my students into the address book                           |

@@ -134,6 +134,18 @@ public class FeeMarkPaidCommandTest {
             enrolled.toHumanReadable() + " is already marked as Paid.");
     }
 
+    @Test
+    public void execute_futureMonth_throwsCommandException() {
+        StudentId id = ALICE.getStudentId();
+        Month future = Month.now().plusMonths(1);
+        FeeMarkPaidCommand command = new FeeMarkPaidCommand(id, future);
+
+        String expectedMessage = "You can’t mark paid for a future month. "
+            + "Please try again when the month has started.";
+
+        CommandTestUtil.assertCommandFailure(command, model, expectedMessage);
+    }
+
 
     @Test
     public void equals() {

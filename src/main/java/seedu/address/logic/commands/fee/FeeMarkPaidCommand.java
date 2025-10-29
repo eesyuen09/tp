@@ -57,7 +57,10 @@ public class FeeMarkPaidCommand extends FeeCommand {
         if (month.isBefore(person.getEnrolledMonth())) {
             throw new CommandException(String.format(MESSAGE_INVALID_MONTH, name, enrolledMonth.toHumanReadable()));
         }
-
+        if (month.isAfter(Month.now())) {
+            throw new CommandException("You can’t mark paid for a future month. "
+                + "Please try again when the month has started.");
+        }
         try {
             model.markPaid(studentId, month);
         } catch (IllegalStateException e) {
