@@ -77,9 +77,9 @@ public class PerfViewCommandTest {
         Model model = new ModelManager(new AddressBook(), new UserPrefs());
         model.addPerson(studentWithNote);
 
-        String expectedMessage = studentWithNote.getName() + " Performance Notes:\n"
-                + "1. " + note.getDate().getFormattedDate() + " " + note.getClassTag().tagName
-                + ": " + note.getNote();
+        String expectedMessage = "Performance Notes for " + studentWithNote.getName() + "\n"
+                + note.getDate().getFormattedDate() + ": " + note.getClassTag().toString()
+                + " " + note.getNote();
 
         assertCommandSuccess(new PerfViewCommand(VALID_STUDENT_ID), model, expectedMessage, model);
         assertEquals(List.of(note), model.getDisplayedPerformanceNotes());
@@ -99,11 +99,10 @@ public class PerfViewCommandTest {
         Model model = new ModelManager(new AddressBook(), new UserPrefs());
         model.addPerson(studentWithNotes);
 
-        String expectedMessage = studentWithNotes.getName() + " Performance Notes:\n"
-                + "1. " + note1.getDate().getFormattedDate() + " " + note1.getClassTag().tagName
-                + ": " + note1.getNote() + "\n"
-                + "2. " + note2.getDate().getFormattedDate() + " " + note2.getClassTag().tagName
-                + ": " + note2.getNote();
+        String expectedMessage = "Performance Notes for " + studentWithNotes.getName()
+                + "\n" + note1.getDate().getFormattedDate() + ": " + note1.getClassTag().toString()
+                + " " + note1.getNote() + "\n" + note2.getDate().getFormattedDate() + ": "
+                + note2.getClassTag().toString() + " " + note2.getNote();
 
         assertCommandSuccess(new PerfViewCommand(VALID_STUDENT_ID), model, expectedMessage, model);
         assertEquals(List.of(note1, note2), model.getDisplayedPerformanceNotes());
@@ -121,9 +120,9 @@ public class PerfViewCommandTest {
         ModelStubWithPerson modelStub = new ModelStubWithPerson(studentWithNote);
         CommandResult result = new PerfViewCommand(VALID_STUDENT_ID).execute(modelStub);
 
-        String expectedMessage = studentWithNote.getName() + " Performance Notes:\n"
-                + "1. " + note.getDate().getFormattedDate() + " " + note.getClassTag().tagName
-                + ": " + note.getNote();
+        String expectedMessage = "Performance Notes for " + studentWithNote.getName() + "\n"
+                + note.getDate().getFormattedDate() + ": " + note.getClassTag().toString()
+                + " " + note.getNote();
 
         assertTrue(result.getFeedbackToUser().equals(expectedMessage));
         assertEquals(List.of(note), modelStub.getDisplayedNotes());
