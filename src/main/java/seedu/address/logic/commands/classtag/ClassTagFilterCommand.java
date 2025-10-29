@@ -48,8 +48,7 @@ public class ClassTagFilterCommand extends FilterCommand {
 
         ClassTag actualTag = foundTag.get();
 
-        Predicate<Person> personHasTagPredicate = person -> person.getTags().stream()
-                .anyMatch(tag -> tag.equals(actualTag));
+        Predicate<Person> personHasTagPredicate = person -> person.hasTag(actualTag);
 
         model.updateFilteredPersonList(personHasTagPredicate);
         return new CommandResult(
