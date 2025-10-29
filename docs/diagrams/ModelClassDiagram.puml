@@ -24,6 +24,8 @@ Class ClassTag
 Class AttendanceList
 Class Attendance
 Class Date
+Class PerformanceList
+Class PerformanceNote
 
 Class I #FFFFFF
 }
@@ -51,11 +53,17 @@ Person *--> Address
 Person *--> StudentId
 Person *--> "*" ClassTag
 Person *--> AttendanceList
+Person *--> PerformanceList
 
 AttendanceList --> "*" Attendance
 
 Attendance --> Date
 Attendance --> ClassTag
+
+PerformanceList --> "*" PerformanceNote
+
+PerformanceNote --> Date
+PerformanceNote --> ClassTag
 
 Person -[hidden]up--> I
 UniquePersonList -[hidden]right-> I
