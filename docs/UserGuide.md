@@ -130,7 +130,7 @@ In Tuto, a parameter represents a placeholder where users input data. Parameters
 | `PHONE`                     | `p/`   | Specifies the phone number of a student.<br><br>**Requirements:**<br>• Phone numbers must contain only numeric digits.<br>• Must be exactly 8 digits long.<br>• Must start with 6, 8, or 9 (Singapore mobile/landline format).                                                                                                                                                                         |
 | `EMAIL`                     | `e/`   | Specifies the email address of a student.<br><br>**Requirements:**<br>• Format: `local-part@domain`.<br>• Local part can contain alphanumeric characters and special characters `+`, `_`, `.`, `-`.<br>• Local part cannot start or end with special characters.<br>• Domain must end with a label at least 2 characters long.<br>• Each domain label must start and end with alphanumeric characters. |
 | `ADDRESS`                   | `a/`   | Specifies the residential address of a student.<br><br>**Requirements:**<br>• Can contain letters, digits, spaces, and the symbols `#`, `,`, `-`, `'`.<br>• Cannot be blank.<br>• First character cannot be a whitespace.                                                                                                                                                                              |
-| `MMYY` and `ENROLLED_MONTH` | `m/`   | Specifies a month and year for enrollment or payment tracking.<br><br>**Requirements:**<br>• Format: `MMYY` (e.g., `0825` for August 2025).<br>• MM must be 01-12, YY is the last two digits of the year.                                                                                                                                                                                              |
+| `MMYY` and `ENROLLED_MONTH` | `m/`   | Specifies a month and year for enrollment or payment tracking.<br><br>**Requirements:**<br>• Format: Exactly 4 digits in `MMYY` (e.g., `0825` for August 2025).<br>• MM must be 01-12 (January - December). Leading zero is required (e.g., 08 for August).<br> • YY must be 00–99, interpreted as years 2000–2099.                                                                                    |                                                                                                                                                                                              |
 | `CLASS_TAG`                 | `t/`   | Specifies a class tag to categorize students.<br><br>**Requirements:**<br>• Must be 1-30 characters long.<br>• Can only contain alphanumeric characters and underscores (`_`).<br>• Tags must exist in the system before assignment to students.                                                                                                                                                       |
 | `DATE`                      | `d/`   | Specifies a date for attendance or performance tracking.<br><br>**Requirements:**<br>• Format: `DDMMYYYY` (e.g., `15092025` for 15 September 2025).<br>                                                                                                                                                                                                                                                |
 | `PERFORMANCE_NOTE`          | `pn/`  | Specifies a performance note for a student.<br><br>**Requirements:**<br>• Can be any text under 200 characters.<br>                                                                                                                                                                                                                                                                                    |
@@ -448,7 +448,7 @@ Marks a student’s payment status as **PAID** for a specific month.
 * Tutors can only mark payments for months **between the student’s enrollment month and the current month (inclusive)**.
 * Payments must follow **chronological order** — earlier months must be settled before marking later ones.
 * Payments **before enrollment** or **in future months** are not allowed.
-* If a month is already marked as **PAID**, duplicate payment attempts will be rejected.
+* If a month is already marked as PAID, duplicate payment attempts will be rejected.
 
 **Examples:**
 - `fee -p s/0001 m/0925` — marks student `0001` (Bernice Yu) as **PAID** for **September 2025**.
@@ -464,9 +464,8 @@ Use this command for corrections or when a payment was mistakenly marked as PAID
 
 **Command Details and Constraints:**
 * Tutors can only mark payments for months **between the student’s enrollment month and the current month (inclusive)**.
-* Tutors may mark a previous month as **UNPAID**, even if later months are already paid — this allows for **real-world correction** of payment records.
-* You cannot mark future months as UNPAID.
 * If the month is already marked as UNPAID, the command will be rejected.
+* Payments **before enrollment** or **in future months** are not allowed.
 * Once corrected, the tutor must re-mark earlier unpaid months before recording new payments for later months.
 
 **Examples:**
@@ -699,11 +698,11 @@ have paid or are unpaid for a given month, or to focus on a specific class group
 
 Filtering supports three main types of criteria:
 
-| Command                 | Description                                           |
-|-------------------------|-------------------------------------------------------|
-| `filter -p m/MMYY`      | Show students marked as **PAID** for a specific month |
-| `filter -up m/MMYY`     | Show students marked (or defaulted) as **UNPAID**     |
-| `filter -t t/CLASS_TAG` | Show students belonging to a particular **class tag** |
+| Command                 | Description                                                            |
+|-------------------------|------------------------------------------------------------------------|
+| `filter -p m/MMYY`      | Show students marked as **PAID** for a specific month                  |
+| `filter -up m/MMYY`     | Show students marked (or defaulted) as **UNPAID** for a specific month |
+| `filter -t t/CLASS_TAG` | Show students belonging to a particular **CLASS_TAG**                  |
 
 You can only use **one flag** per command.
 Each filter updates the main student list view to display only matching entries.
@@ -722,12 +721,7 @@ You can only filter up to the **current month** (future months are not allowed).
 - `filter -p m/1025`
   > **Expected Output:**
   ![FilterPaidExample.png](images/FilterPaidExample.png)
-
-<box type="tip" seamless>
-If the provided month is **after the current month**, the command will return an error message.
-</box>
-
-
+  
 #### 3.6.2 Filter by unpaid status : `filter -up`
 
 Shows all students whose payment status is **UNPAID** for a given month.

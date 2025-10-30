@@ -24,7 +24,7 @@ public class AttendanceMarkAbsentCommand extends AttendanceCommand {
     public static final String COMMAND_FLAG = "-a";
 
     public static final String MESSAGE_USAGE = "Marks a student's attendance as absent.\n"
-            + "Parameters: " + PREFIX_STUDENTID + "STUDENT_ID " + PREFIX_DATE + "DDMMYYYY "
+            + "Parameters: " + PREFIX_STUDENTID + "STUDENT_ID " + PREFIX_DATE + "DATE "
             + PREFIX_CLASSTAG + "CLASS_TAG\n"
             + "Example: " + COMMAND_WORD + " " + COMMAND_FLAG + " " + PREFIX_STUDENTID + "0123 "
             + PREFIX_DATE + "15092025 " + PREFIX_CLASSTAG + "Sec3_AMath";
