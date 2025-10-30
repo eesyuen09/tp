@@ -230,10 +230,12 @@ Adds a new student to the address book.
 **Command Details and Constraints:**
 * Creates a new student record with the specified name, phone number, email, and address.
 * The `ENROLLED_MONTH` and `CLASS_TAG` fields are optional.
-* The student is automatically assigned a unique 4-digit `STUDENT_ID` upon creation.
+* If `ENROLLED_MONTH` is not provided, it automatically defaults to the **current month**, and the student is assumed to be enrolled on the **first day of that month**.
 * The `ENROLLED_MONTH` cannot be edited after creation.
+* The student is automatically assigned a unique 4-digit `STUDENT_ID` upon creation.
 * A student can have multiple class tags or none at all.
 * Tags must exist in the system. If a specified tag does not exist, the command will be rejected.
+
 
 <box type="tip" seamless>
 
