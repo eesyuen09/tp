@@ -57,7 +57,7 @@ The *Sequence Diagram* below shows how the components interact with each other f
 Each of the four main components (also shown in the diagram above),
 
 * defines its *API* in an `interface` with the same name as the Component.
-* implements its functionality using a concrete `{Component Name}Manager` class (which follows the corresponding API `interface` mentioned in the previous point.
+* implements its functionality using a concrete `{Component Name}Manager` class (which follows the corresponding API `interface` mentioned in the previous point.)
 
 For example, the `Logic` component defines its API in the `Logic.java` interface and implements its functionality using the `LogicManager.java` class which follows the `Logic` interface. Other components interact with a given component through its interface rather than the concrete class (reason: to prevent outside component's being coupled to the implementation of a component), as illustrated in the (partial) class diagram below.
 
@@ -180,8 +180,6 @@ Key operations include **adding, editing, and deleting students**.
 
 Each student is uniquely identified by a **Student ID** and can have associated attributes such as **name, phone, email, address, and ClassTags**.
 
----
-
 #### Implementation
 
 **Model Component:**
@@ -235,20 +233,23 @@ Each student is uniquely identified by a **Student ID** and can have associated 
 6. **ClearCommand (`clear`)**: Clears all student records
     - Removes all students from the model
 
----
+#### Activity Diagram: Adding a Student (`add`)
 
-#### Diagrams
+This activity diagram shows the process flow when a user adds a new student using the `add` command, including validation, duplication checks, and successful addition to the system.
 
-**1. Activity Diagram: Adding a Student (`add`)**
-<puml src="diagrams/AddStudentSequenceDiagram.puml" alt="AddStudentSequenceDiagram" />
+<puml src="diagrams/AddStudentActivityDiagram.puml" alt="AddStudentActivityDiagram" />
 
-**2. Sequence Diagram: Editing a Student (`edit`)**
+#### Sequence Diagram: Editing a Student (`edit`)
+
+This sequence diagram illustrates the interactions between components when a user edits a student’s details using the `edit` command, covering validation, tag resolution, and model update.
+
 <puml src="diagrams/EditStudentSequenceDiagram.puml" alt="EditStudentSequenceDiagram" />
 
-**3. Sequence Diagram:Deleting a Student (`delete`)**
-<puml src="diagrams/DeleteStudentSequenceDiagram.puml" alt="DeleteStudentSequenceDiagram" />
+#### Sequence Diagram:Deleting a Student (`delete`)
 
----
+This sequence diagram demonstrates how the system processes the `delete` command, from identifying the student by ID to removing the student record and returning a success message.
+
+<puml src="diagrams/DeleteStudentSequenceDiagram.puml" alt="DeleteStudentSequenceDiagram" />
 
 #### Design Considerations
 
@@ -262,7 +263,7 @@ Each student is uniquely identified by a **Student ID** and can have associated 
     * Pros: More flexible, supports overseas or mobile numbers with country codes
     * Cons: Less strict, may allow invalid or mistyped numbers
 
----
+
 
 **Aspect: Name Validation**
 
@@ -274,8 +275,6 @@ Each student is uniquely identified by a **Student ID** and can have associated 
     * Pros: Supports all valid names globally
     * Cons: May allow emojis or unexpected symbols, harder to validate and may affect GUI display
 
----
-
 **Aspect: Address Validation**
 
 * **Alternative 1 (current choice):** Accepts alphanumeric characters, `#`, `-`, `,`, `'` and spaces
@@ -286,19 +285,22 @@ Each student is uniquely identified by a **Student ID** and can have associated 
     * Pros: Maximum flexibility
     * Cons: Harder to validate and maintain consistent formatting and may cause GUI display issues
 
----
-
 **Aspect: Email Validation**
 
-* **Alternative 1 (current choice):** RFC-like constraints with local-part alphanumeric + `+_.-`, domain labels separated by `.`, final domain ≥2 chars
+* **Alternative 1 (current choice):** Use detailed format rules — the part before “@” allows letters, numbers, and the symbols `+`, `_`, `.`, and `-`.  
+  The domain part after “@” is made up of labels separated by dots, and the last label must be at least 2 characters long.
     * Pros: Ensures proper email format, prevents invalid entries, aligns with common standards
-    * Cons: Slightly complex regex, may reject rare valid emails
+    * Cons: Slightly complex regex, may reject rare valid emails, such as:
+      - `john_doe@example.com` (underscore in local part)
+      - `"john.doe"@example.com` (quoted local part)
+      - `alice+mailbox/department@example.com` (slashes in local part)
+      - `a@b.c` (final domain label less than 2 characters)
+      - `test@sub_domain.example.com` (underscore in domain label)
+      - `üser@exämple.com` (non-ASCII characters)
 
 * **Alternative 2:** Simple regex `.+@.+\..+`
     * Pros: Very permissive, easier to implement
     * Cons: Allows many invalid emails
-
----
 
 **Aspect: Enrolled Month Validation**
 
@@ -314,8 +316,6 @@ Each student is uniquely identified by a **Student ID** and can have associated 
     * Pros: More precise, supports partial months or mid-month enrollment
     * Cons: More cumbersome for users, overkill if month-level granularity is sufficient
 
----
-
 **Aspect: ClassTag Validation**
 
 * **Alternative 1 (current choice):** Optional, must exist before assignment
@@ -325,8 +325,6 @@ Each student is uniquely identified by a **Student ID** and can have associated 
 * **Alternative 2:** Auto-create class tag if it does not exist
     * Pros: Simplifies user workflow
     * Cons: May create unintended tags, risk of typos creating duplicates
-
----
 
 **Aspect: Student ID Assignment**
 
@@ -342,8 +340,6 @@ Each student is uniquely identified by a **Student ID** and can have associated 
     * Pros: Flexibility, users can follow their own numbering system
     * Cons: Higher risk of duplicates and input errors, more complex validation
 
----
-
 **Aspect: Non-Duplication of Students**
 
 * **Alternative 1 (current choice):** Uniqueness checked on phone number and name combination
@@ -354,7 +350,15 @@ Each student is uniquely identified by a **Student ID** and can have associated 
     * Pros: Stronger duplicate detection
     * Cons: More restrictive, may prevent legitimate multiple students with similar details
 
----
+**Aspect: Enrolled Month Handling**
+
+* **Alternative 1 (current choice):** Set only during creation; cannot be edited afterwards
+    * Pros: Simplifies data handling, prevents accidental changes that could affect multiple records
+    * Cons: If a wrong month is set, the person must be deleted and recreated to correct it
+
+* **Alternative 2:** Allow editing of enrolled month after creation
+    * Pros: More flexible for corrections
+    * Cons: Changing enrolled month may affect many associated records, risking data inconsistency
 
 #### Error Handling
 
@@ -483,9 +487,9 @@ Performance note management is implemented through the following components:
 - The `Model` interface exposes helpers to retrieve students, replace updated `Person` instances, and manage the list of performance notes currently shown in the UI (`setDisplayedPerformanceNotes`, `clearDisplayedPerformanceNotes`)
 
 **Storage Component:**
-- `JsonAdaptedPerformanceNote`: Serialises/deserialises `PerformanceNote` objects to and from JSON, validating date, class tag, and note length constraints during conversion
+- `JsonAdaptedPerformanceNote`: Serialises/deserializes `PerformanceNote` objects to and from JSON, validating date, class tag, and note length constraints during conversion
 - Performance notes are persisted as part of each student's JSON record via `JsonAdaptedPerson`, ensuring notes stay in sync with the owning student
-- During deserialisation, class tags referenced in performance notes are re-validated against the student's tag set so that orphaned notes cannot be reconstructed
+- During deserialization, class tags referenced in performance notes are re-validated against the student's tag set so that orphaned notes cannot be reconstructed
 
 **Logic Component:**
 
@@ -994,7 +998,7 @@ Given below is a list of enhancements we plan to implement in future versions of
    At present, fee tracking uses only two states: **PAID** and **UNPAID**.  
    In future releases, we plan to introduce a third state, **WAIVED** (or **SKIPPED**), to handle non-billable months such as holidays, term breaks, or periods without lessons.  
    This enhancement will:
-    - Accurately reflect months where no tuition fees are due.
+    - Accurately reflect months when no tuition fees are due.
     - Allow tutors to “skip” months without breaking the sequential payment validation rule.
     - Improve clarity in fee reports by distinguishing “not billed” months from “unpaid” ones.
 
@@ -1702,7 +1706,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 ### Glossary
 
-* **Mainstream OS**: Windows, Linux, Unix, MacOS
+* **Mainstream OS**: Windows, Linux, Unix, macOS
 * **Private contact detail**: A contact detail that is not meant to be shared with others
 * **Student ID**: A 4-digit unique numeric identifier (0000–9999) assigned to each student when added to the system.
 * **Payment History**: A record covering a range from a start month (either the student’s enrolment month or an explicitly provided m/MMYY) up to the current month (inclusive). The UI displays this range in reverse-chronological order (newest month first). Months after enrolment with no explicit record are derived as UNPAID by default.
