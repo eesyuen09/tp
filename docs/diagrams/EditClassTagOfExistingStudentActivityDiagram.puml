@@ -18,6 +18,9 @@ if () then ([validation fails])
     |User|
     :Receive error message;
     stop
+else ([validation passes])
+    |System|
+    :Retrieve existing person;
 endif
 
 |System|
@@ -30,6 +33,9 @@ if () then ([class tags specified?])
             |User|
             :Receive error message;
             stop
+        else ([tags found])
+            |System|
+            :Update class tags;
         endif
     endif
 else ([not specified])
