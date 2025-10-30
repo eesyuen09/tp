@@ -53,7 +53,7 @@ public class AttendanceCommandParser implements Parser<AttendanceCommand> {
     }
 
     /**
-     * Parses arguments for the mark attendance command.
+     * Parses arguments for the mark present command.
      */
     private AttendanceMarkPresentCommand parseMarkCommand(String args) throws ParseException {
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(" " + args,
@@ -75,7 +75,7 @@ public class AttendanceCommandParser implements Parser<AttendanceCommand> {
     }
 
     /**
-     * Parses arguments for the mark absent attendance command.
+     * Parses arguments for the mark absent command.
      */
     private AttendanceMarkAbsentCommand parseMarkAbsentCommand(String args) throws ParseException {
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(" " + args,
