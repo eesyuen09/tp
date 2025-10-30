@@ -758,8 +758,8 @@ Filters the main list to show only persons who are assigned the specified class 
 * Tag name matching is case-insensitive.
 
 **Examples:**
-- `filter -t t/Sec3_Maths` — Shows only students who have the Sec3_Maths tag.
-- `filter -t t/jc1_physics` — Shows only students who have the JC1_Physics tag.
+- `filter -t t/Math_Sec3` — Shows only students who have the Sec3_Maths tag.
+- `filter -t t/jc1_physics` — Shows only students who have the JC1_Physics tag, regardless of case (if JC1_Physics exists in this casing).
 
 **Expected output:**
 ![filterByClassTag.jpg](images/filterByClassTag.jpg)
