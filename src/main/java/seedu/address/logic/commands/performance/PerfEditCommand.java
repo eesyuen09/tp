@@ -28,7 +28,7 @@ public class PerfEditCommand extends PerfCommand {
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + " -e "
             + PREFIX_STUDENTID + "STUDENT_ID "
-            + PREFIX_DATE + "DDMMYYYY "
+            + PREFIX_DATE + "DATE "
             + PREFIX_CLASSTAG + "CLASS_TAG "
             + PREFIX_NOTE + "PERFORMANCE_NOTE \n"
             + "Example: perf -e s/0000 d/29102025 t/Sec3_Math pn/Shows consistent improvement.";
