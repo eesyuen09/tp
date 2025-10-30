@@ -473,7 +473,7 @@ Use this command for corrections or when a payment was mistakenly marked as PAID
 
 #### 3.3.4 Viewing a student’s payment history: `fee -v`
 
-Displays a student’s **payment history** from a specified starting month up to the **current month**.
+Displays a student’s **payment history** from a specified starting month up to the **current month**,  with records shown from **newest to oldest**.
 
 **Format:**  
 `fee -v s/STUDENT_ID [m/MMYY]`
@@ -487,19 +487,11 @@ Displays a student’s **payment history** from a specified starting month up to
 **Examples:**
 - `fee -v s/0001` — shows payment history for student `0001` from their enrollment month to the current month.
   > **Expected Output:**  
-  `Payment history for Alex Yeoh from August 2025 to October 2025 (3 months)`  
-  `Enrolled Month: August 2025`  
-  `August 2025 : PAID (marked)`  
-  `September 2025 : PAID (marked)`  
-  `October 2025 : UNPAID (default)`
-- `fee -v s/0001 m/0525` — shows payment history starting **May 2025** to the current month.
-    > **Expected Output:**  
-  `Payment history for Alex Yeoh from August 2025 to October 2025 (3 months)`  
-  `Enrolled Month: August 2025`  
-  `August 2025 : PAID (marked)`  
-  `September 2025 : PAID (marked)`  
-  `October 2025 : UNPAID (default)`
-
+    ![FeeViewHistoryEx1.png](images/FeeViewHistoryEx1.png)
+  - `fee -v s/0001 m/0725` — shows payment history starting **July 2025** to the current month.
+  > **Expected Output:**
+    ![FeeViewHistoryEx2.png](images/FeeViewHistoryEx2.png)
+  
 <box type="info" seamless>
 
 **Interpreting the results:**
@@ -726,8 +718,7 @@ You can only filter up to the **current month** (future months are not allowed).
 **Examples:**
 - `filter -p m/1025`
   > **Expected Output:**
-  `Showing PAID students for October 2025.`
-  `3 persons listed!`
+  ![FilterPaidExample.png](images/FilterPaidExample.png)
 
 <box type="tip" seamless>
 If the provided month is **after the current month**, the command will return an error message.
@@ -745,11 +736,12 @@ You can only filter up to the **current month** (future months are not allowed).
 **Examples:**
 - `filter -up m/1025`
   > **Expected Output:**
-  `Showing UNPAID students for October 2025.`
-  `3 persons listed!`
+  ![FilterUnpaidExample.png](images/FilterUnpaidExample.png)
 
 <box type="info" seamless>
-If a student has never been explicitly marked as PAID, their status is treated as **UNPAID by default**.
+If a student has never been explicitly marked as PAID, their status is treated as UNPAID by default.
+
+The fee tag displayed under each student shows their payment status for the **current month** only.
 </box>
 
 #### 3.6.3 Filter by class tag : `filter -t`
