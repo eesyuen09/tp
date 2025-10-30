@@ -19,12 +19,12 @@ public class DeleteClassTagCommand extends ClassTagCommand {
     public static final String COMMAND_FLAG = "-d";
 
     public static final String MESSAGE_USAGE = "Deletes an existing class tag from the system.\n"
-            + "Parameters: " + PREFIX_CLASSTAG + "TAG_NAME\n"
+            + "Parameters: " + PREFIX_CLASSTAG + "CLASS_TAG\n"
             + "Example: " + COMMAND_WORD + " " + COMMAND_FLAG + " " + PREFIX_CLASSTAG + "Sec3_AMath";
 
     public static final String MESSAGE_SUCCESS = "Tag deleted: %1$s";
     public static final String MESSAGE_TAG_IN_USE = "Cannot delete tag '%1$s' because it is still assigned to one "
-            + "or more students. Please remove the tag from all students first.";
+            + "or more students.\n Please remove the tag from all students first.";
 
     private final ClassTag toDelete;
 
