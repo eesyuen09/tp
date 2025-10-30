@@ -12,7 +12,7 @@ import seedu.address.model.person.StudentId;
 
 /**
  * Manages attendance for students in the class.
- * Supports marking, unmarking, and viewing attendance records.
+ * Supports marking present, absent, viewing and deleting attendance records.
  */
 public abstract class AttendanceCommand extends Command {
 
@@ -22,17 +22,17 @@ public abstract class AttendanceCommand extends Command {
             + ": Manages attendance for the students.\n"
             + "Requires a flag to specify the action.\n"
             + "Actions:\n"
-            + "Mark: -m " + PREFIX_STUDENTID + "STUDENTID " + PREFIX_DATE + "DATE (format: DDMMYYYY) "
+            + "Mark Present: -p " + PREFIX_STUDENTID + "STUDENT_ID " + PREFIX_DATE + "DDMMYYYY "
             + PREFIX_CLASSTAG + "CLASS_TAG\n"
-            + "Unmark: -u " + PREFIX_STUDENTID + "STUDENTID " + PREFIX_DATE + "DATE (format: DDMMYYYY) "
+            + "Mark Absent: -a " + PREFIX_STUDENTID + "STUDENT_ID " + PREFIX_DATE + "DDMMYYYY "
             + PREFIX_CLASSTAG + "CLASS_TAG\n"
-            + "View: -v " + PREFIX_STUDENTID + "STUDENTID\n"
-            + "Delete: -d " + PREFIX_STUDENTID + "STUDENTID " + PREFIX_DATE + "DATE (format: DDMMYYYY) "
+            + "View Attendance History: -v " + PREFIX_STUDENTID + "STUDENT_ID\n"
+            + "Delete Attendance Record: -d " + PREFIX_STUDENTID + "STUDENT_ID " + PREFIX_DATE + "DDMMYYYY "
             + PREFIX_CLASSTAG + "CLASS_TAG\n"
             + "Examples:\n"
-            + COMMAND_WORD + " -m " + PREFIX_STUDENTID + "0123 " + PREFIX_DATE + "15092025 "
+            + COMMAND_WORD + " -p " + PREFIX_STUDENTID + "0123 " + PREFIX_DATE + "15092025 "
             + PREFIX_CLASSTAG + "Sec3_AMath\n"
-            + COMMAND_WORD + " -u " + PREFIX_STUDENTID + "0123 " + PREFIX_DATE + "15092025 "
+            + COMMAND_WORD + " -a " + PREFIX_STUDENTID + "0123 " + PREFIX_DATE + "15092025 "
             + PREFIX_CLASSTAG + "Sec3_AMath\n"
             + COMMAND_WORD + " -v " + PREFIX_STUDENTID + "0123 \n"
             + COMMAND_WORD + " -d " + PREFIX_STUDENTID + "0123 " + PREFIX_DATE + "15092025 "
@@ -50,8 +50,3 @@ public abstract class AttendanceCommand extends Command {
         this.studentId = studentId;
     }
 }
-
-
-
-
-

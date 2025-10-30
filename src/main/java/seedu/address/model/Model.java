@@ -171,17 +171,17 @@ public interface Model {
      * @param date The date to mark attendance on.
      * @param classTag The class tag for the attendance.
      */
-    void markAttendance(StudentId studentId, Date date, ClassTag classTag);
+    void markAttendancePresent(StudentId studentId, Date date, ClassTag classTag);
 
     /**
      * Marks the given student as absent on the given date for a specific class.
      * The student must already exist in the address book.
      *
-     * @param studentId The student ID of the student to unmark attendance for.
-     * @param date The date to unmark attendance on.
+     * @param studentId The student ID of the student to mark attendance as absent for.
+     * @param date The date to mark attendance as absent on.
      * @param classTag The class tag for the attendance.
      */
-    void unmarkAttendance(StudentId studentId, Date date, ClassTag classTag);
+    void markAttendanceAbsent(StudentId studentId, Date date, ClassTag classTag);
 
     /**
      * Deletes the attendance record for the given student on the given date for a specific class.
