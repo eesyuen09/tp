@@ -19,12 +19,12 @@ public abstract class PerfCommand extends Command {
             + ": Manages performance notes for the students.\n"
             + "Requires a flag to specify the action.\n"
             + "Actions:\n"
-            + "Add: -a " + PREFIX_STUDENTID + "STUDENT_ID " + PREFIX_DATE + "DDMMYYYY "
+            + "Add performance note: -a " + PREFIX_STUDENTID + "STUDENT_ID " + PREFIX_DATE + "DDMMYYYY "
             + PREFIX_CLASSTAG + "CLASS_TAG " + PREFIX_NOTE + "NOTE\n"
-            + "View: -v  " + PREFIX_STUDENTID + "STUDENT_ID\n"
-            + "Edit: -e  " + PREFIX_STUDENTID + "STUDENT_ID " + PREFIX_DATE + "DDMMYYYY "
+            + "View performance note: -v  " + PREFIX_STUDENTID + "STUDENT_ID\n"
+            + "Edit performance note: -e  " + PREFIX_STUDENTID + "STUDENT_ID " + PREFIX_DATE + "DDMMYYYY "
             + PREFIX_CLASSTAG + "CLASS_TAG " + PREFIX_NOTE + "NOTE\n"
-            + "Delete: -d  " + PREFIX_STUDENTID + "STUDENT_ID " + PREFIX_DATE + "DDMMYYYY "
+            + "Delete performance note: -d  " + PREFIX_STUDENTID + "STUDENT_ID " + PREFIX_DATE + "DDMMYYYY "
             + PREFIX_CLASSTAG + "CLASS_TAG";
     public static final String MESSAGE_STUDENT_DOES_NOT_HAVE_TAG = "Student %1$s does not have the class tag: %2$s";
 
