@@ -249,9 +249,13 @@ public class ModelManager implements Model {
         Person person = getPersonById(studentId)
                 .orElseThrow(() -> new IllegalArgumentException("Student ID not found: " + studentId));
 
+        // Get the original ClassTag with correct casing from the address book
+        ClassTag originalClassTag = findClassTag(classTag)
+                .orElseThrow(() -> new IllegalArgumentException("Class tag not found: " + classTag.tagName));
+
         AttendanceList updatedAttendance = new AttendanceList(
                 person.getAttendanceList().asUnmodifiableList());
-        updatedAttendance.markAttendancePresent(date, classTag);
+        updatedAttendance.markAttendancePresent(date, originalClassTag);
 
         Person updatedPerson = person.withAttendanceList(updatedAttendance);
 
@@ -265,9 +269,13 @@ public class ModelManager implements Model {
         Person person = getPersonById(studentId)
                 .orElseThrow(() -> new IllegalArgumentException("Student ID not found: " + studentId));
 
+        // Get the original ClassTag with correct casing from the address book
+        ClassTag originalClassTag = findClassTag(classTag)
+                .orElseThrow(() -> new IllegalArgumentException("Class tag not found: " + classTag.tagName));
+
         AttendanceList updatedAttendance = new AttendanceList(
                 person.getAttendanceList().asUnmodifiableList());
-        updatedAttendance.markAttendanceAbsent(date, classTag);
+        updatedAttendance.markAttendanceAbsent(date, originalClassTag);
 
         Person updatedPerson = person.withAttendanceList(updatedAttendance);
 
