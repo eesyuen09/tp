@@ -19,20 +19,7 @@
   "pagesExclude": ["node_modules/*"],
   "pages": [
     {
-      "src": "index.md",
-      "title": "Home"
-    },
-    {
-      "src": "UserGuide.md",
-      "title": "User Guide"
-    },
-    {
-      "src": "DeveloperGuide.md",
-      "title": "Developer Guide"
-    },
-    {
-      "src": "AboutUs.md",
-      "title": "About Us"
+      "glob": ["**/index.md", "**/*.md"]
     }
   ],
   "deploy": {
