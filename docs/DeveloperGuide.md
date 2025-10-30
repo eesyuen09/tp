@@ -429,6 +429,12 @@ The following commands handle attendance operations:
     - Retrieves all attendance records for a specific student
     - Records are sorted by date, then by ClassTag name alphabetically
 
+#### Activity Diagram: Attendance Command Workflow
+
+The activity diagram below illustrates the high-level workflow for attendance management, showing how the system routes different attendance operations based on command flags:
+
+<puml src="diagrams/AttendanceMarkActivityDiagram.puml" alt="Attendance Command Activity Diagram" />
+
 #### Sequence Diagram: Marking Attendance as Present
 
 The following sequence diagram illustrates the interactions when a tutor marks a student as present using the `att -p` command:
