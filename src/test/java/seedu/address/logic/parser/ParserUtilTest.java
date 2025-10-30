@@ -34,7 +34,7 @@ public class ParserUtilTest {
     private static final String INVALID_DATE = "31022025"; // Feb 31 doesn't exist
 
     private static final String VALID_NAME = "Rachel Walker";
-    private static final String VALID_PHONE = "12345678";
+    private static final String VALID_PHONE = "87654321";
     private static final String VALID_ADDRESS = "123 Main Street #0505";
     private static final String VALID_EMAIL = "rachel@example.com";
     private static final String VALID_CLASS_TAG_1 = "Sec3_Math";

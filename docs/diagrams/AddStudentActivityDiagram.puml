@@ -1,0 +1,38 @@
+@startuml
+!include style.puml
+
+skinparam ActivityFontSize 16
+skinparam ActivityDiamondFontSize 16
+skinparam ActivityArrowFontSize 14
+
+|User|
+start
+:Enter add command
+with details and class tags;
+
+|System|
+:Validate command format
+and parameters;
+
+if () then ([validation fails])
+    |User|
+    :Receive error message;
+    stop
+endif
+
+|System|
+:Create new person;
+
+if () then ([duplicate found])
+    |User|
+    :Receive error message;
+    stop
+else ([unique])
+    |System|
+    :Add person to model;
+    |User|
+    :Receive success message;
+    stop
+endif
+
+@enduml
