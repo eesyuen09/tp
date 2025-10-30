@@ -19,7 +19,7 @@ In addition, the structure and certain sections of this Developer Guide were ins
 
 ## **Setting up, getting started**
 
-Refer to the guide [_Setting up and getting started_](SettingUp.md).
+Refer to the guide [_Setting up and getting started_]([SettingUp.md](SettingUp.md)).
 
 <box type="warning" seamless>
 <b>Warning:</b>
@@ -1030,11 +1030,11 @@ Given below is a list of enhancements we plan to implement in future versions of
 
 ## **Documentation, logging, testing, configuration, dev-ops**
 
-* [Documentation guide](Documentation.md)
-* [Testing guide](Testing.md)
-* [Logging guide](Logging.md)
-* [Configuration guide](Configuration.md)
-* [DevOps guide](DevOps.md)
+* [Documentation guide]([Documentation.md](Documentation.md))
+* [Testing guide]([Testing.md](Testing.md))
+* [Logging guide]([Logging.md](Logging.md))
+* [Configuration guide]([Configuration.md](Configuration.md))
+* [DevOps guide]([DevOps.md](DevOps.md))
 
 --------------------------------------------------------------------------------------------------------------------
 
