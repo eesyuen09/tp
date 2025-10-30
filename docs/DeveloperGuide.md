@@ -862,7 +862,6 @@ The activity diagram below illustrates the workflow for viewing a student’s fe
       - Tutors cannot record payments **out of sequence** (e.g., skipping July and paying for August directly).
       - Adds a small validation step when marking multiple months.
 
----
 
 * **Alternative 2:** Allow tutors to mark any month as **PAID**, regardless of whether earlier months are still UNPAID.
     * Pros:
@@ -887,7 +886,6 @@ The activity diagram below illustrates the workflow for viewing a student’s fe
       - Tutors cannot record **advance payments** for future months, even if a student has pre-paid.
       - May require future system updates to support legitimate early payments.
 
----
 
 * **Alternative 2:** Allow tutors to mark **future months** as PAID, provided that all previous months have already been settled.
     * Pros:
@@ -899,6 +897,8 @@ The activity diagram below illustrates the workflow for viewing a student’s fe
       - Increases the risk of **accidental marking of future months**, especially if tutors mistype the month or forget the current date.
       - Requires additional **validation safeguards** (e.g., confirmation prompts or warning messages) to prevent unintentional future entries.
       - Adds complexity to the **FeeViewCommand** logic, since it must distinguish between completed months and prepaid future months when displaying fee history.
+
+---
 
 **Aspect: Backdated Correction (Marking an earlier month as UNPAID)**
 
@@ -912,8 +912,6 @@ The activity diagram below illustrates the workflow for viewing a student’s fe
       - May cause a **temporary inconsistency** (e.g., later months PAID while an earlier one is UNPAID) until resolved.
       - Might confuse tutors reviewing the timeline during the correction phase.
 
----
-
 * **Alternative 2:** Block marking an earlier month as **UNPAID** if any later month is already **PAID**.
     * Pros:
       - Maintains a **strictly chronological** payment timeline with no anomalies.
@@ -921,6 +919,8 @@ The activity diagram below illustrates the workflow for viewing a student’s fe
 
     * Cons:
       - Restrictive — tutors cannot fix genuine mis-entries without first unmarking all later months.
+
+---
 
 **Aspect: Display Order of Payment History**
 
@@ -935,7 +935,6 @@ The activity diagram below illustrates the workflow for viewing a student’s fe
     * Cons:
         - Tutors reviewing long-term records need to scroll to the bottom to reach the **earliest (enrolment) months**.
 
----
 
 * **Alternative 2:** Display payment history in **chronological order** (oldest-first).  
   The earliest month (enrolment) appears first, progressing toward the current month.
