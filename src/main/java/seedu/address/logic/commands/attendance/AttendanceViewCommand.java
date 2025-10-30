@@ -1,6 +1,7 @@
 package seedu.address.logic.commands.attendance;
 
 import static java.util.Objects.requireNonNull;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_STUDENTID;
 
 import java.util.Comparator;
 import java.util.List;
@@ -22,7 +23,12 @@ import seedu.address.model.person.StudentId;
  */
 public class AttendanceViewCommand extends AttendanceCommand {
 
-    public static final String MESSAGE_VIEW_SUCCESS = "Attendance records for: %1$s\n%2$s";
+    public static final String COMMAND_FLAG = "-v";
+
+    public static final String MESSAGE_USAGE = "Views attendance history for a student.\n"
+            + "Parameters: " + PREFIX_STUDENTID + "STUDENT_ID\n"
+            + "Example: " + COMMAND_WORD + " " + COMMAND_FLAG + " " + PREFIX_STUDENTID + "0123";
+
     public static final String MESSAGE_NO_RECORDS = "No attendance record found for: %1$s";
 
     /**
@@ -61,28 +67,12 @@ public class AttendanceViewCommand extends AttendanceCommand {
                 entries.size());
         model.setDisplayedAttendanceHistory(entries, summary);
 
-        String attendanceHistory = formatAttendanceRecords(entries);
         String header = String.format("Attendance history for %s (Student ID %s) displayed.",
                 person.getName().fullName, studentId);
 
         return new CommandResult(header);
     }
 
-    /**
-     * Formats the attendance records for display.
-     */
-    private String formatAttendanceRecords(List<AttendanceHistoryEntry> entries) {
-        StringBuilder sb = new StringBuilder();
-        entries.forEach(entry -> {
-            sb.append(entry.getDate().getFormattedDate())
-                    .append(" - ")
-                    .append(entry.getClassTag().tagName)
-                    .append(": ")
-                    .append(entry.getStatusLabel())
-                    .append("\n");
-        });
-        return sb.toString().trim();
-    }
 
     @Override
     public boolean equals(Object other) {

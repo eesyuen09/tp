@@ -406,12 +406,12 @@ Attendance management is implemented through several key components:
 
 The following commands handle attendance operations:
 
-1. **AttendanceMarkCommand (triggered by `att -m`)**: Marks a student as present for a class on a specific date
+1. **AttendanceMarkPresentCommand (triggered by `att -p`)**: Marks a student as present for a class on a specific date
     - Validates student exists and ClassTag exists
     - Prevents duplicate "Present" records (throws error if already marked present)
     - Replaces any existing "Absent" record for the same date and class with a "Present" record
 
-2. **AttendanceUnmarkCommand (triggered by `att -u`)**: Marks a student as absent for a class on a specific date
+2. **AttendanceMarkAbsentCommand (triggered by `att -a`)**: Marks a student as absent for a class on a specific date
     - Validates student exists and ClassTag exists
     - Prevents duplicate "Absent" records (throws error if already marked absent)
     - Replaces any existing "Present" record for the same date and class with an "Absent" record
@@ -425,11 +425,11 @@ The following commands handle attendance operations:
     - Retrieves all attendance records for a specific student
     - Records are sorted by date, then by ClassTag name alphabetically
 
-#### Sequence Diagram: Marking Attendance
+#### Sequence Diagram: Marking Attendance as Present
 
-The following sequence diagram illustrates the interactions when a tutor marks a student as present using the `att -m` command:
+The following sequence diagram illustrates the interactions when a tutor marks a student as present using the `att -p` command:
 
-<puml src="diagrams/AttendanceMarkSequenceDiagram.puml" alt="Attendance Mark Sequence Diagram" />
+<puml src="diagrams/AttendanceMarkPresentSequenceDiagram.puml" alt="Attendance Mark Present Sequence Diagram" />
 
 <box type="info" seamless>
 
@@ -449,20 +449,6 @@ The following sequence diagram illustrates the interactions when a tutor marks a
 * **Alternative 2:** Store attendance in a centralized `AttendanceBook`
   * Pros: Easier to query by date/class across all students, better for class-level reports
   * Cons: More complex referential integrity, risk of orphaned records, attendance disconnected from student profiles
-
-**Aspect: How to represent "absent" status:**
-
-* **Alternative 1 (current choice):** Flag-based commands - `att -m` for present, `att -u` for absent
-  * Pros: Consolidated under single `att` command word, fewer top-level commands to remember, consistent with payment feature's flag-based design (`fee -p`, `fee -up`)
-  * Cons: Potentially confusing terminology ("unmark" suggests deletion rather than marking absent), requires users to remember flag meanings
-
-* **Alternative 2:** Separate command words - `present s/0001 d/10112025 t/Math` and `absent s/0001 d/10112025 t/Math`
-  * Pros: Crystal clear intent from command word itself, highly intuitive (command literally describes the action), no ambiguity about what each command does
-  * Cons: Increases top-level command count (now users need to remember `present`, `absent`, instead of just `att`), breaks the feature grouping pattern used throughout the app (attendance: `att`, performance: `perf`, fees: `fee`), inconsistent with the design goal of organizing related commands under a single namespace
-
-* **Alternative 3:** Explicit status parameter - `att s/0001 d/10112025 t/Math status/present` or `att s/0001 d/10112025 t/Math status/absent`
-  * Pros: Self-documenting commands, very clear semantics, easily extensible (could add `status/late` or `status/excused` in future)
-  * Cons: More verbose, longer command syntax, requires typing "status/" every time
 
 ### Performance Management
 
@@ -987,7 +973,7 @@ Each validation error produces clear and descriptive messages to guide user corr
 
 Given below is a list of enhancements we plan to implement in future versions of Tuto:
 
-1. **Bulk attendance marking for entire class:** Currently, tutors must mark attendance for each student individually using `att -m s/STUDENT_ID d/DATE t/CLASS`. For a class with 20-30 students, this becomes tedious and time-consuming. We plan to add a bulk marking feature that allows tutors to mark attendance for all students in a specific class at once. For example, `att -m d/10112025 t/Math` would mark all students enrolled in the Math ClassTag as present for that date. This would significantly reduce the time needed to take attendance at the beginning of each lesson.
+1. **Bulk attendance marking for entire class:** Currently, tutors must mark attendance for each student individually using `att -p s/STUDENT_ID d/DATE t/CLASS`. For a class with 20-30 students, this becomes tedious and time-consuming. We plan to add a bulk marking feature that allows tutors to mark attendance for all students in a specific class at once. For example, `att -pA d/10112025 t/Math` would mark all students as present enrolled in the Math ClassTag as present for that date. This would significantly reduce the time needed to take attendance at the beginning of each lesson.
 2. **Individual class tag assignment and unassignment on top of current add/edit:** Currently, when editing a student's class tags using the edit command, all existing tags are replaced with the new list provided (or cleared if t/ is empty). This makes it cumbersome to add or remove a single tag without re-specifying all others. We plan to introduce new commands tag -assign s/STUDENT_ID t/TAG_NAME and tag -unassign s/STUDENT_ID t/TAG_NAME that allow adding or removing individual tags without affecting previously assigned ones. For example, tag -assign s/0001 t/Sec_3_A_Math would add the "Sec_3_A_Math" tag to student 0001 if they don't already have it, leaving other tags intact. Similarly, tag -unassign s/0001 t/Sec_3_A_Math would remove only that tag. Success messages would confirm the action, e.g., "Successfully assigned class tag [Sec_3_A_Math] to student ID 0001." Error messages would handle cases like non-existent students or tags. This enhancement addresses the frequent need for precise, incremental changes to student records, improving tutor workflow efficiency.
 3. **ClassTag renaming:** Currently, once a ClassTag is created, its name cannot be changed. If a tutor wishes to rename a ClassTag (e.g., from "Sec_3_A_Math" to "Sec_3_A_Advanced_Math"), they must delete the existing ClassTag and create a new one. This process is cumbersome and risks losing the association with students if not handled carefully. We plan to implement a `tag -r` command that allows tutors to rename an existing ClassTag while preserving all student associations. For example, `tag -r oldt/Sec_3_A_Math newt/Sec_3_A_Advanced_Math` would rename the ClassTag accordingly. This feature would enhance flexibility in managing class names as course structures evolve.
 4. **Introduce third fee state — WAIVED/SKIPPED:**  
@@ -1062,7 +1048,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | `* * * ` | tutor     | delete a specific performance note for a student          | I can remove it if needed                                               |
 | `* * *`  | tutor who teaches multiple classes         | take attendance of each student                           | I can track their attendance record                                     |
 | `* * *`  | tutor who teaches multiple classes         | view students' attendance history                         | I can track if students are consistently attending lessons              |
-| `* * *`  | tutor who teaches multiple classes         | unmark a student's attendance                             | correct mistakes or changes if attendance was marked wrongly            |
+| `* * *`  | tutor who teaches multiple classes         | mark a student's attendance as absent                     | correct mistakes or changes if attendance was marked wrongly            |
 | `* * *`  | tutor who teaches multiple classes         | delete an attendance record                               | remove records for cancelled classes or fix erroneous entries           |
 | `* *`    | new tutor user                                           | view sample data                                          | understand how the app looks when populated                             |
 | `* *`    | tutor starting fresh                                     | purge sample/old data                                     | start fresh with only my real student info                              |                                                                  |
@@ -1510,10 +1496,10 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
       Use case ends.
 
 
-**Use case: Unmark attendance for a student**
+**Use case: Mark attendance as absent for a student**
 
 **MSS**
-1. User unmarks attendance of a student.
+1. User marks attendance of a student as absent.
 2. Tuto records the attendance as absent for the specified student and date.
 3. Tuto confirms that the attendance has been updated.
 

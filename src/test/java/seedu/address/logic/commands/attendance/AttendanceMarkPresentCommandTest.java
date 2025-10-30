@@ -19,10 +19,10 @@ import seedu.address.model.time.Date;
 import seedu.address.testutil.ModelStub;
 import seedu.address.testutil.PersonBuilder;
 
-public class AttendanceUnmarkCommandTest {
+public class AttendanceMarkPresentCommandTest {
 
     private static final StudentId VALID_STUDENT_ID = new StudentId("0123");
-    private static final StudentId ANOTHER_STUDENT_ID = new StudentId("0752");
+    private static final StudentId ANOTHER_STUDENT_ID = new StudentId("0899");
     //for personbuilder
     private static final String VALID_STUDENT_ID_STRING = "0123";
     private static final Date VALID_DATE = new Date("13072025");
@@ -32,72 +32,90 @@ public class AttendanceUnmarkCommandTest {
 
     @Test
     public void constructor_nullStudentId_throwsNullPointerException() {
-        assertThrows(NullPointerException.class, () -> new AttendanceUnmarkCommand(null, VALID_DATE, VALID_CLASS_TAG));
+        assertThrows(NullPointerException.class, () -> new AttendanceMarkPresentCommand(null,
+                VALID_DATE, VALID_CLASS_TAG));
     }
 
     @Test
     public void constructor_nullDate_throwsNullPointerException() {
-        assertThrows(NullPointerException.class, () -> new AttendanceUnmarkCommand(VALID_STUDENT_ID,
+        assertThrows(NullPointerException.class, () -> new AttendanceMarkPresentCommand(VALID_STUDENT_ID,
                 null, VALID_CLASS_TAG));
     }
 
-    //attendance at that date already mark as present, now change to absent
     @Test
-    public void execute_validStudentAndDate_unmarkSuccessful() throws Exception {
+    public void constructor_nullClassTag_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> new AttendanceMarkPresentCommand(VALID_STUDENT_ID,
+                VALID_DATE, null));
+    }
+
+    //check mark attendance
+    @Test
+    public void execute_validStudentAndDate_markPresentSuccessful() throws Exception {
         ModelStubWithPerson modelStub = new ModelStubWithPerson();
         Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID_STRING)
                 .withClassTags("Math").build();
-        // Mark attendance first so we can unmark it
-        AttendanceList attendanceList = new AttendanceList();
-        attendanceList.markAttendance(VALID_DATE, VALID_CLASS_TAG);
-        validPerson = validPerson.withAttendanceList(attendanceList);
         modelStub.person = validPerson;
 
-        CommandResult commandResult = new AttendanceUnmarkCommand(VALID_STUDENT_ID, VALID_DATE,
-                VALID_CLASS_TAG).execute(modelStub);
+        CommandResult commandResult = new AttendanceMarkPresentCommand(VALID_STUDENT_ID,
+                VALID_DATE, VALID_CLASS_TAG).execute(modelStub);
 
-        assertEquals(String.format(AttendanceUnmarkCommand.MESSAGE_UNMARK_SUCCESS,
+        assertEquals(String.format(AttendanceMarkPresentCommand.MESSAGE_MARK_PRESENT_SUCCESS,
                         validPerson.getName(), VALID_DATE.getFormattedDate(), VALID_CLASS_TAG.tagName),
                 commandResult.getFeedbackToUser());
-        assertTrue(modelStub.unmarkAttendanceCalled);
+        assertTrue(modelStub.markAttendanceCalled);
+
     }
 
-    //no attendance record at that date, mark as absent
+    //attendance at that date already mark as absent, now change to present
     @Test
-    public void execute_attendanceNotMarked_marksAsAbsent() throws CommandException {
-        ModelStubWithPerson modelStub = new ModelStubWithPerson();
-        Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID_STRING)
-                .withClassTags("Math").build();
-        // Don't mark attendance - person has no attendance records
-        modelStub.person = validPerson;
-
-        AttendanceUnmarkCommand command = new AttendanceUnmarkCommand(VALID_STUDENT_ID, VALID_DATE, VALID_CLASS_TAG);
-
-        CommandResult result = command.execute(modelStub);
-
-        // Verify the command executes successfully
-        assertEquals(String.format(AttendanceUnmarkCommand.MESSAGE_UNMARK_SUCCESS,
-                validPerson.getName(), VALID_DATE.getFormattedDate(), VALID_CLASS_TAG.tagName),
-                result.getFeedbackToUser());
-        assertTrue(modelStub.unmarkAttendanceCalled);
-    }
-
-    //attendance record at that date already absent, throw exception
-    @Test
-    public void execute_alreadyMarkedAbsent_throwsCommandException() throws Exception {
+    public void execute_markedAsAbsent_markPresentSuccessful() throws Exception {
         ModelStubWithPerson modelStub = new ModelStubWithPerson();
         Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID_STRING)
                 .withClassTags("Math").build();
 
         // Mark attendance as absent first
         AttendanceList attendanceList = new AttendanceList();
-        attendanceList.unmarkAttendance(VALID_DATE, VALID_CLASS_TAG);
+        attendanceList.markAttendanceAbsent(VALID_DATE, VALID_CLASS_TAG);
         validPerson = validPerson.withAttendanceList(attendanceList);
         modelStub.person = validPerson;
 
-        AttendanceUnmarkCommand command = new AttendanceUnmarkCommand(VALID_STUDENT_ID, VALID_DATE, VALID_CLASS_TAG);
+        AttendanceMarkPresentCommand command = new AttendanceMarkPresentCommand(VALID_STUDENT_ID,
+                VALID_DATE, VALID_CLASS_TAG);
+        CommandResult commandResult = command.execute(modelStub);
 
-        // Should throw exception because attendance is already marked as absent
+        // Should succeed - can change from absent to present
+        assertEquals(String.format(AttendanceMarkPresentCommand.MESSAGE_MARK_PRESENT_SUCCESS,
+                        validPerson.getName(), VALID_DATE.getFormattedDate(), VALID_CLASS_TAG.tagName),
+                commandResult.getFeedbackToUser());
+        assertTrue(modelStub.markAttendanceCalled);
+    }
+
+
+    @Test
+    public void execute_studentNotFound_throwsCommandException() {
+        ModelStubWithoutPerson modelStub = new ModelStubWithoutPerson();
+
+        AttendanceMarkPresentCommand command = new AttendanceMarkPresentCommand(VALID_STUDENT_ID,
+                VALID_DATE, VALID_CLASS_TAG);
+
+        assertThrows(CommandException.class, () -> command.execute(modelStub));
+    }
+
+    //attendance record at that date already present, throw exception
+    @Test
+    public void execute_alreadyMarkedPresent_throwsCommandException() throws Exception {
+        ModelStubWithPerson modelStub = new ModelStubWithPerson();
+        Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID_STRING)
+                .withClassTags("Math").build();
+        // Mark attendance first
+        AttendanceList attendanceList = new AttendanceList();
+        attendanceList.markAttendancePresent(VALID_DATE, VALID_CLASS_TAG);
+        validPerson = validPerson.withAttendanceList(attendanceList);
+        modelStub.person = validPerson;
+
+        AttendanceMarkPresentCommand command = new AttendanceMarkPresentCommand(VALID_STUDENT_ID,
+                VALID_DATE, VALID_CLASS_TAG);
+
         assertThrows(CommandException.class, () -> command.execute(modelStub));
     }
 
@@ -109,7 +127,8 @@ public class AttendanceUnmarkCommandTest {
                 .withClassTags("Math").build();
         modelStub.person = validPerson;
 
-        AttendanceUnmarkCommand command = new AttendanceUnmarkCommand(VALID_STUDENT_ID, VALID_DATE, VALID_CLASS_TAG);
+        AttendanceMarkPresentCommand command = new AttendanceMarkPresentCommand(VALID_STUDENT_ID,
+                VALID_DATE, VALID_CLASS_TAG);
 
         assertThrows(CommandException.class, () -> command.execute(modelStub));
     }
@@ -122,12 +141,13 @@ public class AttendanceUnmarkCommandTest {
                 .withClassTags("Science").build(); // Student has Science tag, not Math
         modelStub.person = validPerson;
 
-        AttendanceUnmarkCommand command = new AttendanceUnmarkCommand(VALID_STUDENT_ID, VALID_DATE, VALID_CLASS_TAG);
+        AttendanceMarkPresentCommand command = new AttendanceMarkPresentCommand(VALID_STUDENT_ID,
+                VALID_DATE, VALID_CLASS_TAG);
 
         assertThrows(CommandException.class, () -> command.execute(modelStub));
     }
 
-    //unmark attendance for future date
+    //mark attendance for future date
     @Test
     public void execute_futureDate_throwsCommandException() {
         ModelStubWithPerson modelStub = new ModelStubWithPerson();
@@ -136,12 +156,13 @@ public class AttendanceUnmarkCommandTest {
         modelStub.person = validPerson;
 
         Date futureDate = new Date("01012099"); // Future date
-        AttendanceUnmarkCommand command = new AttendanceUnmarkCommand(VALID_STUDENT_ID, futureDate, VALID_CLASS_TAG);
+        AttendanceMarkPresentCommand command = new AttendanceMarkPresentCommand(VALID_STUDENT_ID,
+                futureDate, VALID_CLASS_TAG);
 
         assertThrows(CommandException.class, () -> command.execute(modelStub));
     }
 
-    //unmark attendance before enrollment month
+    //mark attendance before enrollment month
     @Test
     public void execute_beforeEnrollmentMonth_throwsCommandException() {
         ModelStubWithPerson modelStub = new ModelStubWithPerson();
@@ -152,54 +173,53 @@ public class AttendanceUnmarkCommandTest {
         modelStub.person = validPerson;
 
         Date beforeEnrollmentDate = new Date("15012025"); // Jan 2025, before Feb 2025
-        AttendanceUnmarkCommand command = new AttendanceUnmarkCommand(VALID_STUDENT_ID,
+        AttendanceMarkPresentCommand command = new AttendanceMarkPresentCommand(VALID_STUDENT_ID,
                 beforeEnrollmentDate, VALID_CLASS_TAG);
 
         assertThrows(CommandException.class, () -> command.execute(modelStub));
     }
 
+
     @Test
     public void execute_nullModel_throwsNullPointerException() {
-        AttendanceUnmarkCommand command = new AttendanceUnmarkCommand(VALID_STUDENT_ID, VALID_DATE, VALID_CLASS_TAG);
+        AttendanceMarkPresentCommand command = new AttendanceMarkPresentCommand(VALID_STUDENT_ID,
+                VALID_DATE, VALID_CLASS_TAG);
         assertThrows(NullPointerException.class, () -> command.execute(null));
     }
 
     @Test
-    public void execute_studentNotFound_throwsCommandException() {
-        ModelStubWithoutPerson modelStub = new ModelStubWithoutPerson();
-        AttendanceUnmarkCommand command = new AttendanceUnmarkCommand(VALID_STUDENT_ID, VALID_DATE,
-                VALID_CLASS_TAG);
-        assertThrows(CommandException.class, () -> command.execute(modelStub));
-    }
-
-    @Test
     public void equals() {
-        AttendanceUnmarkCommand unmarkCommand1 = new AttendanceUnmarkCommand(VALID_STUDENT_ID, VALID_DATE,
-                VALID_CLASS_TAG);
-        AttendanceUnmarkCommand unmarkCommand2 = new AttendanceUnmarkCommand(ANOTHER_STUDENT_ID, VALID_DATE,
-                VALID_CLASS_TAG);
-        AttendanceUnmarkCommand unmarkCommand3 = new AttendanceUnmarkCommand(VALID_STUDENT_ID, ANOTHER_DATE,
-                VALID_CLASS_TAG);
+        AttendanceMarkPresentCommand markPresentCommand1 = new AttendanceMarkPresentCommand(VALID_STUDENT_ID,
+                VALID_DATE, VALID_CLASS_TAG);
+        AttendanceMarkPresentCommand markPresentCommand2 = new AttendanceMarkPresentCommand(ANOTHER_STUDENT_ID,
+                VALID_DATE, VALID_CLASS_TAG);
+        AttendanceMarkPresentCommand markPresentCommand3 = new AttendanceMarkPresentCommand(VALID_STUDENT_ID,
+                ANOTHER_DATE, VALID_CLASS_TAG);
+        AttendanceMarkPresentCommand markPresentCommand4 = new AttendanceMarkPresentCommand(VALID_STUDENT_ID,
+                VALID_DATE, ANOTHER_CLASS_TAG);
 
         // same object -> returns true
-        assertTrue(unmarkCommand1.equals(unmarkCommand1));
+        assertTrue(markPresentCommand1.equals(markPresentCommand1));
 
         // same values -> returns true
-        AttendanceUnmarkCommand unmarkCommand1Copy = new AttendanceUnmarkCommand(VALID_STUDENT_ID,
+        AttendanceMarkPresentCommand markPresentCommand1Copy = new AttendanceMarkPresentCommand(VALID_STUDENT_ID,
                 VALID_DATE, VALID_CLASS_TAG);
-        assertTrue(unmarkCommand1.equals(unmarkCommand1Copy));
+        assertTrue(markPresentCommand1.equals(markPresentCommand1Copy));
 
         // different types -> returns false
-        assertFalse(unmarkCommand1.equals(1));
+        assertFalse(markPresentCommand1.equals(1));
 
         // null -> returns false
-        assertFalse(unmarkCommand1.equals(null));
+        assertFalse(markPresentCommand1.equals(null));
 
         // different student ID -> returns false
-        assertFalse(unmarkCommand1.equals(unmarkCommand2));
+        assertFalse(markPresentCommand1.equals(markPresentCommand2));
 
         // different date -> returns false
-        assertFalse(unmarkCommand1.equals(unmarkCommand3));
+        assertFalse(markPresentCommand1.equals(markPresentCommand3));
+
+        // different class tag -> returns false
+        assertFalse(markPresentCommand1.equals(markPresentCommand4));
     }
 
     /**
@@ -207,7 +227,7 @@ public class AttendanceUnmarkCommandTest {
      */
     private class ModelStubWithPerson extends ModelStub {
         private Person person;
-        private boolean unmarkAttendanceCalled = false;
+        private boolean markAttendanceCalled = false;
 
         @Override
         public Optional<Person> getPersonById(StudentId studentId) {
@@ -220,13 +240,14 @@ public class AttendanceUnmarkCommandTest {
         }
 
         @Override
-        public void unmarkAttendance(StudentId studentId, Date date, ClassTag classTag) {
-            unmarkAttendanceCalled = true;
+        public void markAttendancePresent(StudentId studentId, Date date, ClassTag classTag) {
+            markAttendanceCalled = true;
             AttendanceList updatedAttendance = new AttendanceList(person.getAttendanceList().asUnmodifiableList());
-            updatedAttendance.unmarkAttendance(date, classTag);
+            updatedAttendance.markAttendancePresent(date, classTag);
             person = person.withAttendanceList(updatedAttendance);
         }
     }
+
 
     /**
      * A Model stub that does not contain any person.
@@ -255,3 +276,4 @@ public class AttendanceUnmarkCommandTest {
         }
     }
 }
+

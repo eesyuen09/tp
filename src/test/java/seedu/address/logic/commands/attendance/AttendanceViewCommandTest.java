@@ -43,9 +43,9 @@ public class AttendanceViewCommandTest {
         Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID_STRING).build();
         // Mark some attendance records
         AttendanceList attendanceList = new AttendanceList();
-        attendanceList.markAttendance(VALID_DATE_1, VALID_CLASS_TAG);
-        attendanceList.markAttendance(VALID_DATE_2, VALID_CLASS_TAG);
-        attendanceList.unmarkAttendance(VALID_DATE_2, VALID_CLASS_TAG); // Mark one as absent
+        attendanceList.markAttendancePresent(VALID_DATE_1, VALID_CLASS_TAG);
+        attendanceList.markAttendancePresent(VALID_DATE_2, VALID_CLASS_TAG);
+        attendanceList.markAttendanceAbsent(VALID_DATE_2, VALID_CLASS_TAG); // Mark one as absent
         validPerson = validPerson.withAttendanceList(attendanceList);
         modelStub.person = validPerson;
 

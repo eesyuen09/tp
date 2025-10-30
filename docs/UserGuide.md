@@ -171,11 +171,11 @@ Adding class tags before enrolling students makes the process more efficient! Cr
 A command can be categorized into four formats:
 
 1. **COMMAND + FLAG + PARAMETER_PREFIX + PARAMETER**
-   - Example: `tag -a t/Math_Sec3`, `fee -p s/0001 m/0925`, `att -m s/0001 d/15092025 t/Math_Sec3`
+   - Example: `tag -a t/Math_Sec3`, `fee -p s/0001 m/0925`, `att -p s/0001 d/15092025 t/Math_Sec3`
    - Common flags include:
      - `-a` (add), `-d` (delete), `-l` (list), `-e` (edit), `-v` (view)
-     - `-p` (paid), `-up` (unpaid)
-     - `-m` (mark), `-u` (unmark/absent)
+     - `-p` (paid/mark as present), `-up` (unpaid)
+     - `-a` (mark as absent)
      - `-t` (tag filter)<br>
        <br>
 2. **COMMAND + PARAMETER_PREFIX + PARAMETER**
@@ -520,19 +520,19 @@ Each attendance record is tied to both a date and a class tag, allowing tutors t
 
 | Command                                  | Description                                                                           |
 |------------------------------------------|---------------------------------------------------------------------------------------|
-| `att -m s/STUDENT_ID d/DATE t/CLASS_TAG` | Mark a student as present for a given date and class tag                              |
-| `att -u s/STUDENT_ID d/DATE t/CLASS_TAG` | Mark a student as absent for a given date and class tag or undoes a marked attendance |
+| `att -p s/STUDENT_ID d/DATE t/CLASS_TAG` | Mark a student as present for a given date and class tag                              |
+| `att -a s/STUDENT_ID d/DATE t/CLASS_TAG` | Mark a student as absent for a given date and class tag or undoes a marked attendance |
 | `att -d s/STUDENT_ID d/DATE t/CLASS_TAG` | Delete an attendance record for a student on a specific date and class                |
 | `att -v s/STUDENT_ID`                    | View a student's attendance records                                                   |
 
 </box>
 
 
-#### 3.4.1 Marking a student as present : `att -m`
+#### 3.4.1 Marking a student as present : `att -p`
 
 Marks a student's attendance as **PRESENT** for a specific date and class.
 
-**Format:** `att -m s/STUDENT_ID d/DATE t/CLASS_TAG`
+**Format:** `att -p s/STUDENT_ID d/DATE t/CLASS_TAG`
 
 **Command Details and Constraints:**
 * This command records that a student attended a specific class on a specific date.
@@ -541,15 +541,15 @@ Marks a student's attendance as **PRESENT** for a specific date and class.
 * The date must be in `DDMMYYYY` format (e.g., `15092025` for 15 September 2025).
 
 **Examples:**
-- `att -m s/0001 d/15092025 t/Math` — Marks student `0001` (Bernice Yu) as present for 15 September 2025 in Math class.
-  >**Expected output:** `Marked attendance for: Bernice Yu on 15-09-2025 for class Math`
-
-#### 3.4.2  Marking a student as absent : `att -u`
+- `att -p s/0001 d/15092025 t/Math` — Marks student `0001` (Bernice Yu) as present for 15 September 2025 in Math class.
+  >**Expected output:** `Marked Bernice Yu as present on 15-09-2025 for class Math.`
+  
+#### 3.4.2  Marking a student as absent : `att -a`
 
 Marks a student's attendance as **ABSENT** for a specific date and class.
 Use this to record absences or to undo a previously marked **PRESENT** attendance by changing it to **ABSENT**.
 
-**Format:** `att -u s/STUDENT_ID d/DATE t/CLASS_TAG`
+**Format:** `att -a s/STUDENT_ID d/DATE t/CLASS_TAG`
 
 **Command Details and Constraints:**
 * This command records that a student was absent from a specific class on a specific date.
@@ -559,8 +559,8 @@ Use this to record absences or to undo a previously marked **PRESENT** attendanc
 * The date must be in `DDMMYYYY` format (e.g., `15092025` for 15 September 2025).
 
 **Examples:**
-- `att -u s/0001 d/15092025 t/Math` — Marks student `0001` (Bernice Yu) as absent for 15 September 2025 in Math class.
-  >**Expected output:** `Unmarked attendance for: Bernice Yu on 15-09-2025 for class Math`
+- `att -a s/0001 d/15092025 t/Math` — Marks student `0001` (Bernice Yu) as absent for 15 September 2025 in Math class.
+  >**Expected output:** `Marked Bernice Yu as absent on 15-09-2025 for class Math.`
   
 
 #### 3.4.3 Deleting an attendance record : `att -d`
@@ -574,6 +574,7 @@ Use this to remove attendance records that were marked by mistake or are no long
 * This command removes an existing attendance record for a student.
 * An attendance record must exist for the given date and class for the deletion to succeed.
 * The student does **not** need to currently have the specified class tag assigned. This allows you to delete historical attendance records even after a student has left a class and the tag has been removed.
+* The class tag does **not** need to exist in the system anymore. This allows you to clean up orphaned attendance records after deleting a class tag.
 * The date must be in `DDMMYYYY` format (e.g., `15092025` for 15 September 2025).
 
 **Examples:**
@@ -840,8 +841,8 @@ Furthermore, certain edits can cause the AddressBook to behave in unexpected way
 | **Mark as PAID**            | `fee -p s/STUDENT_ID m/MMYY` <br> e.g., `fee -p s/0001 m/0925`                                                                                                                            |
 | **Mark as UNPAID**          | `fee -up s/STUDENT_ID m/MMYY` <br> e.g., `fee -up s/0001 m/0925`                                                                                                                          |
 | **View payment history**    | `fee -v s/STUDENT_ID [m/MMYY]` <br> e.g., `fee -v s/0001 m/0525`                                                                                                                          |
-| **Mark as PRESENT**         | `att -m s/STUDENT_ID d/DDMMYYYY t/CLASS_TAG` <br> e.g., `att -m s/0001 d/15092025 t/Math`                                                                                                 |
-| **Mark as ABSENT**          | `att -u s/STUDENT_ID d/DDMMYYYY t/CLASS_TAG` <br> e.g., `att -u s/0001 d/15092025 t/Math`                                                                                                 |
+| **Mark as PRESENT**         | `att -p s/STUDENT_ID d/DDMMYYYY t/CLASS_TAG` <br> e.g., `att -p s/0001 d/15092025 t/Math`                                                                                                 |
+| **Mark as ABSENT**          | `att -a s/STUDENT_ID d/DDMMYYYY t/CLASS_TAG` <br> e.g., `att -a s/0001 d/15092025 t/Math`                                                                                                 |
 | **Delete attendance**       | `att -d s/STUDENT_ID d/DDMMYYYY t/CLASS_TAG` <br> e.g., `att -d s/0001 d/15092025 t/Math`                                                                                                 |
 | **View attendance**         | `att -v s/STUDENT_ID` <br> e.g., `att -v s/0001`                                                                                                                                          |
 | **Filter by PAID status**   | `filter -p m/MMYY` <br> e.g., `filter -p m/1025`                                                                                                                                          |
