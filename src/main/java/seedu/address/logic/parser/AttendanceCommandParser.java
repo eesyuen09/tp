@@ -7,8 +7,8 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_STUDENTID;
 
 import seedu.address.logic.commands.attendance.AttendanceCommand;
 import seedu.address.logic.commands.attendance.AttendanceDeleteCommand;
-import seedu.address.logic.commands.attendance.AttendanceMarkCommand;
-import seedu.address.logic.commands.attendance.AttendanceUnmarkCommand;
+import seedu.address.logic.commands.attendance.AttendanceMarkAbsentCommand;
+import seedu.address.logic.commands.attendance.AttendanceMarkPresentCommand;
 import seedu.address.logic.commands.attendance.AttendanceViewCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.StudentId;
@@ -38,10 +38,10 @@ public class AttendanceCommandParser implements Parser<AttendanceCommand> {
         String arguments = splitArgs.length > 1 ? splitArgs[1] : "";
 
         switch (flag) {
-        case AttendanceMarkCommand.COMMAND_FLAG:
+        case AttendanceMarkPresentCommand.COMMAND_FLAG:
             return parseMarkCommand(arguments);
-        case AttendanceUnmarkCommand.COMMAND_FLAG:
-            return parseUnmarkCommand(arguments);
+        case AttendanceMarkAbsentCommand.COMMAND_FLAG:
+            return parseMarkAbsentCommand(arguments);
         case AttendanceDeleteCommand.COMMAND_FLAG:
             return parseDeleteCommand(arguments);
         case AttendanceViewCommand.COMMAND_FLAG:
@@ -55,7 +55,7 @@ public class AttendanceCommandParser implements Parser<AttendanceCommand> {
     /**
      * Parses arguments for the mark attendance command.
      */
-    private AttendanceMarkCommand parseMarkCommand(String args) throws ParseException {
+    private AttendanceMarkPresentCommand parseMarkCommand(String args) throws ParseException {
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(" " + args,
                 PREFIX_STUDENTID, PREFIX_DATE, PREFIX_CLASSTAG);
 
@@ -64,20 +64,20 @@ public class AttendanceCommandParser implements Parser<AttendanceCommand> {
         if (!arePrefixesPresent(argMultimap, PREFIX_STUDENTID, PREFIX_DATE, PREFIX_CLASSTAG)
                 || !argMultimap.getPreamble().trim().isEmpty()) {
             throw new ParseException(
-                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, AttendanceMarkCommand.MESSAGE_USAGE));
+                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, AttendanceMarkPresentCommand.MESSAGE_USAGE));
         }
 
         StudentId studentId = ParserUtil.parseStudentId(argMultimap.getValue(PREFIX_STUDENTID).get());
         Date date = ParserUtil.parseDate(argMultimap.getValue(PREFIX_DATE).get());
         ClassTag classTag = ParserUtil.parseClassTag(argMultimap.getValue(PREFIX_CLASSTAG).get());
 
-        return new AttendanceMarkCommand(studentId, date, classTag);
+        return new AttendanceMarkPresentCommand(studentId, date, classTag);
     }
 
     /**
-     * Parses arguments for the unmark attendance command.
+     * Parses arguments for the mark absent attendance command.
      */
-    private AttendanceUnmarkCommand parseUnmarkCommand(String args) throws ParseException {
+    private AttendanceMarkAbsentCommand parseMarkAbsentCommand(String args) throws ParseException {
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(" " + args,
                 PREFIX_STUDENTID, PREFIX_DATE, PREFIX_CLASSTAG);
 
@@ -86,14 +86,14 @@ public class AttendanceCommandParser implements Parser<AttendanceCommand> {
         if (!arePrefixesPresent(argMultimap, PREFIX_STUDENTID, PREFIX_DATE, PREFIX_CLASSTAG)
                 || !argMultimap.getPreamble().trim().isEmpty()) {
             throw new ParseException(
-                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, AttendanceUnmarkCommand.MESSAGE_USAGE));
+                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, AttendanceMarkAbsentCommand.MESSAGE_USAGE));
         }
 
         StudentId studentId = ParserUtil.parseStudentId(argMultimap.getValue(PREFIX_STUDENTID).get());
         Date date = ParserUtil.parseDate(argMultimap.getValue(PREFIX_DATE).get());
         ClassTag classTag = ParserUtil.parseClassTag(argMultimap.getValue(PREFIX_CLASSTAG).get());
 
-        return new AttendanceUnmarkCommand(studentId, date, classTag);
+        return new AttendanceMarkAbsentCommand(studentId, date, classTag);
     }
 
     /**

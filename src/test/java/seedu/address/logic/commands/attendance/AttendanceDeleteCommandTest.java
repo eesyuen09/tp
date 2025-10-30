@@ -55,7 +55,7 @@ public class AttendanceDeleteCommandTest {
 
         // Add an attendance record first
         AttendanceList attendanceList = new AttendanceList();
-        attendanceList.markAttendance(VALID_DATE, VALID_CLASS_TAG);
+        attendanceList.markAttendancePresent(VALID_DATE, VALID_CLASS_TAG);
         validPerson = validPerson.withAttendanceList(attendanceList);
         modelStub.person = validPerson;
 

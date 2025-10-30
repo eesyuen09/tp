@@ -243,7 +243,7 @@ public class ModelManager implements Model {
     }
 
     @Override
-    public void markAttendance(StudentId studentId, Date date, ClassTag classTag) {
+    public void markAttendancePresent(StudentId studentId, Date date, ClassTag classTag) {
         requireAllNonNull(studentId, date, classTag);
 
         Person person = getPersonById(studentId)
@@ -251,7 +251,7 @@ public class ModelManager implements Model {
 
         AttendanceList updatedAttendance = new AttendanceList(
                 person.getAttendanceList().asUnmodifiableList());
-        updatedAttendance.markAttendance(date, classTag);
+        updatedAttendance.markAttendancePresent(date, classTag);
 
         Person updatedPerson = person.withAttendanceList(updatedAttendance);
 
@@ -259,7 +259,7 @@ public class ModelManager implements Model {
     }
 
     @Override
-    public void unmarkAttendance(StudentId studentId, Date date, ClassTag classTag) {
+    public void markAttendanceAbsent(StudentId studentId, Date date, ClassTag classTag) {
         requireAllNonNull(studentId, date, classTag);
 
         Person person = getPersonById(studentId)
@@ -267,7 +267,7 @@ public class ModelManager implements Model {
 
         AttendanceList updatedAttendance = new AttendanceList(
                 person.getAttendanceList().asUnmodifiableList());
-        updatedAttendance.unmarkAttendance(date, classTag);
+        updatedAttendance.markAttendanceAbsent(date, classTag);
 
         Person updatedPerson = person.withAttendanceList(updatedAttendance);
 

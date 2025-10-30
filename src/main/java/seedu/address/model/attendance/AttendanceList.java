@@ -38,7 +38,7 @@ public class AttendanceList {
      * @param classTag The class tag to check.
      * @return True if the date and class tag have a present attendance record.
      */
-    public boolean hasAttendanceMarked(Date date, ClassTag classTag) {
+    public boolean hasAttendanceMarkedPresent(Date date, ClassTag classTag) {
         requireNonNull(date);
         requireNonNull(classTag);
         return records.stream()
@@ -54,7 +54,7 @@ public class AttendanceList {
      * @param classTag The class tag to check.
      * @return True if the date and class tag have an absent attendance record.
      */
-    public boolean hasAttendanceUnmarked(Date date, ClassTag classTag) {
+    public boolean hasAttendanceMarkedAbsent(Date date, ClassTag classTag) {
         requireNonNull(date);
         requireNonNull(classTag);
         return records.stream()
@@ -72,7 +72,7 @@ public class AttendanceList {
      * @param date The date to mark attendance.
      * @param classTag The class tag for the attendance.
      */
-    public void markAttendance(Date date, ClassTag classTag) {
+    public void markAttendancePresent(Date date, ClassTag classTag) {
         requireNonNull(date);
         requireNonNull(classTag);
         records.removeIf(attendance -> attendance.getDate().equals(date)
@@ -85,10 +85,10 @@ public class AttendanceList {
      * If a record exists for this date and class, it is replaced with an absent record.
      * Otherwise, a new absent record is created.
      *
-     * @param date The date to unmark attendance.
+     * @param date The date to mark attendance as absent.
      * @param classTag The class tag for the attendance.
      */
-    public void unmarkAttendance(Date date, ClassTag classTag) {
+    public void markAttendanceAbsent(Date date, ClassTag classTag) {
         requireNonNull(date);
         requireNonNull(classTag);
         records.removeIf(attendance -> attendance.getDate().equals(date)
