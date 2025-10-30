@@ -2055,34 +2055,37 @@ testers are expected to do more *exploratory* testing.
 
 1. Marking a student as present for a valid class and date
 
-    1. Prerequisites: Student exists with the specified Student ID (e.g., `0001`) and is assigned the relevant class tag (e.g., `Sec3_Maths`).
+    1. Prerequisites: Student exists with the specified Student ID (e.g., `0001`) and is assigned the relevant class tag (e.g., `Sec3_Math`).
 
-    1. Test case: `att -p s/0001 d/18092025 t/Sec3_Maths`<br>
+    1. Test case: `att -p s/0001 d/18092025 t/Sec3_Math`<br>
        **Expected:** Attendance marked as present. Status message confirms the attendance has been recorded.
 
 1. Marking a student as present when already marked present
 
-    1. Prerequisites: Student `0001` already has a present attendance record for `18092025` and `Sec3_Maths`.
+    1. Prerequisites: Student `0001` already has a present attendance record for `18092025` and `Sec3_Math`.
 
-    1. Test case: `att -p s/0001 d/18092025 t/Sec3_Maths`<br>
+    1. Test case: `att -p s/0001 d/18092025 t/Sec3_Math`<br>
        **Expected:** Command rejected. Error message indicates the student is already marked as present for that date and class.
 
 1. Attempting to mark attendance for a future date
 
-    1. Test case: `att -p s/0001 d/31122025 t/Sec3_Maths` (assuming current date is before 31 Dec 2025)<br>
+    1. Test case: `att -p s/0001 d/31122025 t/Sec3_Math` (assuming current date is before 31 Dec 2025)<br>
        **Expected:** Command rejected. Error message indicates that attendance cannot be marked for future dates.
 
 1. Attempting to mark attendance before student's enrolled month
 
     1. Prerequisites: Student `0001` is enrolled in September 2025 (enrolled month: `0925`).
 
-    1. Test case: `att -p s/0001 d/15082025 t/Sec3_Maths`<br>
+    1. Test case: `att -p s/0001 d/15082025 t/Sec3_Math`<br>
        **Expected:** Command rejected. Error message indicates that attendance cannot be marked before the student's enrollment month.
 
 1. Attempting to mark attendance with invalid date
 
-    1. Test case: `att -p s/0001 d/30022025 t/Sec3_Maths` (30th February does not exist)<br>
+    1. Test case: `att -p s/0001 d/30022025 t/Sec3_Math` (30th February does not exist)<br>
        **Expected:** Command rejected. Error message indicates the date is invalid.
+
+    2. Test case: `att -p s/0001 d/2025-02-28 t/Sec3_Math` (wrong format, should be DDMMYYYY)<br>
+       **Expected:** Command rejected. Error message indicates the date format is invalid.
 
 1. Marking attendance for a class tag not assigned to the student
 
@@ -2093,7 +2096,7 @@ testers are expected to do more *exploratory* testing.
 
 1. Marking attendance for a non-existent student
 
-    1. Test case: `att -p s/9999 d/18092025 t/Sec3_Maths`<br>
+    1. Test case: `att -p s/9999 d/18092025 t/Sec3_Math`<br>
        **Expected:** Command rejected. Error message indicates the student cannot be found.
 
 ---
@@ -2102,34 +2105,37 @@ testers are expected to do more *exploratory* testing.
 
 1. Marking a student as absent for a valid class and date
 
-    1. Prerequisites: Student exists with the specified Student ID (e.g., `0001`) and is assigned the relevant class tag (e.g., `Sec3_Maths`).
+    1. Prerequisites: Student exists with the specified Student ID (e.g., `0001`) and is assigned the relevant class tag (e.g., `Sec3_Math`).
 
-    1. Test case: `att -a s/0001 d/19092025 t/Sec3_Maths`<br>
+    1. Test case: `att -a s/0001 d/19092025 t/Sec3_Math`<br>
        **Expected:** Attendance marked as absent. Status message confirms the attendance has been recorded.
 
 1. Changing attendance from present to absent
 
-    1. Prerequisites: Student `0001` is currently marked as present for `18092025` and `Sec3_Maths`.
+    1. Prerequisites: Student `0001` is currently marked as present for `18092025` and `Sec3_Math`.
 
-    1. Test case: `att -a s/0001 d/18092025 t/Sec3_Maths`<br>
+    1. Test case: `att -a s/0001 d/18092025 t/Sec3_Math`<br>
        **Expected:** Attendance status updated from present to absent. Status message confirms the change.
 
 1. Attempting to mark attendance as absent for a future date
 
-    1. Test case: `att -a s/0001 d/31122025 t/Sec3_Maths` (assuming current date is before 31 Dec 2025)<br>
+    1. Test case: `att -a s/0001 d/31122025 t/Sec3_Math` (assuming current date is before 31 Dec 2025)<br>
        **Expected:** Command rejected. Error message indicates that attendance cannot be marked for future dates.
 
 1. Attempting to mark attendance as absent before student's enrolled month
 
     1. Prerequisites: Student `0001` is enrolled in September 2025 (enrolled month: `0925`).
 
-    1. Test case: `att -a s/0001 d/15082025 t/Sec3_Maths`<br>
+    1. Test case: `att -a s/0001 d/15082025 t/Sec3_Math`<br>
        **Expected:** Command rejected. Error message indicates that attendance cannot be marked before the student's enrollment month.
 
 1. Attempting to mark attendance as absent with invalid date
 
-    1. Test case: `att -a s/0001 d/32012025 t/Sec3_Maths` (32nd January does not exist)<br>
+    1. Test case: `att -a s/0001 d/32012025 t/Sec3_Math` (32nd January does not exist)<br>
        **Expected:** Command rejected. Error message indicates the date is invalid.
+
+    2. Test case: `att -a s/0001 d/2025-01-31 t/Sec3_Math` (wrong format, should be DDMMYYYY)<br>
+       **Expected:** Command rejected. Error message indicates the date format is invalid.
 
 ---
 
@@ -2160,19 +2166,19 @@ testers are expected to do more *exploratory* testing.
 
 1. Deleting an existing attendance record
 
-    1. Prerequisites: Student `0001` has an attendance record on `18092025` for `Sec3_Maths`.
+    1. Prerequisites: Student `0001` has an attendance record on `18092025` for `Sec3_Math`.
 
-    1. Test case: `att -d s/0001 d/18092025 t/Sec3_Maths`<br>
+    1. Test case: `att -d s/0001 d/18092025 t/Sec3_Math`<br>
        **Expected:** Attendance record deleted. Status message confirms deletion and the record disappears from the attendance panel.
 
 1. Deleting a non-existent attendance record
 
-    1. Test case: `att -d s/0001 d/20092025 t/Sec3_Maths`<br>
+    1. Test case: `att -d s/0001 d/20092025 t/Sec3_Math`<br>
        **Expected:** Command rejected. Error message indicates no matching attendance record exists for the given date and class tag.
 
 1. Deleting an attendance record for a non-existent student
 
-    1. Test case: `att -d s/9999 d/18092025 t/Sec3_Maths`<br>
+    1. Test case: `att -d s/9999 d/18092025 t/Sec3_Math`<br>
        **Expected:** Command rejected. Error message indicates the student cannot be found.
 
 ---
