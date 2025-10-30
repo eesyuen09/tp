@@ -179,7 +179,6 @@ A command can be categorized into four formats:
    - Common flags include:
      - `-a` (add for class tag/ mark as absent), `-d` (delete), `-l` (list), `-e` (edit), `-v` (view)
      - `-p` (paid/mark as present), `-up` (unpaid)
-
      - `-t` (tag filter)<br>
        <br>
 2. **COMMAND + PARAMETER_PREFIX + PARAMETER**
@@ -194,6 +193,7 @@ A command can be categorized into four formats:
    - Example: `list`, `help`, `exit`, `clear`<br>
      <br>
 
+     
 --------------------------------------------------------------------------------------------------------------------
 
 ## 3. Commands
