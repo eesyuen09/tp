@@ -594,9 +594,9 @@ Displays all attendance records for a specific student across all their classes.
 - `att -v s/0001` — Shows all attendance records for student `0001` (Bernice Yu).
   >**Expected output:**<br>
   `Attendance records for: Bernice Yu`<br>
-  `15-09-2025 - Math: Present`<br>
+  `20-09-2025 - Math: Present`<br>
   `16-09-2025 - Math: Absent`<br>
-  `20-09-2025 - Science: Present`<br>
+  `15-09-2025 - Science: Present`<br>
 - `att -v s/0003` — If no attendance record for student `0003` (David Li).
   >**Expected output:**<br>
   `No attendance record found for: David Li`<br>
