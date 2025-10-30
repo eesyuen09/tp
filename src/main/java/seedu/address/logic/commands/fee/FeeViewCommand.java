@@ -1,16 +1,16 @@
 package seedu.address.logic.commands.fee;
 
 import static java.util.Objects.requireNonNull;
-import seedu.address.commons.core.LogsCenter;
 import static seedu.address.logic.Messages.MESSAGE_STUDENT_ID_NOT_FOUND;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Logger;
 import java.util.Map;
 import java.util.Optional;
+import java.util.logging.Logger;
 
+import seedu.address.commons.core.LogsCenter;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
@@ -22,12 +22,11 @@ import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
 import seedu.address.model.time.Month;
 
+
 /**
- * View student's payment history
+ * Views student's payment history
  */
 public class FeeViewCommand extends FeeCommand {
-    private static final Logger LOGGER = LogsCenter.getLogger(FeeViewCommand.class);
-
     public static final String COMMAND_FLAG = "-v";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + " " + COMMAND_FLAG
@@ -37,10 +36,11 @@ public class FeeViewCommand extends FeeCommand {
         + "Examples:\n"
         + "  " + COMMAND_WORD + " " + COMMAND_FLAG + " s/0001\n"
         + "  " + COMMAND_WORD + " " + COMMAND_FLAG + " s/0001 m/0525";
-
     public static final String MESSAGE_NO_HISTORY_IN_RANGE =
         "Cannot display payment history for future months."
             + "\nPlease select a month up to the current month.";
+
+    private static final Logger logger = LogsCenter.getLogger(FeeViewCommand.class);
 
     private final StudentId studentId;
 
@@ -72,22 +72,18 @@ public class FeeViewCommand extends FeeCommand {
         Month requestedStart = startMonthOpt.orElse(enrolled);
         Month effectiveStart = requestedStart.isBefore(enrolled) ? enrolled : requestedStart;
 
-        FeeTracker tracker = model.getAddressBook().getFeeTracker();
-        Map<Month, FeeState> history = tracker.getPaymentHistory(person, effectiveStart, endMonth);
-
-        if (history.isEmpty()) {
-            return new CommandResult(MESSAGE_NO_HISTORY_IN_RANGE);
-        }
-        List<FeeHistoryEntry> entries = new ArrayList<>();
-        for (Map.Entry<Month, FeeState> entry : history.entrySet()) {
-            Month month = entry.getKey();
-            FeeState state = entry.getValue();
-            boolean isExplicit = tracker.getExplicitStatusOfMonth(studentId, month).isPresent();
-            entries.add(new FeeHistoryEntry(month, state, isExplicit));
+        if (endMonth.isBefore(effectiveStart)) {
+            logger.info(() -> String.format(
+                "Rejected fee -v: start month %s is a future month",
+                effectiveStart.toHumanReadable()));
+            throw new CommandException(MESSAGE_NO_HISTORY_IN_RANGE);
         }
 
-        Collections.reverse(entries);
-
+        logger.fine(() -> String.format(
+            "FeeViewCommand: id=%s start=%s end=%s",
+            studentId, effectiveStart, endMonth));
+        List<FeeHistoryEntry> entries =
+            buildHistoryEntries(model.getAddressBook().getFeeTracker(), person, effectiveStart, endMonth);
         FeeHistorySummary summary = new FeeHistorySummary(
                 person.getName().fullName,
                 studentId,
@@ -103,6 +99,20 @@ public class FeeViewCommand extends FeeCommand {
 
         return new CommandResult(header);
     }
+
+    /** Builds UI rows (newest first) from the tracker’s map. */
+    private List<FeeHistoryEntry> buildHistoryEntries(FeeTracker tracker, Person person, Month start, Month end) {
+        final Map<Month, FeeState> map = tracker.getPaymentHistory(person, start, end);
+        final List<FeeHistoryEntry> result = new ArrayList<>(map.size());
+        for (Map.Entry<Month, FeeState> entry : map.entrySet()) {
+            final Month m = entry.getKey();
+            final boolean explicit = tracker.getExplicitStatusOfMonth(person.getStudentId(), m).isPresent();
+            result.add(new FeeHistoryEntry(m, entry.getValue(), explicit));
+        }
+        Collections.reverse(result);
+        return result;
+    }
+
 
     @Override
     public boolean equals(Object other) {
