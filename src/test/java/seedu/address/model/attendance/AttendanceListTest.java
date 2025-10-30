@@ -44,104 +44,105 @@ public class AttendanceListTest {
     }
 
     @Test
-    public void hasAttendanceMarked_noRecords_returnsFalse() {
+    public void hasAttendanceMarkedPresent_noRecords_returnsFalse() {
         AttendanceList attendanceList = new AttendanceList();
-        assertFalse(attendanceList.hasAttendanceMarked(VALID_DATE_1, VALID_CLASS_TAG_1));
+        assertFalse(attendanceList.hasAttendanceMarkedPresent(VALID_DATE_1, VALID_CLASS_TAG_1));
     }
 
     @Test
-    public void hasAttendanceMarked_recordExists_returnsTrue() {
+    public void hasAttendanceMarkedPresent_recordExists_returnsTrue() {
         AttendanceList attendanceList = new AttendanceList();
-        attendanceList.markAttendance(VALID_DATE_1, VALID_CLASS_TAG_1);
-        assertTrue(attendanceList.hasAttendanceMarked(VALID_DATE_1, VALID_CLASS_TAG_1));
+        attendanceList.markAttendancePresent(VALID_DATE_1, VALID_CLASS_TAG_1);
+        assertTrue(attendanceList.hasAttendanceMarkedPresent(VALID_DATE_1, VALID_CLASS_TAG_1));
     }
 
     @Test
-    public void hasAttendanceMarked_differentDate_returnsFalse() {
+    public void hasAttendanceMarkedPresent_differentDate_returnsFalse() {
         AttendanceList attendanceList = new AttendanceList();
-        attendanceList.markAttendance(VALID_DATE_1, VALID_CLASS_TAG_1);
-        assertFalse(attendanceList.hasAttendanceMarked(VALID_DATE_2, VALID_CLASS_TAG_1));
+        attendanceList.markAttendancePresent(VALID_DATE_1, VALID_CLASS_TAG_1);
+        assertFalse(attendanceList.hasAttendanceMarkedPresent(VALID_DATE_2, VALID_CLASS_TAG_1));
     }
 
     @Test
-    public void hasAttendanceMarked_differentClassTag_returnsFalse() {
+    public void hasAttendanceMarkedPresent_differentClassTag_returnsFalse() {
         AttendanceList attendanceList = new AttendanceList();
-        attendanceList.markAttendance(VALID_DATE_1, VALID_CLASS_TAG_1);
-        assertFalse(attendanceList.hasAttendanceMarked(VALID_DATE_1, VALID_CLASS_TAG_2));
+        attendanceList.markAttendancePresent(VALID_DATE_1, VALID_CLASS_TAG_1);
+        assertFalse(attendanceList.hasAttendanceMarkedPresent(VALID_DATE_1, VALID_CLASS_TAG_2));
     }
 
     @Test
-    public void hasAttendanceUnmarked_noRecords_returnsFalse() {
+    public void hasAttendanceMarkedAbsent_noRecords_returnsFalse() {
         AttendanceList attendanceList = new AttendanceList();
-        assertFalse(attendanceList.hasAttendanceUnmarked(VALID_DATE_1, VALID_CLASS_TAG_1));
+        assertFalse(attendanceList.hasAttendanceMarkedAbsent(VALID_DATE_1, VALID_CLASS_TAG_1));
     }
 
     @Test
-    public void hasAttendanceUnmarked_recordExists_returnsTrue() {
+    public void hasAttendanceMarkedAbsent_recordExists_returnsTrue() {
         AttendanceList attendanceList = new AttendanceList();
-        attendanceList.unmarkAttendance(VALID_DATE_1, VALID_CLASS_TAG_1);
-        assertTrue(attendanceList.hasAttendanceUnmarked(VALID_DATE_1, VALID_CLASS_TAG_1));
+        attendanceList.markAttendanceAbsent(VALID_DATE_1, VALID_CLASS_TAG_1);
+        assertTrue(attendanceList.hasAttendanceMarkedAbsent(VALID_DATE_1, VALID_CLASS_TAG_1));
     }
 
     @Test
-    public void hasAttendanceUnmarked_differentDate_returnsFalse() {
+    public void hasAttendanceMarkedAbsent_differentDate_returnsFalse() {
         AttendanceList attendanceList = new AttendanceList();
-        attendanceList.unmarkAttendance(VALID_DATE_1, VALID_CLASS_TAG_1);
-        assertFalse(attendanceList.hasAttendanceUnmarked(VALID_DATE_2, VALID_CLASS_TAG_1));
+        attendanceList.markAttendanceAbsent(VALID_DATE_1, VALID_CLASS_TAG_1);
+        assertFalse(attendanceList.hasAttendanceMarkedAbsent(VALID_DATE_2, VALID_CLASS_TAG_1));
     }
 
     @Test
-    public void hasAttendanceUnmarked_differentClassTag_returnsFalse() {
+    public void hasAttendanceMarkedAbsent_differentClassTag_returnsFalse() {
         AttendanceList attendanceList = new AttendanceList();
-        attendanceList.unmarkAttendance(VALID_DATE_1, VALID_CLASS_TAG_1);
-        assertFalse(attendanceList.hasAttendanceUnmarked(VALID_DATE_1, VALID_CLASS_TAG_2));
+        attendanceList.markAttendanceAbsent(VALID_DATE_1, VALID_CLASS_TAG_1);
+        assertFalse(attendanceList.hasAttendanceMarkedAbsent(VALID_DATE_1, VALID_CLASS_TAG_2));
     }
 
     @Test
-    public void hasAttendanceUnmarked_markedAsPresent_returnsFalse() {
+    public void hasAttendanceMarkedAbsent_markedAsPresent_returnsFalse() {
         AttendanceList attendanceList = new AttendanceList();
-        attendanceList.markAttendance(VALID_DATE_1, VALID_CLASS_TAG_1);
-        assertFalse(attendanceList.hasAttendanceUnmarked(VALID_DATE_1, VALID_CLASS_TAG_1));
+        attendanceList.markAttendancePresent(VALID_DATE_1, VALID_CLASS_TAG_1);
+        assertFalse(attendanceList.hasAttendanceMarkedAbsent(VALID_DATE_1, VALID_CLASS_TAG_1));
     }
 
     @Test
-    public void hasAttendanceUnmarked_null_throwsNullPointerException() {
+    public void hasAttendanceMarkedAbsent_null_throwsNullPointerException() {
         AttendanceList attendanceList = new AttendanceList();
-        assertThrows(NullPointerException.class, () -> attendanceList.hasAttendanceUnmarked(null, VALID_CLASS_TAG_1));
-        assertThrows(NullPointerException.class, () -> attendanceList.hasAttendanceUnmarked(VALID_DATE_1, null));
+        assertThrows(NullPointerException.class, () -> attendanceList.hasAttendanceMarkedAbsent(null,
+                VALID_CLASS_TAG_1));
+        assertThrows(NullPointerException.class, () -> attendanceList.hasAttendanceMarkedAbsent(VALID_DATE_1, null));
     }
 
     @Test
     public void markAttendance_null_throwsNullPointerException() {
         AttendanceList attendanceList = new AttendanceList();
-        assertThrows(NullPointerException.class, () -> attendanceList.markAttendance(null, VALID_CLASS_TAG_1));
-        assertThrows(NullPointerException.class, () -> attendanceList.markAttendance(VALID_DATE_1, null));
+        assertThrows(NullPointerException.class, () -> attendanceList.markAttendancePresent(null, VALID_CLASS_TAG_1));
+        assertThrows(NullPointerException.class, () -> attendanceList.markAttendancePresent(VALID_DATE_1, null));
     }
 
     @Test
     public void markAttendance_validDate_success() {
         AttendanceList attendanceList = new AttendanceList();
-        attendanceList.markAttendance(VALID_DATE_1, VALID_CLASS_TAG_1);
+        attendanceList.markAttendancePresent(VALID_DATE_1, VALID_CLASS_TAG_1);
 
         assertEquals(1, attendanceList.size());
-        assertTrue(attendanceList.hasAttendanceMarked(VALID_DATE_1, VALID_CLASS_TAG_1));
+        assertTrue(attendanceList.hasAttendanceMarkedPresent(VALID_DATE_1, VALID_CLASS_TAG_1));
     }
 
     @Test
     public void markAttendance_duplicateDateAndClass_replacesExisting() {
         AttendanceList attendanceList = new AttendanceList();
-        attendanceList.markAttendance(VALID_DATE_1, VALID_CLASS_TAG_1);
-        attendanceList.markAttendance(VALID_DATE_1, VALID_CLASS_TAG_1);
+        attendanceList.markAttendancePresent(VALID_DATE_1, VALID_CLASS_TAG_1);
+        attendanceList.markAttendancePresent(VALID_DATE_1, VALID_CLASS_TAG_1);
 
         // Should still have only 1 record (duplicate replaced)
         assertEquals(1, attendanceList.size());
     }
 
     @Test
-    public void markAttendance_afterUnmark_replacesAbsentRecord() {
+    public void markAttendance_afterMarkAbsent_replacesAbsentRecord() {
         AttendanceList attendanceList = new AttendanceList();
-        attendanceList.unmarkAttendance(VALID_DATE_1, VALID_CLASS_TAG_1);
-        attendanceList.markAttendance(VALID_DATE_1, VALID_CLASS_TAG_1);
+        attendanceList.markAttendanceAbsent(VALID_DATE_1, VALID_CLASS_TAG_1);
+        attendanceList.markAttendancePresent(VALID_DATE_1, VALID_CLASS_TAG_1);
 
         // Should still have 1 record, but now marked as present
         assertEquals(1, attendanceList.size());
@@ -150,16 +151,16 @@ public class AttendanceListTest {
     }
 
     @Test
-    public void unmarkAttendance_null_throwsNullPointerException() {
+    public void markAttendanceAbsent_null_throwsNullPointerException() {
         AttendanceList attendanceList = new AttendanceList();
-        assertThrows(NullPointerException.class, () -> attendanceList.unmarkAttendance(null, VALID_CLASS_TAG_1));
-        assertThrows(NullPointerException.class, () -> attendanceList.unmarkAttendance(VALID_DATE_1, null));
+        assertThrows(NullPointerException.class, () -> attendanceList.markAttendanceAbsent(null, VALID_CLASS_TAG_1));
+        assertThrows(NullPointerException.class, () -> attendanceList.markAttendanceAbsent(VALID_DATE_1, null));
     }
 
     @Test
-    public void unmarkAttendance_validDate_success() {
+    public void markAttendanceAbsent_validDate_success() {
         AttendanceList attendanceList = new AttendanceList();
-        attendanceList.unmarkAttendance(VALID_DATE_1, VALID_CLASS_TAG_1);
+        attendanceList.markAttendanceAbsent(VALID_DATE_1, VALID_CLASS_TAG_1);
 
         assertEquals(1, attendanceList.size());
         List<Attendance> records = attendanceList.asUnmodifiableList();
@@ -167,10 +168,10 @@ public class AttendanceListTest {
     }
 
     @Test
-    public void unmarkAttendance_afterMark_replacesRecord() {
+    public void markAttendanceAbsent_afterMarkPresent_replacesRecord() {
         AttendanceList attendanceList = new AttendanceList();
-        attendanceList.markAttendance(VALID_DATE_1, VALID_CLASS_TAG_1);
-        attendanceList.unmarkAttendance(VALID_DATE_1, VALID_CLASS_TAG_1);
+        attendanceList.markAttendancePresent(VALID_DATE_1, VALID_CLASS_TAG_1);
+        attendanceList.markAttendanceAbsent(VALID_DATE_1, VALID_CLASS_TAG_1);
 
         // Should still have 1 record, but now marked as absent
         assertEquals(1, attendanceList.size());
@@ -181,7 +182,7 @@ public class AttendanceListTest {
     @Test
     public void asUnmodifiableList_returnsUnmodifiableList() {
         AttendanceList attendanceList = new AttendanceList();
-        attendanceList.markAttendance(VALID_DATE_1, VALID_CLASS_TAG_1);
+        attendanceList.markAttendancePresent(VALID_DATE_1, VALID_CLASS_TAG_1);
 
         List<Attendance> records = attendanceList.asUnmodifiableList();
         assertEquals(1, records.size());
@@ -200,9 +201,9 @@ public class AttendanceListTest {
     @Test
     public void size_multipleRecords_returnsCorrectSize() {
         AttendanceList attendanceList = new AttendanceList();
-        attendanceList.markAttendance(VALID_DATE_1, VALID_CLASS_TAG_1);
-        attendanceList.markAttendance(VALID_DATE_2, VALID_CLASS_TAG_1);
-        attendanceList.markAttendance(VALID_DATE_3, VALID_CLASS_TAG_1);
+        attendanceList.markAttendancePresent(VALID_DATE_1, VALID_CLASS_TAG_1);
+        attendanceList.markAttendancePresent(VALID_DATE_2, VALID_CLASS_TAG_1);
+        attendanceList.markAttendancePresent(VALID_DATE_3, VALID_CLASS_TAG_1);
 
         assertEquals(3, attendanceList.size());
     }
@@ -228,12 +229,12 @@ public class AttendanceListTest {
     @Test
     public void equals_sameRecords_returnsTrue() {
         AttendanceList attendanceList1 = new AttendanceList();
-        attendanceList1.markAttendance(VALID_DATE_1, VALID_CLASS_TAG_1);
-        attendanceList1.markAttendance(VALID_DATE_2, VALID_CLASS_TAG_1);
+        attendanceList1.markAttendancePresent(VALID_DATE_1, VALID_CLASS_TAG_1);
+        attendanceList1.markAttendancePresent(VALID_DATE_2, VALID_CLASS_TAG_1);
 
         AttendanceList attendanceList2 = new AttendanceList();
-        attendanceList2.markAttendance(VALID_DATE_1, VALID_CLASS_TAG_1);
-        attendanceList2.markAttendance(VALID_DATE_2, VALID_CLASS_TAG_1);
+        attendanceList2.markAttendancePresent(VALID_DATE_1, VALID_CLASS_TAG_1);
+        attendanceList2.markAttendancePresent(VALID_DATE_2, VALID_CLASS_TAG_1);
 
         assertTrue(attendanceList1.equals(attendanceList2));
     }
@@ -241,10 +242,10 @@ public class AttendanceListTest {
     @Test
     public void equals_differentRecords_returnsFalse() {
         AttendanceList attendanceList1 = new AttendanceList();
-        attendanceList1.markAttendance(VALID_DATE_1, VALID_CLASS_TAG_1);
+        attendanceList1.markAttendancePresent(VALID_DATE_1, VALID_CLASS_TAG_1);
 
         AttendanceList attendanceList2 = new AttendanceList();
-        attendanceList2.markAttendance(VALID_DATE_2, VALID_CLASS_TAG_1);
+        attendanceList2.markAttendancePresent(VALID_DATE_2, VALID_CLASS_TAG_1);
 
         assertFalse(attendanceList1.equals(attendanceList2));
     }
@@ -260,10 +261,10 @@ public class AttendanceListTest {
     @Test
     public void hashCode_sameRecords_returnsSameHashCode() {
         AttendanceList attendanceList1 = new AttendanceList();
-        attendanceList1.markAttendance(VALID_DATE_1, VALID_CLASS_TAG_1);
+        attendanceList1.markAttendancePresent(VALID_DATE_1, VALID_CLASS_TAG_1);
 
         AttendanceList attendanceList2 = new AttendanceList();
-        attendanceList2.markAttendance(VALID_DATE_1, VALID_CLASS_TAG_1);
+        attendanceList2.markAttendancePresent(VALID_DATE_1, VALID_CLASS_TAG_1);
 
         assertEquals(attendanceList1.hashCode(), attendanceList2.hashCode());
     }
@@ -271,10 +272,10 @@ public class AttendanceListTest {
     @Test
     public void hashCode_differentRecords_returnsDifferentHashCode() {
         AttendanceList attendanceList1 = new AttendanceList();
-        attendanceList1.markAttendance(VALID_DATE_1, VALID_CLASS_TAG_1);
+        attendanceList1.markAttendancePresent(VALID_DATE_1, VALID_CLASS_TAG_1);
 
         AttendanceList attendanceList2 = new AttendanceList();
-        attendanceList2.markAttendance(VALID_DATE_2, VALID_CLASS_TAG_1);
+        attendanceList2.markAttendancePresent(VALID_DATE_2, VALID_CLASS_TAG_1);
 
         assertNotEquals(attendanceList1.hashCode(), attendanceList2.hashCode());
     }
@@ -289,21 +290,21 @@ public class AttendanceListTest {
     @Test
     public void deleteAttendance_existingRecord_success() {
         AttendanceList attendanceList = new AttendanceList();
-        attendanceList.markAttendance(VALID_DATE_1, VALID_CLASS_TAG_1);
+        attendanceList.markAttendancePresent(VALID_DATE_1, VALID_CLASS_TAG_1);
 
         assertEquals(1, attendanceList.size());
-        assertTrue(attendanceList.hasAttendanceMarked(VALID_DATE_1, VALID_CLASS_TAG_1));
+        assertTrue(attendanceList.hasAttendanceMarkedPresent(VALID_DATE_1, VALID_CLASS_TAG_1));
 
         attendanceList.deleteAttendance(VALID_DATE_1, VALID_CLASS_TAG_1);
 
         assertEquals(0, attendanceList.size());
-        assertFalse(attendanceList.hasAttendanceMarked(VALID_DATE_1, VALID_CLASS_TAG_1));
+        assertFalse(attendanceList.hasAttendanceMarkedPresent(VALID_DATE_1, VALID_CLASS_TAG_1));
     }
 
     @Test
     public void deleteAttendance_nonExistingRecord_noChange() {
         AttendanceList attendanceList = new AttendanceList();
-        attendanceList.markAttendance(VALID_DATE_1, VALID_CLASS_TAG_1);
+        attendanceList.markAttendancePresent(VALID_DATE_1, VALID_CLASS_TAG_1);
 
         assertEquals(1, attendanceList.size());
 
@@ -312,15 +313,15 @@ public class AttendanceListTest {
 
         // Size should remain the same
         assertEquals(1, attendanceList.size());
-        assertTrue(attendanceList.hasAttendanceMarked(VALID_DATE_1, VALID_CLASS_TAG_1));
+        assertTrue(attendanceList.hasAttendanceMarkedPresent(VALID_DATE_1, VALID_CLASS_TAG_1));
     }
 
     @Test
     public void deleteAttendance_multipleRecords_deletesOnlySpecified() {
         AttendanceList attendanceList = new AttendanceList();
-        attendanceList.markAttendance(VALID_DATE_1, VALID_CLASS_TAG_1);
-        attendanceList.markAttendance(VALID_DATE_2, VALID_CLASS_TAG_1);
-        attendanceList.markAttendance(VALID_DATE_1, VALID_CLASS_TAG_2);
+        attendanceList.markAttendancePresent(VALID_DATE_1, VALID_CLASS_TAG_1);
+        attendanceList.markAttendancePresent(VALID_DATE_2, VALID_CLASS_TAG_1);
+        attendanceList.markAttendancePresent(VALID_DATE_1, VALID_CLASS_TAG_2);
 
         assertEquals(3, attendanceList.size());
 
@@ -328,23 +329,23 @@ public class AttendanceListTest {
         attendanceList.deleteAttendance(VALID_DATE_1, VALID_CLASS_TAG_1);
 
         assertEquals(2, attendanceList.size());
-        assertFalse(attendanceList.hasAttendanceMarked(VALID_DATE_1, VALID_CLASS_TAG_1));
-        assertTrue(attendanceList.hasAttendanceMarked(VALID_DATE_2, VALID_CLASS_TAG_1));
-        assertTrue(attendanceList.hasAttendanceMarked(VALID_DATE_1, VALID_CLASS_TAG_2));
+        assertFalse(attendanceList.hasAttendanceMarkedPresent(VALID_DATE_1, VALID_CLASS_TAG_1));
+        assertTrue(attendanceList.hasAttendanceMarkedPresent(VALID_DATE_2, VALID_CLASS_TAG_1));
+        assertTrue(attendanceList.hasAttendanceMarkedPresent(VALID_DATE_1, VALID_CLASS_TAG_2));
     }
 
     @Test
-    public void deleteAttendance_unmarkedRecord_success() {
+    public void deleteAttendance_absentRecord_success() {
         AttendanceList attendanceList = new AttendanceList();
-        attendanceList.unmarkAttendance(VALID_DATE_1, VALID_CLASS_TAG_1);
+        attendanceList.markAttendanceAbsent(VALID_DATE_1, VALID_CLASS_TAG_1);
 
         assertEquals(1, attendanceList.size());
-        assertTrue(attendanceList.hasAttendanceUnmarked(VALID_DATE_1, VALID_CLASS_TAG_1));
+        assertTrue(attendanceList.hasAttendanceMarkedAbsent(VALID_DATE_1, VALID_CLASS_TAG_1));
 
-        // Delete the unmarked (absent) record
+        // Delete the absent record
         attendanceList.deleteAttendance(VALID_DATE_1, VALID_CLASS_TAG_1);
 
         assertEquals(0, attendanceList.size());
-        assertFalse(attendanceList.hasAttendanceUnmarked(VALID_DATE_1, VALID_CLASS_TAG_1));
+        assertFalse(attendanceList.hasAttendanceMarkedAbsent(VALID_DATE_1, VALID_CLASS_TAG_1));
     }
 }

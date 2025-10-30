@@ -151,6 +151,13 @@ public class Person {
     }
 
     /**
+     * Returns true if this person has the specified tag.
+     */
+    public boolean hasTag(ClassTag tag) {
+        return tags.contains(tag);
+    }
+
+    /**
      * Returns the list of performance notes of the person.
      * @return the PerformanceList of the person.
      */
@@ -168,7 +175,8 @@ public class Person {
         }
 
         return otherPerson != null
-                && otherPerson.getName().equals(getName());
+                && otherPerson.getName().equals(getName())
+                && otherPerson.getPhone().equals(getPhone());
     }
 
     /**
@@ -217,7 +225,7 @@ public class Person {
                 .add("phone", phone)
                 .add("email", email)
                 .add("address", address)
-                .add("tags", tags.isEmpty() ? "" : tags)
+                .add("tags", tags.isEmpty() ? " - " : tags)
                 .add("performanceList", performanceList)
                 .toString();
     }

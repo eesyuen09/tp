@@ -18,7 +18,11 @@ public final class Month {
     public static final String VALIDATION_REGEX = "\\d{4}";
 
     public static final String MESSAGE_CONSTRAINTS =
-            "Month must be in MMYY format where MM range from 01 to 12 (e.g., 0925 for September 2025).";
+        "Month must be exactly 4 digits in MMYY format: "
+            + "MM is 01–12 and YY is 00–99 (interpreted as years 2000–2099). "
+            + "Example: 0925 = September 2025.";
+
+    public static final String MESSAGE_INVALID_FUTURE_ENROLLED_MONTH = "Enrolled month cannot be in the future.";
 
     // Human-readable formatter, e.g., "September 2025"
     private static final DateTimeFormatter HUMAN = DateTimeFormatter.ofPattern("MMMM yyyy");

@@ -18,8 +18,8 @@ public class ListClassTagCommand extends ClassTagCommand {
     public static final String MESSAGE_SUCCESS = "Listed all class tags:\n%1$s";
     public static final String MESSAGE_NO_TAGS_FOUND = "No class tags found. "
             + "You can add one using the 'tag -a' command.";
-    public static final String MESSAGE_USAGE = "The 'tag -l' command lists all created class tags and does "
-            + "not take any arguments or prefixes.";
+    public static final String MESSAGE_USAGE = "Lists all created class tags.\n"
+            + "Does not take any arguments or prefixes.";
 
 
     @Override

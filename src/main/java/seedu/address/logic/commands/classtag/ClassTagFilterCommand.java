@@ -24,9 +24,7 @@ public class ClassTagFilterCommand extends FilterCommand {
     public static final String MESSAGE_USAGE = COMMAND_WORD + " " + COMMAND_FLAG + " t/CLASS_TAG : "
             + "Filters the list to show only students who have the specified class tag.\n"
             + "Example: " + COMMAND_WORD + " " + COMMAND_FLAG + " t/Sec3_Maths";
-
     public static final String MESSAGE_SUCCESS = "Listed all persons with class tag: %1$s";
-    public static final String MESSAGE_TAG_NOT_FOUND = "The class tag does not exist.";
 
     private final ClassTag toFilter;
 
@@ -45,13 +43,12 @@ public class ClassTagFilterCommand extends FilterCommand {
         Optional<ClassTag> foundTag = model.findClassTag(toFilter);
 
         if (foundTag.isEmpty()) {
-            throw new CommandException(MESSAGE_TAG_NOT_FOUND);
+            throw new CommandException(String.format(Messages.MESSAGE_TAG_NOT_FOUND, toFilter.tagName));
         }
 
         ClassTag actualTag = foundTag.get();
 
-        Predicate<Person> personHasTagPredicate = person -> person.getTags().stream()
-                .anyMatch(tag -> tag.equals(actualTag));
+        Predicate<Person> personHasTagPredicate = person -> person.hasTag(actualTag);
 
         model.updateFilteredPersonList(personHasTagPredicate);
         return new CommandResult(

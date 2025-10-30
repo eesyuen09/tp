@@ -99,7 +99,7 @@ public class ClassTagFilterCommandTest {
     public void execute_classTagDoesNotExist_throwsCommandException() {
         ClassTag nonExistentTag = new ClassTag("NonExistentTag");
         ClassTagFilterCommand command = new ClassTagFilterCommand(nonExistentTag);
-        String expectedMessage = String.format(ClassTagFilterCommand.MESSAGE_TAG_NOT_FOUND, nonExistentTag.tagName);
+        String expectedMessage = String.format(Messages.MESSAGE_TAG_NOT_FOUND, nonExistentTag.tagName);
         assertCommandFailure(command, model, expectedMessage);
     }
 

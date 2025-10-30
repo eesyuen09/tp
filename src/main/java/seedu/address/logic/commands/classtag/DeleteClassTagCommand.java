@@ -3,13 +3,12 @@ package seedu.address.logic.commands.classtag;
 import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_CLASSTAG;
 
-import java.util.List;
 import java.util.Optional;
 
+import seedu.address.logic.Messages;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
-import seedu.address.model.person.Person;
 import seedu.address.model.tag.ClassTag;
 
 /**
@@ -20,13 +19,12 @@ public class DeleteClassTagCommand extends ClassTagCommand {
     public static final String COMMAND_FLAG = "-d";
 
     public static final String MESSAGE_USAGE = "Deletes an existing class tag from the system.\n"
-            + "Parameters: " + PREFIX_CLASSTAG + "TAG_NAME\n"
+            + "Parameters: " + PREFIX_CLASSTAG + "CLASS_TAG\n"
             + "Example: " + COMMAND_WORD + " " + COMMAND_FLAG + " " + PREFIX_CLASSTAG + "Sec3_AMath";
 
     public static final String MESSAGE_SUCCESS = "Tag deleted: %1$s";
-    public static final String MESSAGE_TAG_NOT_FOUND = "This class tag does not exist.";
     public static final String MESSAGE_TAG_IN_USE = "Cannot delete tag '%1$s' because it is still assigned to one "
-            + "or more students. Please remove the tag from all students first.";
+            + "or more students.\n Please remove the tag from all students first.";
 
     private final ClassTag toDelete;
 
@@ -45,17 +43,13 @@ public class DeleteClassTagCommand extends ClassTagCommand {
         Optional<ClassTag> foundTag = model.findClassTag(toDelete);
 
         if (foundTag.isEmpty()) {
-            throw new CommandException(MESSAGE_TAG_NOT_FOUND);
+            throw new CommandException(String.format(Messages.MESSAGE_TAG_NOT_FOUND, toDelete.tagName));
         }
 
         ClassTag actualTag = foundTag.get();
 
         // Check if any person in the address book has this tag
-        List<Person> personList = model.getAddressBook().getPersonList();
-        boolean isTagInUse = personList.stream()
-                .anyMatch(person -> person.getTags().contains(actualTag));
-
-        if (isTagInUse) {
+        if (model.isClassTagInUse(actualTag)) {
             throw new CommandException(String.format(MESSAGE_TAG_IN_USE, actualTag.tagName));
         }
 

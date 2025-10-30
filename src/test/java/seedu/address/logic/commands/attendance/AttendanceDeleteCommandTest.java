@@ -55,7 +55,7 @@ public class AttendanceDeleteCommandTest {
 
         // Add an attendance record first
         AttendanceList attendanceList = new AttendanceList();
-        attendanceList.markAttendance(VALID_DATE, VALID_CLASS_TAG);
+        attendanceList.markAttendancePresent(VALID_DATE, VALID_CLASS_TAG);
         validPerson = validPerson.withAttendanceList(attendanceList);
         modelStub.person = validPerson;
 
@@ -83,19 +83,6 @@ public class AttendanceDeleteCommandTest {
         ModelStubWithPerson modelStub = new ModelStubWithPerson();
         Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID_STRING)
                 .withClassTags("Math").build();
-        modelStub.person = validPerson;
-
-        AttendanceDeleteCommand command = new AttendanceDeleteCommand(VALID_STUDENT_ID,
-                VALID_DATE, VALID_CLASS_TAG);
-
-        assertThrows(CommandException.class, () -> command.execute(modelStub));
-    }
-
-    @Test
-    public void execute_studentDoesNotHaveTag_throwsCommandException() {
-        ModelStubWithPerson modelStub = new ModelStubWithPerson();
-        Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID_STRING)
-                .withClassTags("Science").build(); // Student has Science tag, not Math
         modelStub.person = validPerson;
 
         AttendanceDeleteCommand command = new AttendanceDeleteCommand(VALID_STUDENT_ID,
@@ -156,6 +143,11 @@ public class AttendanceDeleteCommandTest {
         @Override
         public Optional<Person> getPersonById(StudentId studentId) {
             return Optional.of(person);
+        }
+
+        @Override
+        public boolean hasClassTag(ClassTag classTag) {
+            return true; // Assume class tag exists
         }
 
         @Override

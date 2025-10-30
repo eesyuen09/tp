@@ -7,6 +7,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_DATE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NOTE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_STUDENTID;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,13 +27,12 @@ import seedu.address.model.time.Date;
  */
 public class PerfAddCommand extends PerfCommand {
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + "-a"
-            + ": Adds a note to the student indicated. "
-            + "Parameters: "
-            + PREFIX_STUDENTID + "STUDENTID "
-            + PREFIX_DATE + "DATE "
+    public static final String MESSAGE_USAGE = COMMAND_WORD + " -a "
+            + PREFIX_STUDENTID + "STUDENT_ID "
+            + PREFIX_DATE + "DDMMYYYY "
             + PREFIX_CLASSTAG + "CLASS_TAG "
-            + PREFIX_NOTE + "PERFORMANCE NOTE ";
+            + PREFIX_NOTE + "PERFORMANCE_NOTE \n"
+            + "Example: perf -a s/0000 d/29102025 t/Sec3_Math pn/Excellent improvement in algebra.";
 
 
     private final StudentId studentId;
@@ -66,9 +66,26 @@ public class PerfAddCommand extends PerfCommand {
                 .orElseThrow(() -> new CommandException(
                         String.format(Messages.MESSAGE_STUDENT_ID_NOT_FOUND, studentId)));
 
+        if (!model.hasClassTag(classTag)) {
+            throw new CommandException(String.format(Messages.MESSAGE_TAG_NOT_FOUND, classTag.tagName));
+        }
+
         if (!student.getTags().contains(classTag)) {
             throw new CommandException(String.format(MESSAGE_STUDENT_DOES_NOT_HAVE_TAG,
                     student.getName(), classTag.tagName));
+        }
+
+        LocalDate performanceNoteMonth = date.toLocalDate();
+        LocalDate enrolStart = student.getEnrolledMonth().toYearMonth().atDay(1);
+
+        if (performanceNoteMonth.isBefore(enrolStart)) {
+            throw new CommandException(String.format(
+                    "Performance note cannot be added earlier than %s's enrolment month (%s).",
+                    student.getName(), student.getEnrolledMonth().toHumanReadable()));
+        }
+
+        if (performanceNoteMonth.isAfter(LocalDate.now())) {
+            throw new CommandException("Performance note cannot be added for future date.");
         }
 
         List<PerformanceNote> current = student.getPerformanceList().asUnmodifiableList();

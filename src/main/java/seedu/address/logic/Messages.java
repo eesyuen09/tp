@@ -18,6 +18,7 @@ public class Messages {
     public static final String MESSAGE_DUPLICATE_FIELDS =
                 "Multiple values specified for the following single-valued field(s): ";
     public static final String MESSAGE_STUDENT_ID_NOT_FOUND = "Student ID not found: %1$s";
+    public static final String MESSAGE_TAG_NOT_FOUND = "Class tag does not exist: %1$s";
 
     /**
      * Returns an error message indicating the duplicate prefixes.
@@ -44,7 +45,13 @@ public class Messages {
                 .append("; Address: ")
                 .append(person.getAddress())
                 .append("; Tags: ");
-        person.getTags().forEach(builder::append);
+
+        if (person.getTags().isEmpty()) {
+            builder.append(" - ");
+        } else {
+            person.getTags().forEach(builder::append);
+        }
+
         return builder.toString();
     }
 

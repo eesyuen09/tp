@@ -1,6 +1,9 @@
 package seedu.address.logic.commands.attendance;
 
 import static java.util.Objects.requireNonNull;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_CLASSTAG;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_DATE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_STUDENTID;
 
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.CommandResult;
@@ -16,10 +19,17 @@ import seedu.address.model.time.Date;
  */
 public class AttendanceDeleteCommand extends AttendanceCommand {
 
+    public static final String COMMAND_FLAG = "-d";
+
+    public static final String MESSAGE_USAGE = "Deletes an attendance record for a student.\n"
+            + "Parameters: " + PREFIX_STUDENTID + "STUDENT_ID " + PREFIX_DATE + "DDMMYYYY "
+            + PREFIX_CLASSTAG + "CLASS_TAG\n"
+            + "Example: " + COMMAND_WORD + " " + COMMAND_FLAG + " " + PREFIX_STUDENTID + "0123 "
+            + PREFIX_DATE + "15092025 " + PREFIX_CLASSTAG + "Sec3_AMath";
+
     public static final String MESSAGE_DELETE_SUCCESS = "Deleted attendance for: %1$s on %2$s for class %3$s";
     public static final String MESSAGE_NO_ATTENDANCE_RECORD = "No attendance record found for %1$s "
             + "on %2$s for class %3$s";
-    public static final String MESSAGE_STUDENT_DOES_NOT_HAVE_TAG = "Student %1$s does not have the class tag: %2$s";
 
     private final Date date;
     private final ClassTag classTag;

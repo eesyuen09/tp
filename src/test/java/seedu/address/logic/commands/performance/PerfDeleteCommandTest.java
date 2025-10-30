@@ -61,9 +61,11 @@ public class PerfDeleteCommandTest {
         Person personWithNote = validPerson.withPerformanceList(performanceList);
 
         Model model = new ModelManager(new AddressBook(), new UserPrefs());
+        model.addClassTag(VALID_TAG_1);
         model.addPerson(personWithNote);
 
         Model expectedModel = new ModelManager(new AddressBook(), new UserPrefs());
+        expectedModel.addClassTag(VALID_TAG_1);
         expectedModel.addPerson(validPerson.withPerformanceList(new PerformanceList()));
 
         String expectedMessage = String.format(PerfCommand.DELETED,
@@ -82,6 +84,7 @@ public class PerfDeleteCommandTest {
                 .build();
 
         Model model = new ModelManager(new AddressBook(), new UserPrefs());
+        model.addClassTag(VALID_TAG_1);
         model.addPerson(validPerson);
 
         // Attempt to delete a performance note for a date where none exists
@@ -176,6 +179,11 @@ public class PerfDeleteCommandTest {
         @Override
         public ReadOnlyAddressBook getAddressBook() {
             return new AddressBook();
+        }
+
+        @Override
+        public boolean hasClassTag(ClassTag classTag) {
+            return person.getTags().contains(classTag);
         }
     }
 }

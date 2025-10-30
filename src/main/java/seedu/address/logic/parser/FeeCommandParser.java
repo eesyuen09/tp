@@ -31,7 +31,7 @@ public class FeeCommandParser implements Parser<FeeCommand> {
         }
         String flag = preamble.split("\\s+")[0];
 
-        switch (flag.toLowerCase()) {
+        switch (flag) {
         case FeeMarkPaidCommand.COMMAND_FLAG:
             return parseMarkPaid(argMultimap);
         case FeeMarkUnpaidCommand.COMMAND_FLAG:
@@ -93,13 +93,8 @@ public class FeeCommandParser implements Parser<FeeCommand> {
         StudentId studentId = ParserUtil.parseStudentId(argMultimap.getValue(PREFIX_STUDENTID).get());
         Optional<Month> startMonthOpt = Optional.empty();
         if (argMultimap.getValue(PREFIX_MONTH).isPresent()) {
-            try {
-                startMonthOpt = Optional.of(ParserUtil.parseMonth(argMultimap.getValue(PREFIX_MONTH).get()));
-            } catch (ParseException e) {
-                throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, FeeViewCommand.MESSAGE_USAGE));
-            }
+            startMonthOpt = Optional.of(ParserUtil.parseMonth(argMultimap.getValue(PREFIX_MONTH).get()));
         }
-
         return new FeeViewCommand(studentId, startMonthOpt);
     }
 

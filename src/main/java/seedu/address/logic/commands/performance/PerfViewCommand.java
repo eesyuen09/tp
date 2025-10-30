@@ -18,10 +18,9 @@ import seedu.address.model.person.performance.PerformanceNote;
  */
 public class PerfViewCommand extends PerfCommand {
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + "-v"
-            + ": Views all notes of a student. "
-            + "Parameters: "
-            + PREFIX_STUDENTID + "STUDENTID ";
+    public static final String MESSAGE_USAGE = COMMAND_WORD + " -v "
+            + PREFIX_STUDENTID + "STUDENT_ID \n"
+            + "Example: perf -v s/0000";
 
     private final StudentId studentId;
 
@@ -50,12 +49,8 @@ public class PerfViewCommand extends PerfCommand {
         }
 
         StringBuilder sb = new StringBuilder();
-        sb.append(student.getName()).append(" Performance Notes:\n");
-        for (int i = 0; i < notes.size(); i++) {
-            PerformanceNote n = notes.get(i);
-            sb.append(String.format("%d. %s %s: %s\n", i + 1,
-                    n.getDate().getFormattedDate(), n.getClassTag().tagName, n.getNote()));
-        }
+        sb.append("Performance Notes for ").append(student.getName()).append(" (Student ID ").append(
+                student.getStudentId()).append(") displayed.");
         return new CommandResult(sb.toString().trim());
     }
 

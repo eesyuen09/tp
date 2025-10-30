@@ -123,23 +123,32 @@ public class DeleteClassTagCommandTest {
      */
     private class ModelStubAcceptingClassTagAdded extends ModelStub {
         final ArrayList<ClassTag> classTagsAdded = new ArrayList<>();
+
         @Override
         public boolean hasClassTag(ClassTag classTag) {
             return classTagsAdded.stream().anyMatch(existingTag -> existingTag.equals(classTag));
         }
+
         @Override
         public void addClassTag(ClassTag classTag) {
             classTagsAdded.add(classTag);
         }
+
         @Override
         public ReadOnlyAddressBook getAddressBook() {
             return new AddressBook();
         }
+
         @Override
         public Optional<ClassTag> findClassTag(ClassTag classTag) {
             return classTagsAdded.stream()
                     .filter(existingTag -> existingTag.equals(classTag))
                     .findFirst();
+        }
+
+        @Override
+        public boolean isClassTagInUse(ClassTag classTag) {
+            return false; // Empty stub has no persons
         }
     }
 
@@ -148,31 +157,42 @@ public class DeleteClassTagCommandTest {
      */
     private class ModelStubWithClassTag extends ModelStub {
         private final List<ClassTag> classTags;
+
         ModelStubWithClassTag(ClassTag classTag) {
             this.classTags = new ArrayList<>(Arrays.asList(classTag));
         }
+
         @Override
         public boolean hasClassTag(ClassTag classTag) {
             return classTags.stream().anyMatch(existingTag -> existingTag.equals(classTag));
         }
+
         @Override
         public Optional<ClassTag> findClassTag(ClassTag classTag) {
             return classTags.stream()
                     .filter(existingTag -> existingTag.equals(classTag))
                     .findFirst();
         }
+
         @Override
         public void deleteClassTag(ClassTag toDelete) {
             classTags.removeIf(tag -> tag.equals(toDelete));
         }
+
         @Override
         public ReadOnlyAddressBook getAddressBook() {
             return new AddressBook(); // Return empty book for simplicity
         }
+
         @Override
         public ObservableList<Person> getFilteredPersonList() {
             // Return an empty list, as no person has this tag
             return FXCollections.observableArrayList();
+        }
+
+        @Override
+        public boolean isClassTagInUse(ClassTag classTag) {
+            return false; // No persons in this stub
         }
     }
 
@@ -182,34 +202,46 @@ public class DeleteClassTagCommandTest {
     private class ModelStubWithPersonAndTag extends ModelStub {
         private final Person person;
         private final List<ClassTag> classTags;
+
         ModelStubWithPersonAndTag(Person person, ClassTag classTag) {
             this.person = person;
             this.classTags = new ArrayList<>(Arrays.asList(classTag));
         }
+
         @Override
         public boolean hasClassTag(ClassTag classTag) {
             return classTags.stream().anyMatch(existingTag -> existingTag.equals(classTag));
         }
+
         @Override
         public Optional<ClassTag> findClassTag(ClassTag classTag) {
             return classTags.stream()
                     .filter(existingTag -> existingTag.equals(classTag))
                     .findFirst();
         }
+
         @Override
         public void deleteClassTag(ClassTag toDelete) {
             classTags.removeIf(tag -> tag.equals(toDelete));
         }
+
         @Override
         public ReadOnlyAddressBook getAddressBook() {
             AddressBook ab = new AddressBook();
             ab.addPerson(person);
             return ab;
         }
+
         @Override
         public ObservableList<Person> getFilteredPersonList() {
             // Simulates the person list
             return FXCollections.observableArrayList(person);
+        }
+
+        @Override
+        public boolean isClassTagInUse(ClassTag classTag) {
+            // Check if the person has the tag
+            return person.getTags().contains(classTag);
         }
     }
 }

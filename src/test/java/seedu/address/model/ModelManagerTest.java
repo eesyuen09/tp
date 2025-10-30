@@ -214,6 +214,46 @@ public class ModelManagerTest {
     }
 
     @Test
+    public void isClassTagInUse_tagNotUsedByAnyPerson_returnsFalse() {
+        ClassTag unusedTag = new ClassTag("UnusedTag");
+        modelManager.addClassTag(unusedTag);
+        modelManager.addPerson(ALICE);
+        modelManager.addPerson(BENSON);
+        assertFalse(modelManager.isClassTagInUse(unusedTag));
+    }
+
+    @Test
+    public void isClassTagInUse_tagUsedByOnePerson_returnsTrue() {
+        ClassTag mathTag = new ClassTag("Sec3_Maths");
+        modelManager.addClassTag(mathTag);
+        modelManager.addPerson(ALICE);
+        assertTrue(modelManager.isClassTagInUse(mathTag));
+    }
+
+    @Test
+    public void isClassTagInUse_tagUsedByMultiplePersons_returnsTrue() {
+        ClassTag mathTag = new ClassTag("Sec3_Maths");
+        modelManager.addClassTag(mathTag);
+        modelManager.addPerson(ALICE);
+        modelManager.addPerson(BENSON);
+        assertTrue(modelManager.isClassTagInUse(mathTag));
+    }
+
+    @Test
+    public void isClassTagInUse_tagNotInTagList_returnsFalse() {
+        ClassTag nonExistentTag = new ClassTag("NonExistent");
+        modelManager.addPerson(ALICE);
+        assertFalse(modelManager.isClassTagInUse(nonExistentTag));
+    }
+
+    @Test
+    public void isClassTagInUse_emptyPersonList_returnsFalse() {
+        ClassTag tag = new ClassTag("SomeTag");
+        modelManager.addClassTag(tag);
+        assertFalse(modelManager.isClassTagInUse(tag));
+    }
+
+    @Test
     public void equals() {
         AddressBook addressBook = new AddressBookBuilder().withPerson(ALICE).withPerson(BENSON).build();
         AddressBook differentAddressBook = new AddressBook();
@@ -361,19 +401,20 @@ public class ModelManagerTest {
         modelManager.addPerson(ALICE);
         Date date = new Date("15012025");
         ClassTag classTag = new ClassTag("Math");
+        modelManager.addClassTag(classTag);
 
-        modelManager.markAttendance(ALICE.getStudentId(), date, classTag);
+        modelManager.markAttendancePresent(ALICE.getStudentId(), date, classTag);
 
         // Verify attendance was marked
         Person updatedPerson = modelManager.getPersonById(ALICE.getStudentId()).get();
-        assertTrue(updatedPerson.getAttendanceList().hasAttendanceMarked(date, classTag));
+        assertTrue(updatedPerson.getAttendanceList().hasAttendanceMarkedPresent(date, classTag));
     }
 
     @Test
     public void markAttendance_nullStudentId_throwsNullPointerException() {
         Date date = new Date("15012025");
         ClassTag classTag = new ClassTag("Math");
-        assertThrows(NullPointerException.class, () -> modelManager.markAttendance(null, date, classTag));
+        assertThrows(NullPointerException.class, () -> modelManager.markAttendancePresent(null, date, classTag));
     }
 
     @Test
@@ -381,62 +422,64 @@ public class ModelManagerTest {
         modelManager.addPerson(ALICE);
         ClassTag classTag = new ClassTag("Math");
         assertThrows(NullPointerException.class, () ->
-                modelManager.markAttendance(ALICE.getStudentId(), null, classTag));
+                modelManager.markAttendancePresent(ALICE.getStudentId(), null, classTag));
     }
 
     @Test
-    public void unmarkAttendance_validStudentAndDate_success() {
+    public void markAttendanceAbsent_validStudentAndDate_success() {
         modelManager.addPerson(ALICE);
         Date date = new Date("15012025");
         ClassTag classTag = new ClassTag("Math");
+        modelManager.addClassTag(classTag);
 
-        // Mark first
-        modelManager.markAttendance(ALICE.getStudentId(), date, classTag);
+        // Mark present first
+        modelManager.markAttendancePresent(ALICE.getStudentId(), date, classTag);
 
-        // Then unmark
-        modelManager.unmarkAttendance(ALICE.getStudentId(), date, classTag);
+        // Then mark absent
+        modelManager.markAttendanceAbsent(ALICE.getStudentId(), date, classTag);
 
-        // Verify attendance was unmarked (marked as absent)
+        // Verify attendance was marked as absent
         Person updatedPerson = modelManager.getPersonById(ALICE.getStudentId()).get();
-        assertFalse(updatedPerson.getAttendanceList().hasAttendanceMarked(date, classTag));
+        assertFalse(updatedPerson.getAttendanceList().hasAttendanceMarkedPresent(date, classTag));
     }
 
     @Test
-    public void unmarkAttendance_nullStudentId_throwsNullPointerException() {
+    public void markAttendanceAbsent_nullStudentId_throwsNullPointerException() {
         Date date = new Date("15012025");
         ClassTag classTag = new ClassTag("Math");
-        assertThrows(NullPointerException.class, () -> modelManager.unmarkAttendance(null, date, classTag));
+        assertThrows(NullPointerException.class, () -> modelManager.markAttendanceAbsent(null, date, classTag));
     }
 
     @Test
-    public void unmarkAttendance_nullDate_throwsNullPointerException() {
+    public void markAttendanceAbsent_nullDate_throwsNullPointerException() {
         modelManager.addPerson(ALICE);
         ClassTag classTag = new ClassTag("Math");
         assertThrows(NullPointerException.class, () ->
-                modelManager.unmarkAttendance(ALICE.getStudentId(), null, classTag));
+                modelManager.markAttendanceAbsent(ALICE.getStudentId(), null, classTag));
     }
 
     @Test
-    public void markAndUnmarkAttendance_multipleDates_success() {
+    public void markPresentAndMarkAbsentAttendance_multipleDates_success() {
         modelManager.addPerson(ALICE);
         Date date1 = new Date("15012025");
         Date date2 = new Date("16012025");
         ClassTag classTag = new ClassTag("Math");
+        modelManager.addClassTag(classTag);
 
-        // Mark two dates
-        modelManager.markAttendance(ALICE.getStudentId(), date1, classTag);
-        modelManager.markAttendance(ALICE.getStudentId(), date2, classTag);
+        // Mark two dates as present
+        modelManager.markAttendancePresent(ALICE.getStudentId(), date1, classTag);
+        modelManager.markAttendancePresent(ALICE.getStudentId(), date2, classTag);
 
         Person updatedPerson = modelManager.getPersonById(ALICE.getStudentId()).get();
-        assertTrue(updatedPerson.getAttendanceList().hasAttendanceMarked(date1, classTag));
-        assertTrue(updatedPerson.getAttendanceList().hasAttendanceMarked(date2, classTag));
+        assertTrue(updatedPerson.getAttendanceList().hasAttendanceMarkedPresent(date1, classTag));
+        assertTrue(updatedPerson.getAttendanceList().hasAttendanceMarkedPresent(date2, classTag));
 
-        // Unmark one date
-        modelManager.unmarkAttendance(ALICE.getStudentId(), date1, classTag);
+        // Mark one date as absent
+        modelManager.markAttendanceAbsent(ALICE.getStudentId(), date1, classTag);
 
         updatedPerson = modelManager.getPersonById(ALICE.getStudentId()).get();
-        assertFalse(updatedPerson.getAttendanceList().hasAttendanceMarked(date1, classTag));
-        assertTrue(updatedPerson.getAttendanceList().hasAttendanceMarked(date2, classTag));
+        assertFalse(updatedPerson.getAttendanceList().hasAttendanceMarkedPresent(date1, classTag));
+        assertTrue(updatedPerson.getAttendanceList().hasAttendanceMarkedPresent(date2, classTag));
     }
 
     @Test
@@ -444,20 +487,21 @@ public class ModelManagerTest {
         modelManager.addPerson(ALICE);
         Date date = new Date("15012025");
         ClassTag classTag = new ClassTag("Math");
+        modelManager.addClassTag(classTag);
 
         // Mark first
-        modelManager.markAttendance(ALICE.getStudentId(), date, classTag);
+        modelManager.markAttendancePresent(ALICE.getStudentId(), date, classTag);
 
         // Verify attendance was marked
         Person markedPerson = modelManager.getPersonById(ALICE.getStudentId()).get();
-        assertTrue(markedPerson.getAttendanceList().hasAttendanceMarked(date, classTag));
+        assertTrue(markedPerson.getAttendanceList().hasAttendanceMarkedPresent(date, classTag));
 
         // Delete attendance
         modelManager.deleteAttendance(ALICE.getStudentId(), date, classTag);
 
         // Verify attendance record was deleted (not just marked as absent)
         Person updatedPerson = modelManager.getPersonById(ALICE.getStudentId()).get();
-        assertFalse(updatedPerson.getAttendanceList().hasAttendanceMarked(date, classTag));
+        assertFalse(updatedPerson.getAttendanceList().hasAttendanceMarkedPresent(date, classTag));
     }
 
     @Test
@@ -499,19 +543,21 @@ public class ModelManagerTest {
         Date date2 = new Date("16012025");
         ClassTag classTag1 = new ClassTag("Math");
         ClassTag classTag2 = new ClassTag("Science");
+        modelManager.addClassTag(classTag1);
+        modelManager.addClassTag(classTag2);
 
         // Mark multiple attendance records
-        modelManager.markAttendance(ALICE.getStudentId(), date1, classTag1);
-        modelManager.markAttendance(ALICE.getStudentId(), date2, classTag1);
-        modelManager.markAttendance(ALICE.getStudentId(), date1, classTag2);
+        modelManager.markAttendancePresent(ALICE.getStudentId(), date1, classTag1);
+        modelManager.markAttendancePresent(ALICE.getStudentId(), date2, classTag1);
+        modelManager.markAttendancePresent(ALICE.getStudentId(), date1, classTag2);
 
         // Delete only one specific record
         modelManager.deleteAttendance(ALICE.getStudentId(), date1, classTag1);
 
         // Verify only the specified record was deleted
         Person updatedPerson = modelManager.getPersonById(ALICE.getStudentId()).get();
-        assertFalse(updatedPerson.getAttendanceList().hasAttendanceMarked(date1, classTag1));
-        assertTrue(updatedPerson.getAttendanceList().hasAttendanceMarked(date2, classTag1));
-        assertTrue(updatedPerson.getAttendanceList().hasAttendanceMarked(date1, classTag2));
+        assertFalse(updatedPerson.getAttendanceList().hasAttendanceMarkedPresent(date1, classTag1));
+        assertTrue(updatedPerson.getAttendanceList().hasAttendanceMarkedPresent(date2, classTag1));
+        assertTrue(updatedPerson.getAttendanceList().hasAttendanceMarkedPresent(date1, classTag2));
     }
 }

@@ -66,6 +66,7 @@ public class PerfEditCommandTest {
         Person studentWithNote = student.withPerformanceList(list);
 
         Model model = new ModelManager(new AddressBook(), new UserPrefs());
+        model.addClassTag(VALID_CLASS_TAG_1);
         model.addPerson(studentWithNote);
 
         // Expected edited performance note
@@ -75,6 +76,7 @@ public class PerfEditCommandTest {
         Person expectedPerson = student.withPerformanceList(expectedList);
 
         Model expectedModel = new ModelManager(new AddressBook(), new UserPrefs());
+        expectedModel.addClassTag(VALID_CLASS_TAG_1);
         expectedModel.addPerson(expectedPerson);
 
         String expectedMessage = String.format(PerfCommand.EDITED,
@@ -170,6 +172,11 @@ public class PerfEditCommandTest {
         @Override
         public ReadOnlyAddressBook getAddressBook() {
             return new AddressBook();
+        }
+
+        @Override
+        public boolean hasClassTag(ClassTag classTag) {
+            return person.getTags().contains(classTag);
         }
     }
 }

@@ -2,6 +2,7 @@ package seedu.address.logic.commands.fee;
 
 import static java.util.Objects.requireNonNull;
 
+import seedu.address.logic.Messages;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.FilterCommand;
 import seedu.address.logic.commands.exceptions.CommandException;
@@ -34,7 +35,11 @@ public class FeeFilterUnpaidCommand extends FilterCommand {
                 + "\nPlease select a month up to the current month.");
         }
         model.updateFilteredPersonList(model.unpaidStudents(month));
-        return new CommandResult(String.format("Showing UNPAID students for %s.", month.toHumanReadable()));
+        return new CommandResult(String.format(
+            "Showing UNPAID students for %s.\n%s",
+            month.toHumanReadable(),
+            String.format(Messages.MESSAGE_PERSONS_LISTED_OVERVIEW, model.getFilteredPersonList().size())
+        ));
     }
 
     @Override

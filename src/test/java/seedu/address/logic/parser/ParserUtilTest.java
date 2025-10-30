@@ -21,6 +21,7 @@ import seedu.address.model.person.Phone;
 import seedu.address.model.person.StudentId;
 import seedu.address.model.tag.ClassTag;
 import seedu.address.model.time.Date;
+import seedu.address.model.time.Month;
 
 public class ParserUtilTest {
     private static final String INVALID_NAME = "R@chel";
@@ -33,7 +34,7 @@ public class ParserUtilTest {
     private static final String INVALID_DATE = "31022025"; // Feb 31 doesn't exist
 
     private static final String VALID_NAME = "Rachel Walker";
-    private static final String VALID_PHONE = "123456";
+    private static final String VALID_PHONE = "87654321";
     private static final String VALID_ADDRESS = "123 Main Street #0505";
     private static final String VALID_EMAIL = "rachel@example.com";
     private static final String VALID_CLASS_TAG_1 = "Sec3_Math";
@@ -254,5 +255,28 @@ public class ParserUtilTest {
 
         assertEquals(expectedTagSet, actualTagSet);
     }
+
+    @Test
+    public void parseEnrolledMonth_null_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> ParserUtil.parseEnrolledMonth(null));
+    }
+
+    @Test
+    public void parseEnrolledMonth_currentMonth_returnsMonth() throws Exception {
+        String currentMonthStr = Month.now().toString();
+        Month parsedMonth = ParserUtil.parseEnrolledMonth(currentMonthStr);
+        assertEquals(Month.now(), parsedMonth);
+
+        // Test with whitespace
+        Month parsedWithWhitespace = ParserUtil.parseEnrolledMonth("  " + currentMonthStr + "  ");
+        assertEquals(Month.now(), parsedWithWhitespace);
+    }
+
+    @Test
+    public void parseEnrolledMonth_futureMonth_throwsParseException() {
+        String futureMonthStr = Month.now().plusMonths(1).toString();
+        assertThrows(ParseException.class, () -> ParserUtil.parseEnrolledMonth(futureMonthStr));
+    }
+
 
 }

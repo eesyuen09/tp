@@ -54,15 +54,14 @@ public class DateTest {
         assertFalse(Date.isValidFormat("1209202")); // missing digit
         assertFalse(Date.isValidFormat("120920255")); // extra digit
         assertFalse(Date.isValidFormat("12092025a")); // contains letter
-        assertFalse(Date.isValidFormat("00092025")); // day 00
-        assertFalse(Date.isValidFormat("32092025")); // day 32
-        assertFalse(Date.isValidFormat("12002025")); // month 00
-        assertFalse(Date.isValidFormat("12132025")); // month 13
 
         // valid formats (even if dates are invalid)
         assertTrue(Date.isValidFormat("15092025")); // Sep 15
         assertTrue(Date.isValidFormat("31022025")); // Feb 31 (valid format but invalid date)
         assertTrue(Date.isValidFormat("29022026")); // Feb 29 non-leap year (valid format but invalid date)
+        assertTrue(Date.isValidFormat("12002025")); // month 00 (valid format but invalid date)
+        assertTrue(Date.isValidFormat("12132025")); // month 13 (valid format but invalid date)
+        assertTrue(Date.isValidFormat("00000000")); // all zeros (valid format but invalid date)
     }
 
     @Test
