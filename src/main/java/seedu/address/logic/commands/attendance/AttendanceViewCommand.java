@@ -55,6 +55,7 @@ public class AttendanceViewCommand extends AttendanceCommand {
         List<AttendanceHistoryEntry> entries = person.getAttendanceList().asUnmodifiableList().stream()
                 .sorted(Comparator
                         .comparing((Attendance attendance) -> attendance.getDate().toLocalDate())
+                        .reversed()
                         .thenComparing(attendance -> attendance.getClassTag().tagName))
                 .map(attendance -> new AttendanceHistoryEntry(attendance.getDate(), attendance.getClassTag(),
                         attendance.isStudentPresent()))
