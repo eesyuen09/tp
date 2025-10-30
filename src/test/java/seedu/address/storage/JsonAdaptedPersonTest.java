@@ -167,7 +167,7 @@ public class JsonAdaptedPersonTest {
         JsonAdaptedPerson person = new JsonAdaptedPerson(
             VALID_NAME, VALID_PHONE, VALID_EMAIL, VALID_ADDRESS, tagsWithNonExistent,
             VALID_STUDENTID, VALID_ENROLLED_MONTH, new ArrayList<>(), VALID_PERFORMANCENOTES);
-        String expectedMessage = "Tag 'NonExistentTag' does not exist in class tags list";
+        String expectedMessage = "Invalid class tag: 'NonExistentTag'. Please ensure the tag exists in the system.";
         assertThrows(IllegalValueException.class, expectedMessage, () -> person.toModelType(VALID_CLASS_TAGS_LIST));
     }
 

@@ -115,6 +115,15 @@ public class AddressBook implements ReadOnlyAddressBook {
                 .findFirst();
     }
 
+    /**
+     * Returns true if any person in the address book has the given class tag.
+     */
+    public boolean isClassTagInUse(ClassTag classTag) {
+        requireNonNull(classTag);
+        return getPersonList().stream()
+                .anyMatch(person -> person.getTags().contains(classTag));
+    }
+
     //// person-level operations
 
     /**
