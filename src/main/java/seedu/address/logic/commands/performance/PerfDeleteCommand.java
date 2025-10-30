@@ -28,7 +28,7 @@ public class PerfDeleteCommand extends PerfCommand {
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + " -d "
             + PREFIX_STUDENTID + "STUDENT_ID "
-            + PREFIX_DATE + "DDMMYYYY "
+            + PREFIX_DATE + "DATE "
             + PREFIX_CLASSTAG + "CLASS_TAG \n"
             + "Example: perf -d s/0000 d/29102025 t/Sec3_Math";
 
