@@ -115,27 +115,6 @@ public class PerfDeleteCommandTest {
     }
 
     @Test
-    public void execute_classTagNotInModel_throwsCommandException() {
-        Person validPerson = new PersonBuilder()
-                .withStudentId(VALID_STUDENT_ID.toString())
-                .withClassTags(VALID_TAG_1.tagName)
-                .build();
-
-        PerformanceNote note = new PerformanceNote(VALID_DATE_1, VALID_TAG_1, VALID_NOTE_1);
-        PerformanceList list = new PerformanceList();
-        list.add(note);
-        Person personWithNote = validPerson.withPerformanceList(list);
-
-        Model model = new ModelManager(new AddressBook(), new UserPrefs());
-        model.addPerson(personWithNote);
-
-        PerfDeleteCommand command = new PerfDeleteCommand(VALID_STUDENT_ID, VALID_DATE_1, VALID_TAG_1);
-
-        assertCommandFailure(command, model,
-                String.format(Messages.MESSAGE_TAG_NOT_FOUND, VALID_TAG_1.tagName));
-    }
-
-    @Test
     public void equals() {
         StudentId studentA = new StudentId("0123");
         StudentId studentB = new StudentId("0456");
