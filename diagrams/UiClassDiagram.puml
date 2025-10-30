@@ -13,6 +13,10 @@ Class HelpWindow
 Class ResultDisplay
 Class PersonListPanel
 Class PersonCard
+Class PerformanceListPanel
+Class PerformanceNoteCard
+Class FeeHistoryPanel
+Class AttendanceHistoryPanel
 Class StatusBarFooter
 Class CommandBox
 }
@@ -33,10 +37,14 @@ UiManager -down-> "1" MainWindow
 MainWindow *-down->  "1" CommandBox
 MainWindow *-down-> "1" ResultDisplay
 MainWindow *-down-> "1" PersonListPanel
+MainWindow *-down-> "1" PerformanceListPanel
+MainWindow *-down-> "1" FeeHistoryPanel
+MainWindow *-down-> "1" AttendanceHistoryPanel
 MainWindow *-down-> "1" StatusBarFooter
 MainWindow --> "0..1" HelpWindow
 
 PersonListPanel -down-> "*" PersonCard
+PerformanceListPanel -down-> "*" PerformanceNoteCard
 
 MainWindow -left-|> UiPart
 
@@ -44,10 +52,18 @@ ResultDisplay --|> UiPart
 CommandBox --|> UiPart
 PersonListPanel --|> UiPart
 PersonCard --|> UiPart
+PerformanceListPanel --|> UiPart
+PerformanceNoteCard --|> UiPart
+FeeHistoryPanel --|> UiPart
+AttendanceHistoryPanel --|> UiPart
 StatusBarFooter --|> UiPart
 HelpWindow --|> UiPart
 
 PersonCard ..> Model
+PerformanceListPanel ..> Model
+PerformanceNoteCard ..> Model
+FeeHistoryPanel ..> Model
+AttendanceHistoryPanel ..> Model
 UiManager -right-> Logic
 MainWindow -left-> Logic
 
@@ -55,6 +71,9 @@ PersonListPanel -[hidden]left- HelpWindow
 HelpWindow -[hidden]left- CommandBox
 CommandBox -[hidden]left- ResultDisplay
 ResultDisplay -[hidden]left- StatusBarFooter
+StatusBarFooter -[hidden]left- PerformanceNoteCard
+PerformanceNoteCard -[hidden]left- FeeHistoryPanel
+FeeHistoryPanel -[hidden]left- AttendanceHistoryPanel
 
 MainWindow -[hidden]-|> UiPart
 @enduml

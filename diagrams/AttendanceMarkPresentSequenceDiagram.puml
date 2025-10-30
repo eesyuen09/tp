@@ -6,7 +6,7 @@ box Logic LOGIC_COLOR_T1
 participant ":LogicManager" as LogicManager LOGIC_COLOR
 participant ":AddressBookParser" as AddressBookParser LOGIC_COLOR
 participant ":AttendanceCommandParser" as AttendanceCommandParser LOGIC_COLOR
-participant "command:AttendanceMarkCommand" as AttendanceMarkCommand LOGIC_COLOR
+participant "command:AttendanceMarkPresentCommand" as AttendanceMarkPresentCommand LOGIC_COLOR
 participant "commandResult :CommandResult" as CommandResult LOGIC_COLOR
 end box
 
@@ -15,10 +15,10 @@ participant ":Model" as Model MODEL_COLOR
 participant ":Person" as Person MODEL_COLOR
 end box
 
-[-> LogicManager : execute("att -m s/0001 d/10112025 t/Math")
+[-> LogicManager : execute("att -p s/0001 d/10112025 t/Math")
 activate LogicManager
 
-LogicManager -> AddressBookParser : parseCommand("att -m s/0001 d/10112025 t/Math")
+LogicManager -> AddressBookParser : parseCommand("att -p s/0001 d/10112025 t/Math")
 activate AddressBookParser
 
 create AttendanceCommandParser
@@ -31,12 +31,12 @@ deactivate AttendanceCommandParser
 AddressBookParser -> AttendanceCommandParser : parse("-m s/0001 d/10112025 t/Math")
 activate AttendanceCommandParser
 
-create AttendanceMarkCommand
-AttendanceCommandParser -> AttendanceMarkCommand
-activate AttendanceMarkCommand
+create AttendanceMarkPresentCommand
+AttendanceCommandParser -> AttendanceMarkPresentCommand
+activate AttendanceMarkPresentCommand
 
-AttendanceMarkCommand --> AttendanceCommandParser
-deactivate AttendanceMarkCommand
+AttendanceMarkPresentCommand --> AttendanceCommandParser
+deactivate AttendanceMarkPresentCommand
 
 AttendanceCommandParser --> AddressBookParser : command
 deactivate AttendanceCommandParser
@@ -47,39 +47,39 @@ destroy AttendanceCommandParser
 AddressBookParser --> LogicManager : command
 deactivate AddressBookParser
 
-LogicManager -> AttendanceMarkCommand : execute(model)
-activate AttendanceMarkCommand
+LogicManager -> AttendanceMarkPresentCommand : execute(model)
+activate AttendanceMarkPresentCommand
 
-AttendanceMarkCommand -> Model : getPersonById(studentId)
+AttendanceMarkPresentCommand -> Model : getPersonById(studentId)
 activate Model
 
-Model --> AttendanceMarkCommand : person
+Model --> AttendanceMarkPresentCommand : person
 deactivate Model
 
-AttendanceMarkCommand -> Person : getTags()
+AttendanceMarkPresentCommand -> Person : getTags()
 activate Person
-Person --> AttendanceMarkCommand : classTags
+Person --> AttendanceMarkPresentCommand : classTags
 deactivate Person
 
-AttendanceMarkCommand -> Person : getAttendanceList()
+AttendanceMarkPresentCommand -> Person : getAttendanceList()
 activate Person
-Person --> AttendanceMarkCommand : attendanceList
+Person --> AttendanceMarkPresentCommand : attendanceList
 deactivate Person
 
-AttendanceMarkCommand -> Model : markAttendance(studentId, date, classTag)
+AttendanceMarkPresentCommand -> Model : markAttendancePresent(studentId, date, classTag)
 activate Model
-Model --> AttendanceMarkCommand
+Model --> AttendanceMarkPresentCommand
 deactivate Model
 
 create CommandResult
-AttendanceMarkCommand -> CommandResult
+AttendanceMarkPresentCommand -> CommandResult
 activate CommandResult
 
-CommandResult --> AttendanceMarkCommand
+CommandResult --> AttendanceMarkPresentCommand
 deactivate CommandResult
 
-AttendanceMarkCommand --> LogicManager : commandResult
-deactivate AttendanceMarkCommand
+AttendanceMarkPresentCommand --> LogicManager : commandResult
+deactivate AttendanceMarkPresentCommand
 
 [<--LogicManager
 deactivate LogicManager
