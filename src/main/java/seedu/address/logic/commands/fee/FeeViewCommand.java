@@ -1,10 +1,12 @@
 package seedu.address.logic.commands.fee;
 
 import static java.util.Objects.requireNonNull;
+import seedu.address.commons.core.LogsCenter;
 import static seedu.address.logic.Messages.MESSAGE_STUDENT_ID_NOT_FOUND;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.Map;
 import java.util.Optional;
 
@@ -21,6 +23,7 @@ import seedu.address.model.time.Month;
  * View student's payment history
  */
 public class FeeViewCommand extends FeeCommand {
+    private static final Logger LOGGER = LogsCenter.getLogger(FeeViewCommand.class);
 
     public static final String COMMAND_FLAG = "-v";
 
