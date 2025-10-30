@@ -15,6 +15,7 @@
     
 We follow the project design and documentation structure of the AddressBook-Level3 project by SE-EDU.   
 In addition, the structure and certain sections of this Developer Guide were inspired by and adapted from [a team project developed by a previous cohort](https://ay2425s1-cs2103t-w08-1.github.io/tp/).
+
 --------------------------------------------------------------------------------------------------------------------
 
 ## **Setting up, getting started**
@@ -436,6 +437,12 @@ The following commands handle attendance operations:
     - Retrieves all attendance records for a specific student
     - Records are sorted by date, then by ClassTag name alphabetically
 
+#### Activity Diagram: Attendance Command Workflow
+
+The activity diagram below illustrates the high-level workflow for attendance management, showing how the system routes different attendance operations based on command flags:
+
+<puml src="diagrams/AttendanceActivityDiagram.puml" alt="Attendance Activity Diagram" />
+
 #### Sequence Diagram: Marking Attendance as Present
 
 The following sequence diagram illustrates the interactions when a tutor marks a student as present using the `att -p` command:
@@ -500,7 +507,7 @@ Attendance operations include comprehensive validation:
 
 #### Overview
 
-The Performance Notes Management feature lets tutors capture qualitative feedback about a student's progress for specific
+The Performance Management feature lets tutors capture qualitative feedback about a student's progress for specific
 classes on particular dates. Each note records the class context, the date of the observation, and a short free-form remark
 highlighting achievements or areas for improvement.
 
@@ -1613,7 +1620,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **MSS**
 1. Tutor requests to delete an attendance record for a student on a specific date and class.
-2. Tuto validates the request: student exists, command format is valid, date is valid, and class tag exists.
+2. Tuto validates the request: student exists, command format is valid, date is valid, and attendance record exists for that date and class.
 3. Tuto verifies that an attendance record exists for that date and class.
 4. Tuto deletes the attendance record and displays a success message.
 
@@ -1793,7 +1800,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 * **Student ID**: A 4-digit unique numeric identifier (0000–9999) assigned to each student when added to the system.
 * **Payment History**: A record covering a range from a start month (either the student’s enrolment month or an explicitly provided m/MMYY) up to the current month (inclusive). The UI displays this range in reverse-chronological order (newest month first). Months after enrolment with no explicit record are derived as UNPAID by default.
 * **Performance note**: A short textual record of a student's performance on a given date
-* **Attendance History**: A record that shows a student's attendance history, covering up to the six most recent months before the current month.
+* **Attendance History**: A complete record of student's attendance across all dates and classes from the time of enrolment, with no time limit on historical data.
 * **Executable JAR**: A Java Archive file that contains all compiled classes and resources, which can be run directly without installation.
 
 --------------------------------------------------------------------------------------------------------------------
