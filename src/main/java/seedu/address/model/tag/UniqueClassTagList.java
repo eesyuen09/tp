@@ -3,8 +3,10 @@ package seedu.address.model.tag;
 import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -108,13 +110,13 @@ public class UniqueClassTagList implements Iterable<ClassTag> {
      * Returns true if {@code classTags} contains only unique tags.
      */
     private boolean classTagsAreUnique(List<ClassTag> classTags) {
-        for (int i = 0; i < classTags.size() - 1; i++) {
-            for (int j = i + 1; j < classTags.size(); j++) {
-                if (classTags.get(i).equals(classTags.get(j))) {
-                    return false;
-                }
+        Set<ClassTag> seen = new HashSet<>();
+        for (ClassTag tag : classTags) {
+            if (!seen.add(tag)) {
+                return false;
             }
         }
         return true;
     }
+
 }

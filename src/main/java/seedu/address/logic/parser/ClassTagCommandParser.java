@@ -74,16 +74,7 @@ public class ClassTagCommandParser implements Parser<Command> {
 
         assert argMultimap != null : "argMultimap must not be null for add";
 
-        if (!argMultimap.getPreamble().trim().equalsIgnoreCase(AddClassTagCommand.COMMAND_FLAG)) {
-            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddClassTagCommand.MESSAGE_USAGE));
-        }
-
-        if (!arePrefixesPresent(argMultimap, PREFIX_CLASSTAG)
-                || argMultimap.getValue(PREFIX_CLASSTAG).isEmpty()) {
-            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddClassTagCommand.MESSAGE_USAGE));
-        }
-
-        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_CLASSTAG);
+        validatePrefixesForCommand(argMultimap, AddClassTagCommand.COMMAND_FLAG, AddClassTagCommand.MESSAGE_USAGE);
         ClassTag classTag = ParserUtil.parseClassTag(argMultimap.getValue(PREFIX_CLASSTAG).get());
 
         logger.info(() -> String.format("AddClassTagCommand parsed with classTag: %s", classTag));
@@ -102,18 +93,8 @@ public class ClassTagCommandParser implements Parser<Command> {
 
         assert argMultimap != null : "argMultimap must not be null for delete";
 
-        if (!argMultimap.getPreamble().trim().equalsIgnoreCase(DeleteClassTagCommand.COMMAND_FLAG)) {
-            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                    DeleteClassTagCommand.MESSAGE_USAGE));
-        }
-
-        if (!arePrefixesPresent(argMultimap, PREFIX_CLASSTAG)
-                || argMultimap.getValue(PREFIX_CLASSTAG).isEmpty()) {
-            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                    DeleteClassTagCommand.MESSAGE_USAGE));
-        }
-
-        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_CLASSTAG);
+        validatePrefixesForCommand(argMultimap, DeleteClassTagCommand.COMMAND_FLAG,
+                DeleteClassTagCommand.MESSAGE_USAGE);
         ClassTag classTag = ParserUtil.parseClassTag(argMultimap.getValue(PREFIX_CLASSTAG).get());
 
         logger.info(() -> String.format("DeleteClassTagCommand parsed with classTag: %s", classTag));
@@ -146,5 +127,29 @@ public class ClassTagCommandParser implements Parser<Command> {
     private static boolean arePrefixesPresent(ArgumentMultimap argumentMultimap, Prefix... prefixes) {
         return Stream.of(prefixes).allMatch(prefix -> argumentMultimap.getValue(prefix).isPresent());
     }
+
+    /**
+     * Validates that the required prefixes are present and checks for duplicate prefixes.
+     * @param argMultimap The argument multimap to validate.
+     * @param expectedFlag The expected command flag in the preamble.
+     * @param commandUsage The usage message to display if validation fails.
+     * @throws ParseException If validation fails.
+     */
+    private void validatePrefixesForCommand(ArgumentMultimap argMultimap, String expectedFlag, String commandUsage)
+            throws ParseException {
+        requireNonNull(argMultimap);
+
+        if (!argMultimap.getPreamble().trim().equalsIgnoreCase(expectedFlag)) {
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, commandUsage));
+        }
+
+        if (!arePrefixesPresent(argMultimap, PREFIX_CLASSTAG)
+                || argMultimap.getValue(PREFIX_CLASSTAG).isEmpty()) {
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, commandUsage));
+        }
+
+        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_CLASSTAG);
+    }
+
 }
 

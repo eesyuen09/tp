@@ -91,6 +91,21 @@ class JsonSerializableAddressBook {
     public AddressBook toModelType() throws IllegalValueException {
         AddressBook addressBook = new AddressBook();
 
+        List<ClassTag> validClassTags = loadClassTags(addressBook);
+        loadPersons(addressBook, validClassTags);
+        loadFeeRecords(addressBook);
+
+        return addressBook;
+    }
+
+    /**
+     * Loads class tags into the address book.
+     *
+     * @param addressBook the address book to load class tags into
+     * @return list of valid class tags that were loaded
+     * @throws IllegalValueException if there are duplicate class tags
+     */
+    private List<ClassTag> loadClassTags(AddressBook addressBook) throws IllegalValueException {
         List<ClassTag> validClassTags = new ArrayList<>();
         for (JsonAdaptedClassTag jsonAdaptedClassTag : classTags) {
             ClassTag classTag = jsonAdaptedClassTag.toModelType();
@@ -100,7 +115,18 @@ class JsonSerializableAddressBook {
             addressBook.addClassTag(classTag);
             validClassTags.add(classTag);
         }
+        return validClassTags;
+    }
 
+    /**
+     * Loads persons into the address book.
+     *
+     * @param addressBook the address book to load persons into
+     * @param validClassTags list of valid class tags for validation
+     * @throws IllegalValueException if there are duplicate persons
+     */
+    private void loadPersons(AddressBook addressBook, List<ClassTag> validClassTags)
+            throws IllegalValueException {
         for (JsonAdaptedPerson jsonAdaptedPerson : persons) {
             Person person = jsonAdaptedPerson.toModelType(validClassTags);
             if (addressBook.hasPerson(person)) {
@@ -108,8 +134,15 @@ class JsonSerializableAddressBook {
             }
             addressBook.addPerson(person);
         }
+    }
 
-
+    /**
+     * Loads fee records into the address book's fee tracker.
+     *
+     * @param addressBook the address book whose fee tracker will receive the records
+     * @throws IllegalValueException if there are duplicate fee records
+     */
+    private void loadFeeRecords(AddressBook addressBook) throws IllegalValueException {
         Set<String> uniqueRecordKeys = new HashSet<>();
         for (JsonAdaptedFeeRecord record : feeRecords) {
             String key = record.getStudentId() + "#" + record.getMonthString();
@@ -118,8 +151,6 @@ class JsonSerializableAddressBook {
             }
             record.applyToFeeTracker(addressBook);
         }
-
-        return addressBook;
     }
 
 }

@@ -105,7 +105,8 @@ class JsonAdaptedPerson {
                     .filter(ct -> ct.tagName.equalsIgnoreCase(modelTag.tagName))
                     .findFirst()
                     .orElseThrow(() -> new IllegalValueException(
-                            "Tag '" + modelTag.tagName + "' does not exist in class tags list"));
+                            "Invalid class tag: '" + modelTag.tagName
+                                    + "'. Please ensure the tag exists in the system."));
 
             // Use the correctly cased tag from the class tags list
             personTags.add(new ClassTag(matchingClassTag.tagName));
