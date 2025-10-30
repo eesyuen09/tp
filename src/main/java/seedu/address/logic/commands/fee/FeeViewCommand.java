@@ -96,8 +96,8 @@ public class FeeViewCommand extends FeeCommand {
         final List<FeeHistoryEntry> result = new ArrayList<>(map.size());
         for (Map.Entry<Month, FeeState> entry : map.entrySet()) {
             final Month m = entry.getKey();
-            final boolean explicit = tracker.getExplicitStatusOfMonth(person.getStudentId(), m).isPresent();
-            result.add(new FeeHistoryEntry(m, entry.getValue(), explicit));
+            final boolean isExplicit = tracker.getExplicitStatusOfMonth(person.getStudentId(), m).isPresent();
+            result.add(new FeeHistoryEntry(m, entry.getValue(), isExplicit));
         }
         Collections.reverse(result);
         return result;
