@@ -10,6 +10,10 @@ import seedu.address.commons.core.GuiSettings;
 import seedu.address.model.Model;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.ReadOnlyUserPrefs;
+import seedu.address.model.attendance.AttendanceHistoryEntry;
+import seedu.address.model.attendance.AttendanceHistorySummary;
+import seedu.address.model.fee.FeeHistoryEntry;
+import seedu.address.model.fee.FeeHistorySummary;
 import seedu.address.model.fee.FeeState;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
@@ -114,6 +118,11 @@ public class ModelStub implements Model {
     }
 
     @Override
+    public boolean isClassTagInUse(ClassTag classTag) {
+        throw new AssertionError("This method should not be called.");
+    }
+
+    @Override
     public List<ClassTag> getClassTagList() {
         throw new AssertionError("This method should not be called.");
     }
@@ -140,11 +149,11 @@ public class ModelStub implements Model {
         throw new AssertionError("This method should not be called.");
     }
     @Override
-    public void markAttendance(StudentId studentId, Date date, ClassTag classTag) {
+    public void markAttendancePresent(StudentId studentId, Date date, ClassTag classTag) {
         throw new AssertionError("This method should not be called.");
     }
     @Override
-    public void unmarkAttendance(StudentId studentId, Date date, ClassTag classTag) {
+    public void markAttendanceAbsent(StudentId studentId, Date date, ClassTag classTag) {
         throw new AssertionError("This method should not be called.");
     }
     @Override
@@ -173,6 +182,47 @@ public class ModelStub implements Model {
 
     @Override
     public void clearDisplayedPerformanceNotes() {
+        throw new AssertionError("This method should not be called.");
+    }
+
+    @Override
+    public ObservableList<FeeHistoryEntry> getDisplayedFeeHistory() {
+        throw new AssertionError("This method should not be called.");
+    }
+
+    @Override
+    public void setDisplayedFeeHistory(List<FeeHistoryEntry> entries, FeeHistorySummary summary) {
+        throw new AssertionError("This method should not be called.");
+    }
+
+    @Override
+    public void clearDisplayedFeeHistory() {
+        throw new AssertionError("This method should not be called.");
+    }
+
+    @Override
+    public javafx.beans.property.ReadOnlyObjectProperty<FeeHistorySummary> feeHistorySummaryProperty() {
+        throw new AssertionError("This method should not be called.");
+    }
+
+    @Override
+    public ObservableList<AttendanceHistoryEntry> getDisplayedAttendanceHistory() {
+        throw new AssertionError("This method should not be called.");
+    }
+
+    @Override
+    public void setDisplayedAttendanceHistory(List<AttendanceHistoryEntry> entries,
+                                              AttendanceHistorySummary summary) {
+        throw new AssertionError("This method should not be called.");
+    }
+
+    @Override
+    public void clearDisplayedAttendanceHistory() {
+        throw new AssertionError("This method should not be called.");
+    }
+
+    @Override
+    public javafx.beans.property.ReadOnlyObjectProperty<AttendanceHistorySummary> attendanceHistorySummaryProperty() {
         throw new AssertionError("This method should not be called.");
     }
 

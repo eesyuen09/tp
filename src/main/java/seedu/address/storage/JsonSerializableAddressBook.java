@@ -90,21 +90,25 @@ class JsonSerializableAddressBook {
      */
     public AddressBook toModelType() throws IllegalValueException {
         AddressBook addressBook = new AddressBook();
-        for (JsonAdaptedPerson jsonAdaptedPerson : persons) {
-            Person person = jsonAdaptedPerson.toModelType();
-            if (addressBook.hasPerson(person)) {
-                throw new IllegalValueException(MESSAGE_DUPLICATE_PERSON);
-            }
-            addressBook.addPerson(person);
-        }
 
+        List<ClassTag> validClassTags = new ArrayList<>();
         for (JsonAdaptedClassTag jsonAdaptedClassTag : classTags) {
             ClassTag classTag = jsonAdaptedClassTag.toModelType();
             if (addressBook.hasClassTag(classTag)) {
                 throw new IllegalValueException(MESSAGE_DUPLICATE_CLASSTAG);
             }
             addressBook.addClassTag(classTag);
+            validClassTags.add(classTag);
         }
+
+        for (JsonAdaptedPerson jsonAdaptedPerson : persons) {
+            Person person = jsonAdaptedPerson.toModelType(validClassTags);
+            if (addressBook.hasPerson(person)) {
+                throw new IllegalValueException(MESSAGE_DUPLICATE_PERSON);
+            }
+            addressBook.addPerson(person);
+        }
+
 
         Set<String> uniqueRecordKeys = new HashSet<>();
         for (JsonAdaptedFeeRecord record : feeRecords) {

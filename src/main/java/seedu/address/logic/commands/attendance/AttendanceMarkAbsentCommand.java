@@ -1,6 +1,9 @@
 package seedu.address.logic.commands.attendance;
 
 import static java.util.Objects.requireNonNull;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_CLASSTAG;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_DATE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_STUDENTID;
 
 import java.time.LocalDate;
 
@@ -14,14 +17,22 @@ import seedu.address.model.tag.ClassTag;
 import seedu.address.model.time.Date;
 
 /**
- * Marks a student as present on a specific date for a specific class.
- * If the attendance is already marked as present for that date and class, an exception is thrown.
+ * Marks a student as absent on a specific date for a specific class.
+ * If the student was previously marked as present on that date for that class, the record is updated to absent.
+ * If the attendance is already marked as absent for that date and class, an exception is thrown.
  */
-public class AttendanceMarkCommand extends AttendanceCommand {
+public class AttendanceMarkAbsentCommand extends AttendanceCommand {
 
-    public static final String MESSAGE_MARK_SUCCESS = "Marked attendance for: %1$s on %2$s for class %3$s";
-    public static final String MESSAGE_ALREADY_MARKED = "Attendance for %1$s on %2$s for class %3$s already marked.";
-    public static final String MESSAGE_CLASS_TAG_NOT_FOUND = "Class tag does not exist: %1$s";
+    public static final String COMMAND_FLAG = "-a";
+
+    public static final String MESSAGE_USAGE = "Marks a student's attendance as absent.\n"
+            + "Parameters: " + PREFIX_STUDENTID + "STUDENT_ID " + PREFIX_DATE + "DDMMYYYY "
+            + PREFIX_CLASSTAG + "CLASS_TAG\n"
+            + "Example: " + COMMAND_WORD + " " + COMMAND_FLAG + " " + PREFIX_STUDENTID + "0123 "
+            + PREFIX_DATE + "15092025 " + PREFIX_CLASSTAG + "Sec3_AMath";
+
+    public static final String MESSAGE_MARK_ABSENT_SUCCESS = "Marked %1$s as absent on %2$s for class %3$s.";
+    public static final String MESSAGE_ALREADY_MARKED_ABSENT = "%1$s is already marked absent on %2$s for class %3$s.";
     public static final String MESSAGE_STUDENT_DOES_NOT_HAVE_TAG = "Student %1$s does not have the class tag: %2$s";
     public static final String MESSAGE_FUTURE_DATE = "Cannot mark attendance for future date: %1$s";
     public static final String MESSAGE_BEFORE_ENROLLMENT =
@@ -31,9 +42,9 @@ public class AttendanceMarkCommand extends AttendanceCommand {
     private final ClassTag classTag;
 
     /**
-     * Creates a AttendanceMarkCommand to mark attendance for the specified student.
+     * Creates a AttendanceMarkAbsentCommand to mark attendance as absent for the specified student.
      */
-    public AttendanceMarkCommand(StudentId studentId, Date date, ClassTag classTag) {
+    public AttendanceMarkAbsentCommand(StudentId studentId, Date date, ClassTag classTag) {
         super(studentId);
         requireNonNull(date);
         requireNonNull(classTag);
@@ -65,7 +76,7 @@ public class AttendanceMarkCommand extends AttendanceCommand {
 
         // Check if the class tag exists in the address book
         if (!model.hasClassTag(classTag)) {
-            throw new CommandException(String.format(MESSAGE_CLASS_TAG_NOT_FOUND, classTag.tagName));
+            throw new CommandException(Messages.MESSAGE_TAG_NOT_FOUND);
         }
 
         if (!personToEdit.getTags().contains(classTag)) {
@@ -73,13 +84,14 @@ public class AttendanceMarkCommand extends AttendanceCommand {
                     personToEdit.getName(), classTag.tagName));
         }
 
-        if (personToEdit.getAttendanceList().hasAttendanceMarked(date, classTag)) {
-            throw new CommandException(String.format(MESSAGE_ALREADY_MARKED,
+        if (personToEdit.getAttendanceList().hasAttendanceMarkedAbsent(date, classTag)) {
+            throw new CommandException(String.format(MESSAGE_ALREADY_MARKED_ABSENT,
                     personToEdit.getName(), date.getFormattedDate(), classTag.tagName));
         }
-        model.markAttendance(studentId, date, classTag);
 
-        return new CommandResult(String.format(MESSAGE_MARK_SUCCESS, personToEdit.getName(),
+        model.markAttendanceAbsent(studentId, date, classTag);
+
+        return new CommandResult(String.format(MESSAGE_MARK_ABSENT_SUCCESS, personToEdit.getName(),
                 date.getFormattedDate(), classTag.tagName));
     }
 
@@ -89,11 +101,11 @@ public class AttendanceMarkCommand extends AttendanceCommand {
             return true;
         }
 
-        if (!(other instanceof AttendanceMarkCommand)) {
+        if (!(other instanceof AttendanceMarkAbsentCommand)) {
             return false;
         }
 
-        AttendanceMarkCommand otherCommand = (AttendanceMarkCommand) other;
+        AttendanceMarkAbsentCommand otherCommand = (AttendanceMarkAbsentCommand) other;
         return studentId.equals(otherCommand.studentId)
                 && date.equals(otherCommand.date)
                 && classTag.equals(otherCommand.classTag);
@@ -103,5 +115,4 @@ public class AttendanceMarkCommand extends AttendanceCommand {
     public int hashCode() {
         return java.util.Objects.hash(studentId, date, classTag);
     }
-
 }

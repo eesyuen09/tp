@@ -4,6 +4,7 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import javafx.collections.ObservableList;
 import seedu.address.commons.util.ToStringBuilder;
@@ -99,6 +100,19 @@ public class AddressBook implements ReadOnlyAddressBook {
      */
     public void setClassTags(List<ClassTag> classTags) {
         this.classTags.setClassTags(classTags);
+    }
+
+    /**
+     * Finds and returns the class tag in the address book that matches {@code classTag}.
+     *
+     * @param classTag The class tag to find.
+     * @return An Optional containing the found ClassTag, or empty if not found.
+     */
+    public Optional<ClassTag> findClassTag(ClassTag classTag) {
+        requireNonNull(classTag);
+        return getClassTagList().stream()
+                .filter(existingTag -> existingTag.equals(classTag))
+                .findFirst();
     }
 
     //// person-level operations

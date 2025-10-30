@@ -151,6 +151,13 @@ public class Person {
     }
 
     /**
+     * Returns true if this person has the specified tag.
+     */
+    public boolean hasTag(ClassTag tag) {
+        return tags.contains(tag);
+    }
+
+    /**
      * Returns the list of performance notes of the person.
      * @return the PerformanceList of the person.
      */

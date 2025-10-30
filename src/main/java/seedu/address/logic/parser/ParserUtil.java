@@ -151,7 +151,23 @@ public class ParserUtil {
         if (!Month.isValidMonth(trimmedMonth)) {
             throw new ParseException(Month.MESSAGE_CONSTRAINTS);
         }
+
         return new Month(trimmedMonth);
+    }
+
+    /**
+     * Parses a {@code String} representing a month into a {@code Month} object.
+     * Leading and trailing whitespaces will be trimmed.
+     *
+     * @throws ParseException if the given {@code Month} is invalid and is in the future.
+     */
+    public static Month parseEnrolledMonth(String month) throws ParseException {
+        Month parsedMonth = parseMonth(month);
+        if (parsedMonth.isBefore(Month.now()) || parsedMonth.equals(Month.now())) {
+            return parsedMonth;
+        } else {
+            throw new ParseException(Month.MESSAGE_INVALID_FUTURE_ENROLLED_MONTH);
+        }
     }
 
     /**

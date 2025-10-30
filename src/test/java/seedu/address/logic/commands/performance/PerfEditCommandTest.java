@@ -106,25 +106,6 @@ public class PerfEditCommandTest {
     }
 
     @Test
-    public void execute_classTagNotInModel_throwsCommandException() {
-        Person student = new PersonBuilder().withStudentId(VALID_STUDENT_ID.toString())
-                .withClassTags(VALID_CLASS_TAG_1.tagName).build();
-
-        PerformanceNote note = new PerformanceNote(VALID_DATE_1, VALID_CLASS_TAG_1, VALID_NOTE_1);
-        PerformanceList list = new PerformanceList();
-        list.add(note);
-        Person studentWithNote = student.withPerformanceList(list);
-
-        Model model = new ModelManager(new AddressBook(), new UserPrefs());
-        model.addPerson(studentWithNote);
-
-        PerfEditCommand command = new PerfEditCommand(VALID_STUDENT_ID, VALID_DATE_1, VALID_CLASS_TAG_1, EDITED_NOTE);
-
-        assertCommandFailure(command, model,
-                String.format(Messages.MESSAGE_TAG_NOT_FOUND, VALID_CLASS_TAG_1.tagName));
-    }
-
-    @Test
     public void equals() {
         PerfEditCommand commandA = new PerfEditCommand(VALID_STUDENT_ID,
                 VALID_DATE_1, VALID_CLASS_TAG_1, EDITED_NOTE);

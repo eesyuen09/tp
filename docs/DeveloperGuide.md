@@ -50,14 +50,14 @@ The bulk of the app's work is done by the following four components:
 
 **How the architecture components interact with each other**
 
-The *Sequence Diagram* below shows how the components interact with each other for the scenario where the user issues the command `delete 1`.
+The *Sequence Diagram* below shows how the components interact with each other for the scenario where the user issues the command `delete s/0000`.
 
 <puml src="diagrams/ArchitectureSequenceDiagram.puml" width="574" />
 
 Each of the four main components (also shown in the diagram above),
 
 * defines its *API* in an `interface` with the same name as the Component.
-* implements its functionality using a concrete `{Component Name}Manager` class (which follows the corresponding API `interface` mentioned in the previous point.
+* implements its functionality using a concrete `{Component Name}Manager` class (which follows the corresponding API `interface` mentioned in the previous point.)
 
 For example, the `Logic` component defines its API in the `Logic.java` interface and implements its functionality using the `LogicManager.java` class which follows the `Logic` interface. Other components interact with a given component through its interface rather than the concrete class (reason: to prevent outside component's being coupled to the implementation of a component), as illustrated in the (partial) class diagram below.
 
@@ -92,7 +92,7 @@ Here's a (partial) class diagram of the `Logic` component:
 
 The sequence diagram below illustrates the interactions within the `Logic` component, taking `execute("delete s/0002")` API call as an example.
 
-<puml src="diagrams/DeleteStudentSequenceDiagram.puml" alt="Interactions Inside the Logic Component for the `delete 1` Command" />
+<puml src="diagrams/DeleteStudentSequenceDiagram.puml" alt="Interactions Inside the Logic Component for the `delete s/0002` Command" />
 
 <box type="info" seamless>
 
@@ -180,13 +180,11 @@ Key operations include **adding, editing, and deleting students**.
 
 Each student is uniquely identified by a **Student ID** and can have associated attributes such as **name, phone, email, address, and ClassTags**.
 
----
-
 #### Implementation
 
 **Model Component:**
 - `Person`: Represents a student with immutable fields:
-    - Name, Phone, Email, Address, ClassTags, StudentId, AttendanceList, PerformanceList
+    - Name, Phone, Email, Address, ClassTags, StudentId, AttendanceList, EnrolledMonth, PerformanceList
 - `StudentId`: Ensures uniqueness of students
 - `Model` interface provides methods:
     - `addPerson(Person)`: Adds a student
@@ -200,12 +198,12 @@ Each student is uniquely identified by a **Student ID** and can have associated 
 **Storage Component:**
 - `JsonAdaptedPerson`: Converts Person objects to/from JSON
 - `JsonSerializableAddressBook`: Serializes the student list along with ClassTag references
-- Deserialization ensures ClassTag references are restored for each student
+- Deserialization restores each student’s data, including personal details, ClassTag references, and fee records.
 
 **Logic Component:**
 
 1. **AddCommand (`add`)**: Adds a new student
-    - Validates all fields (Name, Phone, Email, Address)
+    - Validates all fields (Name, Phone, Email, Address, EnrolledMonth, ClassTags)  
     - Ensures no duplicate students
     - Checks all ClassTags exist before assignment
     - Automatically assigns a unique Student ID
@@ -222,61 +220,157 @@ Each student is uniquely identified by a **Student ID** and can have associated 
     - Identifies student by Student ID
     - Ensures the student exists before deletion
     - Updates model to remove the student
+   
+4. **ListCommand (`list`)**: Displays all students
+    - Clears any active filters from previous `find` commands
+    - Shows the complete list of students stored in the model
 
----
+5. **FindCommand (`find`)**: Searches for students by keywords
+    - Supports keyword-based matching on Name field
+    - Case-insensitive search
+    - Displays a filtered list of matching students
 
-#### Sequence Diagrams
+6. **ClearCommand (`clear`)**: Clears all student records
+    - Removes all students from the model
 
-**1. Adding a Student (`add`)**
-<puml src="diagrams/AddStudentSequenceDiagram.puml" alt="AddStudentSequenceDiagram" />
+#### Activity Diagram: Adding a Student (`add`)
 
-**2. Editing a Student (`edit`)**
+This activity diagram shows the process flow when a user adds a new student using the `add` command, including validation, duplication checks, and successful addition to the system.
+
+<puml src="diagrams/AddStudentActivityDiagram.puml" alt="AddStudentActivityDiagram" />
+
+#### Sequence Diagram: Editing a Student (`edit`)
+
+This sequence diagram illustrates the interactions between components when a user edits a student’s details using the `edit` command, covering validation, tag resolution, and model update.
+
 <puml src="diagrams/EditStudentSequenceDiagram.puml" alt="EditStudentSequenceDiagram" />
 
-**3. Deleting a Student (`delete`)**
-<puml src="diagrams/DeleteStudentSequenceDiagram.puml" alt="DeleteStudentSequenceDiagram" />
+#### Sequence Diagram:Deleting a Student (`delete`)
 
----
+This sequence diagram demonstrates how the system processes the `delete` command, from identifying the student by ID to removing the student record and returning a success message.
+
+<puml src="diagrams/DeleteStudentSequenceDiagram.puml" alt="DeleteStudentSequenceDiagram" />
 
 #### Design Considerations
 
-**Aspect: Unique Student Identification**
-- **Choice:** Use `StudentId` as a unique identifier
-    - Pros:
-        - Ensures uniqueness across all students
-        - Simplifies operations like edit and delete
-        - Auto-generation reduces manual errors
-    - Cons:
-        - Requires management of next available ID
+**Aspect: Phone Number Validation**
 
-**Aspect: Integration with ClassTags**
-- **Choice:** Assign ClassTags during Add/Edit commands
-    - Pros:
-        - Reduces number of steps for tutors
-        - Maintains referential integrity with `UniqueClassTagList`
-    - Cons:
-        - Increases responsibility of Add/Edit commands
-        - Slightly more complex validation
+* **Alternative 1 (current choice):** Limit to Singapore numbers (8 digits, starting with 6, 8, or 9)
+    * Pros: Ensures only valid Singapore phone numbers are accepted, prevents accidental entry of incorrect numbers
+    * Cons: Cannot accept overseas numbers
 
-**Aspect: Command Design**
-- **Choice:** Separate commands for Add, Edit, Delete
-    - Pros:
-        - Clear responsibilities
-        - Easy to maintain and extend
-    - Cons:
-        - Tutors need to remember three commands (mitigated by clear usage instructions)
+* **Alternative 2:** Allow any numeric input of 8–10 digits
+    * Pros: More flexible, supports overseas or mobile numbers with country codes
+    * Cons: Less strict, may allow invalid or mistyped numbers
 
----
+
+
+**Aspect: Name Validation**
+
+* **Alternative 1 (current choice):** Only alphabetic characters, spaces, hyphens, and apostrophes; max 200 characters
+    * Pros: Prevents invalid or malicious input, ensures readability and consistent formatting
+    * Cons: Cannot accept names with unusual symbols outside this set
+
+* **Alternative 2:** Allow any Unicode characters, with length limit
+    * Pros: Supports all valid names globally
+    * Cons: May allow emojis or unexpected symbols, harder to validate and may affect GUI display
+
+**Aspect: Address Validation**
+
+* **Alternative 1 (current choice):** Accepts alphanumeric characters, `#`, `-`, `,`, `'` and spaces
+    * Pros: Covers most Singapore addresses while keeping input simple and consistent
+    * Cons: Cannot accept exotic symbols or foreign address formats
+
+* **Alternative 2:** Free-text input
+    * Pros: Maximum flexibility
+    * Cons: Harder to validate and maintain consistent formatting and may cause GUI display issues
+
+**Aspect: Email Validation**
+
+* **Alternative 1 (current choice):** Use detailed format rules — the part before “@” allows letters, numbers, and the symbols `+`, `_`, `.`, and `-`.  
+  The domain part after “@” is made up of labels separated by dots, and the last label must be at least 2 characters long.
+    * Pros: Ensures proper email format, prevents invalid entries, aligns with common standards
+    * Cons: Slightly complex regex, may reject rare valid emails, such as:
+      - `john_doe@example.com` (underscore in local part)
+      - `"john.doe"@example.com` (quoted local part)
+      - `alice+mailbox/department@example.com` (slashes in local part)
+      - `a@b.c` (final domain label less than 2 characters)
+      - `test@sub_domain.example.com` (underscore in domain label)
+      - `üser@exämple.com` (non-ASCII characters)
+
+* **Alternative 2:** Simple regex `.+@.+\..+`
+    * Pros: Very permissive, easier to implement
+    * Cons: Allows many invalid emails
+
+**Aspect: Enrolled Month Validation**
+
+* **Alternative 1 (current choice):** Format `MMYY`; check valid month and disallow future months
+    * Pros: Prevents impossible enrollments, ensures chronological consistency for attendance/performance/fees tracking
+    * Cons: Cannot pre-enter future planned enrollments
+
+* **Alternative 2:** Only validate `MMYY` format, allow future months
+    * Pros: Can schedule future enrollments, more flexible for planning
+    * Cons: Requires additional logic elsewhere to prevent inconsistencies
+
+* **Alternative 3:** Use full date input (`ddMMyy`) instead of `MMYY`
+    * Pros: More precise, supports partial months or mid-month enrollment
+    * Cons: More cumbersome for users, overkill if month-level granularity is sufficient
+
+**Aspect: ClassTag Validation**
+
+* **Alternative 1 (current choice):** Optional, must exist before assignment
+    * Pros: Ensures referential integrity, prevents dangling class references
+    * Cons: Adds step to create tag first
+
+* **Alternative 2:** Auto-create class tag if it does not exist
+    * Pros: Simplifies user workflow
+    * Cons: May create unintended tags, risk of typos creating duplicates
+
+**Aspect: Student ID Assignment**
+
+* **Alternative 1 (current choice):** Auto-generate 4-digit IDs after validating all other fields
+    * Pros: Guarantees unique IDs, simple format, avoids hitting maximum limit (9999), no JSON tracking needed
+    * Cons: Recycles the highest deleted ID only if it was the latest one and no other add/delete operations occurred before the next app launch
+
+* **Alternative 2:** Store last assigned ID in JSON and always increment
+    * Pros: Preserves historical uniqueness across launches
+    * Cons: Hits maximum limit faster, extra complexity in JSON handling
+
+* **Alternative 3:** User-specified IDs
+    * Pros: Flexibility, users can follow their own numbering system
+    * Cons: Higher risk of duplicates and input errors, more complex validation
+
+**Aspect: Non-Duplication of Students**
+
+* **Alternative 1 (current choice):** Uniqueness checked on phone number and name combination
+    * Pros: Reduces accidental duplicates while allowing students with same name but different contact details
+    * Cons: Cannot detect duplicates with incorrect phone numbers
+
+* **Alternative 2:** Check uniqueness using all fields (name, phone, email, address)
+    * Pros: Stronger duplicate detection
+    * Cons: More restrictive, may prevent legitimate multiple students with similar details
+
+**Aspect: Enrolled Month Handling**
+
+* **Alternative 1 (current choice):** Set only during creation; cannot be edited afterwards
+    * Pros: Simplifies data handling, prevents accidental changes that could affect multiple records
+    * Cons: If a wrong month is set, the person must be deleted and recreated to correct it
+
+* **Alternative 2:** Allow editing of enrolled month after creation
+    * Pros: More flexible for corrections
+    * Cons: Changing enrolled month may affect many associated records, risking data inconsistency
 
 #### Error Handling
 
 **Adding Students:**
+- Invalid command format
 - Duplicate student record
 - Invalid or missing field(s)
 - Non-existent ClassTags
 - Maximum number of students exceeded (StudentId > 9999)
 
 **Editing Students:**
+- Invalid command format
 - Student ID not found
 - No fields provided to edit
 - Invalid input fields or ClassTags
@@ -316,12 +410,12 @@ Attendance management is implemented through several key components:
 
 The following commands handle attendance operations:
 
-1. **AttendanceMarkCommand (triggered by `att -m`)**: Marks a student as present for a class on a specific date
+1. **AttendanceMarkPresentCommand (triggered by `att -p`)**: Marks a student as present for a class on a specific date
     - Validates student exists and ClassTag exists
     - Prevents duplicate "Present" records (throws error if already marked present)
     - Replaces any existing "Absent" record for the same date and class with a "Present" record
 
-2. **AttendanceUnmarkCommand (triggered by `att -u`)**: Marks a student as absent for a class on a specific date
+2. **AttendanceMarkAbsentCommand (triggered by `att -a`)**: Marks a student as absent for a class on a specific date
     - Validates student exists and ClassTag exists
     - Prevents duplicate "Absent" records (throws error if already marked absent)
     - Replaces any existing "Present" record for the same date and class with an "Absent" record
@@ -335,11 +429,11 @@ The following commands handle attendance operations:
     - Retrieves all attendance records for a specific student
     - Records are sorted by date, then by ClassTag name alphabetically
 
-#### Sequence Diagram: Marking Attendance
+#### Sequence Diagram: Marking Attendance as Present
 
-The following sequence diagram illustrates the interactions when a tutor marks a student as present using the `att -m` command:
+The following sequence diagram illustrates the interactions when a tutor marks a student as present using the `att -p` command:
 
-<puml src="diagrams/AttendanceMarkSequenceDiagram.puml" alt="Attendance Mark Sequence Diagram" />
+<puml src="diagrams/AttendanceMarkPresentSequenceDiagram.puml" alt="Attendance Mark Present Sequence Diagram" />
 
 <box type="info" seamless>
 
@@ -360,20 +454,6 @@ The following sequence diagram illustrates the interactions when a tutor marks a
   * Pros: Easier to query by date/class across all students, better for class-level reports
   * Cons: More complex referential integrity, risk of orphaned records, attendance disconnected from student profiles
 
-**Aspect: How to represent "absent" status:**
-
-* **Alternative 1 (current choice):** Flag-based commands - `att -m` for present, `att -u` for absent
-  * Pros: Consolidated under single `att` command word, fewer top-level commands to remember, consistent with payment feature's flag-based design (`fee -p`, `fee -up`)
-  * Cons: Potentially confusing terminology ("unmark" suggests deletion rather than marking absent), requires users to remember flag meanings
-
-* **Alternative 2:** Separate command words - `present s/0001 d/10112025 t/Math` and `absent s/0001 d/10112025 t/Math`
-  * Pros: Crystal clear intent from command word itself, highly intuitive (command literally describes the action), no ambiguity about what each command does
-  * Cons: Increases top-level command count (now users need to remember `present`, `absent`, instead of just `att`), breaks the feature grouping pattern used throughout the app (attendance: `att`, performance: `perf`, fees: `fee`), inconsistent with the design goal of organizing related commands under a single namespace
-
-* **Alternative 3:** Explicit status parameter - `att s/0001 d/10112025 t/Math status/present` or `att s/0001 d/10112025 t/Math status/absent`
-  * Pros: Self-documenting commands, very clear semantics, easily extensible (could add `status/late` or `status/excused` in future)
-  * Cons: More verbose, longer command syntax, requires typing "status/" every time
-
 ### Performance Management
 
 #### Overview
@@ -393,9 +473,9 @@ Performance note management is implemented through the following components:
 - The `Model` interface exposes helpers to retrieve students, replace updated `Person` instances, and manage the list of performance notes currently shown in the UI (`setDisplayedPerformanceNotes`, `clearDisplayedPerformanceNotes`)
 
 **Storage Component:**
-- `JsonAdaptedPerformanceNote`: Serialises/deserialises `PerformanceNote` objects to and from JSON, validating date, class tag, and note length constraints during conversion
+- `JsonAdaptedPerformanceNote`: Serialises/deserializes `PerformanceNote` objects to and from JSON, validating date, class tag, and note length constraints during conversion
 - Performance notes are persisted as part of each student's JSON record via `JsonAdaptedPerson`, ensuring notes stay in sync with the owning student
-- During deserialisation, class tags referenced in performance notes are re-validated against the student's tag set so that orphaned notes cannot be reconstructed
+- During deserialization, class tags referenced in performance notes are re-validated against the student's tag set so that orphaned notes cannot be reconstructed
 
 **Logic Component:**
 
@@ -472,8 +552,9 @@ ClassTag management is implemented through several key components:
     - `hasClassTag(ClassTag)`: Checks if a ClassTag exists
     - `addClassTag(ClassTag)`: Adds a new ClassTag
     - `deleteClassTag(ClassTag)`: Removes a ClassTag
-    - `findClassTag(String)`: Finds and returns a ClassTag by its name
+    - `findClassTag(ClassTag)`: Finds and returns the ClassTag saved in UniqueClassTagList that matches the given ClassTag
     - `getClassTagList()`: Returns an unmodifiable list of all ClassTags
+    - `isClassTagInUse(ClassTag)`: Checks if any student is assigned the ClassTag
 - `Person` objects maintain a `Set<ClassTag>` field that references ClassTags from the central `UniqueClassTagList`
   
 **Storage Component:**
@@ -501,6 +582,7 @@ The following commands handle ClassTag operations:
 3. **ListClassTagCommand (triggered by `tag -l`)**: Lists all ClassTags in the system
     - Retrieves all ClassTags from the Model via `Model#getClassTagList()`
     - Displays them in a numbered list
+    - If no tags exist, displays "No class tags found."
 
 4. **ClassTagFilterCommand (triggered by `filter -t`)**: Filters students by ClassTag
     - Validates the ClassTag exists via `Model#findClassTag()`
@@ -750,7 +832,7 @@ The following commands handle Fee Management operations:
 5. **FeeViewCommand (triggered by `fee -v`)**: Displays a student’s **payment history** across a specified range of months.
     - Validates that the student exists and that the month range is valid.
     - Retrieves payment data using `FeeTracker#getPaymentHistory()`.
-    - Outputs a chronological list of months with corresponding fee states.
+    - Outputs a reverse-chronological list of months (latest month first), with corresponding fee states.
 
 #### Sequence Diagram: Marking a Student as Paid
 
@@ -840,6 +922,30 @@ The activity diagram below illustrates the workflow for viewing a student’s fe
     * Cons:
       - Restrictive — tutors cannot fix genuine mis-entries without first unmarking all later months.
 
+**Aspect: Display Order of Payment History**
+
+* **Alternative 1 (current choice):** Display payment history in **reverse-chronological order** (newest-first).  
+  The computed range still spans from the **effective start month** (typically the enrolment month) up to the **current month**.
+
+    * Pros:
+        - Places the **most relevant and recent months** at the top, matching tutor workflows.
+        - Reduces scrolling effort for checking recent payments or following up on unpaid students.
+        - Maintains **consistency across panels** (e.g., performance notes), which also prioritize recent data.
+
+    * Cons:
+        - Tutors reviewing long-term records need to scroll to the bottom to reach the **earliest (enrolment) months**.
+
+---
+
+* **Alternative 2:** Display payment history in **chronological order** (oldest-first).  
+  The earliest month (enrolment) appears first, progressing toward the current month.
+
+    * Pros:
+        - Provides a **narratively intuitive timeline**, helping tutors review payment history from the student’s start date.
+
+    * Cons:
+        - **Recent months**, which tutors most often need, appear at the bottom — requiring extra scrolling.
+        - Inconsistent with other panels that already emphasize **newest-first ordering**.
 
 ---
 
@@ -871,20 +977,22 @@ Each validation error produces clear and descriptive messages to guide user corr
 
 Given below is a list of enhancements we plan to implement in future versions of Tuto:
 
-1. **Bulk attendance marking for entire class:** Currently, tutors must mark attendance for each student individually using `att -m s/STUDENT_ID d/DATE t/CLASS`. For a class with 20-30 students, this becomes tedious and time-consuming. We plan to add a bulk marking feature that allows tutors to mark attendance for all students in a specific class at once. For example, `att -m d/10112025 t/Math` would mark all students enrolled in the Math ClassTag as present for that date. This would significantly reduce the time needed to take attendance at the beginning of each lesson.
+1. **Bulk attendance marking for entire class:** Currently, tutors must mark attendance for each student individually using `att -p s/STUDENT_ID d/DATE t/CLASS`. For a class with 20-30 students, this becomes tedious and time-consuming. We plan to add a bulk marking feature that allows tutors to mark attendance for all students in a specific class at once. For example, `att -pA d/10112025 t/Math` would mark all students as present enrolled in the Math ClassTag as present for that date. This would significantly reduce the time needed to take attendance at the beginning of each lesson.
 2. **Individual class tag assignment and unassignment on top of current add/edit:** Currently, when editing a student's class tags using the edit command, all existing tags are replaced with the new list provided (or cleared if t/ is empty). This makes it cumbersome to add or remove a single tag without re-specifying all others. We plan to introduce new commands tag -assign s/STUDENT_ID t/TAG_NAME and tag -unassign s/STUDENT_ID t/TAG_NAME that allow adding or removing individual tags without affecting previously assigned ones. For example, tag -assign s/0001 t/Sec_3_A_Math would add the "Sec_3_A_Math" tag to student 0001 if they don't already have it, leaving other tags intact. Similarly, tag -unassign s/0001 t/Sec_3_A_Math would remove only that tag. Success messages would confirm the action, e.g., "Successfully assigned class tag [Sec_3_A_Math] to student ID 0001." Error messages would handle cases like non-existent students or tags. This enhancement addresses the frequent need for precise, incremental changes to student records, improving tutor workflow efficiency.
 3. **ClassTag renaming:** Currently, once a ClassTag is created, its name cannot be changed. If a tutor wishes to rename a ClassTag (e.g., from "Sec_3_A_Math" to "Sec_3_A_Advanced_Math"), they must delete the existing ClassTag and create a new one. This process is cumbersome and risks losing the association with students if not handled carefully. We plan to implement a `tag -r` command that allows tutors to rename an existing ClassTag while preserving all student associations. For example, `tag -r oldt/Sec_3_A_Math newt/Sec_3_A_Advanced_Math` would rename the ClassTag accordingly. This feature would enhance flexibility in managing class names as course structures evolve.
 4. **Introduce third fee state — WAIVED/SKIPPED:**  
    At present, fee tracking uses only two states: **PAID** and **UNPAID**.  
    In future releases, we plan to introduce a third state, **WAIVED** (or **SKIPPED**), to handle non-billable months such as holidays, term breaks, or periods without lessons.  
    This enhancement will:
-    - Accurately reflect months where no tuition fees are due.
+    - Accurately reflect months when no tuition fees are due.
     - Allow tutors to “skip” months without breaking the sequential payment validation rule.
     - Improve clarity in fee reports by distinguishing “not billed” months from “unpaid” ones.
+
    This addition will also enhance flexibility in long-term record management and improve real-world applicability for tutoring scenarios involving variable schedules.
 5. **Integrate Fee and Attendance Systems:**  
    Currently, fee tracking and attendance operate independently.  
    We plan to introduce light integration between both modules to make payment tracking more context-aware.
+
     - When viewing a student’s fee history, tutors will also see the **number of lessons held** for each month.
     - When marking a month as **PAID** with no recorded attendance, the system will show a **confirmation prompt** to avoid mistakes.
     - When marking a month as **UNPAID** while lessons are recorded, a **reminder** will appear to alert the tutor of possible inconsistencies.
@@ -892,104 +1000,6 @@ Given below is a list of enhancements we plan to implement in future versions of
    This enhancement improves **accuracy** and **consistency** between financial and attendance records, while keeping full flexibility for tutors to override when necessary.
 4. **Unified student history view (view s/STUDENT_ID):** Introduce a consolidated view command that shows every performance note, attendance record, and fee transaction for the specified student, allowing tutors to review a learner’s full journey without hopping between modules.
 5. **Targeted performance and attendance filters (perf -v / att -v):** Extend the existing view flags to accept optional m/MMYY or t/CLASS_TAG parameters so tutors can zero in on a specific month or class when analysing historical performance or attendance data.
-
-### \[Proposed\] Undo/redo feature
-
-#### Proposed Implementation
-
-The proposed undo/redo mechanism is facilitated by `VersionedAddressBook`. It extends `AddressBook` with an undo/redo history, stored internally as an `addressBookStateList` and `currentStatePointer`. Additionally, it implements the following operations:
-
-* `VersionedAddressBook#commit()` — Saves the current address book state in its history.
-* `VersionedAddressBook#undo()` — Restores the previous address book state from its history.
-* `VersionedAddressBook#redo()` — Restores a previously undone address book state from its history.
-
-These operations are exposed in the `Model` interface as `Model#commitAddressBook()`, `Model#undoAddressBook()` and `Model#redoAddressBook()` respectively.
-
-Given below is an example usage scenario and how the undo/redo mechanism behaves at each step.
-
-Step 1. The user launches the application for the first time. The `VersionedAddressBook` will be initialized with the initial address book state, and the `currentStatePointer` pointing to that single address book state.
-
-<puml src="diagrams/UndoRedoState0.puml" alt="UndoRedoState0" />
-
-Step 2. The user executes `delete 5` command to delete the 5th person in the address book. The `delete` command calls `Model#commitAddressBook()`, causing the modified state of the address book after the `delete 5` command executes to be saved in the `addressBookStateList`, and the `currentStatePointer` is shifted to the newly inserted address book state.
-
-<puml src="diagrams/UndoRedoState1.puml" alt="UndoRedoState1" />
-
-Step 3. The user executes `add n/David …​` to add a new person. The `add` command also calls `Model#commitAddressBook()`, causing another modified address book state to be saved into the `addressBookStateList`.
-
-<puml src="diagrams/UndoRedoState2.puml" alt="UndoRedoState2" />
-
-<box type="info" seamless>
-
-**Note:** If a command fails its execution, it will not call `Model#commitAddressBook()`, so the address book state will not be saved into the `addressBookStateList`.
-
-</box>
-
-Step 4. The user now decides that adding the person was a mistake, and decides to undo that action by executing the `undo` command. The `undo` command will call `Model#undoAddressBook()`, which will shift the `currentStatePointer` once to the left, pointing it to the previous address book state, and restores the address book to that state.
-
-<puml src="diagrams/UndoRedoState3.puml" alt="UndoRedoState3" />
-
-
-<box type="info" seamless>
-
-**Note:** If the `currentStatePointer` is at index 0, pointing to the initial AddressBook state, then there are no previous AddressBook states to restore. The `undo` command uses `Model#canUndoAddressBook()` to check if this is the case. If so, it will return an error to the user rather
-than attempting to perform the undo.
-
-</box>
-
-The following sequence diagram shows how an undo operation goes through the `Logic` component:
-
-<puml src="diagrams/UndoSequenceDiagram-Logic.puml" alt="UndoSequenceDiagram-Logic" />
-
-<box type="info" seamless>
-
-**Note:** The lifeline for `UndoCommand` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline reaches the end of diagram.
-
-</box>
-
-Similarly, how an undo operation goes through the `Model` component is shown below:
-
-<puml src="diagrams/UndoSequenceDiagram-Model.puml" alt="UndoSequenceDiagram-Model" />
-
-The `redo` command does the opposite — it calls `Model#redoAddressBook()`, which shifts the `currentStatePointer` once to the right, pointing to the previously undone state, and restores the address book to that state.
-
-<box type="info" seamless>
-
-**Note:** If the `currentStatePointer` is at index `addressBookStateList.size() - 1`, pointing to the latest address book state, then there are no undone AddressBook states to restore. The `redo` command uses `Model#canRedoAddressBook()` to check if this is the case. If so, it will return an error to the user rather than attempting to perform the redo.
-
-</box>
-
-Step 5. The user then decides to execute the command `list`. Commands that do not modify the address book, such as `list`, will usually not call `Model#commitAddressBook()`, `Model#undoAddressBook()` or `Model#redoAddressBook()`. Thus, the `addressBookStateList` remains unchanged.
-
-<puml src="diagrams/UndoRedoState4.puml" alt="UndoRedoState4" />
-
-Step 6. The user executes `clear`, which calls `Model#commitAddressBook()`. Since the `currentStatePointer` is not pointing at the end of the `addressBookStateList`, all address book states after the `currentStatePointer` will be purged. Reason: It no longer makes sense to redo the `add n/David …​` command. This is the behavior that most modern desktop applications follow.
-
-<puml src="diagrams/UndoRedoState5.puml" alt="UndoRedoState5" />
-
-The following activity diagram summarizes what happens when a user executes a new command:
-
-<puml src="diagrams/CommitActivityDiagram.puml" width="250" />
-
-#### Design considerations:
-
-**Aspect: How undo & redo executes:**
-
-* **Alternative 1 (current choice):** Saves the entire address book.
-  * Pros: Easy to implement.
-  * Cons: May have performance issues in terms of memory usage.
-
-* **Alternative 2:** Individual command knows how to undo/redo by
-  itself.
-  * Pros: Will use less memory (e.g. for `delete`, just save the person being deleted).
-  * Cons: We must ensure that the implementation of each individual command are correct.
-
-_{more aspects and alternatives to be added}_
-
-### \[Proposed\] Data archiving
-
-_{Explain here how the data archiving feature will be implemented}_
-
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -1016,42 +1026,41 @@ _{Explain here how the data archiving feature will be implemented}_
 * prefers typing to mouse interactions
 * is reasonably comfortable using CLI apps
 
-**Value proposition**: Helps freelance tutors manage students, parents, schedules, and tuition fees in one place, streamlining lesson planning, tracking progress, and simplifying communication, so they can focus on teaching, not admin.
-
+**Value proposition**: Helps freelance tutors organise students, track attendance and performance, and manage tuition fees, all in one platform designed to reduce admin work so they can focus on teaching.
 
 
 ### User stories
 
 Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have) - `*`
 
-| Priority  | As a …​                                    | I want to …​                                              | So that I can…​                                                         |
-|-----------|------------------------------------------- |-----------------------------------------------------------|-------------------------------------------------------------------------|
-| `* * * `  | tutor handling lesson fees                 | tag a student as paid for a given month                   | keep track of students who have settled their tuition fees              |
-| `* * *`   | tutor handling lesson fees                 | tag a student as unpaid for a given month                 | identify students who still owe lesson fees                             |
-| `* * *`   | tutor handling lesson fees                 | filter students who have paid by month                    | view all students who have completed payment for that month at a glance |
-| `* * *`   | tutor handling lesson fees                 | filter students who have not paid by month                | follow up with students who have outstanding tuition fees               |
-| `* * *`   | tutor handling lesson fees                 | view a student's payment history up to the current month  | review their past payment behaviour and identify missed months          |
-| `* * *`   | tutor who teaches multiple classes         | create a class tag                                        | keep track of a new class I am teaching                                 |
-| `* * *`   | tutor who teaches multiple classes         | assign class tags to a student during creation or editing | manage all students of the same subject together                        |
-| `* * *`   | tutor who teaches multiple classes         | remove class tags from a student through editing          | remove students not in a particular class                               |
-| `* * *`   | tutor who teaches multiple classes         | filter students by class tag (eg. Sec_3_A_Math)           | I can focus on a precise teaching group                                 |
-| `* * *`   | tutor who teaches multiple classes         | list all the class tags                                   | I can know what classes I am teaching                                   |
-| `* * `    | tutor who teaches multiple classes         | delete a class tag                                        | keep only the classes I am still teaching                               |
-| `* * * `  | tutor     | add a performance note for a student on a given date      | I can record their progress                                             |
-| `* * * `  | tutor     | view all performance notes for a student                  | I can review their progress                                             |
-| `* * * `  | tutor     | edit a specific performance note for a student            | I can correct or update it                                              |
-| `* * * `  | tutor     | delete a specific performance note for a student          | I can remove it if needed                                               |
-| `* * *`   | tutor who teaches multiple classes         | take attendance of each student                           | I can track their attendance record                                     |
-| `* * *`   | tutor who teaches multiple classes         | view students' attendance history                         | I can track if students are consistently attending lessons              |
-| `* * *`   | tutor who teaches multiple classes         | unmark a student's attendance                             | correct mistakes or changes if attendance was marked wrongly            |
-| `* *`     | tutor who teaches multiple classes         | delete an attendance record                               | remove records for cancelled classes or fix erroneous entries           |
-| `* *`     | new tutor user                                           | view sample data                                          | understand how the app looks when populated                             |
-| `* *`     | tutor starting fresh                                     | purge sample/old data                                     | start fresh with only my real student info                              |                                                                  |
-| `* * *`   | tutor managing students                                  | add students                                              | quickly add my students into the address book                           |
-| `* * *`   | tutor managing students                                  | view students                                             | see all the students I am teaching and their details at a glance        |
-| `* *`     | tutor managing students                                  | delete students                                           | remove students who are no longer taking lessons                        |
-| `* * *`   | tutor handling many students across classes and subjects | edit student information                                  | update my contact list                                                  |
-| `* * *`   | tutor handling many students across classes and subjects | search for a student by name                              | quickly locate their information                                        |
+| Priority | As a …​                                    | I want to …​                                              | So that I can…​                                                         |
+|----------|------------------------------------------- |-----------------------------------------------------------|-------------------------------------------------------------------------|
+| `* * * ` | tutor handling lesson fees                 | tag a student as paid for a given month                   | keep track of students who have settled their tuition fees              |
+| `* * *`  | tutor handling lesson fees                 | tag a student as unpaid for a given month                 | fix mistakes and keep payment records accurate                             |
+| `* * *`  | tutor handling lesson fees                 | filter students who have paid by month                    | view all students who have completed payment for that month at a glance |
+| `* * *`  | tutor handling lesson fees                 | filter students who have not paid by month                | follow up with students who have outstanding tuition fees               |
+| `* * *`  | tutor handling lesson fees                 | view a student's payment history up to the current month  | review their past payment behaviour and identify missed months          |
+| `* * *`  | tutor who teaches multiple classes         | create a class tag                                        | keep track of a new class I am teaching                                 |
+| `* * *`  | tutor who teaches multiple classes         | assign class tags to a student during creation or editing | manage all students of the same subject together                        |
+| `* * *`  | tutor who teaches multiple classes         | remove class tags from a student through editing          | remove students not in a particular class                               |
+| `* * *`  | tutor who teaches multiple classes         | filter students by class tag (eg. Sec_3_A_Math)           | I can focus on a precise teaching group                                 |
+| `* * *`  | tutor who teaches multiple classes         | list all the class tags                                   | I can know what classes I am teaching                                   |
+| `* * `   | tutor who teaches multiple classes         | delete a class tag                                        | keep only the classes I am still teaching                               |
+| `* * * ` | tutor     | add a performance note for a student on a given date      | I can record their progress                                             |
+| `* * * ` | tutor     | view all performance notes for a student                  | I can review their progress                                             |
+| `* * * ` | tutor     | edit a specific performance note for a student            | I can correct or update it                                              |
+| `* * * ` | tutor     | delete a specific performance note for a student          | I can remove it if needed                                               |
+| `* * *`  | tutor who teaches multiple classes         | take attendance of each student                           | I can track their attendance record                                     |
+| `* * *`  | tutor who teaches multiple classes         | view students' attendance history                         | I can track if students are consistently attending lessons              |
+| `* * *`  | tutor who teaches multiple classes         | mark a student's attendance as absent                     | correct mistakes or changes if attendance was marked wrongly            |
+| `* * *`  | tutor who teaches multiple classes         | delete an attendance record                               | remove records for cancelled classes or fix erroneous entries           |
+| `* *`    | new tutor user                                           | view sample data                                          | understand how the app looks when populated                             |
+| `* *`    | tutor starting fresh                                     | purge sample/old data                                     | start fresh with only my real student info                              |                                                                  |
+| `* * *`  | tutor managing students                                  | add students                                              | quickly add my students into the address book                           |
+| `* * *`  | tutor managing students                                  | view students                                             | see all the students I am teaching and their details at a glance        |
+| `* *`    | tutor managing students                                  | delete students                                           | remove students who are no longer taking lessons                        |
+| `* * *`  | tutor handling many students across classes and subjects | edit student information                                  | update my contact list                                                  |
+| `* * *`  | tutor handling many students across classes and subjects | search for a student by name                              | quickly locate their information                                        |
 
 
 ### Use cases
@@ -1268,29 +1277,23 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
       Use case ends.
 
-* 1d. The specified class tag does not exist.
+* 1d. The provided date fails validation.
 
-    * 1d1. Tuto shows an error message indicating class tag not found.
-
-      Use case ends.
-
-* 1e. The provided date fails validation.
-
-    * 1e1. The date does not correspond to a real calendar day (e.g. 30th February).
+    * 1d1. The date does not correspond to a real calendar day (e.g. 30th February).
 
         * 1e3a. Tuto shows an error message indicating invalid date.
 
           Use case ends.
 
-* 1f. Performance note exceeds the 200-character limit.
+* 1e. Performance note exceeds the 200-character limit.
 
-    * 1f1. Tuto shows an error message indicating character limit.
+    * 1e1. Tuto shows an error message indicating character limit.
 
       Use case ends.
 
-* 1g. Performance note does not exist for the specified student on the given date for the given class.
+* 1f. Performance note does not exist for the specified student on the given date for the given class.
 
-    * 1g1. Tuto shows an error message.
+    * 1f1. Tuto shows an error message.
 
       Use case ends.
 
@@ -1304,9 +1307,11 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
     Use case ends.
 
 **Extensions**
-* 1a1. Tuto shows an error message indicating student not found.
+* 1a. The provided student ID does not match any existing student.
 
-  Use case ends.
+    * 1a1. Tuto shows an error message indicating student not found.
+
+    Use case ends.
 
 * 1b. The command format is invalid (e.g. missing prefixes).
 
@@ -1320,149 +1325,158 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
       Use case ends.
 
-* 1d. The specified class tag does not exist.
+* 1d. The provided date fails validation.
 
-    * 1d1. Tuto shows an error message indicating class tag not found.
+    * 1d1. The date does not correspond to a real calendar day (e.g. 30th February).
 
-      Use case ends.
-
-* 1e. The provided date fails validation.
-
-    * 1e1. The date does not correspond to a real calendar day (e.g. 30th February).
-
-        * 1e1a. Tuto shows an error message indicating invalid date.
+        * 1d1a. Tuto shows an error message indicating invalid date.
 
           Use case ends.
 
-* 1f. A performance note does not exist for the same student on the same date for the same class.
+* 1e. A performance note does not exist for the same student on the same date for the same class.
 
-    * 1f1. Tuto shows an error message.
+    * 1e1. Tuto shows an error message.
 
       Use case ends.
 
 
 
-**Use case: Mark Student as Paid**
-
-**Guarantees**
-1. A Paid status for the particular month is recorded for the given student only if the inputs are valid and the student is not already marked Paid for that month.
+### Use case: Mark Student as Paid
 
 **MSS**
-1. Tutor requests to mark a student as paid for a specific month.
-2. Tuto records the Paid status for that student at that specific month.
-3. Tuto shows an success message.
+1. Tutor requests to mark a student as **PAID** for a specific month.
+2. Tuto validates the request: student exists, command format is valid, and the month is **between the enrolled month and the current month (inclusive)**.
+3. Tuto verifies that **all earlier months** (from enrolment up to the previous month) are already **PAID**.
+4. Tuto records the **PAID** status for the month and displays a success message.
 
    Use case ends.
 
 **Extensions**
-* 1a. The provided student ID does not match any existing student.
-    * 1a1. Tuto shows an error message.
-
-      Use case ends.
-- 1b. The command format is invalid.
-    - 1b1. Tuto shows an error message with the correct usage format.
-
-      Use case ends.
-- 2a. The student is already marked *Paid* for that month.
-    - 2a1. Tuto shows an error message.
-
+* 2a. Command format is invalid.
+    * 2a1. Tuto shows the correct usage format.  
       Use case ends.
 
+* 2b. Student ID does not exist.
+    * 2b1. Tuto shows an error that the student cannot be found.  
+      Use case ends.
 
-**Use case: Mark Student as Unpaid**
+* 2c. The selected month is **before enrolment** or **after the current month**.
+    * 2c1. Tuto shows an error that the month is invalid.  
+      Use case ends.
 
-**Guarantees**
-1. An Unpaid status for the particular month is recorded for the given student only if the inputs are valid and the student is not already marked Unpaid for that month.
+* 2d. The selected month is **already marked as PAID**.
+    * 2d1. Tuto indicates that the payment has already been recorded.  
+      Use case ends.
+
+* 3a. An **earlier month** is **UNPAID**.
+    * 3a1. Tuto shows an error indicating the earliest unpaid month that blocks the operation.  
+      Use case ends.
+
+
+---
+
+### Use case: Mark Student as Unpaid
 
 **MSS**
-1. Tutor requests to mark a student as Unpaid for a specific month.
-2. Tuto records the Unpaid status for that student at that specific month.
-3. Tuto shows an success message.
+1. Tutor requests to mark a student as **UNPAID** for a specific month.
+2. Tuto validates the request: student exists, command format is valid, and the month is **between the enrolled month and the current month (inclusive)**.
+3. Tuto records the **UNPAID** status and displays a success message.
 
    Use case ends.
 
 **Extensions**
-* 1a. The provided student ID does not match any existing student.
-    * 1a1. Tuto shows an error message.
-
-      Use case ends.
-* 1b. The command format is invalid.
-    * 1b1. Tuto shows an error message with the correct usage format.
-
-      Use case ends.
-* 2a. The student is already marked Unpaid for that month.
-    * 2a1. Tuto shows an error message.
-
+* 2a. Command format is invalid.
+    * 2a1. Tuto shows the correct usage format.  
       Use case ends.
 
+* 2b. Student ID does not exist.
+    * 2b1. Tuto shows an error that the student cannot be found.  
+      Use case ends.
 
-**Use case: Filter Paid Students by Month**
+* 2c. The selected month is **before enrolment** or **after the current month**.
+    * 2c1. Tuto shows an error that the month is invalid.  
+      Use case ends.
 
-**Guarantees**
-1. Displays a list of students that are marked as Paid for the given month.
+* 2d. The selected month is **already marked as UNPAID**.
+    * 2d1. Tuto indicates that the month is already unpaid.  
+      Use case ends.
+
+
+---
+
+### Use case: Filter Paid Students by Month
 
 **MSS**
-1. Tutor requests to filter students that are marked as Paid for a specific month.
-2. Tuto displays a list of students that are marked as Paid for that month.
+1. Tutor requests to filter students marked **PAID** for a specific month.
+2. Tuto validates the request: command format is valid and the month is **not in the future**.
+3. Tuto applies the predicate to the model to filter students by **PAID** status for that month.
+4. Tuto displays the filtered list.
 
    Use case ends.
 
 **Extensions**
-* 1a. The command format is invalid.
-    * 1a1. Tuto shows an error message with the correct usage format.
-
+* 2a. Command format is invalid.
+    * 2a1. Tuto shows the correct usage format.  
       Use case ends.
-  
-* 2a. No Paid students found for that month.
-    * 2a1. Tuto displays a message indicating no records found.
 
+* 2b. The month is **in the future**.
+    * 2b1. Tuto shows an error that future months cannot be filtered.  
       Use case ends.
 
 
-**Use case: Filter Unpaid Students by Month**
+---
 
-**Guarantees**
-1. Displays a list of students that are marked as Unpaid for the given month.
+### Use case: Filter Unpaid Students by Month
 
 **MSS**
-1. Tutor requests to filter students that are marked as Unpaid for a specific month.
-2. System displays a list of students that are marked as Unpaid for that month.
+1. Tutor requests to filter students marked **UNPAID** for a specific month.
+2. Tuto validates the request: command format is valid and the month is **not in the future**.
+3. Tuto applies the predicate to the model to filter students by **UNPAID** status for that month.
+4. Tuto displays the filtered list.
 
    Use case ends.
 
 **Extensions**
-* 1a. The command format is invalid.
-    * 1a1. Tuto shows an error message with the correct usage format.
-
+* 2a. Command format is invalid.
+    * 2a1. Tuto shows the correct usage format.  
       Use case ends.
-  
-* 2a. No Unpaid students found for that month.
-    * 2a1. Tuto displays a message indicating no records found.
 
+* 2b. The month is **in the future**.
+    * 2b1. Tuto shows an error that future months cannot be filtered.  
       Use case ends.
 
 
-**Use case: View Payment History of a Student**
+---
 
-**Guarantees**
-1.	Displays the payment history of the student for up to six months prior to the current month.
+### Use case: View Payment History of a Student
 
 **MSS**
-1. Tutor requests to view the payment history of a student.
-2. System retrieves and the student’s month-by-month payment status for the past six months, up to the current month.
+1. Tutor requests to view a student’s payment history (optionally with a start month).
+2. Tuto validates the request: command format is valid, the student exists, and the provided start month (if any) is **not in the future**.
+3. Tuto determines the effective start month:
+    * If a start month is provided, the range starts from the **later** of the provided month and the **enrolled month**.
+    * Otherwise, the range starts from the **enrolled month**.
+4. Tuto retrieves the month-by-month history from the effective start to the current month.
+5. Tuto displays the history in reverse-chronological order (current month at the top, effective start at the bottom), indicating whether each month is an **explicit** mark or a **default** (unmarked → UNPAID).
 
    Use case ends.
 
 **Extensions**
-* 1a. The student ID is invalid or missing.
-    * 1a1. Tuto shows an error message.
-
+* 2a. Command format is invalid.
+    * 2a1. Tuto shows the correct usage format.  
       Use case ends.
-  
-* 2a. The student has no payment records yet.
-    * 2a1. Tuto displays a message indicating no records found.
 
+* 2b. Student ID does not exist.
+    * 2b1. Tuto shows an error that the student cannot be found.  
       Use case ends.
+
+* 2c. The provided start month is **after the current month**.
+    * 2c1. Tuto shows an error that future months cannot be displayed.  
+      Use case ends.
+
+* 3a. The provided start month is **before enrolment**.
+    * 3a1. Tuto automatically adjusts the start to the enrolment month.  
+      Use case continues at Step 4.
 
 
 **Use case: Mark attendance for a student**
@@ -1486,10 +1500,10 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
       Use case ends.
 
 
-**Use case: Unmark attendance for a student**
+**Use case: Mark attendance as absent for a student**
 
 **MSS**
-1. User unmarks attendance of a student.
+1. User marks attendance of a student as absent.
 2. Tuto records the attendance as absent for the specified student and date.
 3. Tuto confirms that the attendance has been updated.
 
@@ -1553,7 +1567,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 1. Tutor requests to create a new student, providing all required details and one or more optional class tags.
 2. Tuto adds student to records.
-3. Tuto confirms the student has been added.
+3. The new student record is successfully created.
 
    Use case ends.
 
@@ -1668,10 +1682,10 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 ### Glossary
 
-* **Mainstream OS**: Windows, Linux, Unix, MacOS
+* **Mainstream OS**: Windows, Linux, Unix, macOS
 * **Private contact detail**: A contact detail that is not meant to be shared with others
 * **Student ID**: A 4-digit unique numeric identifier (0000–9999) assigned to each student when added to the system.
-* **Payment History**: A record that shows a student’s Paid or Unpaid fee status for each month, covering up to the six most recent months before the current month.
+* **Payment History**: A record covering a range from a start month (either the student’s enrolment month or an explicitly provided m/MMYY) up to the current month (inclusive). The UI displays this range in reverse-chronological order (newest month first). Months after enrolment with no explicit record are derived as UNPAID by default.
 * **Performance note**: A short textual record of a student's performance on a given date
 * **Attendance History**: A record that shows a student's attendance history, covering up to the six most recent months before the current month.
 * **Executable JAR**: A Java Archive file that contains all compiled classes and resources, which can be run directly without installation.
@@ -1834,6 +1848,114 @@ testers are expected to do more *exploratory* testing.
        **Expected:** Command rejected. Error message indicates tag is still in use by students.
 
 ---
+### Managing Fees
+
+#### Marking a Student as Paid
+
+1. Marking a student as PAID for a valid month
+
+    1. Prerequisites: The student exists and has an enrolled month earlier than the target month (e.g., enrolled in August 2025).
+
+    1. Test case: `fee -p s/0001 m/0925`  
+       **Expected:** The student's payment status for September 2025 is marked as **PAID**.  
+       A success message appears confirming the update.
+
+1. Attempting to mark a month **before the student’s enrolled month**
+
+    1. Test case: `fee -p s/0001 m/0725`  
+       **Expected:** Command rejected. Error message states that months before the student’s enrolment cannot be marked.
+
+1. Attempting to mark a **future month**
+
+    1. Test case: `fee -p s/0001 m/1225` (if the current month is October 2025)  
+       **Expected:** Command rejected. Error message states that future months cannot be marked as paid.
+
+1. Attempting to skip an unpaid month
+
+    1. Prerequisites: Ensure the student has an unpaid month before the target month (e.g., September 2025 is unpaid).
+
+    1. Test case: `fee -p s/0001 m/1025`  
+       **Expected:** Command rejected. Error message indicates that earlier unpaid months must be marked first.
+
+---
+
+#### Marking a Student as Unpaid
+
+1. Marking a previously paid month as **UNPAID**
+
+    1. Prerequisites: The student has been marked as paid for a month (e.g., September 2025).
+
+    1. Test case: `fee -up s/0001 m/0925`  
+       **Expected:** The payment status for September 2025 changes to **UNPAID**.  
+       A success message confirms the correction.
+
+1. Attempting to mark a **future month** as unpaid
+
+    1. Test case: `fee -up s/0001 m/1225` (if the current month is October 2025)  
+       **Expected:** Command rejected. Error message states that future months cannot be marked.
+
+1. Attempting to mark a month **before enrolment**
+
+    1. Test case: `fee -up s/0001 m/0725`  
+       **Expected:** Command rejected. Error message indicates that months before enrolment cannot be marked.
+
+1. Attempting to mark an already **UNPAID** month
+
+    1. Test case: `fee -up s/0001 m/0925` (if it is already unpaid)  
+       **Expected:** Command rejected. Error message indicates that the month is already unpaid.
+
+---
+
+#### Viewing a Student’s Payment History
+
+1. Viewing complete payment history from enrolment
+
+    1. Test case: `fee -v s/0001`  
+       **Expected:** Displays all months from the enrolment month up to the current month, ordered from newest to oldest (current month first, enrolment month last). Each row shows the payment status (e.g., PAID or UNPAID) and whether it was **explicitly marked** or **set by default**.
+   
+1. Viewing payment history with a **custom start month**
+
+    1. Test case: `fee -v s/0001 m/0525`  
+       **Expected:** Displays payment history starting from the given month (or enrolment month if the given month is before enrolment),  ordered newest to oldest.   
+       The system automatically adjusts the start month.
+
+1. Attempting to view **future month history**
+
+    1. Test case: `fee -v s/0001 m/1225` (if the current month is October 2025)  
+       **Expected:** Command rejected. Error message states that future months cannot be displayed.
+
+1. Attempting to view payment history of a **non-existent student**
+
+    1. Test case: `fee -v s/9999`  
+       **Expected:** Command rejected. Error message indicates that the student ID was not found.
+
+---
+
+#### Filtering Students by Payment Status
+
+1. Filtering students who have **Paid**
+
+    1. Test case: `filter -p m/0925`  
+       **Expected:** Displays only students who have been marked as **PAID** for September 2025.  
+       Status message confirms the number of students listed.
+
+1. Filtering students who are **Unpaid**
+
+    1. Test case: `filter -up m/0925`  
+       **Expected:** Displays only students who are **UNPAID** for September 2025.  
+       Status message confirms the number of students listed.
+
+1. Attempting to filter using a **future month**
+
+    1. Test case: `filter -p m/1225` (if the current month is October 2025)  
+       **Expected:** Command rejected. Error message states that future months cannot be filtered.
+
+1. Filtering with **no matching students**
+
+    1. Test case: `filter -p m/0925` (when no students are paid for that month)  
+       **Expected:** Displays message: “No matching students found.”
+
+---
 ---
 
 ### Managing Performance Notes
@@ -1845,19 +1967,19 @@ testers are expected to do more *exploratory* testing.
     1. Prerequisites: Student exists with the specified Student ID (e.g., `0001`) and is assigned the relevant class tag (e.g., `Sec3_Maths`).<br>
        Use `add`/`edit` commands beforehand to set up the student and class tag if necessary.
 
-    1. Test case: `perf -a s/0001 d/18092025 t/Sec3_Maths pn/Scored 85% on mock test`
+    1. Test case: `perf -a s/0001 d/18092025 t/Sec3_Maths pn/Scored 85% on mock test`  
        **Expected:** Performance note added. Status message confirms success and the note appears in the performance panel.
 
 1. Adding a duplicate performance note
 
     1. Prerequisites: Performance note already exists for the same student, date, and class tag as above.
 
-    1. Test case: `perf -a s/0001 d/18092025 t/Sec3_Maths pn/Scored 85% on mock test`
+    1. Test case: `perf -a s/0001 d/18092025 t/Sec3_Maths pn/Scored 85% on mock test`  
        **Expected:** Command rejected. Error message indicates a note already exists for that date and class tag.
 
 1. Adding a performance note that exceeds the note length limit
 
-    1. Test case: `perf -a s/0001 d/18092025 t/Sec3_Maths pn/` followed by a note longer than 200 characters
+    1. Test case: `perf -a s/0001 d/18092025 t/Sec3_Maths pn/` followed by a note longer than 200 characters  
        **Expected:** Command rejected. Error message indicates the performance note exceeds the maximum length.
 
 ---
@@ -1868,19 +1990,19 @@ testers are expected to do more *exploratory* testing.
 
     1. Prerequisites: Student `0001` has at least one performance note.
 
-    1. Test case: `perf -v s/0001`
+    1. Test case: `perf -v s/0001`  
        **Expected:** Performance panel updates to show all notes for the student in chronological order. Status message confirms number of notes shown.
 
 1. Viewing performance notes for a student without notes
 
     1. Prerequisites: Student `0002` exists but has no performance notes.
 
-    1. Test case: `perf -v s/0002`
+    1. Test case: `perf -v s/0002`  
        **Expected:** Command succeeds. Status message indicates no performance notes found, and the performance panel is empty.
 
 1. Viewing performance notes for a non-existent student
 
-    1. Test case: `perf -v s/9999`
+    1. Test case: `perf -v s/9999`  
        **Expected:** Command rejected. Error message indicates the student cannot be found.
 
 ---
@@ -1891,17 +2013,17 @@ testers are expected to do more *exploratory* testing.
 
     1. Prerequisites: Student `0001` has a performance note on `18092025` for `Sec3_Maths` with any content.
 
-    1. Test case: `perf -e s/0001 d/18092025 t/Sec3_Maths pn/Improved to 90% after review`
+    1. Test case: `perf -e s/0001 d/18092025 t/Sec3_Maths pn/Improved to 90% after review`  
        **Expected:** Performance note updated. Status message confirms edit and performance panel reflects new note text.
 
 1. Editing a non-existent performance note
 
-    1. Test case: `perf -e s/0001 d/19092025 t/Sec3_Maths pn/Test`
+    1. Test case: `perf -e s/0001 d/19092025 t/Sec3_Maths pn/Test`  
        **Expected:** Command rejected. Error message indicates no matching performance note exists for the given date and class tag.
 
 1. Editing with a note exceeding the length limit
 
-    1. Test case: `perf -e s/0001 d/18092025 t/Sec3_Maths pn/` followed by a note longer than 200 characters
+    1. Test case: `perf -e s/0001 d/18092025 t/Sec3_Maths pn/` followed by a note longer than 200 characters  
        **Expected:** Command rejected. Error message indicates the performance note exceeds the maximum length.
 
 ---
@@ -1912,17 +2034,17 @@ testers are expected to do more *exploratory* testing.
 
     1. Prerequisites: Student `0001` has a performance note on `18092025` for `Sec3_Maths`.
 
-    1. Test case: `perf -d s/0001 d/18092025 t/Sec3_Maths`
+    1. Test case: `perf -d s/0001 d/18092025 t/Sec3_Maths`  
        **Expected:** Performance note removed. Status message confirms deletion and the note disappears from the performance panel.
 
 1. Deleting a non-existent performance note
 
-    1. Test case: `perf -d s/0001 d/19092025 t/Sec3_Maths`
+    1. Test case: `perf -d s/0001 d/19092025 t/Sec3_Maths`  
        **Expected:** Command rejected. Error message indicates no matching performance note exists.
 
 1. Deleting a performance note for a non-existent student
 
-    1. Test case: `perf -d s/9999 d/18092025 t/Sec3_Maths`
+    1. Test case: `perf -d s/9999 d/18092025 t/Sec3_Maths`  
        **Expected:** Command rejected. Error message indicates the student cannot be found.
 
 ---

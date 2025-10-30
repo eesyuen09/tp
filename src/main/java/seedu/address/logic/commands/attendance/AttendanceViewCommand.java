@@ -1,11 +1,19 @@
 package seedu.address.logic.commands.attendance;
 
 import static java.util.Objects.requireNonNull;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_STUDENTID;
+
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
+import seedu.address.model.attendance.Attendance;
+import seedu.address.model.attendance.AttendanceHistoryEntry;
+import seedu.address.model.attendance.AttendanceHistorySummary;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
 
@@ -15,7 +23,12 @@ import seedu.address.model.person.StudentId;
  */
 public class AttendanceViewCommand extends AttendanceCommand {
 
-    public static final String MESSAGE_VIEW_SUCCESS = "Attendance records for: %1$s\n%2$s";
+    public static final String COMMAND_FLAG = "-v";
+
+    public static final String MESSAGE_USAGE = "Views attendance history for a student.\n"
+            + "Parameters: " + PREFIX_STUDENTID + "STUDENT_ID\n"
+            + "Example: " + COMMAND_WORD + " " + COMMAND_FLAG + " " + PREFIX_STUDENTID + "0123";
+
     public static final String MESSAGE_NO_RECORDS = "No attendance record found for: %1$s";
 
     /**
@@ -39,34 +52,27 @@ public class AttendanceViewCommand extends AttendanceCommand {
             return new CommandResult(String.format(MESSAGE_NO_RECORDS, person.getName()));
         }
 
-        String attendanceHistory = formatAttendanceRecords(person);
+        List<AttendanceHistoryEntry> entries = person.getAttendanceList().asUnmodifiableList().stream()
+                .sorted(Comparator
+                        .comparing((Attendance attendance) -> attendance.getDate().toLocalDate())
+                        .thenComparing(attendance -> attendance.getClassTag().tagName))
+                .map(attendance -> new AttendanceHistoryEntry(attendance.getDate(), attendance.getClassTag(),
+                        attendance.isStudentPresent()))
+                .collect(Collectors.toList());
 
-        return new CommandResult(String.format(MESSAGE_VIEW_SUCCESS, person.getName(), attendanceHistory));
+        AttendanceHistorySummary summary = new AttendanceHistorySummary(person.getName().toString(),
+                person.getStudentId(),
+                entries.get(0).getDate(),
+                entries.get(entries.size() - 1).getDate(),
+                entries.size());
+        model.setDisplayedAttendanceHistory(entries, summary);
+
+        String header = String.format("Attendance history for %s (Student ID %s) displayed.",
+                person.getName().fullName, studentId);
+
+        return new CommandResult(header);
     }
 
-    /**
-     * Formats the attendance records for display.
-     */
-    private String formatAttendanceRecords(Person person) {
-        StringBuilder sb = new StringBuilder();
-        person.getAttendanceList().asUnmodifiableList().stream()
-                .sorted((a1, a2) -> {
-                    int dateComparison = a1.getDate().toString().compareTo(a2.getDate().toString());
-                    if (dateComparison != 0) {
-                        return dateComparison;
-                    }
-                    return a1.getClassTag().tagName.compareTo(a2.getClassTag().tagName);
-                })
-                .forEach(attendance -> {
-                    sb.append(attendance.getDate().getFormattedDate())
-                            .append(" - ")
-                            .append(attendance.getClassTag().tagName)
-                            .append(": ")
-                            .append(attendance.isStudentPresent() ? "Present" : "Absent")
-                            .append("\n");
-                });
-        return sb.toString().trim();
-    }
 
     @Override
     public boolean equals(Object other) {

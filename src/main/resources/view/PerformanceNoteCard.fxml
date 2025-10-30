@@ -13,6 +13,10 @@
     <VBox spacing="5">
         <Label fx:id="date" styleClass="cell_small_label" />
         <Label fx:id="classTag" styleClass="cell_small_label" />
-        <Label fx:id="content" wrapText="true" />
+<<<<<<< HEAD
+        <Label fx:id="content" wrapText="true"  />
+=======
+        <Label fx:id="content" wrapText="true" styleClass="cell_small_label" />
+>>>>>>> master
     </VBox>
 </HBox>

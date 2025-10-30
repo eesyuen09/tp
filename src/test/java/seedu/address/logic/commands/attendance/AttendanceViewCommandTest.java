@@ -5,12 +5,15 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.testutil.Assert.assertThrows;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
+import seedu.address.model.attendance.AttendanceHistoryEntry;
+import seedu.address.model.attendance.AttendanceHistorySummary;
 import seedu.address.model.attendance.AttendanceList;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
@@ -40,18 +43,25 @@ public class AttendanceViewCommandTest {
         Person validPerson = new PersonBuilder().withStudentId(VALID_STUDENT_ID_STRING).build();
         // Mark some attendance records
         AttendanceList attendanceList = new AttendanceList();
-        attendanceList.markAttendance(VALID_DATE_1, VALID_CLASS_TAG);
-        attendanceList.markAttendance(VALID_DATE_2, VALID_CLASS_TAG);
-        attendanceList.unmarkAttendance(VALID_DATE_2, VALID_CLASS_TAG); // Mark one as absent
+        attendanceList.markAttendancePresent(VALID_DATE_1, VALID_CLASS_TAG);
+        attendanceList.markAttendancePresent(VALID_DATE_2, VALID_CLASS_TAG);
+        attendanceList.markAttendanceAbsent(VALID_DATE_2, VALID_CLASS_TAG); // Mark one as absent
         validPerson = validPerson.withAttendanceList(attendanceList);
         modelStub.person = validPerson;
 
         CommandResult commandResult = new AttendanceViewCommand(VALID_STUDENT_ID).execute(modelStub);
 
         String feedback = commandResult.getFeedbackToUser();
-        assertTrue(feedback.contains(validPerson.getName().toString()));
-        assertTrue(feedback.contains(VALID_DATE_1.getFormattedDate()));
-        assertTrue(feedback.contains(VALID_DATE_2.getFormattedDate()));
+        String expectedHeader = String.format("Attendance history for %s (Student ID %s) displayed.",
+                validPerson.getName().fullName, VALID_STUDENT_ID);
+        assertEquals(expectedHeader, feedback);
+        assertEquals(2, modelStub.displayedEntries.size());
+        AttendanceHistorySummary summary = modelStub.displayedSummary;
+        assertEquals(validPerson.getName().toString(), summary.getStudentName());
+        assertEquals(validPerson.getStudentId(), summary.getStudentId());
+        assertEquals(VALID_DATE_1, summary.getStartDate());
+        assertEquals(VALID_DATE_2, summary.getEndDate());
+        assertEquals(2, summary.getRecordCount());
     }
 
     @Test
@@ -109,10 +119,25 @@ public class AttendanceViewCommandTest {
      */
     private class ModelStubWithPerson extends ModelStub {
         private Person person;
+        private List<AttendanceHistoryEntry> displayedEntries = List.of();
+        private AttendanceHistorySummary displayedSummary;
 
         @Override
         public Optional<Person> getPersonById(StudentId studentId) {
             return Optional.of(person);
+        }
+
+        @Override
+        public void setDisplayedAttendanceHistory(List<AttendanceHistoryEntry> entries,
+                                                  AttendanceHistorySummary summary) {
+            this.displayedEntries = entries;
+            this.displayedSummary = summary;
+        }
+
+        @Override
+        public void clearDisplayedAttendanceHistory() {
+            this.displayedEntries = List.of();
+            this.displayedSummary = null;
         }
     }
 

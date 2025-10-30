@@ -8,14 +8,18 @@ import static java.util.Objects.requireNonNull;
  */
 public class ClassTag {
 
-    public static final String MESSAGE_CONSTRAINTS =
-            "Invalid tag name. Tags must be 1-30 characters long, alphanumeric with underscores allowed.";
-
     public static final String VALIDATION_REGEX = "[\\p{Alnum}_]+";
 
     private static final int MAX_LENGTH = 30;
 
+    private static final int MIN_LENGTH = 1;
+
+    public static final String MESSAGE_CONSTRAINTS = "Invalid tag name. Tags must be "
+            + MIN_LENGTH + "-"
+            + MAX_LENGTH + " characters long, alphanumeric with underscores allowed.";
+
     public final String tagName;
+
 
     /**
      * Constructs a {@code ClassTag}.
@@ -34,8 +38,13 @@ public class ClassTag {
     /**
      * Returns true if a given string is a valid tag name.
      * A valid tag name must be 1-30 characters long and match the validation regex.
+     *
+     * @param test The string to be tested.
+     * @return true if the string is a valid tag name, false otherwise.
      */
     public static boolean isValidTagName(String test) {
+
+        requireNonNull(test);
 
         if (test.isEmpty() || test.length() > MAX_LENGTH) {
             return false;

@@ -80,7 +80,8 @@ public class PerfViewCommandTest {
         PerfViewCommand command = new PerfViewCommand(VALID_STUDENT_ID);
         CommandResult result = command.execute(model);
 
-        String expectedMessage = "Performance Notes for " + studentWithNote.getName() + " displayed.";
+        String expectedMessage = "Performance Notes for " + studentWithNote.getName()
+                + " (Student ID " + studentWithNote.getStudentId().toString() + ") displayed.";
 
         assertCommandSuccess(new PerfViewCommand(VALID_STUDENT_ID), model, expectedMessage, model);
         assertEquals(List.of(note), model.getDisplayedPerformanceNotes());
@@ -100,7 +101,8 @@ public class PerfViewCommandTest {
         Model model = new ModelManager(new AddressBook(), new UserPrefs());
         model.addPerson(studentWithNotes);
 
-        String expectedMessage = "Performance Notes for " + studentWithNotes.getName() + " displayed.";
+        String expectedMessage = "Performance Notes for " + studentWithNotes.getName()
+                + " (Student ID " + studentWithNotes.getStudentId().toString() + ") displayed.";
 
         assertCommandSuccess(new PerfViewCommand(VALID_STUDENT_ID), model, expectedMessage, model);
         assertEquals(List.of(note2, note1), model.getDisplayedPerformanceNotes());
@@ -118,7 +120,8 @@ public class PerfViewCommandTest {
         ModelStubWithPerson modelStub = new ModelStubWithPerson(studentWithNote);
         CommandResult result = new PerfViewCommand(VALID_STUDENT_ID).execute(modelStub);
 
-        String expectedMessage = "Performance Notes for " + studentWithNote.getName() + " displayed.";
+        String expectedMessage = "Performance Notes for " + studentWithNote.getName()
+                + " (Student ID " + studentWithNote.getStudentId().toString() + ") displayed.";
 
         assertTrue(result.getFeedbackToUser().equals(expectedMessage));
         assertEquals(List.of(note), modelStub.getDisplayedNotes());
