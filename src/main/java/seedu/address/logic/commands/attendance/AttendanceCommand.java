@@ -22,12 +22,12 @@ public abstract class AttendanceCommand extends Command {
             + ": Manages attendance for the students.\n"
             + "Requires a flag to specify the action.\n"
             + "Actions:\n"
-            + "Mark: -m " + PREFIX_STUDENTID + "STUDENTID " + PREFIX_DATE + "DATE (format: DDMMYYYY) "
+            + "Mark: -m " + PREFIX_STUDENTID + "STUDENT_ID " + PREFIX_DATE + "DDMMYYYY "
             + PREFIX_CLASSTAG + "CLASS_TAG\n"
-            + "Unmark: -u " + PREFIX_STUDENTID + "STUDENTID " + PREFIX_DATE + "DATE (format: DDMMYYYY) "
+            + "Unmark: -u " + PREFIX_STUDENTID + "STUDENT_ID " + PREFIX_DATE + "DDMMYYYY "
             + PREFIX_CLASSTAG + "CLASS_TAG\n"
-            + "View: -v " + PREFIX_STUDENTID + "STUDENTID\n"
-            + "Delete: -d " + PREFIX_STUDENTID + "STUDENTID " + PREFIX_DATE + "DATE (format: DDMMYYYY) "
+            + "View: -v " + PREFIX_STUDENTID + "STUDENT_ID\n"
+            + "Delete: -d " + PREFIX_STUDENTID + "STUDENT_ID " + PREFIX_DATE + "DDMMYYYY "
             + PREFIX_CLASSTAG + "CLASS_TAG\n"
             + "Examples:\n"
             + COMMAND_WORD + " -m " + PREFIX_STUDENTID + "0123 " + PREFIX_DATE + "15092025 "
@@ -50,8 +50,3 @@ public abstract class AttendanceCommand extends Command {
         this.studentId = studentId;
     }
 }
-
-
-
-
-

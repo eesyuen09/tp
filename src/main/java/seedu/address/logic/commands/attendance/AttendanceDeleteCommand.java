@@ -1,6 +1,9 @@
 package seedu.address.logic.commands.attendance;
 
 import static java.util.Objects.requireNonNull;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_CLASSTAG;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_DATE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_STUDENTID;
 
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.CommandResult;
@@ -16,10 +19,17 @@ import seedu.address.model.time.Date;
  */
 public class AttendanceDeleteCommand extends AttendanceCommand {
 
+    public static final String COMMAND_FLAG = "-d";
+
+    public static final String MESSAGE_USAGE = "Deletes an attendance record for a student.\n"
+            + "Parameters: " + PREFIX_STUDENTID + "STUDENT_ID " + PREFIX_DATE + "DDMMYYYY "
+            + PREFIX_CLASSTAG + "CLASS_TAG\n"
+            + "Example: " + COMMAND_WORD + " " + COMMAND_FLAG + " " + PREFIX_STUDENTID + "0123 "
+            + PREFIX_DATE + "15092025 " + PREFIX_CLASSTAG + "Sec3_AMath";
+
     public static final String MESSAGE_DELETE_SUCCESS = "Deleted attendance for: %1$s on %2$s for class %3$s";
     public static final String MESSAGE_NO_ATTENDANCE_RECORD = "No attendance record found for %1$s "
             + "on %2$s for class %3$s";
-    public static final String MESSAGE_CLASS_TAG_NOT_FOUND = "Class tag does not exist: %1$s";
 
     private final Date date;
     private final ClassTag classTag;
@@ -42,11 +52,6 @@ public class AttendanceDeleteCommand extends AttendanceCommand {
         Person personToEdit = model.getPersonById(studentId)
                 .orElseThrow(() -> new CommandException(
                         String.format(Messages.MESSAGE_STUDENT_ID_NOT_FOUND, studentId)));
-
-        // Check if the class tag exists in the address book
-        if (!model.hasClassTag(classTag)) {
-            throw new CommandException(String.format(MESSAGE_CLASS_TAG_NOT_FOUND, classTag.tagName));
-        }
 
         if (!personToEdit.getAttendanceList().hasAttendanceRecord(date, classTag)) {
             throw new CommandException(String.format(MESSAGE_NO_ATTENDANCE_RECORD,

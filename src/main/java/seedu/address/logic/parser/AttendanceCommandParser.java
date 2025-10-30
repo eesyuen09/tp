@@ -38,13 +38,13 @@ public class AttendanceCommandParser implements Parser<AttendanceCommand> {
         String arguments = splitArgs.length > 1 ? splitArgs[1] : "";
 
         switch (flag) {
-        case "-m":
+        case AttendanceMarkCommand.COMMAND_FLAG:
             return parseMarkCommand(arguments);
-        case "-u":
+        case AttendanceUnmarkCommand.COMMAND_FLAG:
             return parseUnmarkCommand(arguments);
-        case "-d":
+        case AttendanceDeleteCommand.COMMAND_FLAG:
             return parseDeleteCommand(arguments);
-        case "-v":
+        case AttendanceViewCommand.COMMAND_FLAG:
             return parseViewCommand(arguments);
         default:
             throw new ParseException(
@@ -64,7 +64,7 @@ public class AttendanceCommandParser implements Parser<AttendanceCommand> {
         if (!arePrefixesPresent(argMultimap, PREFIX_STUDENTID, PREFIX_DATE, PREFIX_CLASSTAG)
                 || !argMultimap.getPreamble().trim().isEmpty()) {
             throw new ParseException(
-                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, AttendanceCommand.MESSAGE_USAGE));
+                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, AttendanceMarkCommand.MESSAGE_USAGE));
         }
 
         StudentId studentId = ParserUtil.parseStudentId(argMultimap.getValue(PREFIX_STUDENTID).get());
@@ -86,7 +86,7 @@ public class AttendanceCommandParser implements Parser<AttendanceCommand> {
         if (!arePrefixesPresent(argMultimap, PREFIX_STUDENTID, PREFIX_DATE, PREFIX_CLASSTAG)
                 || !argMultimap.getPreamble().trim().isEmpty()) {
             throw new ParseException(
-                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, AttendanceCommand.MESSAGE_USAGE));
+                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, AttendanceUnmarkCommand.MESSAGE_USAGE));
         }
 
         StudentId studentId = ParserUtil.parseStudentId(argMultimap.getValue(PREFIX_STUDENTID).get());
@@ -108,7 +108,7 @@ public class AttendanceCommandParser implements Parser<AttendanceCommand> {
         if (!arePrefixesPresent(argMultimap, PREFIX_STUDENTID, PREFIX_DATE, PREFIX_CLASSTAG)
                 || !argMultimap.getPreamble().trim().isEmpty()) {
             throw new ParseException(
-                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, AttendanceCommand.MESSAGE_USAGE));
+                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, AttendanceDeleteCommand.MESSAGE_USAGE));
         }
 
         StudentId studentId = ParserUtil.parseStudentId(argMultimap.getValue(PREFIX_STUDENTID).get());
@@ -129,7 +129,7 @@ public class AttendanceCommandParser implements Parser<AttendanceCommand> {
         if (!arePrefixesPresent(argMultimap, PREFIX_STUDENTID)
                 || !argMultimap.getPreamble().trim().isEmpty()) {
             throw new ParseException(
-                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, AttendanceCommand.MESSAGE_USAGE));
+                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, AttendanceViewCommand.MESSAGE_USAGE));
         }
 
         StudentId studentId = ParserUtil.parseStudentId(argMultimap.getValue(PREFIX_STUDENTID).get());

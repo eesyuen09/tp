@@ -1,6 +1,9 @@
 package seedu.address.logic.commands.attendance;
 
 import static java.util.Objects.requireNonNull;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_CLASSTAG;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_DATE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_STUDENTID;
 
 import java.time.LocalDate;
 
@@ -20,10 +23,17 @@ import seedu.address.model.time.Date;
  */
 public class AttendanceUnmarkCommand extends AttendanceCommand {
 
+    public static final String COMMAND_FLAG = "-u";
+
+    public static final String MESSAGE_USAGE = "Marks a student's attendance as absent.\n"
+            + "Parameters: " + PREFIX_STUDENTID + "STUDENT_ID " + PREFIX_DATE + "DDMMYYYY "
+            + PREFIX_CLASSTAG + "CLASS_TAG\n"
+            + "Example: " + COMMAND_WORD + " " + COMMAND_FLAG + " " + PREFIX_STUDENTID + "0123 "
+            + PREFIX_DATE + "15092025 " + PREFIX_CLASSTAG + "Sec3_AMath";
+
     public static final String MESSAGE_UNMARK_SUCCESS = "Unmarked attendance for: %1$s on %2$s for class %3$s";
     public static final String MESSAGE_ALREADY_UNMARKED =
             "Attendance for %1$s on %2$s for class %3$s is already unmarked.";
-    public static final String MESSAGE_CLASS_TAG_NOT_FOUND = "Class tag does not exist: %1$s";
     public static final String MESSAGE_STUDENT_DOES_NOT_HAVE_TAG = "Student %1$s does not have the class tag: %2$s";
     public static final String MESSAGE_FUTURE_DATE = "Cannot unmark attendance for future date: %1$s";
     public static final String MESSAGE_BEFORE_ENROLLMENT =
@@ -67,7 +77,7 @@ public class AttendanceUnmarkCommand extends AttendanceCommand {
 
         // Check if the class tag exists in the address book
         if (!model.hasClassTag(classTag)) {
-            throw new CommandException(String.format(MESSAGE_CLASS_TAG_NOT_FOUND, classTag.tagName));
+            throw new CommandException(Messages.MESSAGE_TAG_NOT_FOUND);
         }
 
         if (!personToEdit.getTags().contains(classTag)) {

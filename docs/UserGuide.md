@@ -570,6 +570,7 @@ Use this to remove attendance records that were marked by mistake or are no long
 * This command removes an existing attendance record for a student.
 * An attendance record must exist for the given date and class for the deletion to succeed.
 * The student does **not** need to currently have the specified class tag assigned. This allows you to delete historical attendance records even after a student has left a class and the tag has been removed.
+* The class tag does **not** need to exist in the system anymore. This allows you to clean up orphaned attendance records after deleting a class tag.
 * The date must be in `DDMMYYYY` format (e.g., `15092025` for 15 September 2025).
 
 **Examples:**
