@@ -24,110 +24,11 @@
     },
     {
       "src": "UserGuide.md",
-      "title": "User Guide",
-      "sections": [
-        {
-          "title": "Introduction",
-          "src": "UserGuide.md#1-introduction",
-          "sections": [
-            { "title": "What is Tuto?", "src": "UserGuide.md#11-what-is-tuto" },
-            { "title": "Main Features", "src": "UserGuide.md#12-main-features" }
-          ]
-        },
-        {
-          "title": "Getting Started",
-          "src": "UserGuide.md#2-getting-started",
-          "sections": [
-            { "title": "Installation", "src": "UserGuide.md#21-installation" },
-            { "title": "How to Use Tuto Commands", "src": "UserGuide.md#22-how-to-use-tuto-commands" }
-          ]
-        },
-        {
-          "title": "Commands",
-          "src": "UserGuide.md#3-commands",
-          "sections": [
-            {
-              "title": "Student Management",
-              "src": "UserGuide.md#31-student-management",
-              "sections": [
-                { "title": "Adding a student", "src": "UserGuide.md#311-adding-a-student--add" },
-                { "title": "Editing a student", "src": "UserGuide.md#312-editing-a-student--edit" },
-                { "title": "Finding students", "src": "UserGuide.md#313-finding-students--find" },
-                { "title": "Deleting a student", "src": "UserGuide.md#314-deleting-a-student--delete" },
-                { "title": "Listing all students", "src": "UserGuide.md#315-listing-all-students--list" },
-                { "title": "Clearing all entries", "src": "UserGuide.md#316-clearing-all-entries--clear" }
-              ]
-            },
-            {
-              "title": "Class Tag Management",
-              "src": "UserGuide.md#32-class-tag-management",
-              "sections": [
-                { "title": "Adding a class tag", "src": "UserGuide.md#321-adding-a-class-tag--tag--a" },
-                { "title": "Deleting a class tag", "src": "UserGuide.md#322-deleting-a-class-tag--tag--d" },
-                { "title": "Listing all class tags", "src": "UserGuide.md#323-listing-all-class-tags--tag--l" }
-              ]
-            },
-            {
-              "title": "Fee Management",
-              "src": "UserGuide.md#33-fee-management",
-              "sections": [
-                { "title": "Marking a student as paid", "src": "UserGuide.md#331-marking-a-student-as-paid-fee--p" },
-                { "title": "Marking a student as unpaid", "src": "UserGuide.md#332-marking-a-student-as-unpaid-fee--up" },
-                { "title": "Viewing payment history", "src": "UserGuide.md#334-viewing-a-students-payment-history-fee--v" }
-              ]
-            },
-            {
-              "title": "Attendance Management",
-              "src": "UserGuide.md#34-attendance-management",
-              "sections": [
-                { "title": "Marking as present", "src": "UserGuide.md#341-marking-a-student-as-present--att--p" },
-                { "title": "Marking as absent", "src": "UserGuide.md#342--marking-a-student-as-absent--att--a" },
-                { "title": "Deleting attendance record", "src": "UserGuide.md#343-deleting-an-attendance-record--att--d" },
-                { "title": "Viewing attendance records", "src": "UserGuide.md#344-viewing-a-students-attendance-records--att--v" }
-              ]
-            },
-            {
-              "title": "Performance Management",
-              "src": "UserGuide.md#35-performance-management",
-              "sections": [
-                { "title": "Adding a performance note", "src": "UserGuide.md#351-adding-a-performance-note-for-a-student--perf--a" },
-                { "title": "Editing a performance note", "src": "UserGuide.md#352-editing-a-performance-note-for-a-student--perf--e" },
-                { "title": "Deleting a performance note", "src": "UserGuide.md#353-deleting-a-performance-note-for-a-student--perf--d" },
-                { "title": "Viewing performance notes", "src": "UserGuide.md#354-viewing-performance-notes-for-a-student--perf--v" }
-              ]
-            },
-            {
-              "title": "Filter Students",
-              "src": "UserGuide.md#36-filter-students-filter",
-              "sections": [
-                { "title": "Filter by paid status", "src": "UserGuide.md#361-filter-by-paid-status--filter--p" },
-                { "title": "Filter by unpaid status", "src": "UserGuide.md#362-filter-by-unpaid-status--filter--up" },
-                { "title": "Filter by class tag", "src": "UserGuide.md#363-filter-by-class-tag--filter--t" }
-              ]
-            },
-            { "title": "Viewing help", "src": "UserGuide.md#37-viewing-help--help" },
-            { "title": "Exiting the program", "src": "UserGuide.md#38-exiting-the-program--exit" },
-            { "title": "Saving the data", "src": "UserGuide.md#39-saving-the-data" },
-            { "title": "Editing the data file", "src": "UserGuide.md#310-editing-the-data-file" }
-          ]
-        },
-        { "title": "FAQ", "src": "UserGuide.md#faq" },
-        { "title": "Known issues", "src": "UserGuide.md#known-issues" },
-        { "title": "Command summary", "src": "UserGuide.md#command-summary" }
-      ]
+      "title": "User Guide"
     },
     {
       "src": "DeveloperGuide.md",
-      "title": "Developer Guide",
-      "sections": [
-        { "title": "Acknowledgements", "src": "DeveloperGuide.md#acknowledgements" },
-        { "title": "Setting Up", "src": "DeveloperGuide.md#setting-up" },
-        { "title": "Design", "src": "DeveloperGuide.md#design" },
-        { "title": "Implementation", "src": "DeveloperGuide.md#implementation" },
-        { "title": "Documentation, logging, testing, configuration, dev-ops", "src": "DeveloperGuide.md#documentation-logging-testing-configuration-dev-ops" },
-        { "title": "Appendix: Requirements", "src": "DeveloperGuide.md#appendix-requirements" },
-        { "title": "Appendix: Instructions for manual testing", "src": "DeveloperGuide.md#appendix-instructions-for-manual-testing" }
-      ]
+      "title": "Developer Guide"
     },
     {
       "src": "AboutUs.md",
