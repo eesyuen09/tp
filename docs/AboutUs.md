@@ -14,7 +14,6 @@ We are a team based in the [School of Computing, National University of Singapor
 <img src="images/meowzz28.png" width="200px">
 
 [[github](http://github.com/meowzz28)]
-[[portfolio](team/johndoe.md)]
 
 * Role: Team Lead
 * Responsibilities: Integration
@@ -24,7 +23,6 @@ We are a team based in the [School of Computing, National University of Singapor
 <img src="images/yijiechong13.png" width="200px">
 
 [[github](http://github.com/yijiechong13)]
-[[portfolio](team/johndoe.md)]
 
 * Role: Developer
 * Responsibilities: Documentation, deliverables and deadlines
@@ -33,8 +31,7 @@ We are a team based in the [School of Computing, National University of Singapor
 
 <img src="images/eesyuen09.png" width="200px">
 
-[[github](http://github.com/eesyuen09)] 
-[[portfolio](team/johndoe.md)]
+[[github](http://github.com/eesyuen09)]
 
 * Role: Developer
 * Responsibilities: Documentation and code quality
@@ -44,7 +41,6 @@ We are a team based in the [School of Computing, National University of Singapor
 <img src="images/ystey0808.png" width="200px">
 
 [[github](http://github.com/ystey0808)]
-[[portfolio](team/johndoe.md)]
 
 * Role: Developer
 * Responsibilities: Testing, scheduling and tracking
@@ -54,7 +50,6 @@ We are a team based in the [School of Computing, National University of Singapor
 <img src="images/deniseegohh.png" width="200px">
 
 [[github](https://github.com/deniseegohh)]
-[[portfolio](team/denisegoh.md)]
 
 * Role: Developer
 * Responsibilities: Code Quality

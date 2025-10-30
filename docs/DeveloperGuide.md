@@ -21,6 +21,13 @@ In addition, the structure and certain sections of this Developer Guide were ins
 
 Refer to the guide [_Setting up and getting started_](SettingUp.md).
 
+<box type="warning" seamless>
+<b>Warning:</b>
+For CS2103T practical exam purpose, the filename of the jar file might be different from the file name given in UG, e.g.: [CS2103T-F10-3][Tuto].jar
+<br>
+For MacOS and Linux users, use the command, java -jar \[CS2103T-F10-3\]\[Tuto\].jar to execute the jar file during PE if necessary.
+</box>
+
 --------------------------------------------------------------------------------------------------------------------
 
 ## **Design**
