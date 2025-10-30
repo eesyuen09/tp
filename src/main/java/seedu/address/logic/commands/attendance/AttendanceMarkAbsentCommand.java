@@ -36,7 +36,7 @@ public class AttendanceMarkAbsentCommand extends AttendanceCommand {
     private final ClassTag classTag;
 
     /**
-     * Creates a AttendanceMarkAbsentCommand to mark attendance as absent for the specified student.
+     * Creates an AttendanceMarkAbsentCommand to mark the specified student as absent.
      */
     public AttendanceMarkAbsentCommand(StudentId studentId, Date date, ClassTag classTag) {
         super(studentId);

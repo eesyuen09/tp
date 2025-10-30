@@ -167,8 +167,8 @@ public interface Model {
      * Marks the given student as present on the given date for a specific class.
      * The student must already exist in the address book.
      *
-     * @param studentId The student ID of the student to mark attendance for.
-     * @param date The date to mark attendance on.
+     * @param studentId The student ID of the student to mark as present.
+     * @param date The date to mark the student as present.
      * @param classTag The class tag for the attendance.
      */
     void markAttendancePresent(StudentId studentId, Date date, ClassTag classTag);
@@ -177,8 +177,8 @@ public interface Model {
      * Marks the given student as absent on the given date for a specific class.
      * The student must already exist in the address book.
      *
-     * @param studentId The student ID of the student to mark attendance as absent for.
-     * @param date The date to mark attendance as absent on.
+     * @param studentId The student ID of the student to mark as absent.
+     * @param date The date to mark the student as absent.
      * @param classTag The class tag for the attendance.
      */
     void markAttendanceAbsent(StudentId studentId, Date date, ClassTag classTag);

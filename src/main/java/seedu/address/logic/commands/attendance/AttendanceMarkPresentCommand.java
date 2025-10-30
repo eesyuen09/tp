@@ -36,7 +36,7 @@ public class AttendanceMarkPresentCommand extends AttendanceCommand {
     private final ClassTag classTag;
 
     /**
-     * Creates a AttendanceMarkPresentCommand to mark attendance for the specified student.
+     * Creates an AttendanceMarkPresentCommand to mark the specified student as present.
      */
     public AttendanceMarkPresentCommand(StudentId studentId, Date date, ClassTag classTag) {
         super(studentId);

@@ -69,7 +69,7 @@ public class AttendanceList {
      * If a record exists for this date and class, it is replaced with a present record.
      * Otherwise, a new present record is created.
      *
-     * @param date The date to mark attendance.
+     * @param date The date to mark the student as present.
      * @param classTag The class tag for the attendance.
      */
     public void markAttendancePresent(Date date, ClassTag classTag) {
@@ -85,7 +85,7 @@ public class AttendanceList {
      * If a record exists for this date and class, it is replaced with an absent record.
      * Otherwise, a new absent record is created.
      *
-     * @param date The date to mark attendance as absent.
+     * @param date The date to mark the student as absent.
      * @param classTag The class tag for the attendance.
      */
     public void markAttendanceAbsent(Date date, ClassTag classTag) {
