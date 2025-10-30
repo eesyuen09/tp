@@ -131,7 +131,7 @@ In Tuto, a parameter represents a placeholder where users input data. Parameters
 | `EMAIL`                     | `e/`   | Specifies the email address of a student.<br><br>**Requirements:**<br>• Format: `local-part@domain`.<br>• Local part can contain alphanumeric characters and special characters `+`, `_`, `.`, `-`.<br>• Local part cannot start or end with special characters.<br>• Domain must end with a label at least 2 characters long.<br>• Each domain label must start and end with alphanumeric characters. |
 | `ADDRESS`                   | `a/`   | Specifies the residential address of a student.<br><br>**Requirements:**<br>• Can contain letters, digits, spaces, and the symbols `#`, `,`, `-`, `'`.<br>• Cannot be blank.<br>• First character cannot be a whitespace.                                                                                                                                                                              |
 | `MMYY` and `ENROLLED_MONTH` | `m/`   | Specifies a month and year for enrollment or payment tracking.<br><br>**Requirements:**<br>• Format: `MMYY` (e.g., `0825` for August 2025).<br>• MM must be 01-12, YY is the last two digits of the year.                                                                                                                                                                                              |
-| `CLASS_TAG`                 | `t/`   | Specifies a class tag to categorize students.<br><br>**Requirements:**<br>• Must be 1-30 characters long.<br>• Can only contain alphanumeric characters and underscores (`_`).<br>• Tag must exist in the system before assignment to students.                                                                                                                                                        |
+| `CLASS_TAG`                 | `t/`   | Specifies a class tag to categorize students.<br><br>**Requirements:**<br>• Must be 1-30 characters long.<br>• Can only contain alphanumeric characters and underscores (`_`).<br>• Tags must exist in the system before assignment to students.                                                                                                                                                       |
 | `DATE`                      | `d/`   | Specifies a date for attendance or performance tracking.<br><br>**Requirements:**<br>• Format: `DDMMYYYY` (e.g., `15092025` for 15 September 2025).<br>                                                                                                                                                                                                                                                |
 | `PERFORMANCE_NOTE`          | `pn/`  | Specifies a performance note for a student.<br><br>**Requirements:**<br>• Can be any text under 200 characters.<br>                                                                                                                                                                                                                                                                                    |
 
@@ -391,7 +391,7 @@ Deletes an existing class tag from the system.
 
 <box type="warning" seamless>
 <b>Warning:</b>
-You can only delete a class tag if it is not currently assigned to any student in the address book. Remove the tag from all students first before deleting.
+You can only delete a class tag that is not currently assigned to any students in the address book. Remove the tag from all students first before deleting.
 </box>
 
 **Command Details and Constraints:**
@@ -763,7 +763,7 @@ Filters the main list to show only persons who are assigned the specified class 
 * Tag name matching is case-insensitive.
 
 **Examples:**
-- `filter -t t/Math_Sec3` — Shows only students who have the Math_Sec3 tag.
+- `filter -t t/Math_Sec3` — Shows only students who have the `Math_Sec3` tag.
 > **Expected output:**
 ![filterByClassTag.png](images/filterByClassTag.png)
 
@@ -788,6 +788,8 @@ Exits the program.
 ### 3.9 Saving the data
 
 AddressBook data are saved in the hard disk automatically after any command that changes the data. There is no need to save manually.
+
+---
 
 ### 3.10 Editing the data file
 
