@@ -43,7 +43,7 @@ public class DeleteClassTagCommand extends ClassTagCommand {
         Optional<ClassTag> foundTag = model.findClassTag(toDelete);
 
         if (foundTag.isEmpty()) {
-            throw new CommandException(Messages.MESSAGE_TAG_NOT_FOUND);
+            throw new CommandException(String.format(Messages.MESSAGE_TAG_NOT_FOUND, toDelete.tagName));
         }
 
         ClassTag actualTag = foundTag.get();
