@@ -13,8 +13,8 @@
 
 ## **Acknowledgements**
 
-We follow the project design and documentation structure of the AddressBook-Level3 project by SE-EDU.
-
+We follow the project design and documentation structure of the AddressBook-Level3 project by SE-EDU.   
+In addition, the structure and certain sections of this Developer Guide were inspired by and adapted from [a team project developed by a previous cohort](https://ay2425s1-cs2103t-w08-1.github.io/tp/).
 --------------------------------------------------------------------------------------------------------------------
 
 ## **Setting up, getting started**
@@ -870,12 +870,6 @@ The following commands handle Fee Management operations:
 The following sequence diagram illustrates how the system processes the `fee -p` command to mark a student’s fee as Paid:
 
 <puml src="diagrams/FeeMarkPaidSequenceDiagram.puml" alt="FeeMarkPaidSequenceDiagram" />
-
-#### Activity Diagram: Viewing a Student’s Payment History
-
-The activity diagram below illustrates the workflow for viewing a student’s fee history using the `fee -v` command:
-
-<puml src="diagrams/FeeViewActivityDiagram.puml" alt="FeeViewActivityDiagram" />
 
 #### Design Considerations
 
