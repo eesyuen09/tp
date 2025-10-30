@@ -584,13 +584,16 @@ ClassTag management is implemented through several key components:
 - `ClassTag`: Represents a class with a unique name
 - `UniqueClassTagList`: Maintains all ClassTags in the system, ensuring no duplicates
 - The `Model` interface provides methods:
-    - `hasClassTag(ClassTag)`: Checks if a ClassTag exists
-    - `addClassTag(ClassTag)`: Adds a new ClassTag
-    - `deleteClassTag(ClassTag)`: Removes a ClassTag
-    - `findClassTag(ClassTag)`: Finds and returns the ClassTag saved in UniqueClassTagList that matches the given ClassTag
-    - `getClassTagList()`: Returns an unmodifiable list of all ClassTags
-    - `isClassTagInUse(ClassTag)`: Checks if any student is assigned the ClassTag
-- `Person` objects maintain a `Set<ClassTag>` field that references ClassTags from the central `UniqueClassTagList`
+  - `hasClassTag(ClassTag)`: Checks if a ClassTag exists in the system
+  - `addClassTag(ClassTag)`: Adds a new ClassTag to the system
+  - `deleteClassTag(ClassTag)`: Removes a ClassTag from the system
+  - `findClassTag(ClassTag)`: Finds and returns an `Optional` containing the canonical ClassTag instance from the UniqueClassTagList that matches the given ClassTag
+  (case-insensitive). Returns `Optional.empty()` if not found. This ensures all references use the same ClassTag object with the original casing.
+  - `getClassTagList()`: Returns an unmodifiable list of all ClassTags
+  - `isClassTagInUse(ClassTag)`: Checks if any student is assigned the ClassTag
+- `Person` objects maintain a `Set<ClassTag>` field that stores references to ClassTag instances from the central `UniqueClassTagList`, ensuring each student can be
+assigned multiple unique classes
+
   
 **Storage Component:**
 - `JsonAdaptedClassTag`: Converts ClassTag objects to/from JSON format for persistence
@@ -598,39 +601,46 @@ ClassTag management is implemented through several key components:
 - ClassTags are persisted in two ways:
     1. As a complete list in the `classTags` field of the address book
     2. As references within each student's `tags` field
-- During deserialization, ClassTags are loaded first into the system, then students reference them by name
+- During deserialization, ClassTags are loaded first into the UniqueClassTagList, then student records resolve their tag names to the corresponding ClassTag objects using
+  case-insensitive matching
 
 **Logic Component:**
 
 The following commands handle ClassTag operations:
 
 1. **AddClassTagCommand (triggered by `tag -a`)**: Creates a new ClassTag in the system
-    - Validates the ClassTag name format (1-30 alphanumeric characters and underscores)
-    - Checks for duplicates via `Model#hasClassTag()`
-    - Adds to `UniqueClassTagList` via `Model#addClassTag()`
+   - Validates the ClassTag name format (1-30 characters: alphanumeric and underscores only, no spaces)
+   - Checks for duplicates via `Model#hasClassTag()` (case-insensitive)
+   - Adds to `UniqueClassTagList` via `Model#addClassTag()`
 
 2. **DeleteClassTagCommand (triggered by `tag -d`)**: Deletes an existing ClassTag
-    - Validates the ClassTag exists via `Model#findClassTag()`
-    - Ensures no students are currently assigned to it
-    - Removes from `UniqueClassTagList` via `Model#deleteClassTag()`
+   - Validates the ClassTag name format
+   - Checks that the ClassTag exists via `Model#findClassTag()`
+   - Ensures no students are currently assigned to it via `Model#isClassTagInUse()`
+   - Removes from `UniqueClassTagList` via `Model#deleteClassTag()`
+
 
 3. **ListClassTagCommand (triggered by `tag -l`)**: Lists all ClassTags in the system
-    - Retrieves all ClassTags from the Model via `Model#getClassTagList()`
-    - Displays them in a numbered list
-    - If no tags exist, displays "No class tags found."
+   - Retrieves all ClassTags from the Model via `Model#getClassTagList()`
+   - Displays them in a numbered list
+   - If no tags exist, displays "No class tags found."
 
 4. **ClassTagFilterCommand (triggered by `filter -t`)**: Filters students by ClassTag
-    - Validates the ClassTag exists via `Model#findClassTag()`
-    - Updates the filtered person list to show only students with that ClassTag
+   - Validates the ClassTag name format
+   - Checks that the ClassTag exists via `Model#findClassTag()`
+   - Creates a predicate to filter persons who have the ClassTag
+   - Updates the filtered person list via `Model#updateFilteredPersonList(predicate)`
 
 5. **AddCommand**: Adds a new student with optional ClassTag assignments
-    - Validates all specified ClassTags exist before creating the student
-    - Links student to ClassTags via references
+   - Validates the format of all specified ClassTags
+   - Checks that all specified ClassTags exist before creating the student
+   - Links student to ClassTags via references to canonical instances
 
 6. **EditCommand**: Edits student details including ClassTag assignments
-    - Can add, remove, or replace ClassTag assignments
-    - Validates all ClassTags exist before updating
-    - Empty ClassTag list (`t/`) removes all ClassTag assignments
+   - Can add, remove, or replace ClassTag assignments
+   - Validates the format of all ClassTags specified
+   - Checks that all ClassTags exist before updating
+   - Empty ClassTag list (`t/`) removes all ClassTag assignments
 
 #### Sequence Diagram: Adding a ClassTag
 
@@ -638,17 +648,38 @@ The following sequence diagram illustrates the interactions between components w
 
 <puml src="diagrams/AddClassTagSequenceDiagram.puml" alt="AddClassTagSequenceDiagram" />
 
+ <box type="info" seamless>
+
+**Note:** The diagram shows the successful case where the ClassTag does not already exist. If `hasClassTag()` returns `true`, a `CommandException` is thrown with the 
+message "This class tag already exists."
+
+</box>
+
 #### Sequence Diagram: Filtering Students by ClassTag
 
 The following sequence diagram illustrates how the system filters students by a specific ClassTag:
 
 <puml src="diagrams/ClassTagFilterSequenceDiagram.puml" alt="ClassTagFilterSequenceDiagram" />
 
+<box type="info" seamless>
+
+**Note:** The diagram shows the successful case where the ClassTag exists. If `findClassTag()` returns `Optional.empty()`, a `CommandException` is thrown with the message
+"Class tag not found".
+     
+</box>
+
 #### Activity Diagram: Editing Student ClassTags
 
 The activity diagram below illustrates the workflow when a tutor edits a student's ClassTag assignments using the `edit` command:
 
 <puml src="diagrams/EditClassTagOfExistingStudentActivityDiagram.puml"/>
+
+<box type="info" seamless>
+
+**Note:** The diagram simplifies some validation steps for clarity. In the actual implementation, tag format validation occurs before checking existence, and each 
+validation failure results in a specific error message being displayed to the user.
+
+</box>
 
 #### Design Considerations
 
@@ -662,7 +693,7 @@ The activity diagram below illustrates the workflow when a tutor edits a student
         - Easy to list all classes in the system
         - Referential integrity - can prevent deletion of in-use ClassTags
     * Cons:
-        - Requires additional validation when assigning ClassTags to students
+        - Requires additional existence validation when assigning ClassTags to students (must check tags exist in UniqueClassTagList first)
         - Slightly more complex implementation
 
 * **Alternative 2:** Store ClassTags only within each Student object
@@ -719,14 +750,14 @@ The activity diagram below illustrates the workflow when a tutor edits a student
 **Aspect: Case Sensitivity for ClassTag Comparison:**
 
 * **Alternative 1 (current choice):** Case-insensitive comparison while preserving user input casing
-    * Pros:
-        - Prevents duplicate tags with different cases (e.g., "Math", "math", "MATH" are treated as the same tag)
-        - More user-friendly - users don't need to remember exact casing when filtering or assigning tags
-        - Preserves the tutor's preferred formatting/casing when they first create the tag (e.g., "Sec_3_A_Math" remains visible as entered)
-        - Matches real-world expectations - class names are typically case-insensitive identifiers
-    * Cons:
-        - Slightly more complex implementation (need to override both `equals()` and `hashCode()` consistently)
-        - Users cannot create tags that differ only in case (e.g., cannot have both "Math" and "MATH" as separate tags)
+  * Pros:
+    - Prevents duplicate tags with different cases (e.g., "Math", "math", "MATH" are treated as the same tag)
+    - More user-friendly - users don't need to remember exact casing when filtering or assigning tags
+    - Preserves the tutor's preferred formatting/casing when they first create the tag (e.g., "Sec_3_A_Math" remains visible as entered)
+    - Matches real-world expectations - class names are typically case-insensitive identifiers
+  * Cons:
+    - Slightly more complex implementation (requires overriding both `equals()` and `hashCode()` consistently for case-insensitive comparison)
+    - Users cannot create tags that differ only in case (e.g., cannot have both "Math" and "MATH" as separate tags)
 
 * **Alternative 2:** Normalize all ClassTag names to a single case (e.g., lowercase)
     * Pros:
@@ -1002,7 +1033,7 @@ Given below is a list of enhancements we plan to implement in future versions of
 
 1. **Bulk attendance marking for entire class:** Currently, tutors must mark attendance for each student individually using `att -p s/STUDENT_ID d/DATE t/CLASS`. For a class with 20-30 students, this becomes tedious and time-consuming. We plan to add a bulk marking feature that allows tutors to mark attendance for all students in a specific class at once. For example, `att -pA d/10112025 t/Math` would mark all students as present enrolled in the Math ClassTag as present for that date. This would significantly reduce the time needed to take attendance at the beginning of each lesson.
 2. **Bulk deletion of old attendance records:** Currently, attendance records accumulate indefinitely, and tutors can only delete them one by one using `att -d s/STUDENT_ID d/DATE t/CLASS`. For students enrolled for extended periods (e.g., multiple years), their attendance lists can become very long and cluttered with old records that are no longer relevant for day-to-day tutoring. We plan to add a bulk deletion feature that allows tutors to remove attendance records older than a specified date or within a date range. For example, `att -clear d/BEFORE_DATE` or `att -clear d/FROM_DATE d/TO_DATE` would remove old records in bulk. This would help tutors maintain clean, relevant data while preserving important recent attendance history, improving both performance and usability when viewing attendance records.
-3. **Individual class tag assignment and unassignment on top of current add/edit:** Currently, when editing a student's class tags using the edit command, all existing tags are replaced with the new list provided (or cleared if t/ is empty). This makes it cumbersome to add or remove a single tag without re-specifying all others. We plan to introduce new commands tag -assign s/STUDENT_ID t/TAG_NAME and tag -unassign s/STUDENT_ID t/TAG_NAME that allow adding or removing individual tags without affecting previously assigned ones. For example, tag -assign s/0001 t/Sec_3_A_Math would add the "Sec_3_A_Math" tag to student 0001 if they don't already have it, leaving other tags intact. Similarly, tag -unassign s/0001 t/Sec_3_A_Math would remove only that tag. Success messages would confirm the action, e.g., "Successfully assigned class tag [Sec_3_A_Math] to student ID 0001." Error messages would handle cases like non-existent students or tags. This enhancement addresses the frequent need for precise, incremental changes to student records, improving tutor workflow efficiency.
+3. **Individual class tag assignment and unassignment on top of current add/edit:** Currently, when editing a student's class tags using the edit command, all existing tags are replaced with the new list provided (or cleared if t/ is empty). This makes it cumbersome to add or remove a single tag without re-specifying all others. We plan to introduce new commands `tag -assign s/STUDENT_ID t/TAG_NAME` and `tag -unassign s/STUDENT_ID t/TAG_NAME` that allow adding or removing individual tags without affecting previously assigned ones. For example, `tag -assign s/0001 t/Sec_3_A_Math` would add the `Sec_3_A_Math` tag to student 0001 if they don't already have it, leaving other tags intact. Similarly, `tag -unassign s/0001 t/Sec_3_A_Math` would remove only that tag. This enhancement addresses the frequent need for precise, incremental changes to student records, improving tutor workflow efficiency.
 4. **ClassTag renaming:** Currently, once a ClassTag is created, its name cannot be changed. If a tutor wishes to rename a ClassTag (e.g., from "Sec_3_A_Math" to "Sec_3_A_Advanced_Math"), they must delete the existing ClassTag and create a new one. This process is cumbersome and risks losing the association with students if not handled carefully. We plan to implement a `tag -r` command that allows tutors to rename an existing ClassTag while preserving all student associations. For example, `tag -r oldt/Sec_3_A_Math newt/Sec_3_A_Advanced_Math` would rename the ClassTag accordingly. This feature would enhance flexibility in managing class names as course structures evolve.
 5. **Introduce third fee state — WAIVED/SKIPPED:**  
    At present, fee tracking uses only two states: **PAID** and **UNPAID**.  
@@ -1057,116 +1088,165 @@ Given below is a list of enhancements we plan to implement in future versions of
 
 Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have) - `*`
 
-| Priority | As a …​                                    | I want to …​                                              | So that I can…​                                                         |
-|----------|------------------------------------------- |-----------------------------------------------------------|-------------------------------------------------------------------------|
-| `* * * ` | tutor handling lesson fees                 | tag a student as paid for a given month                   | keep track of students who have settled their tuition fees              |
-| `* * *`  | tutor handling lesson fees                 | tag a student as unpaid for a given month                 | fix mistakes and keep payment records accurate                             |
+| Priority | As a …​                                    | I want to …​                                              | So that I can…​                                                        |
+|----------|------------------------------------------- |-----------------------------------------------------------|------------------------------------------------------------------------|
+| `* * * ` | tutor handling lesson fees                 | tag a student as paid for a given month                   | keep track of students who have settled their tuition fees             |
+| `* * *`  | tutor handling lesson fees                 | tag a student as unpaid for a given month                 | fix mistakes and keep payment records accurate                         |
 | `* * *`  | tutor handling lesson fees                 | filter students who have paid by month                    | view all students who have completed payment for that month at a glance |
-| `* * *`  | tutor handling lesson fees                 | filter students who have not paid by month                | follow up with students who have outstanding tuition fees               |
-| `* * *`  | tutor handling lesson fees                 | view a student's payment history up to the current month  | review their past payment behaviour and identify missed months          |
-| `* * *`  | tutor who teaches multiple classes         | create a class tag                                        | keep track of a new class I am teaching                                 |
-| `* * *`  | tutor who teaches multiple classes         | assign class tags to a student during creation or editing | manage all students of the same subject together                        |
-| `* * *`  | tutor who teaches multiple classes         | remove class tags from a student through editing          | remove students not in a particular class                               |
-| `* * *`  | tutor who teaches multiple classes         | filter students by class tag (eg. Sec_3_A_Math)           | I can focus on a precise teaching group                                 |
-| `* * *`  | tutor who teaches multiple classes         | list all the class tags                                   | I can know what classes I am teaching                                   |
-| `* * `   | tutor who teaches multiple classes         | delete a class tag                                        | keep only the classes I am still teaching                               |
-| `* * * ` | tutor     | add a performance note for a student on a given date      | I can record their progress                                             |
-| `* * * ` | tutor     | view all performance notes for a student                  | I can review their progress                                             |
-| `* * * ` | tutor     | edit a specific performance note for a student            | I can correct or update it                                              |
-| `* * * ` | tutor     | delete a specific performance note for a student          | I can remove it if needed                                               |
-| `* * *`  | tutor who teaches multiple classes         | take attendance of each student                           | I can track their attendance record                                     |
-| `* * *`  | tutor who teaches multiple classes         | view students' attendance history                         | I can track if students are consistently attending lessons              |
-| `* * *`  | tutor who teaches multiple classes         | mark a student's attendance as absent                     | correct mistakes or changes if attendance was marked wrongly            |
-| `* * *`  | tutor who teaches multiple classes         | delete an attendance record                               | remove records for cancelled classes or fix erroneous entries           |
-| `* *`    | new tutor user                                           | view sample data                                          | understand how the app looks when populated                             |
-| `* *`    | tutor starting fresh                                     | purge sample/old data                                     | start fresh with only my real student info                              |                                                                  |
-| `* * *`  | tutor managing students                                  | add students                                              | quickly add my students into the address book                           |
-| `* * *`  | tutor managing students                                  | view students                                             | see all the students I am teaching and their details at a glance        |
-| `* *`    | tutor managing students                                  | delete students                                           | remove students who are no longer taking lessons                        |
-| `* * *`  | tutor handling many students across classes and subjects | edit student information                                  | update my contact list                                                  |
-| `* * *`  | tutor handling many students across classes and subjects | search for a student by name                              | quickly locate their information                                        |
+| `* * *`  | tutor handling lesson fees                 | filter students who have not paid by month                | follow up with students who have outstanding tuition fees              |
+| `* * *`  | tutor handling lesson fees                 | view a student's payment history up to the current month  | review their past payment behaviour and identify missed months         |
+| `* * *`  | tutor who teaches multiple classes         | create a class tag                                        | keep track of a new class I am teaching                                |
+| `* * *`  | tutor who teaches multiple classes         | assign class tags to a student during creation or editing | manage all students of the same class together                         |
+| `* * *`  | tutor who teaches multiple classes         | remove class tags from a student through editing          | remove students not in a particular class                              |
+| `* * *`  | tutor who teaches multiple classes         | filter students by class tag (eg. Sec_3_A_Math)           | easily find students in a specific class                               |
+| `* * *`  | tutor who teaches multiple classes         | list all the class tags                                   | know what classes I am teaching                                        |
+| `* * *`  | tutor who teaches multiple classes         | delete a class tag                                        | keep track of the classes I am still teaching                          |
+| `* * * ` | tutor     | add a performance note for a student on a given date      | I can record their progress                                            |
+| `* * * ` | tutor     | view all performance notes for a student                  | I can review their progress                                            |
+| `* * * ` | tutor     | edit a specific performance note for a student            | I can correct or update it                                             |
+| `* * * ` | tutor     | delete a specific performance note for a student          | I can remove it if needed                                              |
+| `* * *`  | tutor who teaches multiple classes         | take attendance of each student                           | I can track their attendance record                                    |
+| `* * *`  | tutor who teaches multiple classes         | view students' attendance history                         | I can track if students are consistently attending lessons             |
+| `* * *`  | tutor who teaches multiple classes         | mark a student's attendance as absent                     | correct mistakes or changes if attendance was marked wrongly           |
+| `* * *`  | tutor who teaches multiple classes         | delete an attendance record                               | remove records for cancelled classes or fix erroneous entries          |
+| `* *`    | new tutor user                                           | view sample data                                          | understand how the app looks when populated                            |
+| `* *`    | tutor starting fresh                                     | purge sample/old data                                     | start fresh with only my real student info                             |                                                                  |
+| `* * *`  | tutor managing students                                  | add students                                              | quickly add my students into the address book                          |
+| `* * *`  | tutor managing students                                  | view students                                             | see all the students I am teaching and their details at a glance       |
+| `* *`    | tutor managing students                                  | delete students                                           | remove students who are no longer taking lessons                       |
+| `* * *`  | tutor handling many students across classes and subjects | edit student information                                  | update my contact list                                                 |
+| `* * *`  | tutor handling many students across classes and subjects | search for a student by name                              | quickly locate their information                                       |
 
 
 ### Use cases
 
-(For all use cases below, the **System** is the `Tuto` and the **Actor** is the `user`, unless specified otherwise)
+(For all use cases below, the **System** is the `Tuto` and the **Actor** is the `Tutor`, unless specified otherwise)
 
 **Use case: Create a new class tag**
 
-**MSS**
-1.  Tutor requests to create a new class tag, providing a valid tag name.
-2.  Tuto creates the new class tag
-3.  Tuto shows a success message.
-
+ **MSS**
+ 1. Tutor requests to create a new class tag, providing a tag name.
+ 2. Tuto validates the class tag name format.
+ 3. Tuto checks that no class tag with the same name (case-insensitive) exists.
+ 4. Tuto creates the new class tag.
+ 5. Tuto shows a success message.
+ 
     Use case ends.
-
-**Extensions**
-* 1a. The provided class tag name already exists.
-
-    * 1a1. Tuto shows an error message.
-
-      Use case ends.
-
-* 1b. The provided class tag name is invalid.
-
-    * 1b1. Tuto shows an error message
-
-      Use case ends.
-
-* 1c.  The command format is invalid.
-
-    * 1c1. Tuto shows an error message with the correct usage format.
-
-      Use case ends.
-
-**Use case: Delete a class tag**
-
-**MSS**
-1.  Tutor requests to delete an existing class tag, providing its name.
-2.  Tuto deletes the class tag
-3.  Tuto shows a success message.
-
-    Use case ends.
-
-**Extensions**
-* 1a. The specified class tag does not exist.
-
-    * 1a1. Tuto shows an error message.
-
-      Use case ends.
-
-* 1b. The specified class tag is still assigned to one or more students.
-
-    * 1b1. Tuto shows an error message.
-
-      Use case ends.
-
-* 1c. The command format is invalid.
-
-    * 1c1. Tuto shows an error message with the correct usage format.
-
-      Use case ends.
-
-**Use case: List all class tags**
-
-**MSS**
-1.  Tutor requests to list all class tags.
-2.  Tuto shows a list of all existing class tags.
-
-    Use case ends.
-
-**Extensions**
-* 1a.  The command format is invalid.
+ 
+ **Extensions**
+* 1a. The command format is invalid.
 
     * 1a1. Tuto shows an error message with the correct usage format.
 
       Use case ends.
+  
+ * 2a. The provided class tag name is invalid.
+ 
+     * 2a1.  Tuto shows an error message indicating invalid class tag format.
+ 
+       Use case ends.
+ 
+ * 3a. A class tag with the same name already exists (case-insensitive match).
+ 
+     * 3a1. Tuto shows an error message indicating the tag already exists.
+ 
+       Use case ends.
 
-* 2a. The list of class tags is empty.
+**Use case: Delete a class tag**
 
-    * 2a1. Tuto shows a message indicating that no tags have been created.
+ **MSS**
+ 1. Tutor requests to delete a class tag, providing its name.
+ 2. Tuto validates the class tag name format.
+ 3. Tuto checks that the class tag exists.
+ 4. Tuto checks that the class tag is not assigned to any students.
+ 5. Tuto deletes the class tag.
+ 6. Tuto shows a success message.
+ 
+    Use case ends.
+ 
+ **Extensions**
+* 1a. The command format is invalid.
+
+    * 1a1. Tuto shows an error message with the correct usage format.
 
       Use case ends.
+  
+ * 2a. The provided class tag name format is invalid.
+ 
+     * 2a1.  Tuto shows an error message indicating invalid class tag format.
+ 
+       Use case ends.
+ 
+ * 3a. The specified class tag does not exist.
+ 
+     * 3a1. Tuto shows an error message indicating the class tag was not found.
+ 
+       Use case ends.
+ 
+ * 4a. The specified class tag is still assigned to one or more students.
+ 
+     * 4a1. Tuto shows an error message suggesting to unassign the tag from all students before deletion.
+ 
+       Use case ends.
+ 
+ **Use case: List all class tags**
+ 
+ **MSS**
+ 1. Tutor requests to list all class tags.
+ 2. Tuto retrieves all existing class tags.
+ 3. Tuto displays the tags in a numbered list.
+ 
+    Use case ends.
+ 
+ **Extensions**
+* 1a. The command format is invalid (extra parameters provided).
+
+    * 1a1. Tuto shows an error message with the correct usage format.
+
+      Use case ends.
+  
+ * 2a. No class tags exist in the system.
+ 
+     * 2a1. Tuto shows a message indicating that no tags have been created.
+ 
+       Use case ends.
+
+
+**Use case: Filter students by class tag**
+
+ **MSS**
+ 1. Tutor requests to filter students by a specific class tag name.
+ 2. Tuto validates class tag name format.
+ 3. Tuto checks that the class tag exists.
+ 4. Tuto filters the student list to show only those assigned to the class tag.
+ 5. Tuto displays the filtered list.
+ 
+    Use case ends.
+ 
+ **Extensions**
+ * 1a. The command format is invalid.
+ 
+     * 1a1. Tuto shows an error message with the correct usage format.
+ 
+       Use case ends.
+ 
+ * 2a. The class tag name format is invalid.
+ 
+     * 2a1. Tuto shows an error message indicating invalid class tag format.
+ 
+       Use case ends.
+ 
+ * 3a. The specified class tag does not exist.
+ 
+     * 3a1. Tuto shows an error message indicating the class tag was not found.
+ 
+       Use case ends.
+ 
+ * 5a. No students are assigned to the specified class tag.
+ 
+     * 5a1. Tuto displays an empty list.
+ 
+       Use case ends.
 
 **Use case: Add a performance note**
 
@@ -1698,7 +1778,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **MSS**
 
-1. User retrieves student list.
+1. Tutor retrieves student list.
 2. Tuto displays the list of students.
 
    Use case ends.
@@ -1737,7 +1817,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **MSS**
 
-1. User deletes student.
+1. Tutor deletes student.
 2. Tuto removes student from records.
 3. Tuto confirms the student's has been deleted.
 
@@ -1754,7 +1834,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **MSS**
 
-1. User searches student by name.
+1. Tutor searches student by name.
 2. Tuto searches records for matching students.
 3. Tuto outputs search results.
 
@@ -1792,6 +1872,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 * **Student ID**: A 4-digit unique numeric identifier (0000–9999) assigned to each student when added to the system.
 * **Payment History**: A record covering a range from a start month (either the student’s enrolment month or an explicitly provided m/MMYY) up to the current month (inclusive). The UI displays this range in reverse-chronological order (newest month first). Months after enrolment with no explicit record are derived as UNPAID by default.
 * **Performance note**: A short textual record of a student's performance on a given date
+* **Class Tag/ClassTag**: A label representing a class or subject that can be assigned to students (e.g. "Sec3_Maths")
 * **Attendance History**: A record that shows a student's attendance history, covering up to the six most recent months before the current month.
 * **Executable JAR**: A Java Archive file that contains all compiled classes and resources, which can be run directly without installation.
 
@@ -1889,9 +1970,9 @@ testers are expected to do more *exploratory* testing.
        **Expected:** Command rejected. Error message explains invalid or missing Student ID.
 
 ---
-### Managing Class Tags
+### Managing ClassTags
 
-#### Creating Class Tags
+#### Creating ClassTags
 
 1. Creating a new class tag with a valid name
 
@@ -1909,7 +1990,7 @@ testers are expected to do more *exploratory* testing.
 
 ---
 
-#### Listing Class Tags
+#### Listing ClassTags
 
 1. Listing all class tags
 
@@ -1920,7 +2001,7 @@ testers are expected to do more *exploratory* testing.
 
 --- 
 
-#### Filtering Students by Class Tag
+#### Filtering Students by ClassTag
 
 1. Filtering students with an existing class tag
 
@@ -1936,7 +2017,7 @@ testers are expected to do more *exploratory* testing.
 
 ---
 
-#### Deleting Class Tags
+#### Deleting ClassTags
 
 1. Deleting an unused class tag
 
