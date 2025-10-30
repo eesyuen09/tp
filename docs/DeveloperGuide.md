@@ -57,7 +57,7 @@ The *Sequence Diagram* below shows how the components interact with each other f
 Each of the four main components (also shown in the diagram above),
 
 * defines its *API* in an `interface` with the same name as the Component.
-* implements its functionality using a concrete `{Component Name}Manager` class (which follows the corresponding API `interface` mentioned in the previous point.
+* implements its functionality using a concrete `{Component Name}Manager` class (which follows the corresponding API `interface` mentioned in the previous point.)
 
 For example, the `Logic` component defines its API in the `Logic.java` interface and implements its functionality using the `LogicManager.java` class which follows the `Logic` interface. Other components interact with a given component through its interface rather than the concrete class (reason: to prevent outside component's being coupled to the implementation of a component), as illustrated in the (partial) class diagram below.
 
@@ -180,8 +180,6 @@ Key operations include **adding, editing, and deleting students**.
 
 Each student is uniquely identified by a **Student ID** and can have associated attributes such as **name, phone, email, address, and ClassTags**.
 
----
-
 #### Implementation
 
 **Model Component:**
@@ -235,20 +233,23 @@ Each student is uniquely identified by a **Student ID** and can have associated 
 6. **ClearCommand (`clear`)**: Clears all student records
     - Removes all students from the model
 
----
+#### Activity Diagram: Adding a Student (`add`)
 
-#### Diagrams
+This activity diagram shows the process flow when a user adds a new student using the `add` command, including validation, duplication checks, and successful addition to the system.
 
-**1. Activity Diagram: Adding a Student (`add`)**
-<puml src="diagrams/AddStudentSequenceDiagram.puml" alt="AddStudentSequenceDiagram" />
+<puml src="diagrams/AddStudentActivityDiagram.puml" alt="AddStudentActivityDiagram" />
 
-**2. Sequence Diagram: Editing a Student (`edit`)**
+#### Sequence Diagram: Editing a Student (`edit`)
+
+This sequence diagram illustrates the interactions between components when a user edits a student’s details using the `edit` command, covering validation, tag resolution, and model update.
+
 <puml src="diagrams/EditStudentSequenceDiagram.puml" alt="EditStudentSequenceDiagram" />
 
-**3. Sequence Diagram:Deleting a Student (`delete`)**
-<puml src="diagrams/DeleteStudentSequenceDiagram.puml" alt="DeleteStudentSequenceDiagram" />
+#### Sequence Diagram:Deleting a Student (`delete`)
 
----
+This sequence diagram demonstrates how the system processes the `delete` command, from identifying the student by ID to removing the student record and returning a success message.
+
+<puml src="diagrams/DeleteStudentSequenceDiagram.puml" alt="DeleteStudentSequenceDiagram" />
 
 #### Design Considerations
 
@@ -262,7 +263,7 @@ Each student is uniquely identified by a **Student ID** and can have associated 
     * Pros: More flexible, supports overseas or mobile numbers with country codes
     * Cons: Less strict, may allow invalid or mistyped numbers
 
----
+
 
 **Aspect: Name Validation**
 
@@ -274,8 +275,6 @@ Each student is uniquely identified by a **Student ID** and can have associated 
     * Pros: Supports all valid names globally
     * Cons: May allow emojis or unexpected symbols, harder to validate and may affect GUI display
 
----
-
 **Aspect: Address Validation**
 
 * **Alternative 1 (current choice):** Accepts alphanumeric characters, `#`, `-`, `,`, `'` and spaces
@@ -286,19 +285,22 @@ Each student is uniquely identified by a **Student ID** and can have associated 
     * Pros: Maximum flexibility
     * Cons: Harder to validate and maintain consistent formatting and may cause GUI display issues
 
----
-
 **Aspect: Email Validation**
 
-* **Alternative 1 (current choice):** RFC-like constraints with local-part alphanumeric + `+_.-`, domain labels separated by `.`, final domain ≥2 chars
+* **Alternative 1 (current choice):** Use detailed format rules — the part before “@” allows letters, numbers, and the symbols `+`, `_`, `.`, and `-`.  
+  The domain part after “@” is made up of labels separated by dots, and the last label must be at least 2 characters long.
     * Pros: Ensures proper email format, prevents invalid entries, aligns with common standards
-    * Cons: Slightly complex regex, may reject rare valid emails
+    * Cons: Slightly complex regex, may reject rare valid emails, such as:
+      - `john_doe@example.com` (underscore in local part)
+      - `"john.doe"@example.com` (quoted local part)
+      - `alice+mailbox/department@example.com` (slashes in local part)
+      - `a@b.c` (final domain label less than 2 characters)
+      - `test@sub_domain.example.com` (underscore in domain label)
+      - `üser@exämple.com` (non-ASCII characters)
 
 * **Alternative 2:** Simple regex `.+@.+\..+`
     * Pros: Very permissive, easier to implement
     * Cons: Allows many invalid emails
-
----
 
 **Aspect: Enrolled Month Validation**
 
@@ -314,8 +316,6 @@ Each student is uniquely identified by a **Student ID** and can have associated 
     * Pros: More precise, supports partial months or mid-month enrollment
     * Cons: More cumbersome for users, overkill if month-level granularity is sufficient
 
----
-
 **Aspect: ClassTag Validation**
 
 * **Alternative 1 (current choice):** Optional, must exist before assignment
@@ -325,8 +325,6 @@ Each student is uniquely identified by a **Student ID** and can have associated 
 * **Alternative 2:** Auto-create class tag if it does not exist
     * Pros: Simplifies user workflow
     * Cons: May create unintended tags, risk of typos creating duplicates
-
----
 
 **Aspect: Student ID Assignment**
 
@@ -342,8 +340,6 @@ Each student is uniquely identified by a **Student ID** and can have associated 
     * Pros: Flexibility, users can follow their own numbering system
     * Cons: Higher risk of duplicates and input errors, more complex validation
 
----
-
 **Aspect: Non-Duplication of Students**
 
 * **Alternative 1 (current choice):** Uniqueness checked on phone number and name combination
@@ -354,7 +350,15 @@ Each student is uniquely identified by a **Student ID** and can have associated 
     * Pros: Stronger duplicate detection
     * Cons: More restrictive, may prevent legitimate multiple students with similar details
 
----
+**Aspect: Enrolled Month Handling**
+
+* **Alternative 1 (current choice):** Set only during creation; cannot be edited afterwards
+    * Pros: Simplifies data handling, prevents accidental changes that could affect multiple records
+    * Cons: If a wrong month is set, the person must be deleted and recreated to correct it
+
+* **Alternative 2:** Allow editing of enrolled month after creation
+    * Pros: More flexible for corrections
+    * Cons: Changing enrolled month may affect many associated records, risking data inconsistency
 
 #### Error Handling
 
@@ -406,12 +410,12 @@ Attendance management is implemented through several key components:
 
 The following commands handle attendance operations:
 
-1. **AttendanceMarkCommand (triggered by `att -m`)**: Marks a student as present for a class on a specific date
+1. **AttendanceMarkPresentCommand (triggered by `att -p`)**: Marks a student as present for a class on a specific date
     - Validates student exists and ClassTag exists
     - Prevents duplicate "Present" records (throws error if already marked present)
     - Replaces any existing "Absent" record for the same date and class with a "Present" record
 
-2. **AttendanceUnmarkCommand (triggered by `att -u`)**: Marks a student as absent for a class on a specific date
+2. **AttendanceMarkAbsentCommand (triggered by `att -a`)**: Marks a student as absent for a class on a specific date
     - Validates student exists and ClassTag exists
     - Prevents duplicate "Absent" records (throws error if already marked absent)
     - Replaces any existing "Present" record for the same date and class with an "Absent" record
@@ -425,11 +429,11 @@ The following commands handle attendance operations:
     - Retrieves all attendance records for a specific student
     - Records are sorted by date, then by ClassTag name alphabetically
 
-#### Sequence Diagram: Marking Attendance
+#### Sequence Diagram: Marking Attendance as Present
 
-The following sequence diagram illustrates the interactions when a tutor marks a student as present using the `att -m` command:
+The following sequence diagram illustrates the interactions when a tutor marks a student as present using the `att -p` command:
 
-<puml src="diagrams/AttendanceMarkSequenceDiagram.puml" alt="Attendance Mark Sequence Diagram" />
+<puml src="diagrams/AttendanceMarkPresentSequenceDiagram.puml" alt="Attendance Mark Present Sequence Diagram" />
 
 <box type="info" seamless>
 
@@ -450,20 +454,6 @@ The following sequence diagram illustrates the interactions when a tutor marks a
   * Pros: Easier to query by date/class across all students, better for class-level reports
   * Cons: More complex referential integrity, risk of orphaned records, attendance disconnected from student profiles
 
-**Aspect: How to represent "absent" status:**
-
-* **Alternative 1 (current choice):** Flag-based commands - `att -m` for present, `att -u` for absent
-  * Pros: Consolidated under single `att` command word, fewer top-level commands to remember, consistent with payment feature's flag-based design (`fee -p`, `fee -up`)
-  * Cons: Potentially confusing terminology ("unmark" suggests deletion rather than marking absent), requires users to remember flag meanings
-
-* **Alternative 2:** Separate command words - `present s/0001 d/10112025 t/Math` and `absent s/0001 d/10112025 t/Math`
-  * Pros: Crystal clear intent from command word itself, highly intuitive (command literally describes the action), no ambiguity about what each command does
-  * Cons: Increases top-level command count (now users need to remember `present`, `absent`, instead of just `att`), breaks the feature grouping pattern used throughout the app (attendance: `att`, performance: `perf`, fees: `fee`), inconsistent with the design goal of organizing related commands under a single namespace
-
-* **Alternative 3:** Explicit status parameter - `att s/0001 d/10112025 t/Math status/present` or `att s/0001 d/10112025 t/Math status/absent`
-  * Pros: Self-documenting commands, very clear semantics, easily extensible (could add `status/late` or `status/excused` in future)
-  * Cons: More verbose, longer command syntax, requires typing "status/" every time
-
 ### Performance Management
 
 #### Overview
@@ -483,9 +473,9 @@ Performance note management is implemented through the following components:
 - The `Model` interface exposes helpers to retrieve students, replace updated `Person` instances, and manage the list of performance notes currently shown in the UI (`setDisplayedPerformanceNotes`, `clearDisplayedPerformanceNotes`)
 
 **Storage Component:**
-- `JsonAdaptedPerformanceNote`: Serialises/deserialises `PerformanceNote` objects to and from JSON, validating date, class tag, and note length constraints during conversion
+- `JsonAdaptedPerformanceNote`: Serialises/deserializes `PerformanceNote` objects to and from JSON, validating date, class tag, and note length constraints during conversion
 - Performance notes are persisted as part of each student's JSON record via `JsonAdaptedPerson`, ensuring notes stay in sync with the owning student
-- During deserialisation, class tags referenced in performance notes are re-validated against the student's tag set so that orphaned notes cannot be reconstructed
+- During deserialization, class tags referenced in performance notes are re-validated against the student's tag set so that orphaned notes cannot be reconstructed
 
 **Logic Component:**
 
@@ -987,14 +977,14 @@ Each validation error produces clear and descriptive messages to guide user corr
 
 Given below is a list of enhancements we plan to implement in future versions of Tuto:
 
-1. **Bulk attendance marking for entire class:** Currently, tutors must mark attendance for each student individually using `att -m s/STUDENT_ID d/DATE t/CLASS`. For a class with 20-30 students, this becomes tedious and time-consuming. We plan to add a bulk marking feature that allows tutors to mark attendance for all students in a specific class at once. For example, `att -m d/10112025 t/Math` would mark all students enrolled in the Math ClassTag as present for that date. This would significantly reduce the time needed to take attendance at the beginning of each lesson.
+1. **Bulk attendance marking for entire class:** Currently, tutors must mark attendance for each student individually using `att -p s/STUDENT_ID d/DATE t/CLASS`. For a class with 20-30 students, this becomes tedious and time-consuming. We plan to add a bulk marking feature that allows tutors to mark attendance for all students in a specific class at once. For example, `att -pA d/10112025 t/Math` would mark all students as present enrolled in the Math ClassTag as present for that date. This would significantly reduce the time needed to take attendance at the beginning of each lesson.
 2. **Individual class tag assignment and unassignment on top of current add/edit:** Currently, when editing a student's class tags using the edit command, all existing tags are replaced with the new list provided (or cleared if t/ is empty). This makes it cumbersome to add or remove a single tag without re-specifying all others. We plan to introduce new commands tag -assign s/STUDENT_ID t/TAG_NAME and tag -unassign s/STUDENT_ID t/TAG_NAME that allow adding or removing individual tags without affecting previously assigned ones. For example, tag -assign s/0001 t/Sec_3_A_Math would add the "Sec_3_A_Math" tag to student 0001 if they don't already have it, leaving other tags intact. Similarly, tag -unassign s/0001 t/Sec_3_A_Math would remove only that tag. Success messages would confirm the action, e.g., "Successfully assigned class tag [Sec_3_A_Math] to student ID 0001." Error messages would handle cases like non-existent students or tags. This enhancement addresses the frequent need for precise, incremental changes to student records, improving tutor workflow efficiency.
 3. **ClassTag renaming:** Currently, once a ClassTag is created, its name cannot be changed. If a tutor wishes to rename a ClassTag (e.g., from "Sec_3_A_Math" to "Sec_3_A_Advanced_Math"), they must delete the existing ClassTag and create a new one. This process is cumbersome and risks losing the association with students if not handled carefully. We plan to implement a `tag -r` command that allows tutors to rename an existing ClassTag while preserving all student associations. For example, `tag -r oldt/Sec_3_A_Math newt/Sec_3_A_Advanced_Math` would rename the ClassTag accordingly. This feature would enhance flexibility in managing class names as course structures evolve.
 4. **Introduce third fee state — WAIVED/SKIPPED:**  
    At present, fee tracking uses only two states: **PAID** and **UNPAID**.  
    In future releases, we plan to introduce a third state, **WAIVED** (or **SKIPPED**), to handle non-billable months such as holidays, term breaks, or periods without lessons.  
    This enhancement will:
-    - Accurately reflect months where no tuition fees are due.
+    - Accurately reflect months when no tuition fees are due.
     - Allow tutors to “skip” months without breaking the sequential payment validation rule.
     - Improve clarity in fee reports by distinguishing “not billed” months from “unpaid” ones.
 
@@ -1062,7 +1052,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | `* * * ` | tutor     | delete a specific performance note for a student          | I can remove it if needed                                               |
 | `* * *`  | tutor who teaches multiple classes         | take attendance of each student                           | I can track their attendance record                                     |
 | `* * *`  | tutor who teaches multiple classes         | view students' attendance history                         | I can track if students are consistently attending lessons              |
-| `* * *`  | tutor who teaches multiple classes         | unmark a student's attendance                             | correct mistakes or changes if attendance was marked wrongly            |
+| `* * *`  | tutor who teaches multiple classes         | mark a student's attendance as absent                     | correct mistakes or changes if attendance was marked wrongly            |
 | `* * *`  | tutor who teaches multiple classes         | delete an attendance record                               | remove records for cancelled classes or fix erroneous entries           |
 | `* *`    | new tutor user                                           | view sample data                                          | understand how the app looks when populated                             |
 | `* *`    | tutor starting fresh                                     | purge sample/old data                                     | start fresh with only my real student info                              |                                                                  |
@@ -1510,10 +1500,10 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
       Use case ends.
 
 
-**Use case: Unmark attendance for a student**
+**Use case: Mark attendance as absent for a student**
 
 **MSS**
-1. User unmarks attendance of a student.
+1. User marks attendance of a student as absent.
 2. Tuto records the attendance as absent for the specified student and date.
 3. Tuto confirms that the attendance has been updated.
 
@@ -1692,7 +1682,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 ### Glossary
 
-* **Mainstream OS**: Windows, Linux, Unix, MacOS
+* **Mainstream OS**: Windows, Linux, Unix, macOS
 * **Private contact detail**: A contact detail that is not meant to be shared with others
 * **Student ID**: A 4-digit unique numeric identifier (0000–9999) assigned to each student when added to the system.
 * **Payment History**: A record covering a range from a start month (either the student’s enrolment month or an explicitly provided m/MMYY) up to the current month (inclusive). The UI displays this range in reverse-chronological order (newest month first). Months after enrolment with no explicit record are derived as UNPAID by default.
