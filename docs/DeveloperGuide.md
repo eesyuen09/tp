@@ -245,7 +245,7 @@ This sequence diagram illustrates the interactions between components when a use
 
 <puml src="diagrams/EditStudentSequenceDiagram.puml" alt="EditStudentSequenceDiagram" />
 
-#### Sequence Diagram:Deleting a Student (`delete`)
+#### Sequence Diagram: Deleting a Student (`delete`)
 
 This sequence diagram demonstrates how the system processes the `delete` command, from identifying the student by ID to removing the student record and returning a success message.
 
@@ -305,15 +305,15 @@ This sequence diagram demonstrates how the system processes the `delete` command
 **Aspect: Enrolled Month Validation**
 
 * **Alternative 1 (current choice):** Format `MMYY`; check valid month and disallow future months
-    * Pros: Prevents impossible enrollments, ensures chronological consistency for attendance/performance/fees tracking
-    * Cons: Cannot pre-enter future planned enrollments
+    * Pros: Prevents impossible enrolments, ensures chronological consistency for attendance/performance/fees tracking
+    * Cons: Cannot pre-enter future planned enrolments
 
 * **Alternative 2:** Only validate `MMYY` format, allow future months
-    * Pros: Can schedule future enrollments, more flexible for planning
+    * Pros: Can schedule future enrolments, more flexible for planning
     * Cons: Requires additional logic elsewhere to prevent inconsistencies
 
 * **Alternative 3:** Use full date input (`ddMMyy`) instead of `MMYY`
-    * Pros: More precise, supports partial months or mid-month enrollment
+    * Pros: More precise, supports partial months or mid-month enrolment
     * Cons: More cumbersome for users, overkill if month-level granularity is sufficient
 
 **Aspect: ClassTag Validation**
@@ -453,6 +453,41 @@ The following sequence diagram illustrates the interactions when a tutor marks a
 * **Alternative 2:** Store attendance in a centralized `AttendanceBook`
   * Pros: Easier to query by date/class across all students, better for class-level reports
   * Cons: More complex referential integrity, risk of orphaned records, attendance disconnected from student profiles
+
+#### Error Handling
+
+Attendance operations include comprehensive validation:
+
+**Marking Attendance (Present/Absent):**
+- Invalid command format
+- Student ID not found
+- Invalid Student ID format
+- ClassTag does not exist
+- ClassTag not assigned to the student
+- Date in the future
+- Date before student's enrolment month
+- Invalid date format (e.g., 30th February, non-existent dates)
+- Attempting to mark Present when already marked Present
+- Attempting to mark Absent when already marked Absent
+
+**Deleting Attendance:**
+- Invalid command format
+- Student ID not found
+- Invalid Student ID format
+- Invalid date format
+- Attendance record does not exist for the specified date and class
+
+**Viewing Attendance:**
+- Invalid command format
+- Student ID not found
+- Invalid Student ID format
+- No attendance records found for the student (informational message, not an error)
+
+**General Validation Rules:**
+- All attendance commands enforce **strict parameter checking** — any extra text beyond the expected format is rejected
+- Date validation ensures only real calendar dates are accepted
+- ClassTag references are validated against both system-wide ClassTag list and student's assigned tags
+- All validation errors provide **clear, actionable feedback** to guide users in correcting their input
 
 ### Performance Management
 
@@ -747,7 +782,6 @@ ClassTag operations include comprehensive validation:
 
 Each validation error provides clear, actionable feedback to help users correct their input.
 
----
 ### Fee Management
 
 #### Overview
@@ -765,8 +799,8 @@ Fee Management is implemented through several key components:
 - `FeeTracker`: Serves as the central manager for all student fee records.
     - Internally stores data in a nested structure: `Map<StudentId, Map<Month, FeeState>>`, where each student’s fee history is organized by month.
     - The tracker only stores months that have been explicitly marked.
-      Any month after enrollment without a record is automatically considered UNPAID by default.
-      - Months before a student’s enrolledMonth are excluded from fee tracking, as no payment records exist prior to enrollment.
+      Any month after enrolment without a record is automatically considered UNPAID by default.
+      - Months before a student’s enrolledMonth are excluded from fee tracking, as no payment records exist prior to enrolment.
       - Provides methods to generate **payment history** between two months.
       - This design avoids redundant data storage and enables on-demand computation of fee states, ensuring efficient lookups and minimal memory use.
       - The `Model` interacts with the `FeeTracker` when marking payments, undoing payments, filtering Paid/Unpaid students, or retrieving historical fee data.
@@ -786,7 +820,6 @@ Fee Management is implemented through several key components:
     - `getCurrentFeeState(Person)`: Returns the student’s fee state for the current month.
     - `feeStateVersionProperty()`: Returns a read-only observable property that increments whenever fee data changes, allowing the UI to refresh automatically.
 
----
 
 **Storage Component:**
 
@@ -800,9 +833,7 @@ Fee Management is implemented through several key components:
 - During deserialization:
     - The list of `feeRecords` is read first and each entry is re-registered into the in-memory `FeeTracker`.
     - Each person’s `StudentId` is matched to their corresponding fee entries to rebuild accurate payment histories.
-    - Any student without explicit fee entries is assumed to have **no recorded payments**, and their post-enrollment months are treated as **UNPAID** by default.
-
----
+    - Any student without explicit fee entries is assumed to have **no recorded payments**, and their post-enrolment months are treated as **UNPAID** by default.
 
 **Logic Component:**
 
@@ -812,13 +843,13 @@ The following commands handle Fee Management operations:
     - Validates that the student exists via `Model#getPersonById()`.
     - Validates that the target month falls **between the student’s enrolled month and the current month (inclusive)**.
     - Ensures all previous months up to the target month are already **PAID**. 
-    - Attempts to mark **future months** or **months before enrollment** will be rejected.
+    - Attempts to mark **future months** or **months before enrolment** will be rejected.
     - Updates the `FeeTracker` via `Model#markPaid()` and refreshes the UI.
 
 2. **FeeMarkUnpaidCommand (triggered by `fee -up`)**: Marks a student’s fee as **UNPAID** for a specific month.
     - Validates that the student exists via `Model#getPersonById()`.
     - Validates that the target month falls **between the student’s enrolled month and the current month (inclusive)**.
-    - Tutors cannot mark **future months** or **pre-enrollment months** as Unpaid.
+    - Tutors cannot mark **future months** or **pre-enrolment months** as Unpaid.
     - Updates the `FeeTracker` via `Model#markUnpaid()` and refreshes the UI.
 
 3. **FeeFilterPaidCommand (triggered by `filter -p`)**: Filters students who have **Paid** for a specified month.
@@ -862,7 +893,6 @@ The activity diagram below illustrates the workflow for viewing a student’s fe
       - Tutors cannot record payments **out of sequence** (e.g., skipping July and paying for August directly).
       - Adds a small validation step when marking multiple months.
 
-
 * **Alternative 2:** Allow tutors to mark any month as **PAID**, regardless of whether earlier months are still UNPAID.
     * Pros:
         - Provides **maximum flexibility** for unusual or irregular payment situations.
@@ -872,7 +902,6 @@ The activity diagram below illustrates the workflow for viewing a student’s fe
       - Can result in **gaps or inconsistencies** in the payment timeline — e.g., later months marked PAID while earlier ones remain UNPAID.
       - Makes it **easier for tutors to overlook unpaid months**, leading to incomplete financial records.
       - Reduces **data reliability**, since it becomes unclear whether all payments up to a given point have been fully settled.
----
 
 **Aspect: Future Month Restriction (Advance Payments)**
 
@@ -886,7 +915,6 @@ The activity diagram below illustrates the workflow for viewing a student’s fe
       - Tutors cannot record **advance payments** for future months, even if a student has pre-paid.
       - May require future system updates to support legitimate early payments.
 
-
 * **Alternative 2:** Allow tutors to mark **future months** as PAID, provided that all previous months have already been settled.
     * Pros:
       - Supports **prepaid tuition scenarios**, where students pay several months in advance.
@@ -897,8 +925,6 @@ The activity diagram below illustrates the workflow for viewing a student’s fe
       - Increases the risk of **accidental marking of future months**, especially if tutors mistype the month or forget the current date.
       - Requires additional **validation safeguards** (e.g., confirmation prompts or warning messages) to prevent unintentional future entries.
       - Adds complexity to the **FeeViewCommand** logic, since it must distinguish between completed months and prepaid future months when displaying fee history.
-
----
 
 **Aspect: Backdated Correction (Marking an earlier month as UNPAID)**
 
@@ -919,8 +945,6 @@ The activity diagram below illustrates the workflow for viewing a student’s fe
 
     * Cons:
       - Restrictive — tutors cannot fix genuine mis-entries without first unmarking all later months.
-
----
 
 **Aspect: Display Order of Payment History**
 
@@ -954,7 +978,7 @@ Fee Management includes comprehensive validation across all operations:
 
 **Marking Fees**
 - Invalid or missing `StudentId`
-- Month before enrollment or after the current month is invalid
+- Month before enrolment or after the current month is invalid
 - Attempting to mark Paid when already Paid
 - Attempting to mark Unpaid when already Unpaid
 - Attempting to mark Paid while an earlier month remains Unpaid
@@ -977,9 +1001,10 @@ Each validation error produces clear and descriptive messages to guide user corr
 Given below is a list of enhancements we plan to implement in future versions of Tuto:
 
 1. **Bulk attendance marking for entire class:** Currently, tutors must mark attendance for each student individually using `att -p s/STUDENT_ID d/DATE t/CLASS`. For a class with 20-30 students, this becomes tedious and time-consuming. We plan to add a bulk marking feature that allows tutors to mark attendance for all students in a specific class at once. For example, `att -pA d/10112025 t/Math` would mark all students as present enrolled in the Math ClassTag as present for that date. This would significantly reduce the time needed to take attendance at the beginning of each lesson.
-2. **Individual class tag assignment and unassignment on top of current add/edit:** Currently, when editing a student's class tags using the edit command, all existing tags are replaced with the new list provided (or cleared if t/ is empty). This makes it cumbersome to add or remove a single tag without re-specifying all others. We plan to introduce new commands tag -assign s/STUDENT_ID t/TAG_NAME and tag -unassign s/STUDENT_ID t/TAG_NAME that allow adding or removing individual tags without affecting previously assigned ones. For example, tag -assign s/0001 t/Sec_3_A_Math would add the "Sec_3_A_Math" tag to student 0001 if they don't already have it, leaving other tags intact. Similarly, tag -unassign s/0001 t/Sec_3_A_Math would remove only that tag. Success messages would confirm the action, e.g., "Successfully assigned class tag [Sec_3_A_Math] to student ID 0001." Error messages would handle cases like non-existent students or tags. This enhancement addresses the frequent need for precise, incremental changes to student records, improving tutor workflow efficiency.
-3. **ClassTag renaming:** Currently, once a ClassTag is created, its name cannot be changed. If a tutor wishes to rename a ClassTag (e.g., from "Sec_3_A_Math" to "Sec_3_A_Advanced_Math"), they must delete the existing ClassTag and create a new one. This process is cumbersome and risks losing the association with students if not handled carefully. We plan to implement a `tag -r` command that allows tutors to rename an existing ClassTag while preserving all student associations. For example, `tag -r oldt/Sec_3_A_Math newt/Sec_3_A_Advanced_Math` would rename the ClassTag accordingly. This feature would enhance flexibility in managing class names as course structures evolve.
-4. **Introduce third fee state — WAIVED/SKIPPED:**  
+2. **Bulk deletion of old attendance records:** Currently, attendance records accumulate indefinitely, and tutors can only delete them one by one using `att -d s/STUDENT_ID d/DATE t/CLASS`. For students enrolled for extended periods (e.g., multiple years), their attendance lists can become very long and cluttered with old records that are no longer relevant for day-to-day tutoring. We plan to add a bulk deletion feature that allows tutors to remove attendance records older than a specified date or within a date range. For example, `att -clear d/BEFORE_DATE` or `att -clear d/FROM_DATE d/TO_DATE` would remove old records in bulk. This would help tutors maintain clean, relevant data while preserving important recent attendance history, improving both performance and usability when viewing attendance records.
+3. **Individual class tag assignment and unassignment on top of current add/edit:** Currently, when editing a student's class tags using the edit command, all existing tags are replaced with the new list provided (or cleared if t/ is empty). This makes it cumbersome to add or remove a single tag without re-specifying all others. We plan to introduce new commands tag -assign s/STUDENT_ID t/TAG_NAME and tag -unassign s/STUDENT_ID t/TAG_NAME that allow adding or removing individual tags without affecting previously assigned ones. For example, tag -assign s/0001 t/Sec_3_A_Math would add the "Sec_3_A_Math" tag to student 0001 if they don't already have it, leaving other tags intact. Similarly, tag -unassign s/0001 t/Sec_3_A_Math would remove only that tag. Success messages would confirm the action, e.g., "Successfully assigned class tag [Sec_3_A_Math] to student ID 0001." Error messages would handle cases like non-existent students or tags. This enhancement addresses the frequent need for precise, incremental changes to student records, improving tutor workflow efficiency.
+4. **ClassTag renaming:** Currently, once a ClassTag is created, its name cannot be changed. If a tutor wishes to rename a ClassTag (e.g., from "Sec_3_A_Math" to "Sec_3_A_Advanced_Math"), they must delete the existing ClassTag and create a new one. This process is cumbersome and risks losing the association with students if not handled carefully. We plan to implement a `tag -r` command that allows tutors to rename an existing ClassTag while preserving all student associations. For example, `tag -r oldt/Sec_3_A_Math newt/Sec_3_A_Advanced_Math` would rename the ClassTag accordingly. This feature would enhance flexibility in managing class names as course structures evolve.
+5. **Introduce third fee state — WAIVED/SKIPPED:**  
    At present, fee tracking uses only two states: **PAID** and **UNPAID**.  
    In future releases, we plan to introduce a third state, **WAIVED** (or **SKIPPED**), to handle non-billable months such as holidays, term breaks, or periods without lessons.  
    This enhancement will:
@@ -988,7 +1013,7 @@ Given below is a list of enhancements we plan to implement in future versions of
     - Improve clarity in fee reports by distinguishing “not billed” months from “unpaid” ones.
 
    This addition will also enhance flexibility in long-term record management and improve real-world applicability for tutoring scenarios involving variable schedules.
-5. **Integrate Fee and Attendance Systems:**  
+6. **Integrate Fee and Attendance Systems:**  
    Currently, fee tracking and attendance operate independently.  
    We plan to introduce light integration between both modules to make payment tracking more context-aware.
 
@@ -997,8 +1022,8 @@ Given below is a list of enhancements we plan to implement in future versions of
     - When marking a month as **UNPAID** while lessons are recorded, a **reminder** will appear to alert the tutor of possible inconsistencies.
     - Months **without any recorded attendance** will automatically be assigned a **WAIVED** status instead of UNPAID, ensuring skipped months (e.g., holidays or term breaks) do not block future payments.
    This enhancement improves **accuracy** and **consistency** between financial and attendance records, while keeping full flexibility for tutors to override when necessary.
-4. **Unified student history view (view s/STUDENT_ID):** Introduce a consolidated view command that shows every performance note, attendance record, and fee transaction for the specified student, allowing tutors to review a learner’s full journey without hopping between modules.
-5. **Targeted performance and attendance filters (perf -v / att -v):** Extend the existing view flags to accept optional m/MMYY or t/CLASS_TAG parameters so tutors can zero in on a specific month or class when analysing historical performance or attendance data.
+7. **Unified student history view (view s/STUDENT_ID):** Introduce a consolidated view command that shows every performance note, attendance record, and fee transaction for the specified student, allowing tutors to review a learner’s full journey without hopping between modules.
+8. **Targeted performance and attendance filters (perf -v / att -v):** Extend the existing view flags to accept optional m/MMYY or t/CLASS_TAG parameters so tutors can zero in on a specific month or class when analysing historical performance or attendance data.
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -1338,9 +1363,8 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
       Use case ends.
 
-
-
-### Use case: Mark Student as Paid
+    
+**Use case: Mark Student as Paid**
 
 **MSS**
 1. Tutor requests to mark a student as **PAID** for a specific month.
@@ -1352,29 +1376,30 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **Extensions**
 * 2a. Command format is invalid.
-    * 2a1. Tuto shows the correct usage format.  
+    * 2a1. Tuto shows the correct usage format.
       Use case ends.
 
 * 2b. Student ID does not exist.
-    * 2b1. Tuto shows an error that the student cannot be found.  
+    * 2b1. Tuto shows an error that the student cannot be found.
       Use case ends.
 
-* 2c. The selected month is **before enrolment** or **after the current month**.
-    * 2c1. Tuto shows an error that the month is invalid.  
+* 2c. The student ID format is invalid.
+    * 2c1. Tuto shows an error message indicating invalid student ID format.
       Use case ends.
 
-* 2d. The selected month is **already marked as PAID**.
-    * 2d1. Tuto indicates that the payment has already been recorded.  
+* 2d. The selected month is **before enrolment** or **after the current month**.
+    * 2d1. Tuto shows an error that the month is invalid.
+      Use case ends.
+
+* 2e. The selected month is **already marked as PAID**.
+    * 2e1. Tuto indicates that the payment has already been recorded.
       Use case ends.
 
 * 3a. An **earlier month** is **UNPAID**.
-    * 3a1. Tuto shows an error indicating the earliest unpaid month that blocks the operation.  
+    * 3a1. Tuto shows an error indicating the earliest unpaid month that blocks the operation.
       Use case ends.
 
-
----
-
-### Use case: Mark Student as Unpaid
+**Use case: Mark Student as Unpaid**
 
 **MSS**
 1. Tutor requests to mark a student as **UNPAID** for a specific month.
@@ -1385,25 +1410,26 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **Extensions**
 * 2a. Command format is invalid.
-    * 2a1. Tuto shows the correct usage format.  
+    * 2a1. Tuto shows the correct usage format.
       Use case ends.
 
 * 2b. Student ID does not exist.
-    * 2b1. Tuto shows an error that the student cannot be found.  
+    * 2b1. Tuto shows an error that the student cannot be found.
       Use case ends.
 
-* 2c. The selected month is **before enrolment** or **after the current month**.
-    * 2c1. Tuto shows an error that the month is invalid.  
+* 2c. The student ID format is invalid.
+    * 2c1. Tuto shows an error message indicating invalid student ID format.
       Use case ends.
 
-* 2d. The selected month is **already marked as UNPAID**.
-    * 2d1. Tuto indicates that the month is already unpaid.  
+* 2d. The selected month is **before enrolment** or **after the current month**.
+    * 2d1. Tuto shows an error that the month is invalid.
       Use case ends.
 
+* 2e. The selected month is **already marked as UNPAID**.
+    * 2e1. Tuto indicates that the month is already unpaid.
+      Use case ends.
 
----
-
-### Use case: Filter Paid Students by Month
+**Use case: Filter Paid Students by Month**
 
 **MSS**
 1. Tutor requests to filter students marked **PAID** for a specific month.
@@ -1415,17 +1441,18 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **Extensions**
 * 2a. Command format is invalid.
-    * 2a1. Tuto shows the correct usage format.  
+    * 2a1. Tuto shows the correct usage format.
       Use case ends.
 
 * 2b. The month is **in the future**.
-    * 2b1. Tuto shows an error that future months cannot be filtered.  
+    * 2b1. Tuto shows an error that future months cannot be filtered.
       Use case ends.
 
+* 2c. The month format is invalid.
+    * 2c1. Tuto shows an error message indicating invalid month format.
+      Use case ends.
 
----
-
-### Use case: Filter Unpaid Students by Month
+**Use case: Filter Unpaid Students by Month**
 
 **MSS**
 1. Tutor requests to filter students marked **UNPAID** for a specific month.
@@ -1437,20 +1464,21 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **Extensions**
 * 2a. Command format is invalid.
-    * 2a1. Tuto shows the correct usage format.  
+    * 2a1. Tuto shows the correct usage format.
       Use case ends.
 
 * 2b. The month is **in the future**.
-    * 2b1. Tuto shows an error that future months cannot be filtered.  
+    * 2b1. Tuto shows an error that future months cannot be filtered.
       Use case ends.
 
+* 2c. The month format is invalid.
+    * 2c1. Tuto shows an error message indicating invalid month format.
+      Use case ends.
 
----
-
-### Use case: View Payment History of a Student
+**Use case: View Payment History of a Student**
 
 **MSS**
-1. Tutor requests to view a student’s payment history (optionally with a start month).
+1. Tutor requests to view a student's payment history (optionally with a start month).
 2. Tuto validates the request: command format is valid, the student exists, and the provided start month (if any) is **not in the future**.
 3. Tuto determines the effective start month:
     * If a start month is provided, the range starts from the **later** of the provided month and the **enrolled month**.
@@ -1462,102 +1490,180 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **Extensions**
 * 2a. Command format is invalid.
-    * 2a1. Tuto shows the correct usage format.  
+    * 2a1. Tuto shows the correct usage format.
       Use case ends.
 
 * 2b. Student ID does not exist.
-    * 2b1. Tuto shows an error that the student cannot be found.  
+    * 2b1. Tuto shows an error that the student cannot be found.
       Use case ends.
 
-* 2c. The provided start month is **after the current month**.
-    * 2c1. Tuto shows an error that future months cannot be displayed.  
+* 2c. The student ID format is invalid.
+    * 2c1. Tuto shows an error message indicating invalid student ID format.
+      Use case ends.
+
+* 2d. The provided start month is **after the current month**.
+    * 2d1. Tuto shows an error that future months cannot be displayed.
+      Use case ends.
+
+* 2e. The month format is invalid.
+    * 2e1. Tuto shows an error message indicating invalid month format.
       Use case ends.
 
 * 3a. The provided start month is **before enrolment**.
-    * 3a1. Tuto automatically adjusts the start to the enrolment month.  
+    * 3a1. Tuto automatically adjusts the start to the enrolment month.
       Use case continues at Step 4.
 
 
-**Use case: Mark attendance for a student**
+**Use case: Mark Student as Present**
 
 **MSS**
-1. User marks attendance of student.
-2. Tuto records the attendance as present for the specified student and date.
-3. Tuto confirms that the attendance has been recorded.
-
-   Use case ends.
-
-**Extension**
-* 1a. The command format is invalid.
-    * 1a1. Tuto shows an error message with the correct usage format.
-
-      Use case ends.
-
-* 2a. An attendance record for the same student and date already exists with the ***Present*** status.
-    * 2a1. Tuto informs the user that no change is necessary.
-
-      Use case ends.
-
-
-**Use case: Mark attendance as absent for a student**
-
-**MSS**
-1. User marks attendance of a student as absent.
-2. Tuto records the attendance as absent for the specified student and date.
-3. Tuto confirms that the attendance has been updated.
+1. Tutor requests to mark a student as **Present** for a specific date and class.
+2. Tuto validates the request: student exists, command format is valid, date is valid, and class tag exists and is assigned to the student.
+3. Tuto checks that the attendance is not already marked as **Present** for that date and class.
+4. Tuto records the **Present** attendance and displays a success message.
 
    Use case ends.
 
 **Extensions**
-* 1a. The command format is invalid.
-    * 1a1. Tuto shows an error message with the correct usage format.
-
+* 2a. Command format is invalid.
+    * 2a1. Tuto shows the correct usage format.
       Use case ends.
 
-* 2a. The attendance record for the same student and date already exists with the ***Absent*** status or no prior record exists.
-    * 2a1. Tuto informs the user that no change is necessary.
-
+* 2b. Student ID does not exist.
+    * 2b1. Tuto shows an error that the student cannot be found.
       Use case ends.
 
-**Use case: Delete an attendance record**
+* 2c. The student ID format is invalid.
+    * 2c1. Tuto shows an error message indicating invalid student ID format.
+      Use case ends.
+
+* 2d. The specified class tag does not exist.
+    * 2d1. Tuto shows an error message indicating class tag not found.
+      Use case ends.
+
+* 2e. The specified class tag is not assigned to the student.
+    * 2e1. Tuto shows an error message indicating class tag not assigned to student.
+      Use case ends.
+
+* 2f. The provided date is in the future.
+    * 2f1. Tuto shows an error message indicating date cannot be in the future.
+      Use case ends.
+
+* 2g. The provided date is before the student's enrolment month.
+    * 2g1. Tuto shows an error message indicating date cannot be before enrolment.
+      Use case ends.
+
+* 2h. The date does not correspond to a real calendar day (e.g. 30th February).
+    * 2h1. Tuto shows an error message indicating invalid date.
+      Use case ends.
+
+* 3a. The attendance is already marked as **Present** for that date and class.
+    * 3a1. Tuto shows an error message indicating the student is already marked present.
+      Use case ends.
+
+**Use case: Mark Student as Absent**
 
 **MSS**
-1. User deletes an attendance record for a student on a specific date and class.
-2. Tuto deletes the attendance record.
-3. Tuto confirms that the attendance record has been deleted.
+1. Tutor requests to mark a student as **Absent** for a specific date and class.
+2. Tuto validates the request: student exists, command format is valid, date is valid, and class tag exists and is assigned to the student.
+3. Tuto checks that the attendance is not already marked as **Absent** for that date and class.
+4. Tuto records the **Absent** attendance and displays a success message.
 
    Use case ends.
 
 **Extensions**
-* 1a. The command format is invalid.
-    * 1a1. Tuto shows an error message with the correct usage format.
-
+* 2a. Command format is invalid.
+    * 2a1. Tuto shows the correct usage format.
       Use case ends.
 
-* 2a. No attendance record exists for the specified date and class.
-    * 2a1. Tuto shows an error message.
-
+* 2b. Student ID does not exist.
+    * 2b1. Tuto shows an error that the student cannot be found.
       Use case ends.
 
-**Use case: View a student's attendance history**
+* 2c. The student ID format is invalid.
+    * 2c1. Tuto shows an error message indicating invalid student ID format.
+      Use case ends.
+
+* 2d. The specified class tag does not exist.
+    * 2d1. Tuto shows an error message indicating class tag not found.
+      Use case ends.
+
+* 2e. The specified class tag is not assigned to the student.
+    * 2e1. Tuto shows an error message indicating class tag not assigned to student.
+      Use case ends.
+
+* 2f. The provided date is in the future.
+    * 2f1. Tuto shows an error message indicating date cannot be in the future.
+      Use case ends.
+
+* 2g. The provided date is before the student's enrolment month.
+    * 2g1. Tuto shows an error message indicating date cannot be before enrolment.
+      Use case ends.
+
+* 2h. The date does not correspond to a real calendar day (e.g. 30th February).
+    * 2h1. Tuto shows an error message indicating invalid date.
+      Use case ends.
+
+* 3a. The attendance is already marked as **Absent** for that date and class.
+    * 3a1. Tuto shows an error message indicating the student is already marked absent.
+      Use case ends.
+
+**Use case: Delete an Attendance Record**
 
 **MSS**
-1. User views the attendance history of a student.
-2. Tuto retrieves the attendance record for that student.
-3. Tuto displays the attendance history in chronological order.
+1. Tutor requests to delete an attendance record for a student on a specific date and class.
+2. Tuto validates the request: student exists, command format is valid, date is valid, and class tag exists.
+3. Tuto verifies that an attendance record exists for that date and class.
+4. Tuto deletes the attendance record and displays a success message.
 
    Use case ends.
 
 **Extensions**
-* 1a.  The command format is invalid.
-
-    * 1a1. Tuto shows an error message with the correct usage format.
-
+* 2a. Command format is invalid.
+    * 2a1. Tuto shows the correct usage format.
       Use case ends.
 
-* 2a. No attendance records exist for the student.
-    * 2a1. System informs the user that no records are available.
+* 2b. Student ID does not exist.
+    * 2b1. Tuto shows an error that the student cannot be found.
+      Use case ends.
 
+* 2c. The student ID format is invalid.
+    * 2c1. Tuto shows an error message indicating invalid student ID format.
+      Use case ends.
+
+* 2d. The date does not correspond to a real calendar day (e.g. 30th February).
+    * 2d1. Tuto shows an error message indicating invalid date.
+      Use case ends.
+
+* 3a. No attendance record exists for the specified date and class.
+    * 3a1. Tuto shows an error message indicating no attendance record found.
+      Use case ends.
+
+**Use case: View a Student's Attendance History**
+
+**MSS**
+1. Tutor requests to view the attendance history of a student.
+2. Tuto validates the request: student exists and command format is valid.
+3. Tuto retrieves all attendance records for the student.
+4. Tuto displays the attendance history sorted by date (newest first), then by class tag name alphabetically.
+
+   Use case ends.
+
+**Extensions**
+* 2a. Command format is invalid.
+    * 2a1. Tuto shows the correct usage format.
+      Use case ends.
+
+* 2b. Student ID does not exist.
+    * 2b1. Tuto shows an error that the student cannot be found.
+      Use case ends.
+
+* 2c. The student ID format is invalid.
+    * 2c1. Tuto shows an error message indicating invalid student ID format.
+      Use case ends.
+
+* 3a. No attendance records exist for the student.
+    * 3a1. Tuto shows a message indicating no attendance records found.
       Use case ends.
 
 **Use case: Add Student**
