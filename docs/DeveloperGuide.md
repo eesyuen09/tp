@@ -433,7 +433,7 @@ The following commands handle attendance operations:
 
 The activity diagram below illustrates the high-level workflow for attendance management, showing how the system routes different attendance operations based on command flags:
 
-<puml src="diagrams/AttendanceMarkActivityDiagram.puml" alt="Attendance Command Activity Diagram" />
+<puml src="diagrams/AttendanceActivityDiagram.puml" alt="Attendance Activity Diagram" />
 
 #### Sequence Diagram: Marking Attendance as Present
 
