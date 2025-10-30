@@ -63,8 +63,8 @@ public class AttendanceViewCommand extends AttendanceCommand {
 
         AttendanceHistorySummary summary = new AttendanceHistorySummary(person.getName().toString(),
                 person.getStudentId(),
-                entries.get(0).getDate(),
                 entries.get(entries.size() - 1).getDate(),
+                entries.get(0).getDate(),
                 entries.size());
         model.setDisplayedAttendanceHistory(entries, summary);
 
