@@ -35,7 +35,7 @@ public class AttendanceMarkAbsentCommand extends AttendanceCommand {
     public static final String MESSAGE_ALREADY_MARKED_ABSENT = "%1$s is already marked absent on %2$s for class %3$s.";
     public static final String MESSAGE_STUDENT_DOES_NOT_HAVE_TAG = "Student %1$s does not have the class tag: %2$s";
     public static final String MESSAGE_FUTURE_DATE = "Cannot mark attendance for future date: %1$s";
-    public static final String MESSAGE_BEFORE_ENROLLMENT =
+    public static final String MESSAGE_BEFORE_ENROLMENT =
             "Cannot mark attendance for %1$s on %2$s. Student enrolled in %3$s.";
 
     private final Date date;
@@ -69,7 +69,7 @@ public class AttendanceMarkAbsentCommand extends AttendanceCommand {
         // Check if the date is before the student's enrollment month
         LocalDate enrollmentStartDate = personToEdit.getEnrolledMonth().toYearMonth().atDay(1);
         if (attendanceDate.isBefore(enrollmentStartDate)) {
-            throw new CommandException(String.format(MESSAGE_BEFORE_ENROLLMENT,
+            throw new CommandException(String.format(MESSAGE_BEFORE_ENROLMENT,
                     personToEdit.getName(), date.getFormattedDate(),
                     personToEdit.getEnrolledMonth().toHumanReadable()));
         }

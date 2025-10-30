@@ -67,11 +67,9 @@ public class FeeViewCommand extends FeeCommand {
         if (enrolled == null) {
             throw new CommandException("Student has no enrolled month recorded.");
         }
-
         Month endMonth = Month.now();
         Month requestedStart = startMonthOpt.orElse(enrolled);
         Month effectiveStart = requestedStart.isBefore(enrolled) ? enrolled : requestedStart;
-
         if (endMonth.isBefore(effectiveStart)) {
             logger.info(() -> String.format(
                 "Rejected fee -v: start month %s is a future month",
@@ -79,19 +77,11 @@ public class FeeViewCommand extends FeeCommand {
             throw new CommandException(MESSAGE_NO_HISTORY_IN_RANGE);
         }
 
-        logger.fine(() -> String.format(
-            "FeeViewCommand: id=%s start=%s end=%s",
+        logger.fine(() -> String.format("FeeViewCommand: id=%s start=%s end=%s",
             studentId, effectiveStart, endMonth));
         List<FeeHistoryEntry> entries =
             buildHistoryEntries(model.getAddressBook().getFeeTracker(), person, effectiveStart, endMonth);
-        FeeHistorySummary summary = new FeeHistorySummary(
-                person.getName().fullName,
-                studentId,
-                effectiveStart,
-                endMonth,
-                enrolled,
-                entries.size());
-
+        FeeHistorySummary summary = buildSummary(person, enrolled, effectiveStart, endMonth, entries.size());
         model.setDisplayedFeeHistory(entries, summary);
 
         String header = String.format("Payment history for %s (Student ID %s) displayed.",
@@ -111,6 +101,10 @@ public class FeeViewCommand extends FeeCommand {
         }
         Collections.reverse(result);
         return result;
+    }
+
+    private FeeHistorySummary buildSummary(Person person, Month enrolled, Month start, Month end, int count) {
+        return new FeeHistorySummary(person.getName().fullName, studentId, start, end, enrolled, count);
     }
 
 
