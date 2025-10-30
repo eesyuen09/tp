@@ -32,7 +32,7 @@ public class AddCommand extends Command {
             + PREFIX_NAME + "NAME "
             + PREFIX_PHONE + "PHONE "
             + PREFIX_EMAIL + "EMAIL "
-            + PREFIX_MONTH + "ENROLLED_MONTH "
+            + "[" + PREFIX_MONTH + "ENROLLED_MONTH] "
             + PREFIX_ADDRESS + "ADDRESS "
             + "[" + PREFIX_CLASSTAG + "CLASS_TAG]...\n"
             + "Example: " + COMMAND_WORD + " "

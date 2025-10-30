@@ -1,0 +1,122 @@
+@startuml
+!include style.puml
+skinparam ArrowFontStyle plain
+
+skinparam ActivityFontSize 16
+skinparam ActivityDiamondFontSize 16
+skinparam ActivityArrowFontSize 14
+
+title Attendance Command Activity Diagram
+
+start
+
+:User enters attendance command
+with flag and parameters;
+
+:System parses command
+and identifies flag;
+
+if () then ([invalid format])
+  :Show error message;
+  stop
+endif
+
+switch (Flag type?)
+case ( -p )
+  :Parse student ID, date, and class tag;
+
+  :Find student by Student ID;
+  if () then ([student not found])
+    :Show error message;
+    stop
+  endif
+
+  :Validate attendance date;
+  if () then ([date invalid])
+    :Show error message;
+    stop
+  endif
+
+  :Validate ClassTag exists
+  and student is in class;
+  if () then ([validation fails])
+    :Show error message;
+    stop
+  endif
+
+  :Check if already marked present;
+  if () then ([already present])
+    :Show error message;
+    stop
+  else ([not duplicate])
+    :Mark student as present;
+    :Display success message;
+  endif
+
+case ( -a )
+  :Parse student ID, date, and class tag;
+
+  :Find student by Student ID;
+  if () then ([student not found])
+    :Show error message;
+    stop
+  endif
+
+  :Validate attendance date;
+  if () then ([date invalid])
+    :Show error message;
+    stop
+  endif
+
+  :Validate ClassTag exists
+  and student is in class;
+  if () then ([validation fails])
+    :Show error message;
+    stop
+  endif
+
+  :Check if already marked absent;
+  if () then ([already absent])
+    :Show error message;
+    stop
+  else ([not duplicate])
+    :Mark student as absent;
+    :Display success message;
+  endif
+
+case ( -v )
+  :Parse student ID;
+
+  :Find student by Student ID;
+  if () then ([student not found])
+    :Show error message;
+    stop
+  else ([student found])
+    :Retrieve attendance history;
+    :Sort by date and ClassTag;
+    :Display attendance records to user;
+  endif
+
+case ( -d )
+  :Parse student ID, date, and class tag;
+
+  :Find student by Student ID;
+  if () then ([student not found])
+    :Show error message;
+    stop
+  endif
+
+  :Check if attendance record exists
+  for given date and class tag;
+  if () then ([record not found])
+    :Show error message;
+    stop
+  else ([record exists])
+    :Delete attendance record;
+    :Display success message;
+  endif
+endswitch
+
+stop
+
+@enduml
