@@ -5,8 +5,6 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_CLASSTAG;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DATE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_STUDENTID;
 
-import java.time.LocalDate;
-
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
@@ -33,10 +31,6 @@ public class AttendanceMarkAbsentCommand extends AttendanceCommand {
 
     public static final String MESSAGE_MARK_ABSENT_SUCCESS = "Marked %1$s as absent on %2$s for class %3$s.";
     public static final String MESSAGE_ALREADY_MARKED_ABSENT = "%1$s is already marked absent on %2$s for class %3$s.";
-    public static final String MESSAGE_STUDENT_DOES_NOT_HAVE_TAG = "Student %1$s does not have the class tag: %2$s";
-    public static final String MESSAGE_FUTURE_DATE = "Cannot mark attendance for future date: %1$s";
-    public static final String MESSAGE_BEFORE_ENROLMENT =
-            "Cannot mark attendance for %1$s on %2$s. Student enrolled in %3$s.";
 
     private final Date date;
     private final ClassTag classTag;
@@ -60,29 +54,8 @@ public class AttendanceMarkAbsentCommand extends AttendanceCommand {
                 .orElseThrow(() -> new CommandException(
                         String.format(Messages.MESSAGE_STUDENT_ID_NOT_FOUND, studentId)));
 
-        // Check if the date is in the future
-        LocalDate attendanceDate = date.toLocalDate();
-        if (attendanceDate.isAfter(LocalDate.now())) {
-            throw new CommandException(String.format(MESSAGE_FUTURE_DATE, date.getFormattedDate()));
-        }
-
-        // Check if the date is before the student's enrollment month
-        LocalDate enrollmentStartDate = personToEdit.getEnrolledMonth().toYearMonth().atDay(1);
-        if (attendanceDate.isBefore(enrollmentStartDate)) {
-            throw new CommandException(String.format(MESSAGE_BEFORE_ENROLMENT,
-                    personToEdit.getName(), date.getFormattedDate(),
-                    personToEdit.getEnrolledMonth().toHumanReadable()));
-        }
-
-        // Check if the class tag exists in the address book
-        if (!model.hasClassTag(classTag)) {
-            throw new CommandException(Messages.MESSAGE_TAG_NOT_FOUND);
-        }
-
-        if (!personToEdit.getTags().contains(classTag)) {
-            throw new CommandException(String.format(MESSAGE_STUDENT_DOES_NOT_HAVE_TAG,
-                    personToEdit.getName(), classTag.tagName));
-        }
+        validateAttendanceDate(date, personToEdit);
+        validateClassTag(model, personToEdit, classTag);
 
         if (personToEdit.getAttendanceList().hasAttendanceMarkedAbsent(date, classTag)) {
             throw new CommandException(String.format(MESSAGE_ALREADY_MARKED_ABSENT,

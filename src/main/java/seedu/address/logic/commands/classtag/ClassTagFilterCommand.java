@@ -43,7 +43,7 @@ public class ClassTagFilterCommand extends FilterCommand {
         Optional<ClassTag> foundTag = model.findClassTag(toFilter);
 
         if (foundTag.isEmpty()) {
-            throw new CommandException(Messages.MESSAGE_TAG_NOT_FOUND);
+            throw new CommandException(String.format(Messages.MESSAGE_TAG_NOT_FOUND, toFilter.tagName));
         }
 
         ClassTag actualTag = foundTag.get();
