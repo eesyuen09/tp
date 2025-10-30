@@ -1273,29 +1273,23 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
       Use case ends.
 
-* 1d. The specified class tag does not exist.
+* 1d. The provided date fails validation.
 
-    * 1d1. Tuto shows an error message indicating class tag not found.
-
-      Use case ends.
-
-* 1e. The provided date fails validation.
-
-    * 1e1. The date does not correspond to a real calendar day (e.g. 30th February).
+    * 1d1. The date does not correspond to a real calendar day (e.g. 30th February).
 
         * 1e3a. Tuto shows an error message indicating invalid date.
 
           Use case ends.
 
-* 1f. Performance note exceeds the 200-character limit.
+* 1e. Performance note exceeds the 200-character limit.
 
-    * 1f1. Tuto shows an error message indicating character limit.
+    * 1e1. Tuto shows an error message indicating character limit.
 
       Use case ends.
 
-* 1g. Performance note does not exist for the specified student on the given date for the given class.
+* 1f. Performance note does not exist for the specified student on the given date for the given class.
 
-    * 1g1. Tuto shows an error message.
+    * 1f1. Tuto shows an error message.
 
       Use case ends.
 
@@ -1309,9 +1303,11 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
     Use case ends.
 
 **Extensions**
-* 1a1. Tuto shows an error message indicating student not found.
+* 1a. The provided student ID does not match any existing student.
 
-  Use case ends.
+    * 1a1. Tuto shows an error message indicating student not found.
+
+    Use case ends.
 
 * 1b. The command format is invalid (e.g. missing prefixes).
 
@@ -1325,23 +1321,17 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
       Use case ends.
 
-* 1d. The specified class tag does not exist.
+* 1d. The provided date fails validation.
 
-    * 1d1. Tuto shows an error message indicating class tag not found.
+    * 1d1. The date does not correspond to a real calendar day (e.g. 30th February).
 
-      Use case ends.
-
-* 1e. The provided date fails validation.
-
-    * 1e1. The date does not correspond to a real calendar day (e.g. 30th February).
-
-        * 1e1a. Tuto shows an error message indicating invalid date.
+        * 1d1a. Tuto shows an error message indicating invalid date.
 
           Use case ends.
 
-* 1f. A performance note does not exist for the same student on the same date for the same class.
+* 1e. A performance note does not exist for the same student on the same date for the same class.
 
-    * 1f1. Tuto shows an error message.
+    * 1e1. Tuto shows an error message.
 
       Use case ends.
 
