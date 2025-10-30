@@ -119,17 +119,17 @@ In Tuto, a parameter represents a placeholder where users input data. Parameters
 
 **Parameter Details:**
 
-| Parameter          | Prefix | Description                                                                                                                                                                                                                                |
-|--------------------|--------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `NAME`             | `n/`   | Specifies the name of a student.<br><br>**Requirements:**<br>• Names must contain only alphabetic characters and whitespace.<br>• Names with only whitespace are not allowed.                                                              |
-| `STUDENT_ID`       | `s/`   | Specifies the Student ID of a student.<br><br>**Requirements:**<br>• IDs are automatically assigned in 4-digit format (e.g., `0234`, `5832`).<br>                                                             |
-| `PHONE`            | `p/`   | Specifies the phone number of a student.<br><br>**Requirements:**<br>• Phone numbers must contain only numeric digits.<br>• Must be at least 3 digits long.                                                                                |
-| `EMAIL`            | `e/`   | Specifies the email address of a student.<br><br>**Requirements:**<br>• Format: `local-part@domain`.<br>• Local part can contain alphanumeric characters and special characters `+`, `_`, `.`, `-`.<br>• Local part cannot start or end with special characters.<br>• Domain must end with a label at least 2 characters long.<br>• Each domain label must start and end with alphanumeric characters. |
-| `ADDRESS`          | `a/`   | Specifies the residential address of a student.<br><br>**Requirements:**<br>• Can contain letters, digits, spaces, and the symbols `#`, `,`, `-`, `'`.<br>• Cannot be blank.<br>• First character cannot be a whitespace.                  |
-| `MMYY`             | `m/`   | Specifies a month and year for enrollment or payment tracking.<br><br>**Requirements:**<br>• Format: `MMYY` (e.g., `0825` for August 2025).<br>• MM must be 01-12, YY is the last two digits of the year.                                  |
-| `CLASS_TAG`        | `t/`   | Specifies a class tag to categorize students.<br><br>**Requirements:**<br>• Must be 1-30 characters long.<br>• Can only contain alphanumeric characters and underscores (`_`).<br>• Tag must exist in the system before assignment to students. | |
-| `DATE`             | `d/`   | Specifies a date for attendance or performance tracking.<br><br>**Requirements:**<br>• Format: `DDMMYYYY` (e.g., `15092025` for 15 September 2025).<br>          |
-| `PERFORMANCE_NOTE` | `pn/`  | Specifies a performance note for a student.<br><br>**Requirements:**<br>• Can be any text under 200 characters.<br>                                                               |
+| Parameter                   | Prefix | Description                                                                                                                                                                                                                                                                                                                                                                                            |
+|-----------------------------|--------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `NAME`                      | `n/`   | Specifies the name of a student.<br><br>**Requirements:**<br>• Names must contain only alphabetic characters, apostrophes ('), hyphens (-), and whitespace.<br>• Names with only whitespace are not allowed.<br>• Must start with a letter.<br>• Maximum length: 100 characters.                                                                                                                       |
+| `STUDENT_ID`                | `s/`   | Specifies the Student ID of a student.<br><br>**Requirements:**<br>• IDs are automatically assigned in 4-digit format (e.g., `0234`, `5832`).<br>• Cannot be blank.                                                                                                                                                                                                                                    |
+| `PHONE`                     | `p/`   | Specifies the phone number of a student.<br><br>**Requirements:**<br>• Phone numbers must contain only numeric digits.<br>• Must be exactly 8 digits long.<br>• Must start with 6, 8, or 9 (Singapore mobile/landline format).                                                                                                                                                                         |
+| `EMAIL`                     | `e/`   | Specifies the email address of a student.<br><br>**Requirements:**<br>• Format: `local-part@domain`.<br>• Local part can contain alphanumeric characters and special characters `+`, `_`, `.`, `-`.<br>• Local part cannot start or end with special characters.<br>• Domain must end with a label at least 2 characters long.<br>• Each domain label must start and end with alphanumeric characters. |
+| `ADDRESS`                   | `a/`   | Specifies the residential address of a student.<br><br>**Requirements:**<br>• Can contain letters, digits, spaces, and the symbols `#`, `,`, `-`, `'`.<br>• Cannot be blank.<br>• First character cannot be a whitespace.                                                                                                                                                                              |
+| `MMYY` and `ENROLLED_MONTH` | `m/`   | Specifies a month and year for enrollment or payment tracking.<br><br>**Requirements:**<br>• Format: `MMYY` (e.g., `0825` for August 2025).<br>• MM must be 01-12, YY is the last two digits of the year.                                                                                                                                                                                              |
+| `CLASS_TAG`                 | `t/`   | Specifies a class tag to categorize students.<br><br>**Requirements:**<br>• Must be 1-30 characters long.<br>• Can only contain alphanumeric characters and underscores (`_`).<br>• Tag must exist in the system before assignment to students.                                                                                                                                                        | |
+| `DATE`                      | `d/`   | Specifies a date for attendance or performance tracking.<br><br>**Requirements:**<br>• Format: `DDMMYYYY` (e.g., `15092025` for 15 September 2025).<br>                                                                                                                                                                                                                                                |
+| `PERFORMANCE_NOTE`          | `pn/`  | Specifies a performance note for a student.<br><br>**Requirements:**<br>• Can be any text under 200 characters.<br>                                                                                                                                                                                                                                                                                    |
 
 #### 2.2.3 Command Format
 
@@ -226,11 +226,15 @@ Adds a new student to the address book.
 **Command Details and Constraints:**
 * Creates a new student record with the specified name, phone number, email, and address.
 * The `ENROLLED_MONTH` and `CLASS_TAG` fields are optional.
+* The student is automatically assigned a unique 4-digit `STUDENT_ID` upon creation.
+* The `ENROLLED_MONTH` cannot be edited after creation.
 * A student can have multiple class tags or none at all.
 * Tags must exist in the system. If a specified tag does not exist, the command will be rejected.
 
 <box type="tip" seamless>
+
 You can add multiple tags by specifying `t/CLASS_TAG1 t/CLASS_TAG2 ...`.  
+
 A student can also be added without any tags.
 </box>
 
