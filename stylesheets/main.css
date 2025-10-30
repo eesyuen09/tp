@@ -76,8 +76,22 @@ mark {
 
 #site-nav {
   border-right: 1px solid lightgrey;
-  padding-bottom: 20px;
-  z-index: 999;
+  z-index: 1000;
+  background-color: white;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+#site-nav .site-nav-top {
+  flex-shrink: 0;
+}
+
+#site-nav .nav-component {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overflow-x: visible;
+  min-height: 0;
 }
 
 .site-nav-top {

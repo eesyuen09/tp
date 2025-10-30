@@ -29,8 +29,8 @@
         "3-6-filter-students-filter": "3.6 Filter students: filter",
         "3-7-viewing-help-help": "3.7 Viewing help : help",
         "3-8-exiting-the-program-exit": "3.8 Exiting the program : exit",
-        "saving-the-data": "Saving the data",
-        "editing-the-data-file": "Editing the data file",
+        "3-9-saving-the-data": "3.9 Saving the data",
+        "3-10-editing-the-data-file": "3.10 Editing the data file",
         "faq": "FAQ",
         "known-issues": "Known issues",
         "command-summary": "Command summary"
@@ -63,11 +63,6 @@
         "product-scope": "Product scope",
         "user-stories": "User stories",
         "use-cases": "Use cases",
-        "use-case-mark-student-as-paid": "Use case: Mark Student as Paid",
-        "use-case-mark-student-as-unpaid": "Use case: Mark Student as Unpaid",
-        "use-case-filter-paid-students-by-month": "Use case: Filter Paid Students by Month",
-        "use-case-filter-unpaid-students-by-month": "Use case: Filter Unpaid Students by Month",
-        "use-case-view-payment-history-of-a-student": "Use case: View Payment History of a Student",
         "non-functional-requirements": "Non-Functional Requirements",
         "glossary": "Glossary",
         "appendix-instructions-for-manual-testing": "Appendix: Instructions for manual testing",
@@ -76,6 +71,7 @@
         "managing-class-tags": "Managing Class Tags",
         "managing-fees": "Managing Fees",
         "managing-performance-notes": "Managing Performance Notes",
+        "managing-attendance": "Managing Attendance",
         "saving-data": "Saving data"
       },
       "headingKeywords": {}
