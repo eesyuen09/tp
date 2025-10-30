@@ -2290,9 +2290,19 @@ testers are expected to do more *exploratory* testing.
 
 ### Saving data
 
-1. Dealing with missing/corrupted data files
-
-    1. _{explain how to simulate a missing/corrupted file, and the expected behavior}_
-
-1. _{ more test cases …​ }_
+1.	Dealing with missing data files
+      1.	Simulate a missing data file:
+      - Close the application.
+      - Navigate to the data directory where the application stores its data files.
+      - Delete the data file (e.g., addressbook.json).
+      2.	Re-launch the application.   
+      Expected: The application starts with an empty data set. A new data file is created automatically.
+      2.	Dealing with corrupted data files
+      1.	Simulate a corrupted data file:
+      - Close the application.
+      -	Open the data file (e.g., addressbook.json) with a text editor.
+      -	Introduce invalid JSON syntax (e.g., delete a closing brace or add random text).
+      -	Save the file.
+      2.	Re-launch the application.  
+      Expected: The application detects the corrupted data file and displays an error message in the terminal. It will then start with an empty data set.
 

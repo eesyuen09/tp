@@ -2,50 +2,58 @@
 !include style.puml
 skinparam ArrowFontStyle plain
 
-title FeeViewCommand Activity Diagram
+title Activity Diagram: View Payment History (fee -v)
 
+|User|
 start
+:Enter `fee -v s/STUDENT_ID [m/MMYY]`;
 
-:User enters `fee -v s/0001 [m/MMYY]`;
-:LogicManager parses and executes FeeViewCommand;
+|System|
+:Parse and validate command format & parameters;
 
-:Find student by Student ID;
-if () then ([Student found])
-  :Get student's enrolled month;
-  if () then ([Enrolled month present])
-    :Set requested start = user input (if any), else enrolled month;
-    :Compute effective start = max(requested start, enrolled month);
-    :Set end month = current month;
+if ("validation fails") then (yes)
+  |User|
+  :Receive error message;
+  stop
+else (no)
+  |System|
+  :Find student by Student ID;
 
-    if () then ([Effective start > current month])
-      :Show error message;
+  if ("student not found") then (yes)
+    |User|
+    :Receive error message;
+    stop
+  else (no)
+    |System|
+    :Fetch student's enrolled month;
+
+    if ("enrolled month missing") then (yes)
+      |User|
+      :Receive error message;
       stop
-    else ([else])
-      :Initialize empty payment history list;
-      :Start looping from effective start to current month (inclusive);
+    else (no)
+      |System|
+      :Determine requestedStart (input or enrolledMonth);
+      :Compute effectiveStart = max(requestedStart, enrolledMonth);
+      :Set endMonth = current month;
 
-      while () is ([Within date range])
-        :Check explicit fee record for this month;
-        if () then ([Explicit record exists])
-          :Use recorded status (PAID / UNPAID);
-          :Set isExplicit = true;
-        else ([else])
-          :Use default status = UNPAID;
-          :Set isExplicit = false;
-        endif
-        :Add entry {month, status, isExplicit} to fee history;
-        :Move to next month;
-      endwhile ([else])
+      if ("effectiveStart > endMonth") then (yes)
+        |User|
+        :Receive error message;
+        stop
+      else (no)
+        |System|
+        :Retrieve map = FeeTracker#getPaymentHistory(student, effectiveStart, endMonth);
+        :For each month, attach isExplicit flag (stored status vs default UNPAID);
+        :Order entries newest-first (latest month first);
+        :Build FeeHistorySummary and update Model (entries, summary);
 
-      :Reverse list to newest-first (latest month first);
-      :Display compiled fee history to user;
+        |User|
+        :Display compiled fee history and success message;
+        stop
+      endif
     endif
-  else ([else])
-    :Show error message;
   endif
-else ([else])
-  :Show error message;
 endif
 
-stop
 @enduml
