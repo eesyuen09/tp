@@ -19,7 +19,37 @@
   "pagesExclude": ["node_modules/*"],
   "pages": [
     {
-      "glob": ["**/index.md", "**/*.md"]
+      "src": "index.md",
+      "title": "Home"
+    },
+    {
+      "src": "UserGuide.md",
+      "title": "User Guide",
+      "sections": [
+        { "title": "1. Introduction",     "src": "UserGuide.md#1-introduction" },
+        { "title": "2. Getting Started",  "src": "UserGuide.md#2-getting-started" },
+        { "title": "3. Commands",         "src": "UserGuide.md#3-commands" },
+        { "title": "FAQ",                 "src": "UserGuide.md#faq" },
+        { "title": "Known issues",        "src": "UserGuide.md#known-issues" },
+        { "title": "Command summary",     "src": "UserGuide.md#command-summary" }
+      ]
+    },
+    {
+      "src": "DeveloperGuide.md",
+      "title": "Developer Guide",
+      "sections": [
+        { "title": "Acknowledgements",                                 "src": "DeveloperGuide.md#acknowledgements" },
+        { "title": "Setting Up",                                       "src": "DeveloperGuide.md#setting-up" },
+        { "title": "Design",                                           "src": "DeveloperGuide.md#design" },
+        { "title": "Implementation",                                   "src": "DeveloperGuide.md#implementation" },
+        { "title": "Documentation, logging, testing, configuration, dev-ops", "src": "DeveloperGuide.md#documentation-logging-testing-configuration-dev-ops" },
+        { "title": "Appendix: Requirements",                           "src": "DeveloperGuide.md#appendix-requirements" },
+        { "title": "Appendix: Instructions for manual testing",        "src": "DeveloperGuide.md#appendix-instructions-for-manual-testing" }
+      ]
+    },
+    {
+      "src": "AboutUs.md",
+      "title": "About Us"
     }
   ],
   "deploy": {
