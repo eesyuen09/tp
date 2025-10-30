@@ -607,8 +607,6 @@ Displays all attendance records for a specific student across all their classes.
 The `perf` command family allows you to track students' performance in class by **adding performance notes**.
 Each performance note is tied to both a date and a class tag, allowing tutors to document specific achievements or areas for improvement for each student.
 
-![performanceGUI](images/performanceGUI.png)
-
 <box type="info" seamless>
 
 **Overview of perf commands**
@@ -687,7 +685,8 @@ Displays all performance notes for a student.
 
 **Examples:**
 - `perf -v s/0001`
-  >**Expected output:** `Performance Notes for John Tan displayed.`
+  >**Expected output:** 
+    ![performanceGUI](images/performanceGUI.png)
 
 ---
 
