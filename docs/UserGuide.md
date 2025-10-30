@@ -707,7 +707,7 @@ Filtering supports three main types of criteria:
 |-------------------------|------------------------------------------------------------------------|
 | `filter -p m/MMYY`      | Show students marked as **PAID** for a specific month                  |
 | `filter -up m/MMYY`     | Show students marked (or defaulted) as **UNPAID** for a specific month |
-| `filter -t t/CLASS_TAG` | Show students belonging to a particular **class tag**                  |
+| `filter -t t/CLASS_TAG` | Show students belonging to a particular **CLASS_TAG**                  |
 
 You can only use **one flag** per command.
 Each filter updates the main student list view to display only matching entries.
