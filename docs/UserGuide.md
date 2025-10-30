@@ -177,9 +177,9 @@ A command can be categorized into four formats:
 1. **COMMAND + FLAG + PARAMETER_PREFIX + PARAMETER**
    - Example: `tag -a t/Math_Sec3`, `fee -p s/0001 m/0925`, `att -p s/0001 d/15092025 t/Math_Sec3`
    - Common flags include:
-     - `-a` (add for class tag), `-d` (delete), `-l` (list), `-e` (edit), `-v` (view)
+     - `-a` (add for class tag/ mark as absent), `-d` (delete), `-l` (list), `-e` (edit), `-v` (view)
      - `-p` (paid/mark as present), `-up` (unpaid)
-     - `-a` (mark as absent)
+
      - `-t` (tag filter)<br>
        <br>
 2. **COMMAND + PARAMETER_PREFIX + PARAMETER**
@@ -194,7 +194,6 @@ A command can be categorized into four formats:
    - Example: `list`, `help`, `exit`, `clear`<br>
      <br>
 
-     
 --------------------------------------------------------------------------------------------------------------------
 
 ## 3. Commands
@@ -593,10 +592,7 @@ Displays all attendance records for a specific student across all their classes.
 **Examples:**
 - `att -v s/0001` — Shows all attendance records for student `0001` (Bernice Yu).
   >**Expected output:**<br>
-  `Attendance records for: Bernice Yu`<br>
-  `15-09-2025 - Math: Present`<br>
-  `16-09-2025 - Math: Absent`<br>
-  `20-09-2025 - Science: Present`<br>
+  ![AttendanceViewHistoryEx1.png](images/AttendanceViewHistoryEx1.png)
 - `att -v s/0003` — If no attendance record for student `0003` (David Li).
   >**Expected output:**<br>
   `No attendance record found for: David Li`<br>
