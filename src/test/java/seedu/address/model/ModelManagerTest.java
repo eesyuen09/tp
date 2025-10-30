@@ -401,6 +401,7 @@ public class ModelManagerTest {
         modelManager.addPerson(ALICE);
         Date date = new Date("15012025");
         ClassTag classTag = new ClassTag("Math");
+        modelManager.addClassTag(classTag);
 
         modelManager.markAttendancePresent(ALICE.getStudentId(), date, classTag);
 
@@ -429,6 +430,7 @@ public class ModelManagerTest {
         modelManager.addPerson(ALICE);
         Date date = new Date("15012025");
         ClassTag classTag = new ClassTag("Math");
+        modelManager.addClassTag(classTag);
 
         // Mark present first
         modelManager.markAttendancePresent(ALICE.getStudentId(), date, classTag);
@@ -462,6 +464,7 @@ public class ModelManagerTest {
         Date date1 = new Date("15012025");
         Date date2 = new Date("16012025");
         ClassTag classTag = new ClassTag("Math");
+        modelManager.addClassTag(classTag);
 
         // Mark two dates as present
         modelManager.markAttendancePresent(ALICE.getStudentId(), date1, classTag);
@@ -484,6 +487,7 @@ public class ModelManagerTest {
         modelManager.addPerson(ALICE);
         Date date = new Date("15012025");
         ClassTag classTag = new ClassTag("Math");
+        modelManager.addClassTag(classTag);
 
         // Mark first
         modelManager.markAttendancePresent(ALICE.getStudentId(), date, classTag);
@@ -539,6 +543,8 @@ public class ModelManagerTest {
         Date date2 = new Date("16012025");
         ClassTag classTag1 = new ClassTag("Math");
         ClassTag classTag2 = new ClassTag("Science");
+        modelManager.addClassTag(classTag1);
+        modelManager.addClassTag(classTag2);
 
         // Mark multiple attendance records
         modelManager.markAttendancePresent(ALICE.getStudentId(), date1, classTag1);
