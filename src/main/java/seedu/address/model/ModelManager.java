@@ -375,6 +375,7 @@ public class ModelManager implements Model {
     public void setDisplayedFeeHistory(List<FeeHistoryEntry> entries, FeeHistorySummary summary) {
         requireNonNull(entries);
         requireNonNull(summary);
+        assert !entries.isEmpty() : "Fee history rows must not be empty when a summary is shown";
         displayedFeeHistory.setAll(entries);
         feeHistorySummary.set(summary);
     }
