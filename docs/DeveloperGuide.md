@@ -310,19 +310,20 @@ This sequence diagram demonstrates how the system processes the `delete` command
     * Pros: Very permissive, easier to implement
     * Cons: Allows many invalid emails
 
-**Aspect: Enrolled Month Validation**
+**Aspect: Enrolled Month Validation and Handling**
 
-* **Alternative 1 (current choice):** Format `MMYY`; check valid month and disallow future months
-    * Pros: Prevents impossible enrolments, ensures chronological consistency for attendance/performance/fees tracking
-    * Cons: Cannot pre-enter future planned enrolments
+* **Alternative 1 (current choice):** Accept input in `MMYY` format only, ensuring the month is valid and not in the future. The enrolled month field is optional — if not provided, it defaults to the current month. When specified, enrollment is assumed to occur on the first day of that month. Once set, the enrolled month cannot be edited afterwards.
+    * Pros: Prevents invalid or inconsistent enrolments, ensures every student has a valid month even if omitted, and simplifies data handling.
+    * Cons: Does not allow pre-entering future enrolments, assumes first-day enrolment, and requires deletion to correct wrong entries.
 
-* **Alternative 2:** Only validate `MMYY` format, allow future months
-    * Pros: Can schedule future enrolments, more flexible for planning
-    * Cons: Requires additional logic elsewhere to prevent inconsistencies
+* **Alternative 2:** Validate only the `MMYY` format and allow future months; permit editing of the enrolled month after creation.
+    * Pros: More flexible for future scheduling and correction of mistakes.
+    * Cons: Increases risk of data inconsistency and requires additional logic for validation across linked records.
 
-* **Alternative 3:** Use full date input (`ddMMyy`) instead of `MMYY`
-    * Pros: More precise, supports partial months or mid-month enrolment
-    * Cons: More cumbersome for users, overkill if month-level granularity is sufficient
+* **Alternative 3:** Use full date input (`ddMMyy`) instead of `MMYY`, allowing mid-month enrolments.
+    * Pros: Provides higher precision for analysis and reporting.
+    * Cons: More cumbersome for users and unnecessary if month-level accuracy is sufficient.
+
 
 **Aspect: ClassTag Validation**
 
@@ -358,15 +359,6 @@ This sequence diagram demonstrates how the system processes the `delete` command
     * Pros: Stronger duplicate detection
     * Cons: More restrictive, may prevent legitimate multiple students with similar details
 
-**Aspect: Enrolled Month Handling**
-
-* **Alternative 1 (current choice):** Set only during creation; cannot be edited afterwards
-    * Pros: Simplifies data handling, prevents accidental changes that could affect multiple records
-    * Cons: If a wrong month is set, the person must be deleted and recreated to correct it
-
-* **Alternative 2:** Allow editing of enrolled month after creation
-    * Pros: More flexible for corrections
-    * Cons: Changing enrolled month may affect many associated records, risking data inconsistency
 
 #### Error Handling
 
