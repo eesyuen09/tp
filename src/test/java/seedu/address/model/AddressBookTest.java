@@ -118,6 +118,48 @@ public class AddressBookTest {
         assertThrows(DuplicateClassTagException.class, () -> addressBook.addClassTag(new ClassTag("Maths")));
     }
 
+    @Test
+    public void isClassTagInUse_tagNotUsedByAnyPerson_returnsFalse() {
+        ClassTag unusedTag = new ClassTag("Maths");
+        addressBook.addClassTag(unusedTag);
+        addressBook.addPerson(ALICE);
+        assertFalse(addressBook.isClassTagInUse(unusedTag));
+    }
+
+    @Test
+    public void isClassTagInUse_tagUsedByOnePerson_returnsTrue() {
+        ClassTag mathTag = new ClassTag("Sec3_Maths");
+        addressBook.addClassTag(mathTag);
+        addressBook.addPerson(ALICE);
+        assertTrue(addressBook.isClassTagInUse(mathTag));
+    }
+
+    @Test
+    public void isClassTagInUse_tagUsedByMultiplePersons_returnsTrue() {
+        ClassTag mathTag = new ClassTag("Sec3_Maths");
+        addressBook.addClassTag(mathTag);
+        addressBook.addPerson(ALICE);
+        Person personWithMathTag = new PersonBuilder(ALICE)
+                .withName("Bob")
+                .withPhone("91234567")
+                .withStudentId("2222")
+                .withClassTags(VALID_CLASS_TAG_PHYSICS, "Sec3_Maths")
+                .build();
+        addressBook.addPerson(personWithMathTag);
+        assertTrue(addressBook.isClassTagInUse(mathTag));
+    }
+
+    @Test
+    public void isClassTagInUse_nullClassTag_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> addressBook.isClassTagInUse(null));
+    }
+
+    @Test
+    public void isClassTagInUse_emptyAddressBook_returnsFalse() {
+        ClassTag tag = new ClassTag("Maths");
+        assertFalse(addressBook.isClassTagInUse(tag));
+    }
+
     /**
      * A stub ReadOnlyAddressBook whose persons list can violate interface constraints.
      */

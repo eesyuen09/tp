@@ -13,13 +13,20 @@
 
 ## **Acknowledgements**
 
-We follow the project design and documentation structure of the AddressBook-Level3 project by SE-EDU.
-
+We follow the project design and documentation structure of the AddressBook-Level3 project by SE-EDU.   
+In addition, the structure and certain sections of this Developer Guide were inspired by and adapted from [a team project developed by a previous cohort](https://ay2425s1-cs2103t-w08-1.github.io/tp/).
 --------------------------------------------------------------------------------------------------------------------
 
 ## **Setting up, getting started**
 
-Refer to the guide [_Setting up and getting started_](SettingUp.md).
+Refer to the guide [_Setting up and getting started_]([SettingUp.md](SettingUp.md)).
+
+<box type="warning" seamless>
+<b>Warning:</b>
+For CS2103T practical exam purpose, the filename of the jar file might be different from the file name given in UG, e.g.: [CS2103T-F10-3][Tuto].jar
+<br>
+For MacOS and Linux users, use the command, java -jar \[CS2103T-F10-3\]\[Tuto\].jar to execute the jar file during PE if necessary.
+</box>
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -807,11 +814,11 @@ Fee Management is implemented through several key components:
     - The tracker only stores months that have been explicitly marked.
       Any month after enrolment without a record is automatically considered UNPAID by default.
       - Months before a student’s enrolledMonth are excluded from fee tracking, as no payment records exist prior to enrolment.
-      - Provides methods to generate **payment history** between two months.
+      - Provides methods to generate payment history between two months.
       - This design avoids redundant data storage and enables on-demand computation of fee states, ensuring efficient lookups and minimal memory use.
       - The `Model` interacts with the `FeeTracker` when marking payments, undoing payments, filtering Paid/Unpaid students, or retrieving historical fee data.
 
-- `FeeState`: Represents a student’s payment status for a particular month. (either **PAID** or **UNPAID**)
+- `FeeState`: Represents a student’s payment status for a particular month. (either PAID or UNPAID)
 
 - `Month`: Represents a calendar month in `MMYY` format and provides utilities for date comparison and traversal.
 
@@ -845,28 +852,28 @@ Fee Management is implemented through several key components:
 
 The following commands handle Fee Management operations:
 
-1. **FeeMarkPaidCommand (triggered by `fee -p`)**: Marks a student’s fee as **PAID** for a specific month.
+1. **FeeMarkPaidCommand (triggered by `fee -p`)**: Marks a student’s fee as PAID for a specific month.
     - Validates that the student exists via `Model#getPersonById()`.
-    - Validates that the target month falls **between the student’s enrolled month and the current month (inclusive)**.
-    - Ensures all previous months up to the target month are already **PAID**. 
-    - Attempts to mark **future months** or **months before enrolment** will be rejected.
+    - Validates that the target month falls between the student’s enrolled month and the current month (inclusive).
+    - Ensures all previous months up to the target month are already PAID. 
+    - Attempts to mark future months or months before enrolment will be rejected.
     - Updates the `FeeTracker` via `Model#markPaid()` and refreshes the UI.
 
-2. **FeeMarkUnpaidCommand (triggered by `fee -up`)**: Marks a student’s fee as **UNPAID** for a specific month.
+2. **FeeMarkUnpaidCommand (triggered by `fee -up`)**: Marks a student’s fee as UNPAID for a specific month.
     - Validates that the student exists via `Model#getPersonById()`.
-    - Validates that the target month falls **between the student’s enrolled month and the current month (inclusive)**.
-    - Tutors cannot mark **future months** or **pre-enrolment months** as Unpaid.
+    - Validates that the target month falls between the student’s enrolled month and the current month (inclusive).
+    - Tutors cannot mark future months or pre-enrolment months as Unpaid.
     - Updates the `FeeTracker` via `Model#markUnpaid()` and refreshes the UI.
 
-3. **FeeFilterPaidCommand (triggered by `filter -p`)**: Filters students who have **Paid** for a specified month.
+3. **FeeFilterPaidCommand (triggered by `filter -p`)**: Filters students who have Paid for a specified month.
     - Validates that the input month is valid and not in the future.
-    - Updates the filtered student list to display only students marked as **PAID** for that month.
+    - Updates the filtered student list to display only students marked as PAID for that month.
 
-4. **FeeFilterUnpaidCommand (triggered by `filter -up`)**: Filters students who have **not Paid** (Unpaid) for a specified month.
+4. **FeeFilterUnpaidCommand (triggered by `filter -up`)**: Filters students who have not Paid (Unpaid) for a specified month.
     - Validates that the input month is valid and not in the future.
-    - Updates the filtered student list to display only students marked as **UNPAID** for that month.
+    - Updates the filtered student list to display only students marked as UNPAID for that month.
 
-5. **FeeViewCommand (triggered by `fee -v`)**: Displays a student’s **payment history** across a specified range of months.
+5. **FeeViewCommand (triggered by `fee -v`)**: Displays a student’s payment history across a specified range of months.
     - Validates that the student exists and that the month range is valid.
     - Retrieves payment data using `FeeTracker#getPaymentHistory()`.
     - Outputs a reverse-chronological list of months (latest month first), with corresponding fee states.
@@ -877,76 +884,70 @@ The following sequence diagram illustrates how the system processes the `fee -p`
 
 <puml src="diagrams/FeeMarkPaidSequenceDiagram.puml" alt="FeeMarkPaidSequenceDiagram" />
 
-#### Activity Diagram: Viewing a Student’s Payment History
-
-The activity diagram below illustrates the workflow for viewing a student’s fee history using the `fee -v` command:
-
-<puml src="diagrams/FeeViewActivityDiagram.puml" alt="FeeViewActivityDiagram" />
-
 #### Design Considerations
 
 **Aspect: Sequential Payment Enforcement (Marking later months as PAID)**
 
-* **Alternative 1 (current choice):** Require all previous months to be **PAID** before a tutor can mark a later month as **PAID**.
+* **Alternative 1 (current choice):** Require all previous months to be PAID before a tutor can mark a later month as PAID.
     * Pros:
-      - Reflects **real-world payment flow** — students should settle earlier dues before paying for upcoming lessons.
-      - Prevents **skipped or inconsistent payment sequences**, such as marking August as PAID while July remains UNPAID.
-      - Ensures **data integrity** — once a month is marked PAID, all earlier months are guaranteed to be cleared.
-      - Simplifies **validation and reporting**, since the payment timeline always progresses forward without gaps.
-      - Makes it easy to determine a student’s **most recent paid month** at a glance.
+      - Reflects real-world payment flow — students should settle earlier dues before paying for upcoming lessons.
+      - Prevents skipped or inconsistent payment sequences, such as marking August as PAID while July remains UNPAID.
+      - Ensures data integrity — once a month is marked PAID, all earlier months are guaranteed to be cleared.
+      - Simplifies validation and reporting, since the payment timeline always progresses forward without gaps.
+      - Makes it easy to determine a student’s most recent paid month at a glance.
 
     * Cons:
-      - Tutors cannot record payments **out of sequence** (e.g., skipping July and paying for August directly).
+      - Tutors cannot record payments out of sequence (e.g., skipping July and paying for August directly).
       - Adds a small validation step when marking multiple months.
 
-* **Alternative 2:** Allow tutors to mark any month as **PAID**, regardless of whether earlier months are still UNPAID.
+* **Alternative 2:** Allow tutors to mark any month as PAID, regardless of whether earlier months are still UNPAID.
     * Pros:
-        - Provides **maximum flexibility** for unusual or irregular payment situations.
+        - Provides maximum flexibility for unusual or irregular payment situations.
         - Allows quick entry for multiple months without enforcing chronological checks.
 
     * Cons:
-      - Can result in **gaps or inconsistencies** in the payment timeline — e.g., later months marked PAID while earlier ones remain UNPAID.
-      - Makes it **easier for tutors to overlook unpaid months**, leading to incomplete financial records.
-      - Reduces **data reliability**, since it becomes unclear whether all payments up to a given point have been fully settled.
+      - Can result in gaps or inconsistencies in the payment timeline — e.g., later months marked PAID while earlier ones remain UNPAID.
+      - Makes it easier for tutors to overlook unpaid months, leading to incomplete financial records.
+      - Reduces data reliability, since it becomes unclear whether all payments up to a given point have been fully settled.
 
 **Aspect: Future Month Restriction (Advance Payments)**
 
-* **Alternative 1 (current choice):** Restrict marking months that are **beyond the current calendar month**.
+* **Alternative 1 (current choice):** Restrict marking months that are beyond the current calendar month.
     * Pros:
-      - Prevents **premature or speculative payments**, maintaining realistic, time-based validation.
-      - Keeps the system aligned with **actual payment periods** and avoids confusion with future billing.
+      - Prevents premature or speculative payments, maintaining realistic, time-based validation.
+      - Keeps the system aligned with actual payment periods and avoids confusion with future billing.
       - Simplifies error handling and prevents data entry mistakes.
 
     * Cons:
-      - Tutors cannot record **advance payments** for future months, even if a student has pre-paid.
+      - Tutors cannot record advance payments for future months, even if a student has pre-paid.
       - May require future system updates to support legitimate early payments.
 
-* **Alternative 2:** Allow tutors to mark **future months** as PAID, provided that all previous months have already been settled.
+* **Alternative 2:** Allow tutors to mark future months as PAID, provided that all previous months have already been settled.
     * Pros:
-      - Supports **prepaid tuition scenarios**, where students pay several months in advance.
-      - Convenient for tutors managing **long-term payment plans** or scheduling future billing cycles in advance.
+      - Supports prepaid tuition scenarios, where students pay several months in advance.
+      - Convenient for tutors managing long-term payment plans or scheduling future billing cycles in advance.
       - Reduces repetitive data entry when tutors want to record multiple future payments at once.
 
     * Cons:
-      - Increases the risk of **accidental marking of future months**, especially if tutors mistype the month or forget the current date.
-      - Requires additional **validation safeguards** (e.g., confirmation prompts or warning messages) to prevent unintentional future entries.
-      - Adds complexity to the **FeeViewCommand** logic, since it must distinguish between completed months and prepaid future months when displaying fee history.
+      - Increases the risk of accidental marking of future months, especially if tutors mistype the month or forget the current date.
+      - Requires additional validation safeguards (e.g., confirmation prompts or warning messages) to prevent unintentional future entries.
+      - Adds complexity to the FeeViewCommand logic, since it must distinguish between completed months and prepaid future months when displaying fee history.
 
 **Aspect: Backdated Correction (Marking an earlier month as UNPAID)**
 
-* **Alternative 1 (current choice):** Allow tutors to mark an earlier month as **UNPAID**, even if later months are already **PAID**.
+* **Alternative 1 (current choice):** Allow tutors to mark an earlier month as UNPAID, even if later months are already PAID.
     * Pros:
-      - Supports **real-world correction scenarios** — e.g., the tutor realizes a payment was incorrectly recorded.
+      - Supports real-world correction scenarios — e.g., the tutor realizes a payment was incorrectly recorded.
       - Allows quick edits without needing to unmark all subsequent months first.
       - Keeps flexibility: once corrected, the tutor must still settle earlier UNPAID months before new payments are accepted.
 
     * Cons:
-      - May cause a **temporary inconsistency** (e.g., later months PAID while an earlier one is UNPAID) until resolved.
+      - May cause a temporary inconsistency (e.g., later months PAID while an earlier one is UNPAID) until resolved.
       - Might confuse tutors reviewing the timeline during the correction phase.
 
-* **Alternative 2:** Block marking an earlier month as **UNPAID** if any later month is already **PAID**.
+* **Alternative 2:** Block marking an earlier month as UNPAID if any later month is already PAID.
     * Pros:
-      - Maintains a **strictly chronological** payment timeline with no anomalies.
+      - Maintains a strictly chronological payment timeline with no anomalies.
       - Simplifies record validation and summary generation.
 
     * Cons:
@@ -954,27 +955,27 @@ The activity diagram below illustrates the workflow for viewing a student’s fe
 
 **Aspect: Display Order of Payment History**
 
-* **Alternative 1 (current choice):** Display payment history in **reverse-chronological order** (newest-first).  
-  The computed range still spans from the **effective start month** (typically the enrolment month) up to the **current month**.
+* **Alternative 1 (current choice):** Display payment history in reverse-chronological order (newest-first).  
+  The computed range still spans from the effective start month (typically the enrolment month) up to the **current month**.
 
     * Pros:
-        - Places the **most relevant and recent months** at the top, matching tutor workflows.
+        - Places the most relevant and recent months at the top, matching tutor workflows.
         - Reduces scrolling effort for checking recent payments or following up on unpaid students.
-        - Maintains **consistency across panels** (e.g., performance notes), which also prioritize recent data.
+        - Maintains consistency across panels (e.g., performance notes), which also prioritize recent data.
 
     * Cons:
         - Tutors reviewing long-term records need to scroll to the bottom to reach the **earliest (enrolment) months**.
 
 
-* **Alternative 2:** Display payment history in **chronological order** (oldest-first).  
+* **Alternative 2:** Display payment history in chronological order (oldest-first).  
   The earliest month (enrolment) appears first, progressing toward the current month.
 
     * Pros:
-        - Provides a **narratively intuitive timeline**, helping tutors review payment history from the student’s start date.
+        - Provides a narratively intuitive timeline, helping tutors review payment history from the student’s start date.
 
     * Cons:
-        - **Recent months**, which tutors most often need, appear at the bottom — requiring extra scrolling.
-        - Inconsistent with other panels that already emphasize **newest-first ordering**.
+        - Recent months, which tutors most often need, appear at the bottom — requiring extra scrolling.
+        - Inconsistent with other panels that already emphasize newest-first ordering.
 
 ---
 
@@ -1035,11 +1036,11 @@ Given below is a list of enhancements we plan to implement in future versions of
 
 ## **Documentation, logging, testing, configuration, dev-ops**
 
-* [Documentation guide](Documentation.md)
-* [Testing guide](Testing.md)
-* [Logging guide](Logging.md)
-* [Configuration guide](Configuration.md)
-* [DevOps guide](DevOps.md)
+* [Documentation guide]([Documentation.md](Documentation.md))
+* [Testing guide]([Testing.md](Testing.md))
+* [Logging guide]([Logging.md](Logging.md))
+* [Configuration guide]([Configuration.md](Configuration.md))
+* [DevOps guide]([DevOps.md](DevOps.md))
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -2160,11 +2161,155 @@ testers are expected to do more *exploratory* testing.
 
 ---
 
+### Managing Attendance
+
+#### Marking Attendance as Present
+
+1. Marking a student as present for a valid class and date
+
+    1. Prerequisites: Student exists with the specified Student ID (e.g., `0001`) and is assigned the relevant class tag (e.g., `Sec3_Math`).
+
+    1. Test case: `att -p s/0001 d/18092025 t/Sec3_Math`<br>
+       **Expected:** Attendance marked as present. Status message confirms the attendance has been recorded.
+
+1. Marking a student as present when already marked present
+
+    1. Prerequisites: Student `0001` already has a present attendance record for `18092025` and `Sec3_Math`.
+
+    1. Test case: `att -p s/0001 d/18092025 t/Sec3_Math`<br>
+       **Expected:** Command rejected. Error message indicates the student is already marked as present for that date and class.
+
+1. Attempting to mark attendance for a future date
+
+    1. Test case: `att -p s/0001 d/31122025 t/Sec3_Math` (assuming current date is before 31 Dec 2025)<br>
+       **Expected:** Command rejected. Error message indicates that attendance cannot be marked for future dates.
+
+1. Attempting to mark attendance before student's enrolled month
+
+    1. Prerequisites: Student `0001` is enrolled in September 2025 (enrolled month: `0925`).
+
+    1. Test case: `att -p s/0001 d/15082025 t/Sec3_Math`<br>
+       **Expected:** Command rejected. Error message indicates that attendance cannot be marked before the student's enrollment month.
+
+1. Attempting to mark attendance with invalid date
+
+    1. Test case: `att -p s/0001 d/30022025 t/Sec3_Math` (30th February does not exist)<br>
+       **Expected:** Command rejected. Error message indicates the date is invalid.
+
+    2. Test case: `att -p s/0001 d/2025-02-28 t/Sec3_Math` (wrong format, should be DDMMYYYY)<br>
+       **Expected:** Command rejected. Error message indicates the date format is invalid.
+
+1. Marking attendance for a class tag not assigned to the student
+
+    1. Prerequisites: Student `0001` exists but is not assigned to class tag `Sec3_Science`.
+
+    1. Test case: `att -p s/0001 d/18092025 t/Sec3_Science`<br>
+       **Expected:** Command rejected. Error message indicates the class tag is not assigned to the student.
+
+1. Marking attendance for a non-existent student
+
+    1. Test case: `att -p s/9999 d/18092025 t/Sec3_Math`<br>
+       **Expected:** Command rejected. Error message indicates the student cannot be found.
+
+---
+
+#### Marking Attendance as Absent
+
+1. Marking a student as absent for a valid class and date
+
+    1. Prerequisites: Student exists with the specified Student ID (e.g., `0001`) and is assigned the relevant class tag (e.g., `Sec3_Math`).
+
+    1. Test case: `att -a s/0001 d/19092025 t/Sec3_Math`<br>
+       **Expected:** Attendance marked as absent. Status message confirms the attendance has been recorded.
+
+1. Changing attendance from present to absent
+
+    1. Prerequisites: Student `0001` is currently marked as present for `18092025` and `Sec3_Math`.
+
+    1. Test case: `att -a s/0001 d/18092025 t/Sec3_Math`<br>
+       **Expected:** Attendance status updated from present to absent. Status message confirms the change.
+
+1. Attempting to mark attendance as absent for a future date
+
+    1. Test case: `att -a s/0001 d/31122025 t/Sec3_Math` (assuming current date is before 31 Dec 2025)<br>
+       **Expected:** Command rejected. Error message indicates that attendance cannot be marked for future dates.
+
+1. Attempting to mark attendance as absent before student's enrolled month
+
+    1. Prerequisites: Student `0001` is enrolled in September 2025 (enrolled month: `0925`).
+
+    1. Test case: `att -a s/0001 d/15082025 t/Sec3_Math`<br>
+       **Expected:** Command rejected. Error message indicates that attendance cannot be marked before the student's enrollment month.
+
+1. Attempting to mark attendance as absent with invalid date
+
+    1. Test case: `att -a s/0001 d/32012025 t/Sec3_Math` (32nd January does not exist)<br>
+       **Expected:** Command rejected. Error message indicates the date is invalid.
+
+    2. Test case: `att -a s/0001 d/2025-01-31 t/Sec3_Math` (wrong format, should be DDMMYYYY)<br>
+       **Expected:** Command rejected. Error message indicates the date format is invalid.
+
+---
+
+#### Viewing Attendance History
+
+1. Viewing attendance history for a student with existing records
+
+    1. Prerequisites: Student `0001` has at least one attendance record.
+
+    1. Test case: `att -v s/0001`<br>
+       **Expected:** Attendance panel updates to show all attendance records for the student sorted by date (newest first), then by class tag alphabetically. Status message confirms number of records shown.
+
+1. Viewing attendance history for a student without records
+
+    1. Prerequisites: Student `0002` exists but has no attendance records.
+
+    1. Test case: `att -v s/0002`<br>
+       **Expected:** Command succeeds. Status message indicates no attendance records found.
+
+1. Viewing attendance history for a non-existent student
+
+    1. Test case: `att -v s/9999`<br>
+       **Expected:** Command rejected. Error message indicates the student cannot be found.
+
+---
+
+#### Deleting an Attendance Record
+
+1. Deleting an existing attendance record
+
+    1. Prerequisites: Student `0001` has an attendance record on `18092025` for `Sec3_Math`.
+
+    1. Test case: `att -d s/0001 d/18092025 t/Sec3_Math`<br>
+       **Expected:** Attendance record deleted. Status message confirms deletion and the record disappears from the attendance panel.
+
+1. Deleting a non-existent attendance record
+
+    1. Test case: `att -d s/0001 d/20092025 t/Sec3_Math`<br>
+       **Expected:** Command rejected. Error message indicates no matching attendance record exists for the given date and class tag.
+
+1. Deleting an attendance record for a non-existent student
+
+    1. Test case: `att -d s/9999 d/18092025 t/Sec3_Math`<br>
+       **Expected:** Command rejected. Error message indicates the student cannot be found.
+
+---
+
 ### Saving data
 
-1. Dealing with missing/corrupted data files
-
-    1. _{explain how to simulate a missing/corrupted file, and the expected behavior}_
-
-1. _{ more test cases …​ }_
+1.	Dealing with missing data files
+      1.	Simulate a missing data file:
+      - Close the application.
+      - Navigate to the data directory where the application stores its data files.
+      - Delete the data file (e.g., addressbook.json).
+      2.	Re-launch the application.   
+      Expected: The application starts with an empty data set. A new data file is created automatically.
+      2.	Dealing with corrupted data files
+      1.	Simulate a corrupted data file:
+      - Close the application.
+      -	Open the data file (e.g., addressbook.json) with a text editor.
+      -	Introduce invalid JSON syntax (e.g., delete a closing brace or add random text).
+      -	Save the file.
+      2.	Re-launch the application.  
+      Expected: The application detects the corrupted data file and displays an error message in the terminal. It will then start with an empty data set.
 

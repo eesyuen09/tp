@@ -178,8 +178,7 @@ public class ModelManager implements Model {
 
     @Override
     public boolean isClassTagInUse(ClassTag classTag) {
-        return addressBook.getPersonList().stream()
-                .anyMatch(person -> person.getTags().contains(classTag));
+        return addressBook.isClassTagInUse(classTag);
     }
 
     /**
