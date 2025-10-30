@@ -1898,18 +1898,50 @@ testers are expected to do more *exploratory* testing.
 
 ### Launch and shutdown
 
-1. Initial launch
+#### Steps for testing a tP JAR file (please follow closely)
 
-   1. Download the jar file and copy into an empty folder
+1. **Prepare a writable folder**
+   
+   Put the JAR file in an empty folder where the app is allowed to create files (i.e., do not use a write-protected folder).
 
-   1. Double-click the jar file Expected: Shows the GUI with a set of sample contacts. The window size may not be optimum.
+2. **Verify Java version (must be Java 17)**
+   
+   Open a command window/terminal and run:
+   
+   ```
+   java -version
+   ```
+   
+   Do this even if you checked before, as your OS may have auto-updated the default Java version.
 
-1. Saving window preferences
+3. **Check the User Guide (UG) for prerequisites**
+   
+   See if there are extra steps before launching (e.g., downloading another file). You may also visit the team's GitHub Releases page for any additional files provided.
 
+4. **Launch from the command line (recommended)**
+   
+   Use `java -jar` to ensure the JAR runs with the Java version you verified. Double-click only as a last resort.
+   
+   * Surround the JAR filename with quotes in case it contains special characters:
+     
+     ```
+     java -jar "[CS2103-F18-1][Task Pro].jar"
+     ```
+   
+   * **Windows:** Use Command Prompt or PowerShell (not the WSL terminal).
+   
+   * **Linux (Wayland):** If you see a Gdk-CRITICAL error, try:
+     
+     ```
+     GDK_BACKEND=x11 java -jar jar_file_name.jar
+     ```
+
+5. **Saving window preferences**
+   
    1. Resize the window to an optimum size. Move the window to a different location. Close the window.
-
-   1. Re-launch the app by double-clicking the jar file.<br>
-       Expected: The most recent window size and location is retained.
+   
+   2. Re-launch the app using the command line method above.<br>
+      Expected: The most recent window size and location is retained.
 
 ### Managing Students
 
