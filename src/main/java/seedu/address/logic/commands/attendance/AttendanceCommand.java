@@ -96,7 +96,7 @@ public abstract class AttendanceCommand extends Command {
     protected void validateClassTag(Model model, Person person, ClassTag classTag)
             throws CommandException {
         if (!model.hasClassTag(classTag)) {
-            throw new CommandException(Messages.MESSAGE_TAG_NOT_FOUND);
+            throw new CommandException(String.format(Messages.MESSAGE_TAG_NOT_FOUND, classTag.tagName));
         }
 
         if (!person.getTags().contains(classTag)) {
