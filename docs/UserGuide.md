@@ -262,7 +262,7 @@ Edits the details of an existing student in the address book using their Student
 * At least one optional field must be provided.
 * Existing details will be replaced by the new input values.
 * When editing class tags:
-    * To add tags: specify `t/CLASS_TAG1 t/CLASS_TAG2 ...` (existing tags remain, new ones are added).
+    * To edit tags: specify `t/CLASS_TAG1 t/CLASS_TAG2 ...` (existing tags replaced with new tags).
     * To clear all tags: use `t/` with no tags provided.
 
 <box type="tip" seamless>
@@ -374,6 +374,7 @@ Adds a new class tag to the system. This allows you to categorize students by th
 * If a tag with the same name (case-insensitive) already exists, the command will not create a duplicate and will inform the user.
 * Tag names must be 1\-30 characters long and can only contain alphanumeric characters and underscores (`_`). Spaces or other special characters are not allowed.
 * Tag names are case\-insensitive when checking for duplicates, but the original casing is preserved when added.
+* Tag names are also character sensitive (eg. `MathSec3` and `Math_Sec3` are considered different tags).
 
 **Examples:**
 - `tag -a t/Math_Sec3` — Adds a class tag named `Math_Sec3`.
