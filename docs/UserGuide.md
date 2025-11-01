@@ -117,7 +117,9 @@ In Tuto, a parameter represents a placeholder where users input data. Parameters
 
 <box type="info" seamless>
 
-**Note:** All user inputs including parameters will be trimmed (all leading and trailing whitespaces will be ignored).
+**Note:**   
+- All user inputs including parameters will be trimmed (all leading and trailing whitespaces will be ignored).
+- Every parameter (a prefix and its value, e.g. n/John Doe) must be separated from the next prefix by at least one space.
 
 </box>
 
