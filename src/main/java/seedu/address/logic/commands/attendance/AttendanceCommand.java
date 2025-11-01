@@ -86,15 +86,24 @@ public abstract class AttendanceCommand extends Command {
     }
 
     /**
-     * Validates that the class tag exists in the model and the person has it.
+     * Validates that attendance can be marked/edited for the given class tag and date.
+     * Allows editing if an attendance record exists, even if the tag has been removed from the student
+     * or deleted from the model. For new records, validates that the tag exists and student has it.
      *
      * @param model The model to check for class tag existence.
-     * @param person The person to check for class tag membership.
+     * @param person The person to check for class tag membership or attendance record.
      * @param classTag The class tag to validate.
-     * @throws CommandException if the class tag doesn't exist or the person doesn't have it.
+     * @param date The date to check for existing attendance record.
+     * @throws CommandException if validation fails.
      */
-    protected void validateClassTag(Model model, Person person, ClassTag classTag)
+    protected void validateClassTagForAttendanceEdit(Model model, Person person, ClassTag classTag, Date date)
             throws CommandException {
+        // If attendance record exists, allow editing regardless of current tag status
+        if (person.getAttendanceList().hasAttendanceRecord(date, classTag)) {
+            return;
+        }
+
+        // For new records, validate tag exists in model and student has it
         if (!model.hasClassTag(classTag)) {
             throw new CommandException(String.format(Messages.MESSAGE_TAG_NOT_FOUND, classTag.tagName));
         }

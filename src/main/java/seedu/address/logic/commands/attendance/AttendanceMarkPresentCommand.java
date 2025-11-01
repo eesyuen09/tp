@@ -55,7 +55,7 @@ public class AttendanceMarkPresentCommand extends AttendanceCommand {
                         String.format(Messages.MESSAGE_STUDENT_ID_NOT_FOUND, studentId)));
 
         validateAttendanceDate(date, personToEdit);
-        validateClassTag(model, personToEdit, classTag);
+        validateClassTagForAttendanceEdit(model, personToEdit, classTag, date);
 
         if (personToEdit.getAttendanceList().hasAttendanceMarkedPresent(date, classTag)) {
             throw new CommandException(String.format(MESSAGE_ALREADY_MARKED_PRESENT,
