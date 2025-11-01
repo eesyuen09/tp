@@ -23,7 +23,7 @@ public class FeeCommandParser implements Parser<FeeCommand> {
     @Override
     public FeeCommand parse(String args) throws ParseException {
         ArgumentMultimap argMultimap =
-            ArgumentTokenizer.tokenize(args, PREFIX_STUDENTID, PREFIX_MONTH);
+            ArgumentTokenizer.tokenize(args, CliSyntax.ALL_PREFIXES);
         String preamble = argMultimap.getPreamble().trim();
 
         if (preamble.isEmpty()) {
@@ -54,6 +54,7 @@ public class FeeCommandParser implements Parser<FeeCommand> {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, FeeMarkPaidCommand.MESSAGE_USAGE));
         }
         argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_STUDENTID, PREFIX_MONTH);
+        argMultimap.verifyOnlyPrefixesFor(FeeMarkPaidCommand.MESSAGE_USAGE, PREFIX_STUDENTID, PREFIX_MONTH);
 
         StudentId studentId = ParserUtil.parseStudentId(argMultimap.getValue(PREFIX_STUDENTID).get());
         Month month = ParserUtil.parseMonth(argMultimap.getValue(PREFIX_MONTH).get());
@@ -71,6 +72,7 @@ public class FeeCommandParser implements Parser<FeeCommand> {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, FeeMarkUnpaidCommand.MESSAGE_USAGE));
         }
         argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_STUDENTID, PREFIX_MONTH);
+        argMultimap.verifyOnlyPrefixesFor(FeeMarkUnpaidCommand.MESSAGE_USAGE, PREFIX_STUDENTID, PREFIX_MONTH);
 
         StudentId studentId = ParserUtil.parseStudentId(argMultimap.getValue(PREFIX_STUDENTID).get());
         Month month = ParserUtil.parseMonth(argMultimap.getValue(PREFIX_MONTH).get());
@@ -89,6 +91,8 @@ public class FeeCommandParser implements Parser<FeeCommand> {
         if (!argMultimap.getPreamble().trim().equalsIgnoreCase(expectedPreamble)) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, FeeViewCommand.MESSAGE_USAGE));
         }
+        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_STUDENTID, PREFIX_MONTH);
+        argMultimap.verifyOnlyPrefixesFor(FeeViewCommand.MESSAGE_USAGE, PREFIX_STUDENTID, PREFIX_MONTH);
 
         StudentId studentId = ParserUtil.parseStudentId(argMultimap.getValue(PREFIX_STUDENTID).get());
         Optional<Month> startMonthOpt = Optional.empty();
