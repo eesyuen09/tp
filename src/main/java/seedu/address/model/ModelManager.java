@@ -353,8 +353,17 @@ public class ModelManager implements Model {
     @Override
     public Optional<FeeState> getCurrentFeeState(Person person) {
         requireNonNull(person);
-        Month current = Month.now();
-        return feeTracker.getDerivedStatusOfMonth(person, current);
+        Month enrolled = person.getEnrolledMonth();
+        Month now = Month.now();
+        Month current = enrolled;
+        while (!current.isAfter(now)) {
+            FeeState state = feeTracker.getDerivedStatusOfMonth(person, current).orElse(FeeState.UNPAID);
+            if (state != FeeState.PAID) {
+                return Optional.of(FeeState.UNPAID);
+            }
+            current = current.plusMonths(1);
+        }
+        return Optional.of(FeeState.PAID);
     }
 
     @Override
