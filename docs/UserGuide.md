@@ -170,6 +170,7 @@ Adding class tags before enrolling students makes the process more efficient! Cr
   e.g. if the command specifies `help 123`, it will be interpreted as `help`.
 
 * If you are using a PDF version of this document, be careful when copying and pasting commands that span multiple lines as space characters surrounding line-breaks may be omitted when copied over to the application.
+* If you type an extra or unrecognised parameter (or forget to put a space), the app will append it to the previous field’s value instead of treating it as a separate parameter.
   </box>
 
 **General Notes about Tuto Commands:**
@@ -441,6 +442,11 @@ This helps tutors and administrators track monthly tuition fee payments efficien
 | `fee -v s/STUDENT_ID [m/MMYY]` | Views a student’s **payment history**               |
 </box>
 
+<box type="info" seamless>
+If a student has never been explicitly marked as PAID, their status is treated as UNPAID by default.
+
+The fee tag shows PAID only if every month from the student’s enrolled month to the current month has been paid. Otherwise, it shows UNPAID indicates the student has outstanding fees.
+</box>
 
 #### 3.3.1 Marking a student as paid: `fee -p`
 
@@ -737,12 +743,7 @@ You can only filter up to the **current month** (future months are not allowed).
 - `filter -up m/1025`
   > **Expected Output:**
   ![FilterUnpaidExample.png](images/FilterUnpaidExample.png)
-
-<box type="info" seamless>
-If a student has never been explicitly marked as PAID, their status is treated as UNPAID by default.
-
-The fee tag displayed under each student shows their payment status for the **current month** only.
-</box>
+  
 
 #### 3.6.3 Filter by class tag : `filter -t`
 
