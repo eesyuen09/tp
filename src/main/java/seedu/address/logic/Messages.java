@@ -1,7 +1,5 @@
 package seedu.address.logic;
 
-import java.util.Arrays;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -32,17 +30,6 @@ public class Messages {
                 Stream.of(duplicatePrefixes).map(Prefix::toString).collect(Collectors.toSet());
 
         return MESSAGE_DUPLICATE_FIELDS + String.join(" ", duplicateFields);
-    }
-
-    /**
-     * Builds a message that lists unexpected prefixes.
-     */
-    public static String getErrorMessageForUnexpectedPrefixes(Prefix... prefixes) {
-        String listed = Arrays.stream(prefixes)
-            .filter(Objects::nonNull)
-            .map(Prefix::getPrefix)
-            .collect(Collectors.joining(" "));
-        return "Unexpected prefix(es): " + listed;
     }
 
     /**
