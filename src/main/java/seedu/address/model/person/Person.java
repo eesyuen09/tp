@@ -175,7 +175,8 @@ public class Person {
         }
 
         return otherPerson != null
-                && otherPerson.getName().equals(getName())
+                && otherPerson.getName().toString().trim().replaceAll("\\s+", " ")
+                .equalsIgnoreCase(getName().toString().trim().replaceAll("\\s+", " "))
                 && otherPerson.getPhone().equals(getPhone());
     }
 

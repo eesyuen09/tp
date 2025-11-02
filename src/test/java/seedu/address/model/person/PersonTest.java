@@ -52,18 +52,18 @@ public class PersonTest {
                 .build();
         assertFalse(ALICE.isSamePerson(editedAlice));
 
-        // name differs in case, same phone -> returns false
+        // name differs in case, same phone -> returns true
         Person editedBob = new PersonBuilder(BOB)
                 .withName(VALID_NAME_BOB.toLowerCase())
                 .build();
-        assertFalse(BOB.isSamePerson(editedBob));
+        assertTrue(BOB.isSamePerson(editedBob));
 
-        // name has trailing spaces, same phone -> returns false
+        // name has trailing spaces, same phone -> returns true
         String nameWithTrailingSpaces = VALID_NAME_BOB + " ";
         editedBob = new PersonBuilder(BOB)
                 .withName(nameWithTrailingSpaces)
                 .build();
-        assertFalse(BOB.isSamePerson(editedBob));
+        assertTrue(BOB.isSamePerson(editedBob));
     }
 
 
