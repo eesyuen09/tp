@@ -168,6 +168,10 @@ public class PerfCommandParser implements Parser<Command> {
 
 
     private static void validateNoteLen(String note) throws ParseException {
+        if (note.trim().isEmpty()) {
+            throw new ParseException("Error: performance note cannot be empty");
+        }
+
         if (note.length() > 200) {
             throw new ParseException("Error: performance note exceeds maximum length of 200 characters");
         }
