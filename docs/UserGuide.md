@@ -201,6 +201,11 @@ A command can be categorized into four formats:
 
 ## 3. Commands
 
+<div style="background-color: #ffebee; border-left: 5px solid #c62828; padding: 15px; margin: 20px 0;">
+<strong>⚠️ Warning:</strong><br>
+All deletion commands (<code>delete</code>, <code>clear</code>, <code>tag -d</code>, <code>att -d</code>, <code>perf -d</code>) are irreversible and will <strong>permanently delete</strong> data. Make sure you have backed up any important information before using any deletion command in this application.
+</div>
+
 ### 3.1 Student Management
 
 The Student Management commands allow you to **add, edit, find, delete, and list students** in the address book.  
