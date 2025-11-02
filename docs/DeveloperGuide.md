@@ -1818,7 +1818,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 1. Tutor deletes student.
 2. Tuto removes student from records.
-3. Tuto confirms the student's has been deleted.
+3. Tuto confirms the student's record has been deleted.
 
    Use case ends.
 
