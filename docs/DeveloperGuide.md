@@ -580,6 +580,15 @@ lifeline continues till the end of diagram.
     * Pros: Self-descriptive command words, reduces reliance on flags
     * Cons: Bloats the command set and deviates from the app's namespace-based command organisation
 
+**Aspect: Tying performance notes to Attendance records:**
+* **Alternative 1 (current choice):** Independent performance notes
+    * Pros: Greater flexibility to record observations outside of attendance events, simplifies data model
+    * Cons: Misses opportunity to link academic feedback directly to class participation
+
+* **Alternative 2:** Link performance notes to attendance entries
+    * Pros: Provides richer context for feedback, enables analysis of attendance-performance correlations
+    * Cons: Increases complexity, may restrict note-taking to only attended classes
+
 ### ClassTag Management
 
 #### Overview
