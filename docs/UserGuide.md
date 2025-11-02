@@ -532,8 +532,8 @@ Marks a student's attendance as **PRESENT** for a specific date and class.
 
 **Command Details and Constraints:**
 * This command records that a student attended a specific class on a specific date.
-* The student must have the specified class tag assigned to them.
-* If the student doesn't have the tag, the command will be rejected with an error message.
+* The student must have the specified class tag assigned to them, OR have an existing attendance record for that class and date (to allow editing past records even if the student has left the class).
+* If the student doesn't have the tag and no attendance record exists, the command will be rejected with an error message.
 * The date must be in `DDMMYYYY` format (e.g., `15092025` for 15 September 2025).
 
 **Examples:**
@@ -550,8 +550,8 @@ Use this to record absences or to undo a previously marked **PRESENT** attendanc
 **Command Details and Constraints:**
 * This command records that a student was absent from a specific class on a specific date.
 * This command can also be used to undo a **PRESENT** attendance by changing it to **ABSENT**.
-* The student must have the specified class tag assigned to them.
-* If the student doesn't have the tag, the command will be rejected with an error message.
+* The student must have the specified class tag assigned to them, OR have an existing attendance record for that class and date (to allow editing past records even if the student has left the class).
+* If the student doesn't have the tag and no attendance record exists, the command will be rejected with an error message.
 * The date must be in `DDMMYYYY` format (e.g., `15092025` for 15 September 2025).
 
 **Examples:**

@@ -411,12 +411,16 @@ Attendance management is implemented through several key components:
 The following commands handle attendance operations:
 
 1. **AttendanceMarkPresentCommand (triggered by `att -p`)**: Marks a student as present for a class on a specific date
-    - Validates student exists and ClassTag exists
+    - Validates student exists 
+    - Checks if student has the ClassTag assigned OR if an attendance record exists for that student, date, and class
+    - If student doesn't have the tag and no record exists, rejects the command
     - Prevents duplicate "Present" records (throws error if already marked present)
     - Replaces any existing "Absent" record for the same date and class with a "Present" record
 
 2. **AttendanceMarkAbsentCommand (triggered by `att -a`)**: Marks a student as absent for a class on a specific date
-    - Validates student exists and ClassTag exists
+    - Validates student exists 
+    - Checks if student has the ClassTag assigned OR if an attendance record exists for that student, date, and class
+    - If student doesn't have the tag and no record exists, rejects the command
     - Prevents duplicate "Absent" records (throws error if already marked absent)
     - Replaces any existing "Present" record for the same date and class with an "Absent" record
 
@@ -469,7 +473,7 @@ Attendance operations include comprehensive validation:
 - Student ID not found
 - Invalid Student ID format
 - ClassTag does not exist
-- ClassTag not assigned to the student
+- ClassTag not assigned to the student and no existing attendance record for that student, date, and class
 - Date in the future
 - Date before student's enrolment month
 - Invalid date format (e.g., 30th February, non-existent dates)
@@ -1597,9 +1601,10 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **MSS**
 1. Tutor requests to mark a student as **Present** for a specific date and class.
-2. Tuto validates the request: student exists, command format is valid, date is valid, and class tag exists and is assigned to the student.
-3. Tuto checks that the attendance is not already marked as **Present** for that date and class.
-4. Tuto records the **Present** attendance and displays a success message.
+2. Tuto validates the request: student exists, command format is valid, and date is valid.
+3. Tuto checks that the student has the class tag assigned or has an existing attendance record for that student, date, and class.
+4. Tuto checks that the attendance is not already marked as **Present** for that date and class.
+5. Tuto records the **Present** attendance and displays a success message.
 
    Use case ends.
 
@@ -1616,37 +1621,34 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
     * 2c1. Tuto shows an error message indicating invalid student ID format.
       Use case ends.
 
-* 2d. The specified class tag does not exist.
-    * 2d1. Tuto shows an error message indicating class tag not found.
+* 2d. The provided date is in the future.
+    * 2d1. Tuto shows an error message indicating date cannot be in the future.
       Use case ends.
 
-* 2e. The specified class tag is not assigned to the student.
-    * 2e1. Tuto shows an error message indicating class tag not assigned to student.
+* 2e. The provided date is before the student's enrolment month.
+    * 2e1. Tuto shows an error message indicating date cannot be before enrolment.
       Use case ends.
 
-* 2f. The provided date is in the future.
-    * 2f1. Tuto shows an error message indicating date cannot be in the future.
+* 2f. The date does not correspond to a real calendar day (e.g. 30th February).
+    * 2f1. Tuto shows an error message indicating invalid date.
       Use case ends.
 
-* 2g. The provided date is before the student's enrolment month.
-    * 2g1. Tuto shows an error message indicating date cannot be before enrolment.
+* 3a. The specified class tag is not assigned to the student and no attendance record exists for that student, date, and class.
+    * 3a1. Tuto shows an error message indicating class tag not assigned to student.
       Use case ends.
 
-* 2h. The date does not correspond to a real calendar day (e.g. 30th February).
-    * 2h1. Tuto shows an error message indicating invalid date.
-      Use case ends.
-
-* 3a. The attendance is already marked as **Present** for that date and class.
-    * 3a1. Tuto shows an error message indicating the student is already marked present.
+* 4a. The attendance is already marked as **Present** for that date and class.
+    * 4a1. Tuto shows an error message indicating the student is already marked present.
       Use case ends.
 
 **Use case: Mark Student as Absent**
 
 **MSS**
 1. Tutor requests to mark a student as **Absent** for a specific date and class.
-2. Tuto validates the request: student exists, command format is valid, date is valid, and class tag exists and is assigned to the student.
-3. Tuto checks that the attendance is not already marked as **Absent** for that date and class.
-4. Tuto records the **Absent** attendance and displays a success message.
+2. Tuto validates the request: student exists, command format is valid, and date is valid.
+3. Tuto checks that the student has the class tag assigned or has an existing attendance record for that student, date, and class.
+4. Tuto checks that the attendance is not already marked as **Absent** for that date and class.
+5. Tuto records the **Absent** attendance and displays a success message.
 
    Use case ends.
 
@@ -1663,28 +1665,24 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
     * 2c1. Tuto shows an error message indicating invalid student ID format.
       Use case ends.
 
-* 2d. The specified class tag does not exist.
-    * 2d1. Tuto shows an error message indicating class tag not found.
+* 2d. The provided date is in the future.
+    * 2d1. Tuto shows an error message indicating date cannot be in the future.
       Use case ends.
 
-* 2e. The specified class tag is not assigned to the student.
-    * 2e1. Tuto shows an error message indicating class tag not assigned to student.
+* 2e. The provided date is before the student's enrolment month.
+    * 2e1. Tuto shows an error message indicating date cannot be before enrolment.
       Use case ends.
 
-* 2f. The provided date is in the future.
-    * 2f1. Tuto shows an error message indicating date cannot be in the future.
+* 2f. The date does not correspond to a real calendar day (e.g. 30th February).
+    * 2f1. Tuto shows an error message indicating invalid date.
       Use case ends.
 
-* 2g. The provided date is before the student's enrolment month.
-    * 2g1. Tuto shows an error message indicating date cannot be before enrolment.
+* 3a. The specified class tag is not assigned to the student AND no attendance record exists for that student, date, and class.
+    * 3a1. Tuto shows an error message indicating class tag not assigned to student.
       Use case ends.
 
-* 2h. The date does not correspond to a real calendar day (e.g. 30th February).
-    * 2h1. Tuto shows an error message indicating invalid date.
-      Use case ends.
-
-* 3a. The attendance is already marked as **Absent** for that date and class.
-    * 3a1. Tuto shows an error message indicating the student is already marked absent.
+* 4a. The attendance is already marked as **Absent** for that date and class.
+    * 4a1. Tuto shows an error message indicating the student is already marked absent.
       Use case ends.
 
 **Use case: Delete an Attendance Record**
