@@ -23,17 +23,11 @@ Class StudentId
 Class ClassTag
 Class AttendanceList
 Class Attendance
-Class AttendanceHistoryEntry
-Class AttendanceHistorySummary
 Class Date
 Class FeeTracker
-Class FeeState
-Class FeeHistoryEntry
-Class FeeHistorySummary
 Class Month
 Class PerformanceList
 Class PerformanceNote
-Class I #FFFFFF
 }
 
 Class HiddenOutside #FFFFFF
@@ -52,8 +46,6 @@ AddressBook *--> "1" UniquePersonList
 AddressBook *--> "1" UniqueClassTagList
 AddressBook *--> "1" FeeTracker
 
-ModelManager --> FeeTracker
-
 UniquePersonList --> "~* all" Person
 UniqueClassTagList --> "~* all" ClassTag
 Person *--> Name
@@ -61,47 +53,19 @@ Person *--> Phone
 Person *--> Email
 Person *--> Address
 Person *--> StudentId
-Person *--> "*" ClassTag
+Person --> "*" ClassTag
 Person *--> AttendanceList
 Person --> "1" Month : enrolledMonth
 Person *--> PerformanceList
 
 AttendanceList --> "*" Attendance
-
 Attendance --> Date
 Attendance --> ClassTag
 
-AttendanceHistoryEntry --> Date
-AttendanceHistoryEntry --> ClassTag
-
-AttendanceHistorySummary --> StudentId
-AttendanceHistorySummary --> Date
-
 PerformanceList --> "*" PerformanceNote
-
 PerformanceNote --> Date
 PerformanceNote --> ClassTag
 
-FeeHistoryEntry --> Month
-FeeHistoryEntry --> FeeState
-
-FeeHistorySummary --> StudentId
-FeeHistorySummary --> Month
-
-Person -[hidden]up--> I
-UniquePersonList -[hidden]right-> I
-
-Name -[hidden]right-> Phone
-Phone -[hidden]right-> Address
-Address -[hidden]right-> Email
 
 ModelManager --> "~* filtered" Person
-ModelManager --> "~* displayed" PerformanceNote
-ModelManager --> "~* history" FeeHistoryEntry
-ModelManager --> "~* history" AttendanceHistoryEntry
-ModelManager --> FeeHistorySummary
-ModelManager --> AttendanceHistorySummary
-
-AttendanceHistorySummary -[hidden]right-> FeeHistoryEntry
-FeeHistoryEntry -[hidden]right-> FeeHistorySummary
 @enduml
