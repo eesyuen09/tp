@@ -52,6 +52,12 @@ public class ClassTagCommandParserTest {
         // Missing prefix for delete
         assertParseFailure(parser, " -d " + "someTag",
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteClassTagCommand.MESSAGE_USAGE));
+
+        assertParseFailure(parser, " -a ", String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                AddClassTagCommand.MESSAGE_USAGE));
+
+        assertParseFailure(parser, " -d ", String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                DeleteClassTagCommand.MESSAGE_USAGE));
     }
 
     @Test
@@ -138,23 +144,14 @@ public class ClassTagCommandParserTest {
         assertParseFailure(parser, " - ", expectedMessage);
     }
 
-    @Test
-    public void parse_flagWithoutPrefix_failure() {
-        // flags with no prefix/value should fail with the command-specific usage message
-        assertParseFailure(parser, " -a ", String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                AddClassTagCommand.MESSAGE_USAGE));
-        assertParseFailure(parser, " -d ", String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                DeleteClassTagCommand.MESSAGE_USAGE));
-    }
 
     @Test
     public void parse_flagWithEmptyPrefixValue_failure() {
         String expectedMessage = ClassTag.MESSAGE_CONSTRAINTS;
+
         // flag followed by the class tag prefix but no value
-        assertParseFailure(parser, " -a " + PREFIX_CLASSTAG,
-                expectedMessage);
-        assertParseFailure(parser, " -d " + PREFIX_CLASSTAG,
-                expectedMessage);
+        assertParseFailure(parser, " -a " + PREFIX_CLASSTAG, expectedMessage);
+        assertParseFailure(parser, " -d " + PREFIX_CLASSTAG, expectedMessage);
     }
 
 }
