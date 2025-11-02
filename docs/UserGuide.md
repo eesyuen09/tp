@@ -195,8 +195,7 @@ A command can be categorized into four formats:
 4. **COMMAND**
     - Example: `list`, `help`, `exit`, `clear`<br>
       <br>
-
-     
+ 
 --------------------------------------------------------------------------------------------------------------------
 
 ## 3. Commands
