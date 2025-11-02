@@ -117,7 +117,7 @@ In Tuto, a parameter represents a placeholder where users input data. Parameters
 
 <box type="info" seamless>
 
-**Note:**   
+**Note:**
 - All user inputs including parameters will be trimmed (all leading and trailing whitespaces will be ignored).
 - Every parameter (a prefix and its value, e.g. n/John Doe) must be separated from the next prefix by at least one space.
 
@@ -178,23 +178,23 @@ Adding class tags before enrolling students makes the process more efficient! Cr
 A command can be categorized into four formats:
 
 1. **COMMAND + FLAG + PARAMETER_PREFIX + PARAMETER**
-   - Example: `tag -a t/Math_Sec3`, `fee -p s/0001 m/0925`, `att -p s/0001 d/15092025 t/Math_Sec3`
-   - Common flags include:
-     - `-a` (add for class tag/ mark as absent), `-d` (delete), `-l` (list), `-e` (edit), `-v` (view)
-     - `-p` (paid/mark as present), `-up` (unpaid)
-     - `-t` (tag filter)<br>
-       <br>
+    - Example: `tag -a t/Math_Sec3`, `fee -p s/0001 m/0925`, `att -p s/0001 d/15092025 t/Math_Sec3`
+    - Common flags include:
+        - `-a` (add for class tag/ mark as absent), `-d` (delete), `-l` (list), `-e` (edit), `-v` (view)
+        - `-p` (paid/mark as present), `-up` (unpaid)
+        - `-t` (tag filter)<br>
+          <br>
 2. **COMMAND + PARAMETER_PREFIX + PARAMETER**
-   - Example: `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01`<br>
-     <br>
+    - Example: `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01`<br>
+      <br>
 
 3. **COMMAND + PARAMETER**
-   - Example: `find John David`<br>
-     <br>
+    - Example: `find John David`<br>
+      <br>
 
 4. **COMMAND**
-   - Example: `list`, `help`, `exit`, `clear`<br>
-     <br>
+    - Example: `list`, `help`, `exit`, `clear`<br>
+      <br>
 
      
 --------------------------------------------------------------------------------------------------------------------
@@ -236,11 +236,11 @@ Adds a new student to the address book.
 * The student is automatically assigned a unique 4-digit `STUDENT_ID` upon creation.
 * A student can have multiple class tags or none at all.
 * Tags must exist in the system. If a specified tag does not exist, the command will be rejected.
-
+* The system detects duplicate students based on both **name** and **phone number**. Names are **case-insensitive** and **whitespace-normalized** (extra spaces are ignored). If a student with the same name and phone number already exists, the command will be **rejected**. This allows students with the same phone number if their names differ (e.g., siblings sharing a parent’s contact).
 
 <box type="tip" seamless>
 
-You can add multiple tags by specifying `t/CLASS_TAG1 t/CLASS_TAG2 ...`.  
+You can add multiple tags by specifying `t/CLASS_TAG1 t/CLASS_TAG2 ...`.
 
 A student can also be added without any tags.
 </box>
@@ -249,10 +249,10 @@ A student can also be added without any tags.
 - `add n/John Doe p/98765432 m/0825 e/johnd@example.com a/John street, block 123, #01-01` — adds a student with no tags.
   >**Expected output:**  
   `New student added: John Doe; Phone: 98765432; Email: johnd@example.com; Address: John street, block 123, #01-01; Tags: -`
-- `add n/Betsy Crowe t/Math_Sec3 e/betsycrowe@example.com a/Clementi p/12345678 t/English_J1` — adds a student with two tags: `Math_Sec3` and `English_J1`.
+- `add n/Betsy Crowe t/Math_Sec3 e/betsycrowe@example.com a/Clementi p/87654321 t/English_J1` — adds a student with two tags: `Math_Sec3` and `English_J1`.
   >**Expected output:**  
-  `New student added: Betsy Crowe; Phone: 12345678; Email: betsycrowe@example.com; Address: Clementi; Tags: [Math_Sec3][English_J1]`
-  
+  `New student added: Betsy Crowe; Phone: 87654321; Email: betsycrowe@example.com; Address: Clementi; Tags: [Math_Sec3][English_J1]`
+
 
 #### 3.1.2 Editing a student : `edit`
 
@@ -265,8 +265,9 @@ Edits the details of an existing student in the address book using their Student
 * At least one optional field must be provided.
 * Existing details will be replaced by the new input values.
 * When editing class tags:
-    * To add tags: specify `t/CLASS_TAG1 t/CLASS_TAG2 ...` (existing tags remain, new ones are added).
+    * To edit tags: specify `t/CLASS_TAG1 t/CLASS_TAG2 ...` (existing tags replaced with new tags).
     * To clear all tags: use `t/` with no tags provided.
+* After editing, the system checks for duplicates based on both **name** and **phone number**. Names are **case-insensitive** and **whitespace-normalized**. If the updated details would create a duplicate, the command will be **rejected**.
 
 <box type="tip" seamless>
 You can update multiple fields in a single command.
@@ -282,7 +283,7 @@ You can update multiple fields in a single command.
 - `edit s/0006 t/` — clears all tags.
   >**Expected output:**  
   `Edited student: Betsy Crower; Phone: 91234567; Email: johndoe@example.com; Address: John street, block 123, #01-01; Tags: -`
-  
+
 
 #### 3.1.3 Finding students : `find`
 
@@ -302,9 +303,11 @@ Use multiple keywords to perform an OR search.
 
 **Examples:**
 - `find alex david` — displays all students with names containing “Alex” or “David”.
-  >**Expected output:**  
-  `2 persons listed!`
-  
+  > **Expected output (if 2 students found):**  
+  `2 persons listed!`  
+  > **Expected output (if 5 student found):**  
+  `5 persond listed!`
+
 
 #### 3.1.4 Deleting a student : `delete`
 
@@ -377,6 +380,7 @@ Adds a new class tag to the system. This allows you to categorize students by th
 * If a tag with the same name (case-insensitive) already exists, the command will not create a duplicate and will inform the user.
 * Tag names must be 1\-30 characters long and can only contain alphanumeric characters and underscores (`_`). Spaces or other special characters are not allowed.
 * Tag names are case\-insensitive when checking for duplicates, but the original casing is preserved when added.
+* Tag names are also character sensitive (eg. `MathSec3` and `Math_Sec3` are considered different tags).
 
 **Examples:**
 - `tag -a t/Math_Sec3` — Adds a class tag named `Math_Sec3`.
@@ -384,7 +388,7 @@ Adds a new class tag to the system. This allows you to categorize students by th
 
 - `tag -a t/JC1_Physics` — Adds a class tag named `JC1_Physics`.
   >**Expected output:** `New class tag added: JC1_Physics`
-  
+
 
 #### 3.2.2 Deleting a class tag : `tag -d`
 
@@ -419,12 +423,12 @@ Shows a list of all class tags currently created in the address book.
 **Examples:**
 - `tag -l`: If class tags `JC1_Physics` and `Math_Sec3` exist in the system.
 >**Expected output:**<br>
-  `Listed all class tags:`<br>
-  `1. JC1_Physics`<br>
-  `2. Math_Sec3`
+`Listed all class tags:`<br>
+`1. JC1_Physics`<br>
+`2. Math_Sec3`
 - `tag -l`: If no class tags exist in the system.
 >**Expected output:**
-  `No class tags found. You can add one using the 'tag -a' command.`
+`No class tags found. You can add one using the 'tag -a' command.`
 
 ---
 
@@ -481,7 +485,7 @@ Use this command for corrections or when a payment was mistakenly marked as PAID
 **Examples:**
 - `fee -up s/0001 m/0925` — marks student `0001` (Bernice Yu) as **UNPAID** for **September 2025**.
   > **Expected output:** `Bernice Yu has been successfully marked as Unpaid for September 2025.`
-  
+
 
 #### 3.3.4 Viewing a student’s payment history: `fee -v`
 
@@ -499,11 +503,11 @@ Displays a student’s **payment history** from a specified starting month up to
 **Examples:**
 - `fee -v s/0001` — shows payment history for student `0001` from their enrollment month to the current month.
   > **Expected Output:**  
-    ![FeeViewHistoryEx1.png](images/FeeViewHistoryEx1.png)
-  - `fee -v s/0001 m/0725` — shows payment history starting **July 2025** to the current month.
+  ![FeeViewHistoryEx1.png](images/FeeViewHistoryEx1.png)
+    - `fee -v s/0001 m/0725` — shows payment history starting **July 2025** to the current month.
   > **Expected Output:**
-    ![FeeViewHistoryEx2.png](images/FeeViewHistoryEx2.png)
-  
+  ![FeeViewHistoryEx2.png](images/FeeViewHistoryEx2.png)
+
 <box type="info" seamless>
 
 **Interpreting the results:**
@@ -540,14 +544,14 @@ Marks a student's attendance as **PRESENT** for a specific date and class.
 
 **Command Details and Constraints:**
 * This command records that a student attended a specific class on a specific date.
-* The student must have the specified class tag assigned to them.
-* If the student doesn't have the tag, the command will be rejected with an error message.
+* The student must have the specified class tag assigned to them, OR have an existing attendance record for that class and date (to allow editing past records even if the student has left the class).
+* If the student doesn't have the tag and no attendance record exists, the command will be rejected with an error message.
 * The date must be in `DDMMYYYY` format (e.g., `15092025` for 15 September 2025).
 
 **Examples:**
 - `att -p s/0001 d/15092025 t/Math` — Marks student `0001` (Bernice Yu) as present for 15 September 2025 in Math class.
   >**Expected output:** `Marked Bernice Yu as present on 15-09-2025 for class Math.`
-  
+
 #### 3.4.2  Marking a student as absent : `att -a`
 
 Marks a student's attendance as **ABSENT** for a specific date and class.
@@ -558,14 +562,14 @@ Use this to record absences or to undo a previously marked **PRESENT** attendanc
 **Command Details and Constraints:**
 * This command records that a student was absent from a specific class on a specific date.
 * This command can also be used to undo a **PRESENT** attendance by changing it to **ABSENT**.
-* The student must have the specified class tag assigned to them.
-* If the student doesn't have the tag, the command will be rejected with an error message.
+* The student must have the specified class tag assigned to them, OR have an existing attendance record for that class and date (to allow editing past records even if the student has left the class).
+* If the student doesn't have the tag and no attendance record exists, the command will be rejected with an error message.
 * The date must be in `DDMMYYYY` format (e.g., `15092025` for 15 September 2025).
 
 **Examples:**
 - `att -a s/0001 d/15092025 t/Math` — Marks student `0001` (Bernice Yu) as absent for 15 September 2025 in Math class.
   >**Expected output:** `Marked Bernice Yu as absent on 15-09-2025 for class Math.`
-  
+
 
 #### 3.4.3 Deleting an attendance record : `att -d`
 
@@ -586,7 +590,7 @@ Use this to remove attendance records that were marked by mistake or are no long
   >**Expected output:** `Deleted attendance for: Bernice Yu on 15-09-2025 for class Math`
 - `att -d s/0003 d/25082025 t/Science` — Attempts to delete an attendance record that doesn't exist.
   >**Expected output:** `No attendance record found for David Li on 25-08-2025 for class Science`
-  
+
 
 #### 3.4.4 Viewing a student's attendance records : `att -v`
 
@@ -640,9 +644,9 @@ Adds a performance note for a student in a specific class on a specific date.
 
 **Examples:**
 - `perf -a s/0001 d/18092025 t/Math_Sec3 pn/Scored 85% on mock test`
-    >**Expected output:** `Performance note successfully added for John Tan in Math_Sec3
+  >**Expected output:** `Performance note successfully added for John Tan in Math_Sec3
      > on 18-09-2025.`
-  
+
 #### 3.5.2 Editing a performance note for a student : `perf -e`
 
 Edits an existing performance note for a student.
@@ -656,9 +660,9 @@ Edits an existing performance note for a student.
 
 **Examples:**
 - `perf -e s/0001 d/18092025 t/Math_Sec3 pn/Scored 90% on mock test after re-evaluation`
-    >**Expected output:** `Performance note for John Tan in Math_Sec3
+  >**Expected output:** `Performance note for John Tan in Math_Sec3
      > on 18-09-2025 successfully edited.`
-  
+
 
 #### 3.5.3 Deleting a performance note for a student : `perf -d`
 
@@ -672,9 +676,9 @@ Deletes a performance note for a student.
 
 **Examples:**
 - `perf -d s/0001 d/18092025 t/Math_Sec3`
-    >**Expected output:** `Performance note for John Tan in Math_Sec3
+  >**Expected output:** `Performance note for John Tan in Math_Sec3
      > on 18-09-2025 successfully deleted.`
-  
+
 
 #### 3.5.4 Viewing performance notes for a student : `perf -v`
 
@@ -690,8 +694,8 @@ Displays all performance notes for a student.
 
 **Examples:**
 - `perf -v s/0001`
-  >**Expected output:** 
-    ![performanceGUI](images/performanceGUI.png)
+  >**Expected output:**
+  ![performanceGUI](images/performanceGUI.png)
 
 ---
 
@@ -730,7 +734,7 @@ You can only filter up to the **current month** (future months are not allowed).
 - `filter -p m/1025`
   > **Expected Output:**
   ![FilterPaidExample.png](images/FilterPaidExample.png)
-  
+
 #### 3.6.2 Filter by unpaid status : `filter -up`
 
 Shows all students whose payment status is **UNPAID** for a given month.
@@ -743,7 +747,7 @@ You can only filter up to the **current month** (future months are not allowed).
 - `filter -up m/1025`
   > **Expected Output:**
   ![FilterUnpaidExample.png](images/FilterUnpaidExample.png)
-  
+
 
 #### 3.6.3 Filter by class tag : `filter -t`
 
@@ -819,29 +823,29 @@ Furthermore, certain edits can cause the AddressBook to behave in unexpected way
 
 ## Command summary
 
-| Action                      | Format, Examples                                                                                                                                                                     |
-|-----------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Add**                     | `add n/NAME p/PHONE e/EMAIL a/ADDRESS [m/ENROLLED_MONTH] t/CLASS_TAG]…​` <br> e.g., `add n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 m/0825 t/Math t/Science` |
-| **Clear**                   | `clear`                                                                                                                                                                              |
-| **Delete**                  | `delete s/STUDENT_ID`<br> e.g., `delete s/0230`                                                                                                                                      |
-| **Edit**                    | `edit s/STUDENT_ID [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`<br> e.g.,`edit s/1234 n/James Lee e/jameslee@example.com`                                              |
-| **Find**                    | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`                                                                                                                           |
-| **List**                    | `list`                                                                                                                                                                               |
-| **Help**                    | `help`                                                                                                                                                                               |
-| **Class Tag (ADD)**         | `tag -a t/CLASS_TAG`<br> e.g., `tag -a t/Math_Sec3`                                                                                                                                  |
-| **Class Tag (DELETE)**      | `tag -d t/CLASS_TAG`<br> e.g., `tag -d t/Math_Sec3`                                                                                                                                  |
-| **Class Tag (LIST)**        | `tag -l`<br> e.g., `tag -l`                                                                                                                                                          |
-| **Mark as PAID**            | `fee -p s/STUDENT_ID m/MMYY` <br> e.g., `fee -p s/0001 m/0925`                                                                                                                       |
-| **Mark as UNPAID**          | `fee -up s/STUDENT_ID m/MMYY` <br> e.g., `fee -up s/0001 m/0925`                                                                                                                     |
-| **View payment history**    | `fee -v s/STUDENT_ID [m/MMYY]` <br> e.g., `fee -v s/0001 m/0525`                                                                                                                     |
-| **Mark as PRESENT**         | `att -p s/STUDENT_ID d/DDMMYYYY t/CLASS_TAG` <br> e.g., `att -p s/0001 d/15092025 t/Math`                                                                                            |
-| **Mark as ABSENT**          | `att -a s/STUDENT_ID d/DDMMYYYY t/CLASS_TAG` <br> e.g., `att -a s/0001 d/15092025 t/Math`                                                                                            |
-| **Delete attendance**       | `att -d s/STUDENT_ID d/DDMMYYYY t/CLASS_TAG` <br> e.g., `att -d s/0001 d/15092025 t/Math`                                                                                            |
-| **View attendance**         | `att -v s/STUDENT_ID` <br> e.g., `att -v s/0001`                                                                                                                                     |
-| **Filter by PAID status**   | `filter -p m/MMYY` <br> e.g., `filter -p m/1025`                                                                                                                                     |
-| **Filter by UNPAID status** | `filter -up m/MMYY` <br> e.g., `filter -up m/1025`                                                                                                                                   |
-| **Filter by class tag**     | `filter -t t/CLASS_TAG` <br> e.g., `filter -t t/Math_Sec3`                                                                                                                      |
-| **Add performance note**    | `perf -a s/STUDENT_ID d/DATE t/CLASS_TAG pn/PERFORMANCE_NOTE` <br> e.g., `perf -a s/0001 d/18092025 t/Math_Sec3<br/> pn/Scored 85% on mock test`                                     |
-| **View performance notes**  | `perf -v s/STUDENT_ID` <br> e.g., `perf -v s/0001`                                                                                                                                   |
-| **Edit performance note**   | `perf -e s/STUDENT_ID d/DATE t/CLASS_TAG pn/PERFORMANCE_NOTE` <br> e.g., `perf -e s/0001 d/18092025 t/Math_Sec3<br/> pn/Scored 90% on mock test after re-evaluation`                 |
-| **Delete performance note** | `perf -d s/STUDENT_ID d/DATE t/CLASS_TAG` <br> e.g., `perf -d s/0001 d/18092025 t/Math_Sec3<br/>`                                                                                    |
+| Action                      | Format, Examples                                                                                                                                                                           |
+|-----------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Add**                     | `add n/NAME p/PHONE e/EMAIL a/ADDRESS [m/ENROLLED_MONTH] [t/CLASS_TAG]…​` <br> e.g., `add n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 m/0825 t/Math t/Science` |
+| **Clear**                   | `clear`                                                                                                                                                                                    |
+| **Delete**                  | `delete s/STUDENT_ID`<br> e.g., `delete s/0230`                                                                                                                                            |
+| **Edit**                    | `edit s/STUDENT_ID [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`<br> e.g.,`edit s/1234 n/James Lee e/jameslee@example.com`                                                    |
+| **Find**                    | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`                                                                                                                                 |
+| **List**                    | `list`                                                                                                                                                                                     |
+| **Help**                    | `help`                                                                                                                                                                                     |
+| **Class Tag (ADD)**         | `tag -a t/CLASS_TAG`<br> e.g., `tag -a t/Math_Sec3`                                                                                                                                        |
+| **Class Tag (DELETE)**      | `tag -d t/CLASS_TAG`<br> e.g., `tag -d t/Math_Sec3`                                                                                                                                        |
+| **Class Tag (LIST)**        | `tag -l`<br> e.g., `tag -l`                                                                                                                                                                |
+| **Mark as PAID**            | `fee -p s/STUDENT_ID m/MMYY` <br> e.g., `fee -p s/0001 m/0925`                                                                                                                             |
+| **Mark as UNPAID**          | `fee -up s/STUDENT_ID m/MMYY` <br> e.g., `fee -up s/0001 m/0925`                                                                                                                           |
+| **View payment history**    | `fee -v s/STUDENT_ID [m/MMYY]` <br> e.g., `fee -v s/0001 m/0525`                                                                                                                           |
+| **Mark as PRESENT**         | `att -p s/STUDENT_ID d/DDMMYYYY t/CLASS_TAG` <br> e.g., `att -p s/0001 d/15092025 t/Math`                                                                                                  |
+| **Mark as ABSENT**          | `att -a s/STUDENT_ID d/DDMMYYYY t/CLASS_TAG` <br> e.g., `att -a s/0001 d/15092025 t/Math`                                                                                                  |
+| **Delete attendance**       | `att -d s/STUDENT_ID d/DDMMYYYY t/CLASS_TAG` <br> e.g., `att -d s/0001 d/15092025 t/Math`                                                                                                  |
+| **View attendance**         | `att -v s/STUDENT_ID` <br> e.g., `att -v s/0001`                                                                                                                                           |
+| **Filter by PAID status**   | `filter -p m/MMYY` <br> e.g., `filter -p m/1025`                                                                                                                                           |
+| **Filter by UNPAID status** | `filter -up m/MMYY` <br> e.g., `filter -up m/1025`                                                                                                                                         |
+| **Filter by class tag**     | `filter -t t/CLASS_TAG` <br> e.g., `filter -t t/Math_Sec3`                                                                                                                                 |
+| **Add performance note**    | `perf -a s/STUDENT_ID d/DATE t/CLASS_TAG pn/PERFORMANCE_NOTE` <br> e.g., `perf -a s/0001 d/18092025 t/Math_Sec3<br/> pn/Scored 85% on mock test`                                           |
+| **View performance notes**  | `perf -v s/STUDENT_ID` <br> e.g., `perf -v s/0001`                                                                                                                                         |
+| **Edit performance note**   | `perf -e s/STUDENT_ID d/DATE t/CLASS_TAG pn/PERFORMANCE_NOTE` <br> e.g., `perf -e s/0001 d/18092025 t/Math_Sec3<br/> pn/Scored 90% on mock test after re-evaluation`                       |
+| **Delete performance note** | `perf -d s/STUDENT_ID d/DATE t/CLASS_TAG` <br> e.g., `perf -d s/0001 d/18092025 t/Math_Sec3<br/>`                                                                                          |

@@ -1,14 +1,10 @@
 package seedu.address.logic.parser;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import seedu.address.logic.Messages;
@@ -77,50 +73,6 @@ public class ArgumentMultimap {
 
         if (duplicatedPrefixes.length > 0) {
             throw new ParseException(Messages.getErrorMessageForDuplicatePrefixes(duplicatedPrefixes));
-        }
-    }
-
-    /**
-     * Returns all prefixes that are present in this map (excluding the preamble).
-     */
-    public List<Prefix> getPresentPrefixes() {
-        Prefix preamble = new Prefix("");
-        return argMultimap.keySet().stream()
-            .filter(p -> !p.equals(preamble))
-            .collect(Collectors.toList());
-    }
-
-    /**
-     * Returns the list of prefixes that are present but NOT in the provided allowed set.
-     */
-    public List<Prefix> getUnexpectedPrefixes(Prefix... allowed) {
-        Set<Prefix> allowedSet = new HashSet<>(Arrays.asList(allowed));
-        Prefix preamble = new Prefix("");
-
-        return argMultimap.keySet().stream()
-            .filter(p -> !p.equals(preamble))
-            .filter(p -> !allowedSet.contains(p))
-            .collect(Collectors.toList());
-    }
-
-    /**
-     * Verifies that ONLY the provided prefixes are present (ignoring the preamble).
-     * Throws a {@link ParseException} if any additional prefixes are found.
-     */
-    public void verifyOnlyPrefixesFor(String usageMessage, Prefix... allowed) throws ParseException {
-        Set<Prefix> allowedSet = new HashSet<>(Arrays.asList(allowed));
-        Prefix preamble = new Prefix("");
-        List<Prefix> unexpected = argMultimap.keySet().stream()
-            .filter(p -> !p.equals(preamble))
-            .filter(p -> !allowedSet.contains(p))
-            .collect(Collectors.toList());
-        if (!unexpected.isEmpty()) {
-            String list = unexpected.stream()
-                .map(Prefix::getPrefix)
-                .collect(Collectors.joining(" "));
-            String reason = "Unexpected prefix(es): " + list;
-            throw new ParseException(String.format(Messages.MESSAGE_INVALID_COMMAND_FORMAT,
-                reason + "\n" + usageMessage));
         }
     }
 }

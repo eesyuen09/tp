@@ -57,23 +57,26 @@ public class ClassTagFilterCommandTest {
     public void execute_filterWithDifferentCaseTag_showsFilteredList() {
 
         ClassTag originalTag = new ClassTag("Sec3_Maths");
+
         if (!model.hasClassTag(originalTag)) {
             model.addClassTag(originalTag);
         }
+
         if (!expectedModel.hasClassTag(originalTag)) {
             expectedModel.addClassTag(originalTag);
         }
 
-        // Command filters for "sec3_maths" (different case)
+        // Create a filter tag with different casing; the command should match case-insensitively.
         ClassTag filterTagLower = new ClassTag("sec3_mAths");
         ClassTagFilterCommand command = new ClassTagFilterCommand(filterTagLower);
 
         String expectedMessage = String.format(Messages.MESSAGE_PERSONS_LISTED_OVERVIEW, 2) + "\n"
                 + String.format(ClassTagFilterCommand.MESSAGE_SUCCESS, originalTag.tagName);
 
-        // The predicate should be created with the found tag (original case)
+        // The expected predicate should be created with the canonical tag (originalTag).
         Predicate<Person> personHasTagPredicate = person -> person.getTags().stream()
                 .anyMatch(tag -> tag.equals(originalTag));
+
         expectedModel.updateFilteredPersonList(personHasTagPredicate);
 
         assertCommandSuccess(command, model, expectedMessage, expectedModel);
@@ -89,8 +92,11 @@ public class ClassTagFilterCommandTest {
 
         String expectedMessage = String.format(Messages.MESSAGE_PERSONS_LISTED_OVERVIEW, 0) + "\n"
                 + String.format(ClassTagFilterCommand.MESSAGE_SUCCESS, lonelyTag.tagName);
+
         ClassTagFilterCommand command = new ClassTagFilterCommand(lonelyTag);
+
         expectedModel.updateFilteredPersonList(p -> p.getTags().contains(lonelyTag));
+
         assertCommandSuccess(command, model, expectedMessage, expectedModel);
         assertEquals(Collections.emptyList(), model.getFilteredPersonList());
     }
@@ -99,6 +105,7 @@ public class ClassTagFilterCommandTest {
     public void execute_classTagDoesNotExist_throwsCommandException() {
         ClassTag nonExistentTag = new ClassTag("NonExistentTag");
         ClassTagFilterCommand command = new ClassTagFilterCommand(nonExistentTag);
+
         String expectedMessage = String.format(Messages.MESSAGE_TAG_NOT_FOUND, nonExistentTag.tagName);
         assertCommandFailure(command, model, expectedMessage);
     }

@@ -411,12 +411,16 @@ Attendance management is implemented through several key components:
 The following commands handle attendance operations:
 
 1. **AttendanceMarkPresentCommand (triggered by `att -p`)**: Marks a student as present for a class on a specific date
-    - Validates student exists and ClassTag exists
+    - Validates student exists 
+    - Checks if student has the ClassTag assigned OR if an attendance record exists for that student, date, and class
+    - If student doesn't have the tag and no record exists, rejects the command
     - Prevents duplicate "Present" records (throws error if already marked present)
     - Replaces any existing "Absent" record for the same date and class with a "Present" record
 
 2. **AttendanceMarkAbsentCommand (triggered by `att -a`)**: Marks a student as absent for a class on a specific date
-    - Validates student exists and ClassTag exists
+    - Validates student exists 
+    - Checks if student has the ClassTag assigned OR if an attendance record exists for that student, date, and class
+    - If student doesn't have the tag and no record exists, rejects the command
     - Prevents duplicate "Absent" records (throws error if already marked absent)
     - Replaces any existing "Present" record for the same date and class with an "Absent" record
 
@@ -469,7 +473,7 @@ Attendance operations include comprehensive validation:
 - Student ID not found
 - Invalid Student ID format
 - ClassTag does not exist
-- ClassTag not assigned to the student
+- ClassTag not assigned to the student and no existing attendance record for that student, date, and class
 - Date in the future
 - Date before student's enrolment month
 - Invalid date format (e.g., 30th February, non-existent dates)
@@ -1033,7 +1037,7 @@ Given below is a list of enhancements we plan to implement in future versions of
 1. **Bulk attendance marking for entire class:** Currently, tutors must mark attendance for each student individually using `att -p s/STUDENT_ID d/DATE t/CLASS`. For a class with 20-30 students, this becomes tedious and time-consuming. We plan to add a bulk marking feature that allows tutors to mark attendance for all students in a specific class at once. For example, `att -pA d/10112025 t/Math` would mark all students as present enrolled in the Math ClassTag as present for that date. This would significantly reduce the time needed to take attendance at the beginning of each lesson.
 2. **Bulk deletion of old attendance records:** Currently, attendance records accumulate indefinitely, and tutors can only delete them one by one using `att -d s/STUDENT_ID d/DATE t/CLASS`. For students enrolled for extended periods (e.g., multiple years), their attendance lists can become very long and cluttered with old records that are no longer relevant for day-to-day tutoring. We plan to add a bulk deletion feature that allows tutors to remove attendance records older than a specified date or within a date range. For example, `att -clear d/BEFORE_DATE` or `att -clear d/FROM_DATE d/TO_DATE` would remove old records in bulk. This would help tutors maintain clean, relevant data while preserving important recent attendance history, improving both performance and usability when viewing attendance records.
 3. **Individual class tag assignment and unassignment on top of current add/edit:** Currently, when editing a student's class tags using the edit command, all existing tags are replaced with the new list provided (or cleared if `t/` is empty). This makes it cumbersome to add or remove a single tag without re-specifying all others. We plan to introduce new commands `tag -assign s/STUDENT_ID t/TAG_NAME` and `tag -unassign s/STUDENT_ID t/TAG_NAME` that allow adding or removing individual tags without affecting previously assigned ones. For example, `tag -assign s/0001 t/Sec_3_A_Math` would add the `Sec_3_A_Math` tag to student 0001 if they don't already have it, leaving other tags intact. Similarly, `tag -unassign s/0001 t/Sec_3_A_Math` would remove only that tag. This enhancement addresses the frequent need for precise, incremental changes to student records, improving tutor workflow efficiency.
-4. **ClassTag renaming:** Currently, once a ClassTag is created, its name cannot be changed. If a tutor wishes to rename a ClassTag (e.g., from "Sec_3_A_Math" to "Sec_3_A_Advanced_Math"), they must delete the existing ClassTag and create a new one. This process is cumbersome and risks losing the association with students if not handled carefully. We plan to implement a `tag -r` command that allows tutors to rename an existing ClassTag while preserving all student associations. For example, `tag -r oldt/Sec_3_A_Math newt/Sec_3_A_Advanced_Math` would rename the ClassTag accordingly. This feature would enhance flexibility in managing class names as course structures evolve.
+4. **Bulk ClassTag operations:** Currently, assigning or removing a ClassTag requires editing each student individually using the `edit` command. We plan to introduce bulk tag operations with two new commands: `tag -ba t/TAG_NAME s/ID1 s/ID2 ...` (bulk assign) to assign a single ClassTag to multiple students at once, and `tag -rall t/TAG_NAME` (remove from all) to remove a specific ClassTag from every student who currently has it. For example, `tag -ba t/Sec_3_A_Math s/0001 s/0002 s/0010` would assign the "Sec_3_A_Math" tag to students 0001, 0002, and 0010 in a single command, while `tag -rall t/Sec_3_A_Math` would remove that tag from all students currently assigned to it. This enhancement would significantly improve efficiency when managing class enrollments, course transitions, renaming classes and academic year updates.
 5. **Introduce third fee state — WAIVED/SKIPPED:**  
    At present, fee tracking uses only two states: **PAID** and **UNPAID**.  
    In future releases, we plan to introduce a third state, **WAIVED** (or **SKIPPED**), to handle non-billable months such as holidays, term breaks, or periods without lessons.  
@@ -1597,9 +1601,10 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **MSS**
 1. Tutor requests to mark a student as **Present** for a specific date and class.
-2. Tuto validates the request: student exists, command format is valid, date is valid, and class tag exists and is assigned to the student.
-3. Tuto checks that the attendance is not already marked as **Present** for that date and class.
-4. Tuto records the **Present** attendance and displays a success message.
+2. Tuto validates the request: student exists, command format is valid, and date is valid.
+3. Tuto checks that the student has the class tag assigned or has an existing attendance record for that student, date, and class.
+4. Tuto checks that the attendance is not already marked as **Present** for that date and class.
+5. Tuto records the **Present** attendance and displays a success message.
 
    Use case ends.
 
@@ -1616,37 +1621,34 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
     * 2c1. Tuto shows an error message indicating invalid student ID format.
       Use case ends.
 
-* 2d. The specified class tag does not exist.
-    * 2d1. Tuto shows an error message indicating class tag not found.
+* 2d. The provided date is in the future.
+    * 2d1. Tuto shows an error message indicating date cannot be in the future.
       Use case ends.
 
-* 2e. The specified class tag is not assigned to the student.
-    * 2e1. Tuto shows an error message indicating class tag not assigned to student.
+* 2e. The provided date is before the student's enrolment month.
+    * 2e1. Tuto shows an error message indicating date cannot be before enrolment.
       Use case ends.
 
-* 2f. The provided date is in the future.
-    * 2f1. Tuto shows an error message indicating date cannot be in the future.
+* 2f. The date does not correspond to a real calendar day (e.g. 30th February).
+    * 2f1. Tuto shows an error message indicating invalid date.
       Use case ends.
 
-* 2g. The provided date is before the student's enrolment month.
-    * 2g1. Tuto shows an error message indicating date cannot be before enrolment.
+* 3a. The specified class tag is not assigned to the student and no attendance record exists for that student, date, and class.
+    * 3a1. Tuto shows an error message indicating class tag not assigned to student.
       Use case ends.
 
-* 2h. The date does not correspond to a real calendar day (e.g. 30th February).
-    * 2h1. Tuto shows an error message indicating invalid date.
-      Use case ends.
-
-* 3a. The attendance is already marked as **Present** for that date and class.
-    * 3a1. Tuto shows an error message indicating the student is already marked present.
+* 4a. The attendance is already marked as **Present** for that date and class.
+    * 4a1. Tuto shows an error message indicating the student is already marked present.
       Use case ends.
 
 **Use case: Mark Student as Absent**
 
 **MSS**
 1. Tutor requests to mark a student as **Absent** for a specific date and class.
-2. Tuto validates the request: student exists, command format is valid, date is valid, and class tag exists and is assigned to the student.
-3. Tuto checks that the attendance is not already marked as **Absent** for that date and class.
-4. Tuto records the **Absent** attendance and displays a success message.
+2. Tuto validates the request: student exists, command format is valid, and date is valid.
+3. Tuto checks that the student has the class tag assigned or has an existing attendance record for that student, date, and class.
+4. Tuto checks that the attendance is not already marked as **Absent** for that date and class.
+5. Tuto records the **Absent** attendance and displays a success message.
 
    Use case ends.
 
@@ -1663,28 +1665,24 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
     * 2c1. Tuto shows an error message indicating invalid student ID format.
       Use case ends.
 
-* 2d. The specified class tag does not exist.
-    * 2d1. Tuto shows an error message indicating class tag not found.
+* 2d. The provided date is in the future.
+    * 2d1. Tuto shows an error message indicating date cannot be in the future.
       Use case ends.
 
-* 2e. The specified class tag is not assigned to the student.
-    * 2e1. Tuto shows an error message indicating class tag not assigned to student.
+* 2e. The provided date is before the student's enrolment month.
+    * 2e1. Tuto shows an error message indicating date cannot be before enrolment.
       Use case ends.
 
-* 2f. The provided date is in the future.
-    * 2f1. Tuto shows an error message indicating date cannot be in the future.
+* 2f. The date does not correspond to a real calendar day (e.g. 30th February).
+    * 2f1. Tuto shows an error message indicating invalid date.
       Use case ends.
 
-* 2g. The provided date is before the student's enrolment month.
-    * 2g1. Tuto shows an error message indicating date cannot be before enrolment.
+* 3a. The specified class tag is not assigned to the student AND no attendance record exists for that student, date, and class.
+    * 3a1. Tuto shows an error message indicating class tag not assigned to student.
       Use case ends.
 
-* 2h. The date does not correspond to a real calendar day (e.g. 30th February).
-    * 2h1. Tuto shows an error message indicating invalid date.
-      Use case ends.
-
-* 3a. The attendance is already marked as **Absent** for that date and class.
-    * 3a1. Tuto shows an error message indicating the student is already marked absent.
+* 4a. The attendance is already marked as **Absent** for that date and class.
+    * 4a1. Tuto shows an error message indicating the student is already marked absent.
       Use case ends.
 
 **Use case: Delete an Attendance Record**
@@ -1818,7 +1816,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 1. Tutor deletes student.
 2. Tuto removes student from records.
-3. Tuto confirms the student's has been deleted.
+3. Tuto confirms the student's record has been deleted.
 
    Use case ends.
 

@@ -16,9 +16,4 @@ public class CliSyntax {
     public static final Prefix PREFIX_CLASSTAG = new Prefix("t/");
     public static final Prefix PREFIX_MONTH = new Prefix("m/");
 
-    public static final Prefix[] ALL_PREFIXES = new Prefix[] {
-        PREFIX_NAME, PREFIX_PHONE, PREFIX_EMAIL, PREFIX_ADDRESS,
-        PREFIX_STUDENTID, PREFIX_DATE, PREFIX_NOTE, PREFIX_CLASSTAG, PREFIX_MONTH
-    };
-
 }

@@ -37,20 +37,27 @@ case ( -p )
     stop
   endif
 
-  :Validate ClassTag exists
-  and student is in class;
-  if () then ([validation fails])
-    :Show error message;
-    stop
-  endif
-
-  :Check if already marked present;
-  if () then ([already present])
-    :Show error message;
-    stop
-  else ([not duplicate])
-    :Mark student as present;
-    :Display success message;
+  :Check if attendance record exists
+  for given date and class tag;
+  if () then ([record exists])
+    :Check if already marked present;
+    if () then ([already present])
+      :Show error message;
+      stop
+    else ([not duplicate])
+      :Mark student as present;
+      :Display success message;
+    endif
+  else ([record does not exist])
+    :Validate ClassTag exists
+    and student is in class;
+    if () then ([validation fails])
+      :Show error message;
+      stop
+    else ([validation passes])
+      :Mark student as present;
+      :Display success message;
+    endif
   endif
 
 case ( -a )
@@ -68,20 +75,27 @@ case ( -a )
     stop
   endif
 
-  :Validate ClassTag exists
-  and student is in class;
-  if () then ([validation fails])
-    :Show error message;
-    stop
-  endif
-
-  :Check if already marked absent;
-  if () then ([already absent])
-    :Show error message;
-    stop
-  else ([not duplicate])
-    :Mark student as absent;
-    :Display success message;
+  :Check if attendance record exists
+  for given date and class tag;
+  if () then ([record exists])
+    :Check if already marked absent;
+    if () then ([already absent])
+      :Show error message;
+      stop
+    else ([not duplicate])
+      :Mark student as absent;
+      :Display success message;
+    endif
+  else ([record does not exist])
+    :Validate ClassTag exists
+    and student is in class;
+    if () then ([validation fails])
+      :Show error message;
+      stop
+    else ([validation passes])
+      :Mark student as absent;
+      :Display success message;
+    endif
   endif
 
 case ( -v )
