@@ -88,8 +88,9 @@ public class ClassTagTest {
         assertFalse(ClassTag.isValidTagName("Physics Group")); // contains space
         assertFalse(ClassTag.isValidTagName("你好数学"));
         assertFalse(ClassTag.isValidTagName(".,/"));
-        // EP: exceeds max length
-        assertFalse(ClassTag.isValidTagName("a123456789012345678901234567890")); // 31 chars
+
+        // EP: exceeds max length (31 chars)
+        assertFalse(ClassTag.isValidTagName("a123456789012345678901234567890"));
     }
 
     @Test
@@ -104,20 +105,20 @@ public class ClassTagTest {
         assertTrue(ClassTag.isValidTagName("JC1_GP"));
         assertTrue(ClassTag.isValidTagName("chem_tutorial_g1"));
 
-        // EP: exactly 1 character (boundary value)
+        // EP: boundary - minimum length (1)
         assertTrue(ClassTag.isValidTagName("a"));
 
-        // EP: exactly 30 characters (boundary value)
+        // EP: boundary - maximum length (30)
         assertTrue(ClassTag.isValidTagName("a12345678901234567890123456789"));
 
-        // Only number
+        // EP: numeric only
         assertTrue(ClassTag.isValidTagName("2025"));
 
-        // Only underscore
+        // EP: only underscores
         assertTrue(ClassTag.isValidTagName("_"));
         assertTrue(ClassTag.isValidTagName("_______")); // Multiple underscores
 
-        // Mix of alphanumeric and underscore
+        // EP: mix of alphanumeric and underscore
         assertTrue(ClassTag.isValidTagName("Class_A_1"));
     }
 

@@ -90,8 +90,7 @@ public class DeleteClassTagCommandTest {
         ClassTag tagToDeleteLower = new ClassTag("sec3_maths");
         DeleteClassTagCommand deleteClassTagCommand = new DeleteClassTagCommand(tagToDeleteLower);
 
-        assertThrows(CommandException.class, () ->
-                deleteClassTagCommand.execute(modelStub));
+        assertThrows(CommandException.class, () -> deleteClassTagCommand.execute(modelStub));
     }
 
     @Test
