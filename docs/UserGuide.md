@@ -1,7 +1,7 @@
 ---
   layout: default.md
-    title: "User Guide"
-    pageNav: 3
+  title: "User Guide"
+  pageNav: 3
 ---
 
 # Tuto User Guide
@@ -73,13 +73,13 @@ Tuto offers comprehensive features tailored to the needs of freelance tutors:
 5. Type the command in the command box and press Enter to execute it. e.g. typing **`help`** and pressing Enter will open the help window.<br>
    Some example commands you can try:
 
-    * `list` : Lists all students.
+   * `list` : Lists all students.
 
-    * `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01` : Adds a student named `John Doe` to Tuto.
+   * `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01` : Adds a student named `John Doe` to Tuto.
 
-    * `clear` : Deletes all contacts.
+   * `clear` : Deletes all contacts.
 
-    * `exit` : Exits the app.
+   * `exit` : Exits the app.
 
 6. Refer to the [Command section](#3-commands) below for details of all commands supported by Tuto.
 
