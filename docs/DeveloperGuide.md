@@ -1930,7 +1930,7 @@ testers are expected to do more *exploratory* testing.
    * Surround the JAR filename with quotes in case it contains special characters:
      
      ```
-     java -jar "[CS2103-F18-1][Task Pro].jar"
+     java -jar "[CS2103-F10-3][Tuto].jar"
      ```
    
    * **Windows:** Use Command Prompt or PowerShell (not the WSL terminal).
