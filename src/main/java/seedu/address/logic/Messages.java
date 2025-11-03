@@ -19,6 +19,8 @@ public class Messages {
                 "Multiple values specified for the following single-valued field(s): ";
     public static final String MESSAGE_STUDENT_ID_NOT_FOUND = "Student ID not found: %1$s";
     public static final String MESSAGE_TAG_NOT_FOUND = "Class tag does not exist: %1$s";
+    public static final String MESSAGE_TAGS_NOT_FOUND = "One or more class tags does not exist. "
+            + "Please create them first with the 'tag -a' command.";
 
     /**
      * Returns an error message indicating the duplicate prefixes.

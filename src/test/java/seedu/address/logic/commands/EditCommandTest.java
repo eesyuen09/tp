@@ -199,8 +199,7 @@ public class EditCommandTest {
                 .withClassTags("NonExistentTag").build();
         EditCommand editCommand = new EditCommand(BENSON.getStudentId(), descriptor);
 
-        assertCommandFailure(editCommand, model,
-                String.format(EditCommand.MESSAGE_TAG_NOT_FOUND, "NonExistentTag"));
+        assertCommandFailure(editCommand, model, Messages.MESSAGE_TAGS_NOT_FOUND);
     }
 
     @Test

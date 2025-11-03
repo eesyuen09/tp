@@ -132,7 +132,7 @@ How the parsing works:
 ### Model component
 **API** : [`Model.java`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/model/Model.java)
 
-<puml src="diagrams/ModelClassDiagram.puml" width="450" />
+<puml src="diagrams/ModelClassDiagram.puml" />
 
 
 The `Model` component,
@@ -148,7 +148,7 @@ The `Model` component,
 
 **API** : [`Storage.java`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/storage/Storage.java)
 
-<puml src="diagrams/StorageClassDiagram.puml" width="550" />
+<puml src="diagrams/StorageClassDiagram.puml"  />
 
 The `Storage` component,
 * can save both address book data and user preference data in JSON format, and read them back into corresponding objects.
@@ -238,8 +238,8 @@ Each student is uniquely identified by a **Student ID** and can have associated 
     - Case-insensitive search
     - Displays a filtered list of matching students
 
-6. **ClearCommand (`clear`)**: Clears all student records
-    - Removes all students from the model
+6. **ClearCommand (`clear`)**: Clears all student records and class tags
+    - Removes all students and class tags from the model
 
 #### Activity Diagram: Adding a Student (`add`)
 
