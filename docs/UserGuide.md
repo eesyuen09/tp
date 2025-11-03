@@ -77,7 +77,7 @@ Tuto offers comprehensive features tailored to the needs of freelance tutors:
 
     * `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01` : Adds a student named `John Doe` to Tuto.
 
-    * `clear` : Deletes all contacts.
+    * `clear` : Deletes all data.
 
     * `exit` : Exits the app.
 
@@ -211,14 +211,14 @@ which is used in other commands such as fees, attendance, and performance tracki
 
 **Overview of Student Management Commands**
 
-| Command                                                                       | Description                             |
-|-------------------------------------------------------------------------------|-----------------------------------------|
-| `add n/NAME p/PHONE e/EMAIL a/ADDRESS [m/ENROLLED_MONTH] [t/CLASS_TAG]...`    | Add a new student to the address book   |
-| `edit s/STUDENT_ID [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/CLASS_TAG]...` | Edit details of an existing student     |
-| `find KEYWORD [MORE_KEYWORDS]`                                                | Find students by name                   |
-| `delete s/STUDENT_ID`                                                         | Delete a student using their Student ID |
-| `list`                                                                        | List all students                       |
-| `clear`                                                                       | Clear all student entries               |
+| Command                                                                       | Description                              |
+|-------------------------------------------------------------------------------|------------------------------------------|
+| `add n/NAME p/PHONE e/EMAIL a/ADDRESS [m/ENROLLED_MONTH] [t/CLASS_TAG]...`    | Add a new student to the address book    |
+| `edit s/STUDENT_ID [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/CLASS_TAG]...` | Edit details of an existing student      |
+| `find KEYWORD [MORE_KEYWORDS]`                                                | Find students by name                    |
+| `delete s/STUDENT_ID`                                                         | Delete a student using their Student ID  |
+| `list`                                                                        | List all students                        |
+| `clear`                                                                       | Clear all student entries and class tags |
 
 </box>
 
@@ -340,12 +340,12 @@ Displays all students currently stored in the address book.
 
 #### 3.1.6 Clearing all entries : `clear`
 
-Clears all student records from the address book.
+Clears all student records and class tags from the address book.
 
 **Format:** `clear`
 
 **Command Details and Constraints:**
-* Removes all student entries permanently from the address book.
+* Removes all student entries and class tags permanently from the address book.
 * This action cannot be undone.
 
 >**Expected output:**  

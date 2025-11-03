@@ -54,6 +54,6 @@ public class AddCommandIntegrationTest {
         AddCommand addCommand = new AddCommand(personWithBadTag);
 
         assertCommandFailure(addCommand, model,
-                String.format(AddCommand.MESSAGE_TAG_NOT_FOUND, "NonExistentTag"));
+                String.format(Messages.MESSAGE_TAGS_NOT_FOUND, "NonExistentTag"));
     }
 }

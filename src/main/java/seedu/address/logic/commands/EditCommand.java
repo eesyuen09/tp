@@ -59,8 +59,6 @@ public class EditCommand extends Command {
     public static final String MESSAGE_EDIT_PERSON_SUCCESS = "Edited student: %1$s";
     public static final String MESSAGE_NOT_EDITED = "At least one field to edit must be provided.";
     public static final String MESSAGE_DUPLICATE_PERSON = "This student already exists in the address book.";
-    public static final String MESSAGE_TAG_NOT_FOUND = "One or more class tags do not exist: %s. "
-            + "Please create them first with the 'tag -a' command.";
 
     private final StudentId studentId;
     private final EditPersonDescriptor editPersonDescriptor;
@@ -138,7 +136,7 @@ public class EditCommand extends Command {
             if (foundTag.isPresent()) {
                 correctlyCasedTags.add(foundTag.get());
             } else {
-                throw new CommandException(String.format(MESSAGE_TAG_NOT_FOUND, userTag.tagName));
+                throw new CommandException(Messages.MESSAGE_TAGS_NOT_FOUND);
             }
         }
         return Optional.of(correctlyCasedTags);

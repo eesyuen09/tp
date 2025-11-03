@@ -112,7 +112,7 @@ public class AddCommandTest {
         AddCommand addCommand = new AddCommand(personWithBadTag);
 
         assertThrows(CommandException.class,
-                String.format(AddCommand.MESSAGE_TAG_NOT_FOUND, "NonExistentTag"), () -> addCommand.execute(modelStub));
+                String.format(Messages.MESSAGE_TAGS_NOT_FOUND, "NonExistentTag"), () -> addCommand.execute(modelStub));
     }
 
     @Test
