@@ -238,8 +238,8 @@ Each student is uniquely identified by a **Student ID** and can have associated 
     - Case-insensitive search
     - Displays a filtered list of matching students
 
-6. **ClearCommand (`clear`)**: Clears all student records
-    - Removes all students from the model
+6. **ClearCommand (`clear`)**: Clears all student records and class tags
+    - Removes all students and class tags from the model
 
 #### Activity Diagram: Adding a Student (`add`)
 
