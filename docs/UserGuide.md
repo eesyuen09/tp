@@ -92,8 +92,10 @@ Tuto operates primarily through text-based commands. Before we explore the speci
 
 <box type="tip" seamless>
 
-**Important:** All command words are case-sensitive!
-`add` is different from `ADD` or `Add`
+**Important:** All command words, parameter prefixes and flags are case-sensitive!
+* `add` is different from `ADD` or `Add`
+* `pn/` is different from `PN/` or `Pn/`
+* `-a` is different from `-A`
 
 </box>
 
@@ -352,7 +354,7 @@ Clears all student records and class tags from the address book.
 * This action cannot be undone.
 
 >**Expected output:**  
-`All students have been cleared!`
+`All students and class tags have been cleared!`
 
 ---
 ### 3.2 Class Tag Management
@@ -462,9 +464,9 @@ Marks a student’s payment status as **PAID** for a specific month.
 **Format:** `fee -p s/STUDENT_ID m/MMYY`
 
 **Command Details and Constraints:**
-* Tutors can only mark payments for months **between the student’s enrollment month and the current month (inclusive)**.
-* Payments must follow **chronological order** — earlier months must be settled before marking later ones.
-* Payments **before enrollment** or **in future months** are not allowed.
+* Tutors can only mark payments for months between the student’s enrollment month and the current month (inclusive).
+* Payments must follow chronological order — earlier months must be settled before marking later ones.
+* Payments before enrollment or in future months are not allowed.
 * If a month is already marked as PAID, duplicate payment attempts will be rejected.
 
 **Examples:**
@@ -480,9 +482,9 @@ Use this command for corrections or when a payment was mistakenly marked as PAID
 `fee -up s/STUDENT_ID m/MMYY`
 
 **Command Details and Constraints:**
-* Tutors can only mark payments for months **between the student’s enrollment month and the current month (inclusive)**.
+* Tutors can only mark payments for months between the student’s enrollment month and the current month (inclusive).
 * If the month is already marked as UNPAID, the command will be rejected.
-* Payments **before enrollment** or **in future months** are not allowed.
+* Payments before enrollment or in future months are not allowed.
 * Once corrected, the tutor must re-mark earlier unpaid months before recording new payments for later months.
 
 **Examples:**
@@ -498,10 +500,10 @@ Displays a student’s **payment history** from a specified starting month up to
 `fee -v s/STUDENT_ID [m/MMYY]`
 
 **Command Details and Constraints:**
-* Tutors can view payment history **starting from any valid month** between the student’s enrollment month and the current month (inclusive).
-* If the starting month is not provided, or it precedes the student’s enrollment month, the history will automatically start from the **enrollment month**.
-* If the starting month is **after the current month**, the command will return an error message.
-* The displayed history includes both **explicitly marked** months (via `fee -p` or `fee -up`) and **default UNPAID** months that were not manually recorded.
+* Tutors can view payment history starting from any valid month between the student’s enrollment month and the current month (inclusive).
+* If the starting month is not provided, or it precedes the student’s enrollment month, the history will automatically start from the enrollment month.
+* If the starting month is after the current month, the command will return an error message.
+* The displayed history includes both explicitly marked months (via `fee -p` or `fee -up`) and default UNPAID months that were not manually recorded.
 
 **Examples:**
 - `fee -v s/0001` — shows payment history for student `0001` from their enrollment month to the current month.
@@ -547,7 +549,7 @@ Marks a student's attendance as **PRESENT** for a specific date and class.
 
 **Command Details and Constraints:**
 * This command records that a student attended a specific class on a specific date.
-* The student must have the specified class tag assigned to them, OR have an existing attendance record for that class and date (to allow editing past records even if the student has left the class).
+* The student must have the specified class tag assigned to them, or have an existing attendance record for that class and date (to allow editing past records even if the student has left the class).
 * If the student doesn't have the tag and no attendance record exists, the command will be rejected with an error message.
 * The date must be in `DDMMYYYY` format (e.g., `15092025` for 15 September 2025).
 
@@ -565,7 +567,7 @@ Use this to record absences or to undo a previously marked **PRESENT** attendanc
 **Command Details and Constraints:**
 * This command records that a student was absent from a specific class on a specific date.
 * This command can also be used to undo a **PRESENT** attendance by changing it to **ABSENT**.
-* The student must have the specified class tag assigned to them, OR have an existing attendance record for that class and date (to allow editing past records even if the student has left the class).
+* The student must have the specified class tag assigned to them, or have an existing attendance record for that class and date (to allow editing past records even if the student has left the class).
 * If the student doesn't have the tag and no attendance record exists, the command will be rejected with an error message.
 * The date must be in `DDMMYYYY` format (e.g., `15092025` for 15 September 2025).
 

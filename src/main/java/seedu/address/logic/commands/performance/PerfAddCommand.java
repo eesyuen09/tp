@@ -75,6 +75,7 @@ public class PerfAddCommand extends PerfCommand {
                     student.getName(), classTag.tagName));
         }
 
+        ClassTag originalClassTag = model.findClassTag(classTag).orElse(classTag);
         LocalDate performanceNoteMonth = date.toLocalDate();
         LocalDate enrolStart = student.getEnrolledMonth().toYearMonth().atDay(1);
 
@@ -92,11 +93,11 @@ public class PerfAddCommand extends PerfCommand {
         PerformanceList copy = new PerformanceList(new ArrayList<>(current));
 
         try {
-            PerformanceNote newNote = new PerformanceNote(date, classTag, note);
+            PerformanceNote newNote = new PerformanceNote(date, originalClassTag, note);
             copy.add(newNote);
             model.setPerson(student, student.withPerformanceList(copy));
             return new CommandResult(String.format(PerfCommand.ADDED, student.getName(),
-                    classTag.tagName, newNote.getDate().getFormattedDate()));
+                    originalClassTag.tagName, newNote.getDate().getFormattedDate()));
         } catch (IllegalArgumentException e) {
             throw new CommandException(e.getMessage());
         }

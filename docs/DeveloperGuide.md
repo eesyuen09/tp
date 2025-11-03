@@ -866,7 +866,7 @@ Fee Management is implemented through several key components:
     - `markUnpaid(StudentId, Month)`: Marks a student’s fee as Unpaid for a given month.
     - `paidStudents(Month)`: Returns a predicate for filtering students who have Paid for the specified month.
     - `unpaidStudents(Month)`: Returns a predicate for filtering students who have not Paid for the specified month.
-    - `getCurrentFeeState(Person)`: Returns the student’s fee state for the current month.
+    - `getCurrentFeeState(Person)`: Returns whether the student has any outstanding fees.
     - `feeStateVersionProperty()`: Returns a read-only observable property that increments whenever fee data changes, allowing the UI to refresh automatically.
 
 
@@ -1915,7 +1915,7 @@ testers are expected to do more *exploratory* testing.
    * Surround the JAR filename with quotes in case it contains special characters:
      
      ```
-     java -jar "[CS2103-F18-1][Task Pro].jar"
+     java -jar "[CS2103-F10-3][Tuto].jar"
      ```
    
    * **Windows:** Use Command Prompt or PowerShell (not the WSL terminal).
