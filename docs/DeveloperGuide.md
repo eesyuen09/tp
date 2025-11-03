@@ -275,7 +275,7 @@ This sequence diagram demonstrates how the system processes the `delete` command
 
 **Aspect: Name Validation**
 
-* **Alternative 1 (current choice):** Only alphabetic characters, spaces, hyphens, and apostrophes; max 200 characters
+* **Alternative 1 (current choice):** Only alphabetic characters, spaces, hyphens(-) , and apostrophes('); max 100 characters
     * Pros: Prevents invalid or malicious input, ensures readability and consistent formatting
     * Cons: Cannot accept names with unusual symbols outside this set
 
@@ -352,7 +352,7 @@ This sequence diagram demonstrates how the system processes the `delete` command
 **Aspect: Non-Duplication of Students**
 
 * **Alternative 1 (current choice):** Uniqueness checked on phone number and name combination
-    * Pros: Reduces accidental duplicates while allowing students with same name but different contact details
+    * Pros: Reduces accidental duplicates by allowing students with the same name but different contact details, preventing false duplicates when siblings share a phone number, and ensuring that neither name nor phone number alone is treated as unique
     * Cons: Cannot detect duplicates with incorrect phone numbers
 
 * **Alternative 2:** Check uniqueness using all fields (name, phone, email, address)
@@ -579,6 +579,15 @@ lifeline continues till the end of diagram.
 * **Alternative 2:** Dedicated verbs per action (`perfadd`, `perfedit`, etc.)
     * Pros: Self-descriptive command words, reduces reliance on flags
     * Cons: Bloats the command set and deviates from the app's namespace-based command organisation
+
+**Aspect: Tying performance notes to Attendance records:**
+* **Alternative 1 (current choice):** Independent performance notes
+    * Pros: Greater flexibility to record observations outside of attendance events, simplifies data model
+    * Cons: Misses opportunity to link academic feedback directly to class participation
+
+* **Alternative 2:** Link performance notes to attendance entries
+    * Pros: Provides richer context for feedback, enables analysis of attendance-performance correlations
+    * Cons: Increases complexity, may restrict note-taking to only attended classes
 
 ### ClassTag Management
 
@@ -1034,7 +1043,7 @@ Each validation error produces clear and descriptive messages to guide user corr
 
 Given below is a list of enhancements we plan to implement in future versions of Tuto:
 
-1. **Bulk attendance marking for entire class:** Currently, tutors must mark attendance for each student individually using `att -p s/STUDENT_ID d/DATE t/CLASS`. For a class with 20-30 students, this becomes tedious and time-consuming. We plan to add a bulk marking feature that allows tutors to mark attendance for all students in a specific class at once. For example, `att -pA d/10112025 t/Math` would mark all students as present enrolled in the Math ClassTag as present for that date. This would significantly reduce the time needed to take attendance at the beginning of each lesson.
+1. **Bulk attendance marking for entire class:** Currently, tutors must mark attendance for each student individually using `att -p s/STUDENT_ID d/DATE t/CLASS`. For tutors managing small group classes, this process can still become repetitive and time-consuming when marking multiple students in the same class. We plan to add a bulk marking feature that allows tutors to mark attendance for all students in a specific class at once. For example, `att -pA d/10112025 t/Math` would mark all students as present enrolled in the Math ClassTag as present for that date. This would significantly reduce the time needed to take attendance at the beginning of each lesson.
 2. **Bulk deletion of old attendance records:** Currently, attendance records accumulate indefinitely, and tutors can only delete them one by one using `att -d s/STUDENT_ID d/DATE t/CLASS`. For students enrolled for extended periods (e.g., multiple years), their attendance lists can become very long and cluttered with old records that are no longer relevant for day-to-day tutoring. We plan to add a bulk deletion feature that allows tutors to remove attendance records older than a specified date or within a date range. For example, `att -clear d/BEFORE_DATE` or `att -clear d/FROM_DATE d/TO_DATE` would remove old records in bulk. This would help tutors maintain clean, relevant data while preserving important recent attendance history, improving both performance and usability when viewing attendance records.
 3. **Individual class tag assignment and unassignment on top of current add/edit:** Currently, when editing a student's class tags using the edit command, all existing tags are replaced with the new list provided (or cleared if `t/` is empty). This makes it cumbersome to add or remove a single tag without re-specifying all others. We plan to introduce new commands `tag -assign s/STUDENT_ID t/TAG_NAME` and `tag -unassign s/STUDENT_ID t/TAG_NAME` that allow adding or removing individual tags without affecting previously assigned ones. For example, `tag -assign s/0001 t/Sec_3_A_Math` would add the `Sec_3_A_Math` tag to student 0001 if they don't already have it, leaving other tags intact. Similarly, `tag -unassign s/0001 t/Sec_3_A_Math` would remove only that tag. This enhancement addresses the frequent need for precise, incremental changes to student records, improving tutor workflow efficiency.
 4. **Bulk ClassTag operations:** Currently, assigning or removing a ClassTag requires editing each student individually using the `edit` command. We plan to introduce bulk tag operations with two new commands: `tag -ba t/TAG_NAME s/ID1 s/ID2 ...` (bulk assign) to assign a single ClassTag to multiple students at once, and `tag -rall t/TAG_NAME` (remove from all) to remove a specific ClassTag from every student who currently has it. For example, `tag -ba t/Sec_3_A_Math s/0001 s/0002 s/0010` would assign the "Sec_3_A_Math" tag to students 0001, 0002, and 0010 in a single command, while `tag -rall t/Sec_3_A_Math` would remove that tag from all students currently assigned to it. This enhancement would significantly improve efficiency when managing class enrollments, course transitions, renaming classes and academic year updates.
@@ -1042,6 +1051,12 @@ Given below is a list of enhancements we plan to implement in future versions of
 6. **Integrate Fee and Attendance Systems:** Currently, fee tracking and attendance operate independently. We plan to introduce light integration between both modules to make payment tracking more context-aware. When viewing a student’s fee history, tutors will also see the number of lessons held for each month. When marking a month as paid with no recorded attendance, the system will show a confirmation prompt to avoid mistakes. Similarly, when marking a month as unpaid while lessons are recorded, a reminder will appear to alert the tutor of possible inconsistencies. Months without any recorded attendance will automatically be assigned a waived status instead of unpaid, ensuring skipped months, such as holidays or term breaks do not block future payments. This enhancement improves accuracy and consistency between financial and attendance records while keeping full flexibility for tutors to override when necessary.
 7. **Unified student history view (view s/STUDENT_ID):** Introduce a consolidated view command that shows every performance note, attendance record, and fee transaction for the specified student, allowing tutors to review a learner’s full journey without hopping between modules.
 8. **Targeted performance and attendance filters (perf -v / att -v):** Extend the existing view flags to accept optional m/MMYY or t/CLASS_TAG parameters so tutors can zero in on a specific month or class when analysing historical performance or attendance data.
+9. **Enhanced Name Validation:** Currently, the system only allows alphabetic characters, spaces, hyphens, and apostrophes in student names, with a maximum limit of 100 characters. While this prevents invalid or malicious input and ensures consistent formatting, it also rejects legitimate names containing cultural or linguistic symbols, or relational notations like “s/o”. 
+We plan to expand the validation rules to allow Unicode characters in names, enabling broader support for global naming conventions while still excluding emojis and unsupported symbols. For example, names such as S/O Rajesh, Zoë-Marie, and Renée d’Olivier would be accepted under the new rules.
+This enhancement will make Tuto more inclusive, accurate, and realistic for users managing students with diverse backgrounds and naming conventions.
+10. **Persistent Student ID Assignment (JSON Tracking):** Currently, Student IDs are auto-generated in a 4-digit sequence (e.g., 0001, 0002, …) after validating all other fields. However, the system only recycles the highest deleted ID if it was the most recent one and if no other add/delete operations occurred before the next app launch. This can occasionally lead to duplicate or reused IDs across sessions. 
+We plan to implement JSON-based persistent ID tracking, which stores the last assigned ID and always increments from it when new students are added. This ensures IDs remain unique across sessions, even after restarts or deletions.
+This enhancement will strengthen data integrity, prevent ID conflicts, and ensure a more consistent and reliable record-keeping process for long-term tutoring management.
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -1848,12 +1863,12 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 ### Glossary
 
-* **Mainstream OS**: Windows, Linux, Unix, macOS
-* **Private contact detail**: A contact detail that is not meant to be shared with others
+* **Mainstream OS**: Windows, Linux, Unix, macOS.
+* **Private contact detail**: A contact detail that is not meant to be shared with others.
 * **Student ID**: A 4-digit unique numeric identifier (0000–9999) assigned to each student when added to the system.
 * **Payment History**: A record covering a range from a start month (either the student’s enrolment month or an explicitly provided m/MMYY) up to the current month (inclusive). The UI displays this range in reverse-chronological order (newest month first). Months after enrolment with no explicit record are derived as UNPAID by default.
-* **Performance note**: A short textual record of a student's performance on a given date
-* **Class Tag/ClassTag**: A label representing a class or subject that can be assigned to students (e.g. "Sec3_Maths")
+* **Performance note**: A short textual record of a student's performance on a given date for a specific class.
+* **Class Tag/ClassTag**: A label representing a class or subject that can be assigned to students (e.g. "Sec3_Maths").
 * **Attendance History**: A complete record of student's attendance across all dates and classes from the time of enrolment, with no time limit on historical data.
 * **Executable JAR**: A Java Archive file that contains all compiled classes and resources, which can be run directly without installation.
 * **MSS (Main Success Scenario)**: The primary sequence of steps in a use case where everything proceeds as expected without any errors.
