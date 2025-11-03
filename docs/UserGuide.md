@@ -195,8 +195,7 @@ A command can be categorized into four formats:
 4. **COMMAND**
     - Example: `list`, `help`, `exit`, `clear`<br>
       <br>
-
-     
+ 
 --------------------------------------------------------------------------------------------------------------------
 
 ## 3. Commands
@@ -849,7 +848,7 @@ Furthermore, certain edits can cause the AddressBook to behave in unexpected way
 | **Filter by PAID status**   | `filter -p m/MMYY` <br> e.g., `filter -p m/1025`                                                                                                                                           |
 | **Filter by UNPAID status** | `filter -up m/MMYY` <br> e.g., `filter -up m/1025`                                                                                                                                         |
 | **Filter by class tag**     | `filter -t t/CLASS_TAG` <br> e.g., `filter -t t/Math_Sec3`                                                                                                                                 |
-| **Add performance note**    | `perf -a s/STUDENT_ID d/DATE t/CLASS_TAG pn/PERFORMANCE_NOTE` <br> e.g., `perf -a s/0001 d/18092025 t/Math_Sec3<br/> pn/Scored 85% on mock test`                                           |
+| **Add performance note**    | `perf -a s/STUDENT_ID d/DATE t/CLASS_TAG pn/PERFORMANCE_NOTE` <br> e.g., `perf -a s/0001 d/18092025 t/Math_Sec3 pn/Scored 85% on mock test`                                           |
 | **View performance notes**  | `perf -v s/STUDENT_ID` <br> e.g., `perf -v s/0001`                                                                                                                                         |
-| **Edit performance note**   | `perf -e s/STUDENT_ID d/DATE t/CLASS_TAG pn/PERFORMANCE_NOTE` <br> e.g., `perf -e s/0001 d/18092025 t/Math_Sec3<br/> pn/Scored 90% on mock test after re-evaluation`                       |
-| **Delete performance note** | `perf -d s/STUDENT_ID d/DATE t/CLASS_TAG` <br> e.g., `perf -d s/0001 d/18092025 t/Math_Sec3<br/>`                                                                                          |
+| **Edit performance note**   | `perf -e s/STUDENT_ID d/DATE t/CLASS_TAG pn/PERFORMANCE_NOTE` <br> e.g., `perf -e s/0001 d/18092025 t/Math_Sec3 pn/Scored 90% on mock test after re-evaluation`                       |
+| **Delete performance note** | `perf -d s/STUDENT_ID d/DATE t/CLASS_TAG` <br> e.g., `perf -d s/0001 d/18092025 t/Math_Sec3`                                                                                          |

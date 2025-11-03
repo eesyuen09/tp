@@ -122,6 +122,11 @@ public class PerfCommandParserTest {
     }
 
     @Test
+    public void parse_addCommandEmptyNote_throwsParseException() {
+        assertThrows(ParseException.class, () -> parser.parse("-a s/0123 d/15032024 t/CS2103T pn/   "));
+    }
+
+    @Test
     public void parse_addCommandWithPreamble_throwsParseException() {
         String command = "-a extra s/0123 d/15032024 t/CS2103T pn/note";
         assertThrows(ParseException.class,
@@ -200,6 +205,17 @@ public class PerfCommandParserTest {
         assertThrows(ParseException.class,
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT,
                         PerfEditCommand.MESSAGE_USAGE), () -> parser.parse("-e s/0123 d/15032024 t/CS2103T"));
+    }
+
+    @Test
+    public void parse_editCommandNoteExceedsMaxLength_throwsParseException() {
+        String longNote = "a".repeat(201);
+        assertThrows(ParseException.class, () -> parser.parse("-e s/0123 d/15032024 t/CS2103T pn/" + longNote));
+    }
+
+    @Test
+    public void parse_editCommandEmptyNote_throwsParseException() {
+        assertThrows(ParseException.class, () -> parser.parse("-e s/0123 d/15032024 t/CS2103T pn/\t"));
     }
 
     // ==================== PerfDeleteCommand Tests ====================

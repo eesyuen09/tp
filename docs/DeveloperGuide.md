@@ -580,6 +580,15 @@ lifeline continues till the end of diagram.
     * Pros: Self-descriptive command words, reduces reliance on flags
     * Cons: Bloats the command set and deviates from the app's namespace-based command organisation
 
+**Aspect: Tying performance notes to Attendance records:**
+* **Alternative 1 (current choice):** Independent performance notes
+    * Pros: Greater flexibility to record observations outside of attendance events, simplifies data model
+    * Cons: Misses opportunity to link academic feedback directly to class participation
+
+* **Alternative 2:** Link performance notes to attendance entries
+    * Pros: Provides richer context for feedback, enables analysis of attendance-performance correlations
+    * Cons: Increases complexity, may restrict note-taking to only attended classes
+
 ### ClassTag Management
 
 #### Overview
@@ -1870,12 +1879,12 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 ### Glossary
 
-* **Mainstream OS**: Windows, Linux, Unix, macOS
-* **Private contact detail**: A contact detail that is not meant to be shared with others
+* **Mainstream OS**: Windows, Linux, Unix, macOS.
+* **Private contact detail**: A contact detail that is not meant to be shared with others.
 * **Student ID**: A 4-digit unique numeric identifier (0000–9999) assigned to each student when added to the system.
 * **Payment History**: A record covering a range from a start month (either the student’s enrolment month or an explicitly provided m/MMYY) up to the current month (inclusive). The UI displays this range in reverse-chronological order (newest month first). Months after enrolment with no explicit record are derived as UNPAID by default.
-* **Performance note**: A short textual record of a student's performance on a given date
-* **Class Tag/ClassTag**: A label representing a class or subject that can be assigned to students (e.g. "Sec3_Maths")
+* **Performance note**: A short textual record of a student's performance on a given date for a specific class.
+* **Class Tag/ClassTag**: A label representing a class or subject that can be assigned to students (e.g. "Sec3_Maths").
 * **Attendance History**: A complete record of student's attendance across all dates and classes from the time of enrolment, with no time limit on historical data.
 * **Executable JAR**: A Java Archive file that contains all compiled classes and resources, which can be run directly without installation.
 
