@@ -31,6 +31,7 @@ public class PerfEditCommandTest {
     private static final StudentId VALID_STUDENT_ID = new StudentId("0123");
     private static final Date VALID_DATE_1 = new Date("15032024");
     private static final ClassTag VALID_CLASS_TAG_1 = new ClassTag("CS2103T");
+    private static final ClassTag USER_INPUT_CLASS_TAG_1 = new ClassTag("cs2103t"); // to test case insensitivity
     private static final String VALID_NOTE_1 = "Good performance in class";
 
     private static final String EDITED_NOTE = "Updated performance note";
@@ -82,7 +83,7 @@ public class PerfEditCommandTest {
         String expectedMessage = String.format(PerfCommand.EDITED,
                 student.getName(), VALID_CLASS_TAG_1.tagName, VALID_DATE_1.getFormattedDate());
 
-        assertCommandSuccess(new PerfEditCommand(VALID_STUDENT_ID, VALID_DATE_1, VALID_CLASS_TAG_1, EDITED_NOTE),
+        assertCommandSuccess(new PerfEditCommand(VALID_STUDENT_ID, VALID_DATE_1, USER_INPUT_CLASS_TAG_1, EDITED_NOTE),
                 model, expectedMessage, expectedModel);
     }
 
@@ -99,10 +100,11 @@ public class PerfEditCommandTest {
         ModelStubAcceptingPerformanceNoteEdited modelStub =
                 new ModelStubAcceptingPerformanceNoteEdited(studentWithNote);
 
-        new PerfEditCommand(VALID_STUDENT_ID, VALID_DATE_1, VALID_CLASS_TAG_1, EDITED_NOTE).execute(modelStub);
+        new PerfEditCommand(VALID_STUDENT_ID, VALID_DATE_1, USER_INPUT_CLASS_TAG_1, EDITED_NOTE).execute(modelStub);
 
-        assertEquals(EDITED_NOTE,
-                modelStub.updatedPerson.getPerformanceList().asUnmodifiableList().get(0).getNote());
+        PerformanceNote storedNote = modelStub.updatedPerson.getPerformanceList().asUnmodifiableList().get(0);
+        assertEquals(EDITED_NOTE, storedNote.getNote());
+        assertEquals(VALID_CLASS_TAG_1, storedNote.getClassTag());
     }
 
     @Test
@@ -177,6 +179,13 @@ public class PerfEditCommandTest {
         @Override
         public boolean hasClassTag(ClassTag classTag) {
             return person.getTags().contains(classTag);
+        }
+
+        @Override
+        public Optional<ClassTag> findClassTag(ClassTag classTag) {
+            return person.getTags().stream()
+                    .filter(existingTag -> existingTag.equals(classTag))
+                    .findFirst();
         }
     }
 }

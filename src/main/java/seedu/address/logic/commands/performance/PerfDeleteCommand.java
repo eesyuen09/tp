@@ -60,18 +60,19 @@ public class PerfDeleteCommand extends PerfCommand {
                 .orElseThrow(() -> new CommandException(
                         String.format(Messages.MESSAGE_STUDENT_ID_NOT_FOUND, studentId)));
 
+        ClassTag originalClassTag = model.findClassTag(classTag).orElse(classTag);
         List<PerformanceNote> current = student.getPerformanceList().asUnmodifiableList();
         PerformanceList copy = new PerformanceList(new ArrayList<>(current));
 
         try {
-            copy.remove(date, classTag);
+            copy.remove(date, originalClassTag);
         } catch (PerformanceNoteNotFoundException e) {
             throw new CommandException("No performance note found for the given date and class tag.");
         }
 
         model.setPerson(student, student.withPerformanceList(copy));
         return new CommandResult(String.format(PerfCommand.DELETED, student.getName(),
-                classTag.tagName, date.getFormattedDate()));
+                originalClassTag.tagName, date.getFormattedDate()));
     }
 
     @Override

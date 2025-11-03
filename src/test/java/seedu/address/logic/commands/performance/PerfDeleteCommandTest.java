@@ -31,6 +31,7 @@ public class PerfDeleteCommandTest {
     private static final Date VALID_DATE_1 = new Date("15032024");
     private static final String VALID_NOTE_1 = "Good performance in class";
     private static final ClassTag VALID_TAG_1 = new ClassTag("Math");
+    private static final ClassTag USER_INPUT_TAG_1 = new ClassTag("math"); // to test case insensitivity
 
 
     @Test
@@ -71,7 +72,7 @@ public class PerfDeleteCommandTest {
         String expectedMessage = String.format(PerfCommand.DELETED,
                 validPerson.getName(), VALID_TAG_1.tagName, VALID_DATE_1.getFormattedDate());
 
-        assertCommandSuccess(new PerfDeleteCommand(VALID_STUDENT_ID, VALID_DATE_1, VALID_TAG_1),
+        assertCommandSuccess(new PerfDeleteCommand(VALID_STUDENT_ID, VALID_DATE_1, USER_INPUT_TAG_1),
                 model, expectedMessage, expectedModel);
     }
 
@@ -88,7 +89,7 @@ public class PerfDeleteCommandTest {
         model.addPerson(validPerson);
 
         // Attempt to delete a performance note for a date where none exists
-        PerfDeleteCommand command = new PerfDeleteCommand(VALID_STUDENT_ID, VALID_DATE_1, VALID_TAG_1);
+        PerfDeleteCommand command = new PerfDeleteCommand(VALID_STUDENT_ID, VALID_DATE_1, USER_INPUT_TAG_1);
 
         assertCommandFailure(command, model,
                 "No performance note found for the given date and class tag.");
@@ -109,7 +110,7 @@ public class PerfDeleteCommandTest {
         ModelStubAcceptingPerformanceNoteDeleted modelStub =
                 new ModelStubAcceptingPerformanceNoteDeleted(personWithNote);
 
-        new PerfDeleteCommand(VALID_STUDENT_ID, VALID_DATE_1, VALID_TAG_1).execute(modelStub);
+        new PerfDeleteCommand(VALID_STUDENT_ID, VALID_DATE_1, USER_INPUT_TAG_1).execute(modelStub);
 
         assertTrue(modelStub.updatedPerson.getPerformanceList().asUnmodifiableList().isEmpty());
     }
@@ -184,6 +185,13 @@ public class PerfDeleteCommandTest {
         @Override
         public boolean hasClassTag(ClassTag classTag) {
             return person.getTags().contains(classTag);
+        }
+
+        @Override
+        public Optional<ClassTag> findClassTag(ClassTag classTag) {
+            return person.getTags().stream()
+                    .filter(existingTag -> existingTag.equals(classTag))
+                    .findFirst();
         }
     }
 }

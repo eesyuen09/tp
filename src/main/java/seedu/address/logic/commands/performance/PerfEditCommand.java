@@ -66,11 +66,12 @@ public class PerfEditCommand extends PerfCommand {
                 .orElseThrow(() -> new CommandException(
                         String.format(Messages.MESSAGE_STUDENT_ID_NOT_FOUND, studentId)));
 
+        ClassTag originalClassTag = model.findClassTag(classTag).orElse(classTag);
         List<PerformanceNote> current = student.getPerformanceList().asUnmodifiableList();
         PerformanceList copy = new PerformanceList(new ArrayList<>(current));
 
         try {
-            copy.editPerformanceNote(date, classTag, note);
+            copy.editPerformanceNote(date, originalClassTag, note);
         } catch (PerformanceNoteNotFoundException e) {
             throw new CommandException("No performance note found for the given date and class tag.");
         }
@@ -78,7 +79,7 @@ public class PerfEditCommand extends PerfCommand {
         model.setPerson(student, student.withPerformanceList(copy));
 
         return new CommandResult(String.format(PerfCommand.EDITED, student.getName(),
-                classTag.tagName, date.getFormattedDate()));
+                originalClassTag.tagName, date.getFormattedDate()));
     }
 
     @Override
