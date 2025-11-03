@@ -275,7 +275,7 @@ This sequence diagram demonstrates how the system processes the `delete` command
 
 **Aspect: Name Validation**
 
-* **Alternative 1 (current choice):** Only alphabetic characters, spaces, hyphens, and apostrophes; max 200 characters
+* **Alternative 1 (current choice):** Only alphabetic characters, spaces, hyphens(-) , and apostrophes('); max 100 characters
     * Pros: Prevents invalid or malicious input, ensures readability and consistent formatting
     * Cons: Cannot accept names with unusual symbols outside this set
 
@@ -352,7 +352,7 @@ This sequence diagram demonstrates how the system processes the `delete` command
 **Aspect: Non-Duplication of Students**
 
 * **Alternative 1 (current choice):** Uniqueness checked on phone number and name combination
-    * Pros: Reduces accidental duplicates while allowing students with same name but different contact details
+    * Pros: Reduces accidental duplicates by allowing students with the same name but different contact details, preventing false duplicates when siblings share a phone number, and ensuring that neither name nor phone number alone is treated as unique
     * Cons: Cannot detect duplicates with incorrect phone numbers
 
 * **Alternative 2:** Check uniqueness using all fields (name, phone, email, address)
