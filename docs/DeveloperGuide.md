@@ -15,7 +15,7 @@
     
 We follow the project design and documentation structure of the AddressBook-Level3 project by SE-EDU.   
 In addition, the structure and certain sections of this Developer Guide were inspired by and adapted from [a team project developed by a previous cohort](https://ay2425s1-cs2103t-w08-1.github.io/tp/).
-We used GitHub Copilot as an auto-complete tool, primarily to assist in writing boilerplate code and suggest code completions. All generated code was reviewed and verified by the team before inclusion.
+We used GitHub Copilot as an auto-complete tool, primarily to assist in writing boilerplate code, suggest code completions and in reviewing code. All generated code was reviewed and verified by the team before inclusion.
 
 --------------------------------------------------------------------------------------------------------------------
 
