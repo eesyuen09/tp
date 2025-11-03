@@ -31,6 +31,7 @@ public class PerfAddCommandTest {
     private static final StudentId VALID_STUDENT_ID = new StudentId("0123");
     private static final Date VALID_DATE = new Date("15032024");
     private static final ClassTag VALID_CLASS_TAG = new ClassTag("Math");
+    private static final ClassTag USER_INPUT_CLASS_TAG = new ClassTag("math"); // to test case insensitivity
     private static final String VALID_NOTE = "Good performance in class";
 
     @Test
@@ -113,7 +114,7 @@ public class PerfAddCommandTest {
                 note.getDate().getFormattedDate()
         );
 
-        assertCommandSuccess(new PerfAddCommand(VALID_STUDENT_ID, VALID_DATE, VALID_CLASS_TAG, VALID_NOTE),
+        assertCommandSuccess(new PerfAddCommand(VALID_STUDENT_ID, VALID_DATE, USER_INPUT_CLASS_TAG, VALID_NOTE),
                 model, expectedMessage, expectedModel);
     }
 
@@ -241,6 +242,13 @@ public class PerfAddCommandTest {
         @Override
         public boolean hasClassTag(ClassTag classTag) {
             return person.getTags().contains(classTag);
+        }
+
+        @Override
+        public Optional<ClassTag> findClassTag(ClassTag classTag) {
+            return person.getTags().stream()
+                    .filter(tag -> tag.equals(classTag))
+                    .findFirst();
         }
     }
 }
