@@ -1,7 +1,7 @@
 ---
   layout: default.md
-    title: "User Guide"
-    pageNav: 3
+  title: "User Guide"
+  pageNav: 3
 ---
 
 # Tuto User Guide
@@ -73,13 +73,13 @@ Tuto offers comprehensive features tailored to the needs of freelance tutors:
 5. Type the command in the command box and press Enter to execute it. e.g. typing **`help`** and pressing Enter will open the help window.<br>
    Some example commands you can try:
 
-    * `list` : Lists all students.
+   * `list` : Lists all students.
 
-    * `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01` : Adds a student named `John Doe` to Tuto.
+   * `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01` : Adds a student named `John Doe` to Tuto.
 
     * `clear` : Deletes all data.
 
-    * `exit` : Exits the app.
+   * `exit` : Exits the app.
 
 6. Refer to the [Command section](#3-commands) below for details of all commands supported by Tuto.
 
@@ -201,11 +201,15 @@ A command can be categorized into four formats:
 
 ## 3. Commands
 
+<div style="background-color: #ffebee; border-left: 5px solid #c62828; padding: 15px; margin: 20px 0;">
+<strong>⚠️ Warning:</strong><br>
+All deletion commands (<code>delete</code>, <code>clear</code>, <code>tag -d</code>, <code>att -d</code>, <code>perf -d</code>) are irreversible and will <strong>permanently delete</strong> data. Make sure you have backed up any important information before using any deletion command in this application.
+</div>
+
 ### 3.1 Student Management
 
 The Student Management commands allow you to **add, edit, find, delete, and list students** in the address book.  
-Each student added is automatically assigned a unique **Student ID** (in 4-digit format, e.g. 0234, 5832),  
-which is used in other commands such as fees, attendance, and performance tracking.
+Each student added is automatically assigned a unique **Student ID** (in 4-digit format, e.g. 0234, 5832), which is used in other commands such as fees, attendance, and performance tracking.
 
 <box type="info" seamless>
 
@@ -306,7 +310,7 @@ Use multiple keywords to perform an OR search.
   > **Expected output (if 2 students found):**  
   `2 persons listed!`  
   > **Expected output (if 5 student found):**  
-  `5 persond listed!`
+  `5 persons listed!`
 
 
 #### 3.1.4 Deleting a student : `delete`
@@ -544,8 +548,8 @@ Marks a student's attendance as **PRESENT** for a specific date and class.
 
 **Command Details and Constraints:**
 * This command records that a student attended a specific class on a specific date.
-* The student must have the specified class tag assigned to them.
-* If the student doesn't have the tag, the command will be rejected with an error message.
+* The student must have the specified class tag assigned to them, OR have an existing attendance record for that class and date (to allow editing past records even if the student has left the class).
+* If the student doesn't have the tag and no attendance record exists, the command will be rejected with an error message.
 * The date must be in `DDMMYYYY` format (e.g., `15092025` for 15 September 2025).
 
 **Examples:**
@@ -562,8 +566,8 @@ Use this to record absences or to undo a previously marked **PRESENT** attendanc
 **Command Details and Constraints:**
 * This command records that a student was absent from a specific class on a specific date.
 * This command can also be used to undo a **PRESENT** attendance by changing it to **ABSENT**.
-* The student must have the specified class tag assigned to them.
-* If the student doesn't have the tag, the command will be rejected with an error message.
+* The student must have the specified class tag assigned to them, OR have an existing attendance record for that class and date (to allow editing past records even if the student has left the class).
+* If the student doesn't have the tag and no attendance record exists, the command will be rejected with an error message.
 * The date must be in `DDMMYYYY` format (e.g., `15092025` for 15 September 2025).
 
 **Examples:**
