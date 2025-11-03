@@ -306,9 +306,7 @@ Use multiple keywords to perform an OR search.
 **Examples:**
 - `find alex david` — displays all students with names containing “Alex” or “David”.
   > **Expected output (if 2 students found):**  
-  `2 persons listed!`  
-  > **Expected output (if 5 student found):**  
-  `5 persond listed!`
+   ![findAlexDavidResult.png](images/findAlexDavidResult.png)
 
 
 #### 3.1.4 Deleting a student : `delete`
