@@ -209,8 +209,7 @@ All deletion commands (<code>delete</code>, <code>clear</code>, <code>tag -d</co
 ### 3.1 Student Management
 
 The Student Management commands allow you to **add, edit, find, delete, and list students** in the address book.  
-Each student added is automatically assigned a unique **Student ID** (in 4-digit format, e.g. 0234, 5832),  
-which is used in other commands such as fees, attendance, and performance tracking.
+Each student added is automatically assigned a unique **Student ID** (in 4-digit format, e.g. 0234, 5832), which is used in other commands such as fees, attendance, and performance tracking.
 
 <box type="info" seamless>
 
@@ -311,7 +310,7 @@ Use multiple keywords to perform an OR search.
   > **Expected output (if 2 students found):**  
   `2 persons listed!`  
   > **Expected output (if 5 student found):**  
-  `5 persond listed!`
+  `5 persons listed!`
 
 
 #### 3.1.4 Deleting a student : `delete`

@@ -275,7 +275,7 @@ This sequence diagram demonstrates how the system processes the `delete` command
 
 **Aspect: Name Validation**
 
-* **Alternative 1 (current choice):** Only alphabetic characters, spaces, hyphens, and apostrophes; max 200 characters
+* **Alternative 1 (current choice):** Only alphabetic characters, spaces, hyphens(-) , and apostrophes('); max 100 characters
     * Pros: Prevents invalid or malicious input, ensures readability and consistent formatting
     * Cons: Cannot accept names with unusual symbols outside this set
 
@@ -352,7 +352,7 @@ This sequence diagram demonstrates how the system processes the `delete` command
 **Aspect: Non-Duplication of Students**
 
 * **Alternative 1 (current choice):** Uniqueness checked on phone number and name combination
-    * Pros: Reduces accidental duplicates while allowing students with same name but different contact details
+    * Pros: Reduces accidental duplicates by allowing students with the same name but different contact details, preventing false duplicates when siblings share a phone number, and ensuring that neither name nor phone number alone is treated as unique
     * Cons: Cannot detect duplicates with incorrect phone numbers
 
 * **Alternative 2:** Check uniqueness using all fields (name, phone, email, address)
@@ -1058,6 +1058,12 @@ Given below is a list of enhancements we plan to implement in future versions of
    This enhancement improves **accuracy** and **consistency** between financial and attendance records, while keeping full flexibility for tutors to override when necessary.
 7. **Unified student history view (view s/STUDENT_ID):** Introduce a consolidated view command that shows every performance note, attendance record, and fee transaction for the specified student, allowing tutors to review a learner’s full journey without hopping between modules.
 8. **Targeted performance and attendance filters (perf -v / att -v):** Extend the existing view flags to accept optional m/MMYY or t/CLASS_TAG parameters so tutors can zero in on a specific month or class when analysing historical performance or attendance data.
+9. **Enhanced Name Validation:** Currently, the system only allows alphabetic characters, spaces, hyphens, and apostrophes in student names, with a maximum limit of 100 characters. While this prevents invalid or malicious input and ensures consistent formatting, it also rejects legitimate names containing cultural or linguistic symbols, or relational notations like “s/o”. 
+We plan to expand the validation rules to allow Unicode characters in names, enabling broader support for global naming conventions while still excluding emojis and unsupported symbols. For example, names such as S/O Rajesh, Zoë-Marie, and Renée d’Olivier would be accepted under the new rules.
+This enhancement will make Tuto more inclusive, accurate, and realistic for users managing students with diverse backgrounds and naming conventions.
+10. **Persistent Student ID Assignment (JSON Tracking):** Currently, Student IDs are auto-generated in a 4-digit sequence (e.g., 0001, 0002, …) after validating all other fields. However, the system only recycles the highest deleted ID if it was the most recent one and if no other add/delete operations occurred before the next app launch. This can occasionally lead to duplicate or reused IDs across sessions. 
+We plan to implement JSON-based persistent ID tracking, which stores the last assigned ID and always increments from it when new students are added. This ensures IDs remain unique across sessions, even after restarts or deletions.
+This enhancement will strengthen data integrity, prevent ID conflicts, and ensure a more consistent and reliable record-keeping process for long-term tutoring management.
 
 --------------------------------------------------------------------------------------------------------------------
 
