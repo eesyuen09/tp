@@ -492,7 +492,7 @@ Use this command for corrections or when a payment was mistakenly marked as PAID
   > **Expected output:** `Bernice Yu has been successfully marked as Unpaid for September 2025.`
 
 
-#### 3.3.4 Viewing a student’s payment history: `fee -v`
+#### 3.3.3 Viewing a student’s payment history: `fee -v`
 
 Displays a student’s **payment history** from a specified starting month up to the **current month**,  with records shown from **newest to oldest**.
 
