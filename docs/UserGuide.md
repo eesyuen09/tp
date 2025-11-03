@@ -17,11 +17,13 @@ Welcome to Tuto—your all-in-one solution designed to help freelance tutors foc
 
 ### 1.1 What is Tuto?
 
-Tuto is a **desktop application specifically designed for freelance tutors** who need an efficient way to manage their students, track attendance and performance, and handle tuition fee payments—all in one centralized platform.
+Tuto is a desktop application designed for freelance secondary school tutors in Singapore who teach small classes, usually between one and a few students. It provides an efficient and centralised way to manage student records, track attendance and performance, and handle tuition fee payments.
 
-As a freelance tutor, you juggle multiple students across different classes, track various schedules, and manage administrative tasks that take time away from teaching. Tuto simplifies these challenges by providing a powerful Command Line Interface (CLI) that allows you to quickly execute commands while enjoying the benefits of a clean Graphical User Interface (GUI) for visualizing your student data.
+As a freelance tutor, you often juggle multiple students across different subjects or levels, track lessons, and manage payments using a mix of spreadsheets, WhatsApp chats, and paper notes. These administrative tasks can be time-consuming and take your focus away from teaching.
 
-Whether you're teaching one-on-one or managing multiple group classes, Tuto is built to reduce your administrative workload so you can dedicate more time and energy to your students' success.
+Tuto was created to simplify this process. It combines the speed and precision of a Command Line Interface (CLI) with the clarity of a Graphical User Interface (GUI), allowing tutors to type quick commands while visualising key information easily. The design assumes users are comfortable typing and prefer fast, keyboard-based interactions instead of navigating complex menus.
+
+With Tuto, tutors can keep all their teaching and administrative information in one place. It is built to reduce workload, improve organisation, and help freelance tutors dedicate more time and attention to their students’ success.
 
 ### 1.2 Main Features
 
@@ -307,9 +309,7 @@ Use multiple keywords to perform an OR search.
 **Examples:**
 - `find alex david` — displays all students with names containing “Alex” or “David”.
   > **Expected output (if 2 students found):**  
-  `2 persons listed!`  
-  > **Expected output (if 5 student found):**  
-  `5 persons listed!`
+   ![findAlexDavidResult.png](images/findAlexDavidResult.png)
 
 
 #### 3.1.4 Deleting a student : `delete`
